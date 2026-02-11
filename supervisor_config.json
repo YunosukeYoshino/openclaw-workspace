@@ -1,0 +1,21 @@
+{
+  "subagents": {
+    "dev-subagent-1": {
+      "session_key": "agent:main:subagent:19ebb3c6-ffb1-467d-80d7-1e75f05fd3ba",
+      "task": "\u30a8\u30fc\u30b8\u30a7\u30f3\u30c841-45\u306e\u958b\u767a",
+      "status": "restarting",
+      "heartbeat": "2026-02-11T15:49:54.032694",
+      "restart_count": 1,
+      "registered_at": "2026-02-11T15:49:54.032709"
+    },
+    "dev-subagent-3": {
+      "session_key": "agent:main:subagent:0d6406d3-d58d-4c26-8e05-f9673a7df40c",
+      "task": "\u30a8\u30fc\u30b8\u30a7\u30f3\u30c851-55\u306e\u958b\u767a",
+      "status": "running",
+      "heartbeat": "2026-02-11T16:17:46.467888",
+      "restart_count": 0,
+      "registered_at": "2026-02-11T16:17:46.467904"
+    }
+  },
+  "last_updated": "2026-02-11T16:17:46.467906"
+}

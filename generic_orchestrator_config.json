@@ -1,0 +1,11 @@
+{
+  "default_batch_size": 5,
+  "min_batch_size": 1,
+  "max_batch_size": 20,
+  "auto_adjust_batch_size": true,
+  "max_retries": 3,
+  "heartbeat_timeout": 600,
+  "progress_update_interval": 30,
+  "enable_dependencies": true,
+  "enable_prioritization": true
+}

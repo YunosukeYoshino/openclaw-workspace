@@ -1,0 +1,207 @@
+{
+  "start_time": "2026-02-11T15:51:38.755692",
+  "completed": [
+    {
+      "name": "support-agent",
+      "description": "Customer Support Agent",
+      "completed_at": "2026-02-11T18:31:00"
+    },
+    {
+      "name": "feedback-agent",
+      "description": "Feedback Collection Agent",
+      "completed_at": "2026-02-11T18:31:00"
+    },
+    {
+      "name": "survey-agent",
+      "description": "Survey Creation Agent",
+      "completed_at": "2026-02-11T18:31:00"
+    },
+    {
+      "name": "notification-agent",
+      "description": "Notification Management Agent",
+      "completed_at": "2026-02-11T18:31:00"
+    },
+    {
+      "name": "backup-agent",
+      "description": "Backup Management Agent",
+      "completed_at": "2026-02-11T18:31:00"
+    },
+    {
+      "name": "reading-agent",
+      "description": "読書記録",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "sleep-agent",
+      "description": "睡眠記録",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "meditation-agent",
+      "description": "瞑想記録",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "gratitude-agent",
+      "description": "感謝日記",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "achievement-agent",
+      "description": "実績・達成記録",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "language-agent",
+      "description": "言語学習",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "workout-agent",
+      "description": "ワークアウト記録",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "diet-agent",
+      "description": "食事記録",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "medication-agent",
+      "description": "薬服用記録",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "hydration-agent",
+      "description": "水分摂取記録",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "habit-tracker-agent",
+      "description": "習慣トラッカー",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "budget-expense-agent",
+      "description": "予算・支出管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "investment-agent",
+      "description": "投資管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "savings-agent",
+      "description": "貯金管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "debt-agent",
+      "description": "借金管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "subscription-agent",
+      "description": "サブスクリプション管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "event-agent",
+      "description": "イベント管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "birthday-agent",
+      "description": "誕生日管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "anniversary-agent",
+      "description": "記念日管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "holiday-agent",
+      "description": "休暇管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "weather-log-agent",
+      "description": "天気ログ",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "social-agent",
+      "description": "社交記録",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "document-agent",
+      "description": "書類管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "password-agent",
+      "description": "パスワード管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "email-agent",
+      "description": "メール管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "api-agent",
+      "description": "API連携",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "automation-agent",
+      "description": "自動化管理",
+      "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "integration-agent",
+      "description": "統合管理",
+      "completed_at": "2026-02-11T19:45:00"
+    }
+  ],
+  "in_progress": [
+    [62, "energy-agent", "エネルギーレベル記録", "daily energy tracking"],
+    [63, "stress-agent", "ストレスレベル記録", "stress tracking, management"],
+    [64, "mood-tracker-agent", "気分トラッカー", "mood patterns, triggers"],
+    [66, "gift-agent", "ギフト記録", "gifts given/received, ideas"],
+    [67, "clothing-agent", "服飾管理", "wardrobe, shopping, outfits"]
+  ],
+  "pending": [
+    [68, "household-agent", "家事管理", "chores, maintenance, repairs"],
+    [69, "garden-agent", "園芸記録", "plants, garden activities"],
+    [70, "car-agent", "車管理", "maintenance, fuel, repairs"],
+    [71, "insurance-agent", "保険管理", "policies, claims, renewals"],
+    [72, "tax-agent", "税金管理", "documents, deductions, filings"],
+    [76, "device-agent", "デバイス管理", "devices, warranties, support"],
+    [77, "software-agent", "ソフトウェア管理", "licenses, updates, installs"],
+    [78, "network-agent", "ネットワーク管理", "WiFi, passwords, settings"],
+    [79, "security-agent", "セキュリティ管理", "threats, incidents, measures"],
+    [80, "cloud-agent", "クラウド管理", "cloud services, storage, usage"],
+    [82, "phone-agent", "通話記録管理", "calls, voicemail, contacts"],
+    [83, "message-agent", "メッセージ管理", "text messages, communication logs"],
+    [85, "calendar-integration-agent", "カレンダー連携", "sync calendars, events"],
+    [87, "webhook-agent", "Webhook管理", "webhook URLs, events, logs"],
+    [90, "report-agent", "レポート管理", "reports, analytics, exports"],
+    [91, "log-agent", "ログ管理", "system logs, monitoring"],
+    [92, "debug-agent", "デバッグ管理", "debug sessions, issues"],
+    [93, "test-agent", "テスト管理", "test cases, results"],
+    [94, "deploy-agent", "デプロイ管理", "deployments, rollbacks"],
+    [95, "monitor-agent", "モニタリング管理", "metrics, alerts"],
+    [96, "performance-agent", "パフォーマンス管理", "optimization, benchmarks"],
+    [97, "scale-agent", "スケール管理", "scaling, capacity planning"],
+    [98, "backup-schedule-agent", "バックアップスケジュール", "scheduled backups"],
+    [99, "cleanup-agent", "クリーンアップ管理", "scheduled cleanups"],
+    [100, "archive-agent", "アーカイブ管理", "archiving, retention"]
+  ],
+  "subagents": {
+    "agent-dev-62-66": "active"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "completed_agents": [
+    "reading-agent",
+    "sleep-agent",
+    "meditation-agent",
+    "gratitude-agent",
+    "achievement-agent"
+  ],
+  "last_batch": "41-45",
+  "total_completed": 5,
+  "remaining": 55
+}
