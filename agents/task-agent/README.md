@@ -1,10 +1,10 @@
-# calendar-agent
+# task-agent
 
 ## 概要 (Overview)
 
-スケジュール管理・リマインダー
+タスクの作成・追跡・完了管理
 
-Schedule management and reminders
+Task creation, tracking, and completion management
 
 ## 機能 (Features)
 

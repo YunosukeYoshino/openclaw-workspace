@@ -1,10 +1,10 @@
-# calendar-agent
+# pomodoro-agent
 
 ## 概要 (Overview)
 
-スケジュール管理・リマインダー
+ポモドーロテクニックによる集中時間管理
 
-Schedule management and reminders
+Pomodoro technique for focused time management
 
 ## 機能 (Features)
 

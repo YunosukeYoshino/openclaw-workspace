@@ -1,10 +1,10 @@
-# calendar-agent
+# time-tracking-agent
 
 ## 概要 (Overview)
 
-スケジュール管理・リマインダー
+作業時間の記録と分析
 
-Schedule management and reminders
+Work time recording and analysis
 
 ## 機能 (Features)
 

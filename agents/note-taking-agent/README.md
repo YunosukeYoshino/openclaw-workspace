@@ -1,10 +1,10 @@
-# calendar-agent
+# note-taking-agent
 
 ## 概要 (Overview)
 
-スケジュール管理・リマインダー
+メモ・ノートの記録と整理
 
-Schedule management and reminders
+Memo and note recording and organization
 
 ## 機能 (Features)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-calendar-agent - Database Module
+note-taking-agent - Database Module
 
 SQLite database operations for agent.
 """
@@ -12,7 +12,7 @@ from pathlib import Path
 
 
 class Database:
-    """Database manager for calendar-agent"""
+    """Database manager for note-taking-agent"""
 
     def __init__(self, db_path: str = None):
         if db_path is None:

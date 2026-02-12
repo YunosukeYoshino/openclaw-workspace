@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-calendar-agent - Discord Bot Module
+focus-agent - Discord Bot Module
 
-Discord bot for calendar-agent - スケジュール管理・リマインダー
+Discord bot for focus-agent - 集中モードの管理・通知抑制
 """
 
 import discord
@@ -17,7 +17,7 @@ from db import Database
 
 
 class DiscordBot(commands.Bot):
-    """Discord bot for calendar-agent"""
+    """Discord bot for focus-agent"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -26,7 +26,7 @@ class DiscordBot(commands.Bot):
         super().__init__(
             command_prefix='!',
             intents=intents,
-            description="Schedule management and reminders"
+            description="Focus mode management and notification suppression"
         )
 
         self.db = Database()

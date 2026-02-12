@@ -1,10 +1,10 @@
-# calendar-agent
+# project-management-agent
 
 ## 概要 (Overview)
 
-スケジュール管理・リマインダー
+プロジェクトの進捗・タスク・リソース管理
 
-Schedule management and reminders
+Project progress, task, and resource management
 
 ## 機能 (Features)
 

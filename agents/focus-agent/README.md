@@ -1,10 +1,10 @@
-# calendar-agent
+# focus-agent
 
 ## 概要 (Overview)
 
-スケジュール管理・リマインダー
+集中モードの管理・通知抑制
 
-Schedule management and reminders
+Focus mode management and notification suppression
 
 ## 機能 (Features)
 

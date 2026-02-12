@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-calendar-agent - Discord Bot Module
+goal-setting-agent - Discord Bot Module
 
-Discord bot for calendar-agent - スケジュール管理・リマインダー
+Discord bot for goal-setting-agent - 目標の設定・追跡・達成記録
 """
 
 import discord
@@ -17,7 +17,7 @@ from db import Database
 
 
 class DiscordBot(commands.Bot):
-    """Discord bot for calendar-agent"""
+    """Discord bot for goal-setting-agent"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -26,7 +26,7 @@ class DiscordBot(commands.Bot):
         super().__init__(
             command_prefix='!',
             intents=intents,
-            description="Schedule management and reminders"
+            description="Goal setting, tracking, and achievement recording"
         )
 
         self.db = Database()

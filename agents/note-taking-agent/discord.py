@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-calendar-agent - Discord Bot Module
+note-taking-agent - Discord Bot Module
 
-Discord bot for calendar-agent - スケジュール管理・リマインダー
+Discord bot for note-taking-agent - メモ・ノートの記録と整理
 """
 
 import discord
@@ -17,7 +17,7 @@ from db import Database
 
 
 class DiscordBot(commands.Bot):
-    """Discord bot for calendar-agent"""
+    """Discord bot for note-taking-agent"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -26,7 +26,7 @@ class DiscordBot(commands.Bot):
         super().__init__(
             command_prefix='!',
             intents=intents,
-            description="Schedule management and reminders"
+            description="Memo and note recording and organization"
         )
 
         self.db = Database()

@@ -1,10 +1,10 @@
-# calendar-agent
+# goal-setting-agent
 
 ## 概要 (Overview)
 
-スケジュール管理・リマインダー
+目標の設定・追跡・達成記録
 
-Schedule management and reminders
+Goal setting, tracking, and achievement recording
 
 ## 機能 (Features)
 
