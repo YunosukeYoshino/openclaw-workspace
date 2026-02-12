@@ -12,24 +12,24 @@
       "notes": "All files already existed in /workspace/garden-agent/"
     },
     "gift-agent": {
-      "status": "completed",
+      "status": "already_in_git",
       "files": {
-        "agent.py": "created",
-        "requirements.txt": "created",
+        "agent.py": "exists_in_git",
+        "requirements.txt": "exists_in_git",
         "README.md": "exists",
         "db.py": "exists"
       },
-      "notes": "Created agent.py and requirements.txt in /workspace/agents/gift-agent/"
+      "notes": "Files already existed in git. No action needed."
     },
     "goal-agent": {
-      "status": "completed",
+      "status": "already_in_git",
       "files": {
-        "agent.py": "created",
-        "requirements.txt": "created",
+        "agent.py": "exists_in_git",
+        "requirements.txt": "exists_in_git",
         "README.md": "exists",
         "db.py": "exists"
       },
-      "notes": "Created agent.py and requirements.txt in /workspace/agents/goal-agent/"
+      "notes": "Files already existed in git. No action needed."
     },
     "gratitude-agent": {
       "status": "completed",
