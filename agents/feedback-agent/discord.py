@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-gardening-agent Discord Bot
-gardening-agent - AIエージェント
+feedback-agent Discord Bot
+feedback-agent - AIエージェント
 """
 
 import logging
@@ -10,7 +10,7 @@ import os
 from discord.ext import commands
 from discord import Intents
 
-from agent import GardeningAgent
+from agent import FeedbackAgent
 
 # ログ設定
 logging.basicConfig(level=logging.INFO)
@@ -21,10 +21,10 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 intents = Intents.default()
 intents.message_content = True
 
-class GardeningAgentBot(commands.Bot):
+class FeedbackAgentBot(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix='!', intents=intents)
-        self.agent = GardeningAgent()
+        self.agent = FeedbackAgent()
 
     async def on_ready(self):
         logger.info(f'{self.user.name} has connected to Discord!')
@@ -98,7 +98,7 @@ def main():
         logger.error("DISCORD_TOKEN が設定されていません。")
         return
 
-    bot = GardeningAgentBot()
+    bot = FeedbackAgentBot()
     bot.run(token)
 
 if __name__ == "__main__":

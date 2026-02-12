@@ -1,141 +1,105 @@
 #!/usr/bin/env python3
 """
-focus-agent - Discord Bot Module
-
-Discord bot for focus-agent - 集中モードの管理・通知抑制
+focus-agent Discord Bot
+focus-agent - AIエージェント
 """
 
-import discord
+import logging
+import os
+
 from discord.ext import commands
-import re
-from typing import Optional
-from pathlib import Path
-import sys
+from discord import Intents
 
-sys.path.insert(0, str(Path(__file__).parent))
-from db import Database
+from agent import FocusAgent
 
+# ログ設定
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-class DiscordBot(commands.Bot):
-    """Discord bot for focus-agent"""
+# Discord Bot設定
+TOKEN = os.getenv('DISCORD_TOKEN')
+intents = Intents.default()
+intents.message_content = True
 
+class FocusAgentBot(commands.Bot):
     def __init__(self):
-        intents = discord.Intents.default()
-        intents.message_content = True
-
-        super().__init__(
-            command_prefix='!',
-            intents=intents,
-            description="Focus mode management and notification suppression"
-        )
-
-        self.db = Database()
+        super().__init__(command_prefix='!', intents=intents)
+        self.agent = FocusAgent()
 
     async def on_ready(self):
-        print(f'{self.user} has connected to Discord!')
+        logger.info(f'{self.user.name} has connected to Discord!')
 
-    async def on_message(self, message: discord.Message):
+    async def on_message(self, message):
         if message.author == self.user:
             return
 
-        await self._process_natural_language(message)
-        await super().on_message(message)
-
-    async def _process_natural_language(self, message: discord.Message):
         content = message.content.lower()
 
-        add_patterns = [
-            r'(タスク|task|追加|add|作成|create)\s*(.+)',
-            r'(やる|to do|する|do)\s*(.+)'
-        ]
+        if content.startswith('!'):
+            await self.process_commands(message)
+        else:
+            await self._natural_language_command(message)
 
-        for pattern in add_patterns:
-            match = re.search(pattern, content)
-            if match:
-                title = match.group(2).strip()
-                if len(title) > 2:
-                    task_id = self.db.add_task(title=title)
-                    await message.reply(f'タスクを追加しました: {title} (ID: {task_id})')
-                    return
+    async def _natural_language_command(self, message):
+        """自然言語コマンドを解析して適切な処理を実行"""
+        content = message.content.lower()
 
-        list_patterns = [
-            r'(一覧|list|全|all|what|show)',
-            r'(タスク|tasks|todo|やること)'
-        ]
+        # 追加
+        if '追加' in content or 'add' in content or '登録' in content or '記録' in content:
+            parts = content.split(' ', 1)
+            title = parts[1].split('を')[0] if len(parts) > 1 and 'を' in parts[1] else (parts[1] if len(parts) > 1 else "無題")
+            title = title.strip() if title else "無題"
+            entry_content = content[content.find('を') + 1:] if 'を' in content else (parts[1] if len(parts) > 1 else content)
 
-        for pattern in list_patterns:
-            if re.search(pattern, content):
-                tasks = self.db.list_tasks(status='pending')
-                if tasks:
-                    response = "**タスク一覧**:\n"
-                    for i, task in enumerate(tasks[:10], 1):
-                        priority_emoji = {3: '🔴', 2: '🟡', 1: '🟢'}
-                        emoji = priority_emoji.get(task['priority'], '⚪')
-                        response += f"{i}. {emoji} {task['title']}\n"
+            self.agent.add_entry(title, entry_content)
+            await message.reply(f'✅ エントリー「{title}」を追加しました！')
+
+        # 一覧
+        elif '一覧' in content or 'list' in content or '表示' in content:
+            entries = self.agent.get_entries()
+            if entries:
+                msg = "📋 エントリー一覧:\n"
+                for entry in entries[:10]:
+                    msg += f"- **{entry[1]}** ({entry[6]})\n"
+                if len(entries) > 10:
+                    msg += f"\n... 他 {len(entries) - 10} 件"
+                await message.reply(msg)
+            else:
+                await message.reply("📭 エントリーはありません。")
+
+        # 検索
+        elif '検索' in content or 'search' in content:
+            parts = content.split(' ', 1)
+            category = parts[1] if len(parts) > 1 else None
+            if category:
+                entries = self.agent.get_entries(category)
+                if entries:
+                    msg = f"🔍 カテゴリ「{category}」の検索結果:\n"
+                    for entry in entries:
+                        msg += f"- **{entry[1]}**: {entry[2][:50]}...\n"
+                    await message.reply(msg)
                 else:
-                    response = "タスクがまだありません。"
-                await message.reply(response)
-                return
+                    await message.reply(f"📭 カテゴリ「{category}」のエントリーはありません。")
 
-    @commands.command()
-    async def add(self, ctx, *, title: str):
-        task_id = self.db.add_task(title=title)
-        await ctx.send(f'追加しました: {title} (ID: {task_id})')
-
-    @commands.command()
-    async def list(self, ctx, status: Optional[str] = None):
-        tasks = self.db.list_tasks(status=status)
-        if not tasks:
-            await ctx.send("タスクがまだありません。")
-            return
-
-        response = "**タスク一覧**:\n"
-        for i, task in enumerate(tasks[:10], 1):
-            priority_emoji = {3: '🔴', 2: '🟡', 1: '🟢'}
-            emoji = priority_emoji.get(task['priority'], '⚪')
-            response += f"{i}. {emoji} {task['title']}\n"
-        await ctx.send(response)
-
-    @commands.command()
-    async def done(self, ctx, task_id: int):
-        from datetime import datetime
-        success = self.db.update_task(task_id, status='completed', completed_date=datetime.now().isoformat())
-        if success:
-            await ctx.send(f"ID {task_id} を完了にしました。")
-        else:
-            await ctx.send(f"ID {task_id} が見つかりません。")
-
-    @commands.command()
-    async def delete(self, ctx, task_id: int):
-        success = self.db.delete_task(task_id)
-        if success:
-            await ctx.send(f"ID {task_id} を削除しました。")
-        else:
-            await ctx.send(f"ID {task_id} が見つかりません。")
-
-    @commands.command()
-    async def stats(self, ctx):
-        stats = self.db.get_statistics()
-        response = "**統計**\n"
-        response += f"- 未完了タスク: {stats['pending_tasks']}\n"
-        response += f"- 完了タスク: {stats['completed_tasks']}\n"
-        response += f"- 総作業時間: {stats['total_hours']}時間\n"
-        response += f"- セッション数: {stats['total_sessions']}\n"
-        await ctx.send(response)
-
-    def close(self):
-        self.db.close()
-
+        # 削除
+        elif '削除' in content or 'delete' in content:
+            import re
+            match = re.search(r'\d+', content)
+            if match:
+                entry_id = int(match.group())
+                self.agent.delete_entry(entry_id)
+                await message.reply(f'🗑️ エントリー #{entry_id} を削除しました！')
+            else:
+                await message.reply("❌ 削除するエントリー番号を指定してください。")
 
 def main():
-    import os
-    token = os.environ.get('DISCORD_TOKEN')
+    token = os.getenv('DISCORD_TOKEN', TOKEN)
     if not token:
-        print("Error: DISCORD_TOKEN environment variable not set")
+        logger.error("DISCORD_TOKEN が設定されていません。")
         return
-    bot = DiscordBot()
+
+    bot = FocusAgentBot()
     bot.run(token)
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
