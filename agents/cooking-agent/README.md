@@ -1,74 +1,46 @@
 # cooking-agent
 
-cooking agentは、cookingの管理と追跡を行うAIエージェントです。
+## 概要 (Overview)
 
-## Features
+レシピ管理・献立計画・料理記録
 
-- cookingの記録
-- 統計情報の表示
-- 履歴管理
-- 検索・フィルタ機能
+Recipe management, meal planning, and cooking records
 
-## Installation
+## 機能 (Features)
+
+- プロジェクトの計画と追跡 (Project planning and tracking)
+- アイテム・材料の管理 (Item and material management)
+- ログ・記録の保存 (Log and record keeping)
+- 統計情報の表示 (Statistics display)
+- Discord Botによる自然言語操作 (Natural language control via Discord Bot)
+
+## インストール (Installation)
 
 ```bash
-cd agents/cooking-agent
 pip install -r requirements.txt
 ```
 
-## Usage
-
-### Discord Botとして実行
-
-```bash
-python discord.py
-```
-
-### データベース操作
+## 使用方法 (Usage)
 
 ```python
-from db import cooking_agentDB
+from db import Database
 
-db = cooking_agentDB()
-db.add_record({'field1': 'value1', 'field2': 'value2'})
-records = db.get_all_records()
+db = Database()
+
+# プロジェクト追加 (Add project)
+project_id = db.add_project(
+    title="Example Project",
+    description="Description",
+    category="category"
+)
+
+# 一覧 (List)
+projects = db.list_projects()
+
+# 統計 (Statistics)
+stats = db.get_statistics()
 ```
 
-## Database Schema
+## ライセンス (License)
 
-The agent uses SQLite with the following schema:
-
-```sql
-CREATE TABLE cooking_agent (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-## Natural Language Commands
-
-The agent supports the following natural language commands (via Discord):
-
-- "Add cooking record"
-- "Show my cooking history"
-- "List recent cooking entries"
-
-## Configuration
-
-Configuration is stored in `config.json`:
-
-```json
-{
-    "database_path": "cooking-agent.db",
-    "log_level": "INFO"
-}
-```
-
-## Requirements
-
-See `requirements.txt` for dependencies.
-
-## License
-
-MIT License
+MIT

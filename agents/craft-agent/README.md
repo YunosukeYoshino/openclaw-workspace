@@ -1,10 +1,10 @@
-# learning-agent
+# craft-agent
 
 ## 概要 (Overview)
 
-新しいスキルの習得・学習記録・進捗管理
+手芸・工作のプロジェクトと材料管理
 
-New skill acquisition, learning records, and progress management
+Craft and DIY project and material management
 
 ## 機能 (Features)
 

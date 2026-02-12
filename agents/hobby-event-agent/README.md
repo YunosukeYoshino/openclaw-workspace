@@ -1,10 +1,10 @@
-# learning-agent
+# hobby-event-agent
 
 ## 概要 (Overview)
 
-新しいスキルの習得・学習記録・進捗管理
+趣味関連のイベント・フェア・展示会の管理
 
-New skill acquisition, learning records, and progress management
+Hobby-related events, fairs, and exhibition management
 
 ## 機能 (Features)
 

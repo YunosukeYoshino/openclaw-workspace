@@ -1,10 +1,10 @@
-# learning-agent
+# photography-agent
 
 ## 概要 (Overview)
 
-新しいスキルの習得・学習記録・進捗管理
+写真の撮影記録・管理・共有
 
-New skill acquisition, learning records, and progress management
+Photography shooting records, management, and sharing
 
 ## 機能 (Features)
 

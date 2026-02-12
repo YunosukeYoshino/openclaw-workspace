@@ -1,10 +1,10 @@
-# learning-agent
+# collection-agent
 
 ## 概要 (Overview)
 
-新しいスキルの習得・学習記録・進捗管理
+コレクションアイテムの管理・カタログ化
 
-New skill acquisition, learning records, and progress management
+Collection item management and cataloging
 
 ## 機能 (Features)
 

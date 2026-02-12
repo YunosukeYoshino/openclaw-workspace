@@ -1,10 +1,10 @@
-# learning-agent
+# gardening-agent
 
 ## 概要 (Overview)
 
-新しいスキルの習得・学習記録・進捗管理
+植物の世話・育成記録・カレンダー
 
-New skill acquisition, learning records, and progress management
+Plant care, growing records, and calendar
 
 ## 機能 (Features)
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-learning-agent - Discord Bot Module
+gardening-agent - Discord Bot Module
 
-Discord bot for learning-agent - 新しいスキルの習得・学習記録・進捗管理
+Discord bot for gardening-agent - 植物の世話・育成記録・カレンダー
 """
 
 import discord
@@ -17,7 +17,7 @@ from db import Database
 
 
 class DiscordBot(commands.Bot):
-    """Discord bot for learning-agent"""
+    """Discord bot for gardening-agent"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -26,7 +26,7 @@ class DiscordBot(commands.Bot):
         super().__init__(
             command_prefix='!',
             intents=intents,
-            description="New skill acquisition, learning records, and progress management"
+            description="Plant care, growing records, and calendar"
         )
 
         self.db = Database()

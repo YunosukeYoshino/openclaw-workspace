@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-cooking-agent - Database Module
+hobby-event-agent - Database Module
 
 SQLite database operations for the agent.
 """
@@ -12,7 +12,7 @@ from pathlib import Path
 
 
 class Database:
-    """Database manager for cooking-agent"""
+    """Database manager for hobby-event-agent"""
 
     def __init__(self, db_path: str = None):
         if db_path is None:

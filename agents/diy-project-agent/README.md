@@ -1,10 +1,10 @@
-# learning-agent
+# diy-project-agent
 
 ## 概要 (Overview)
 
-新しいスキルの習得・学習記録・進捗管理
+DIYプロジェクトの計画・追跡・記録
 
-New skill acquisition, learning records, and progress management
+DIY project planning, tracking, and recording
 
 ## 機能 (Features)
 
