@@ -1,0 +1,457 @@
+[
+  {
+    "name": "shift-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/shift-agent/discord.py\", line 231, in <module>\n    init_db()\n  File \"/workspace/agents/shift-agent/db.py\", line 15, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "language-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/language-agent/discord.py\", line 468, in <module>\n    init_db()\n  File \"/workspace/agents/language-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "monitoring-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/monitoring-agent/discord.py\", line 468, in <module>\n    print(agent.process_message(\"CPU\u306e\u30e1\u30c8\u30ea\u30af\u30b9\u3092\u8868\u793a\"))\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/monitoring-agent/discord.py\", line 28, in process_message\n    return self._handle_get_metrics(entities)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/monitoring-agent/discord.py\", line 303, in _handle_get_metrics\n    metrics = self.db.get_metrics(\n              ^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/monitoring-agent/db.py\", line 104, in get_metrics\n    cursor.execute('''\nsqlite3.OperationalError: no such table: metrics\n"
+  },
+  {
+    "name": "survey-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/survey-agent/discord.py\", line 444, in <module>\n    agent = SurveyDiscord()\n            ^^^^^^^^^^^^^^^\n  File \"/workspace/agents/survey-agent/discord.py\", line 31, in __init__\n    init_db()\n  File \"/workspace/agents/survey-agent/db.py\", line 15, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "inventory-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/inventory-agent/discord.py\", line 240, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/inventory-agent/discord.py\", line 116, in handle_message\n    item_id = add_item(\n              ^^^^^^^^^\n  File \"/workspace/agents/inventory-agent/db.py\", line 64, in add_item\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "voice-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/voice-agent/discord.py\", line 386, in <module>\n    init_db()\n  File \"/workspace/agents/voice-agent/db.py\", line 17, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "savings-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/savings-agent/discord.py\", line 347, in <module>\n    init_db()\n  File \"/workspace/agents/savings-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "travel-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/travel-agent/discord.py\", line 364, in <module>\n    init_db()\n  File \"/workspace/agents/travel-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "holiday-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/holiday-agent/discord.py\", line 8, in <module>\n    from db import *\n  File \"/workspace/agents/holiday-agent/db.py\", line 125\n    updates.append(\"budget = ?\")\n    ^\nIndentationError: expected an indented block after 'if' statement on line 124\n"
+  },
+  {
+    "name": "hydration-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/hydration-agent/discord.py\", line 347, in <module>\n    init_db()\n  File \"/workspace/agents/hydration-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "cooking-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/cooking-agent/discord.py\", line 354, in <module>\n    init_db()\n  File \"/workspace/agents/cooking-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "crypto-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/crypto-agent/discord.py\", line 316, in <module>\n    agent = CryptoDiscord()\n            ^^^^^^^^^^^^^^^\n  File \"/workspace/agents/crypto-agent/discord.py\", line 18, in __init__\n    init_db()\n  File \"/workspace/agents/crypto-agent/db.py\", line 15, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "finance-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/finance-agent/discord.py\", line 387, in <module>\n    init_db()\n  File \"/workspace/agents/finance-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "budget-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/budget-agent/discord.py\", line 202, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/budget-agent/discord.py\", line 115, in handle_message\n    budget_id = add_budget(\n                ^^^^^^^^^^^\n  File \"/workspace/agents/budget-agent/db.py\", line 61, in add_budget\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "meditation-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/meditation-agent/discord.py\", line 307, in <module>\n    init_db()\n  File \"/workspace/agents/meditation-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "medication-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/medication-agent/discord.py\", line 328, in <module>\n    init_db()\n  File \"/workspace/agents/medication-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "password-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/password-agent/discord.py\", line 480, in <module>\n    print(agent.process_message(\"Generate password length 20 with symbols\"))\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/password-agent/discord.py\", line 32, in process_message\n    return self._handle_generate_password(entities)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/password-agent/discord.py\", line 241, in _handle_generate_password\n    password = generate_password(length, uppercase, lowercase, digits, symbols)\n               ^^^^^^^^^^^^^^^^^\nNameError: name 'generate_password' is not defined\n"
+  },
+  {
+    "name": "energy-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/energy-agent/discord.py\", line 179, in <module>\n    init_db()\n  File \"/workspace/agents/energy-agent/db.py\", line 17, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "event-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/event-agent/discord.py\", line 314, in <module>\n    init_db()\n  File \"/workspace/agents/event-agent/db.py\", line 14, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "checklist-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/checklist-agent/discord.py\", line 214, in <module>\n    init_db()\n  File \"/workspace/agents/checklist-agent/db.py\", line 15, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "gratitude-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/gratitude-agent/discord.py\", line 320, in <module>\n    init_db()\n  File \"/workspace/agents/gratitude-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "skills-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/skills-agent/discord.py\", line 223, in <module>\n    init_db()\n  File \"/workspace/agents/skills-agent/db.py\", line 15, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "achievement-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/achievement-agent/discord.py\", line 427, in <module>\n    init_db()\n  File \"/workspace/agents/achievement-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "shopping-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/shopping-agent/discord.py\", line 377, in <module>\n    init_db()\n  File \"/workspace/agents/shopping-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "pet-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/pet-agent/discord.py\", line 545, in <module>\n    init_db()\n  File \"/workspace/agents/pet-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "recipe-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/recipe-agent/discord.py\", line 294, in <module>\n    init_db()\n  File \"/workspace/agents/recipe-agent/db.py\", line 15, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "api-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/api-agent/discord.py\", line 542, in <module>\n    print(agent.process_message(\"API\u30ad\u30fc\u8ffd\u52a0 \u540d\u524d:GitHub \u30b5\u30fc\u30d3\u30b9:github.com\"))\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/api-agent/discord.py\", line 23, in process_message\n    return self._handle_add_key(entities)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/api-agent/discord.py\", line 302, in _handle_add_key\n    key_id = self.db.add_api_key(\n             ^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/api-agent/db.py\", line 97, in add_api_key\n    cursor.execute('''\nsqlite3.OperationalError: no such table: api_keys\n"
+  },
+  {
+    "name": "backup-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/backup-agent/discord.py\", line 189, in <module>\n    init_db()\n  File \"/workspace/agents/backup-agent/db.py\", line 18, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "habit-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/habit-agent/discord.py\", line 155, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/habit-agent/discord.py\", line 87, in handle_message\n    habit_id = add_habit(\n               ^^^^^^^^^^\n  File \"/workspace/agents/habit-agent/db.py\", line 55, in add_habit\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "diet-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/diet-agent/discord.py\", line 439, in <module>\n    init_db()\n  File \"/workspace/agents/diet-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "dream-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/dream-agent/discord.py\", line 174, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/dream-agent/discord.py\", line 86, in handle_message\n    dream_id = add_dream(\n               ^^^^^^^^^^\n  File \"/workspace/agents/dream-agent/db.py\", line 49, in add_dream\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "support-agent",
+    "status": "skip",
+    "reason": "discord.py not found"
+  },
+  {
+    "name": "audio-summarizer",
+    "status": "skip",
+    "reason": "db.py not found"
+  },
+  {
+    "name": "assistant-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/assistant-agent/discord.py\", line 9, in <module>\n    db = AssistantDB()\n         ^^^^^^^^^^^^^\n  File \"/workspace/agents/assistant-agent/db.py\", line 15, in __init__\n    self.init_db()\n  File \"/workspace/agents/assistant-agent/db.py\", line 25, in init_db\n    conn = self.get_connection()\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/assistant-agent/db.py\", line 19, in get_connection\n    conn = sqlite3.connect(self.db_path)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "audio-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/audio-agent/discord.py\", line 327, in <module>\n    init_db()\n  File \"/workspace/agents/audio-agent/db.py\", line 15, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "watchlist-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/watchlist-agent/discord.py\", line 188, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/watchlist-agent/discord.py\", line 92, in handle_message\n    item_id = add_item(\n              ^^^^^^^^^\n  File \"/workspace/agents/watchlist-agent/db.py\", line 46, in add_item\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "study-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/study-agent/discord.py\", line 150, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/study-agent/discord.py\", line 70, in handle_message\n    session_id = add_study_session(\n                 ^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/study-agent/db.py\", line 43, in add_study_session\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "calendar-event-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/calendar-event-agent/discord.py\", line 260, in <module>\n    init_db()\n    ^^^^^^^\nNameError: name 'init_db' is not defined\n"
+  },
+  {
+    "name": "plants-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/plants-agent/discord.py\", line 463, in <module>\n    init_db()\n  File \"/workspace/agents/plants-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "weather-agent",
+    "status": "skip",
+    "reason": "discord.py not found"
+  },
+  {
+    "name": "ticket-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/ticket-agent/discord.py\", line 213, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/ticket-agent/discord.py\", line 92, in handle_message\n    ticket_id = add_ticket(\n                ^^^^^^^^^^^\n  File \"/workspace/agents/ticket-agent/db.py\", line 59, in add_ticket\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "calendar-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/calendar-agent/discord.py\", line 222, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/calendar-agent/discord.py\", line 125, in handle_message\n    event_id = add_event(\n               ^^^^^^^^^^\n  File \"/workspace/agents/calendar-agent/db.py\", line 44, in add_event\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "translate-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/translate-agent/discord.py\", line 300, in <module>\n    init_db()\n  File \"/workspace/agents/translate-agent/db.py\", line 17, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "music-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/music-agent/discord.py\", line 419, in <module>\n    init_db()\n  File \"/workspace/agents/music-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "debt-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/debt-agent/discord.py\", line 380, in <module>\n    init_db()\n  File \"/workspace/agents/debt-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "weather-log-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/weather-log-agent/discord.py\", line 294, in <module>\n    init_db()\n  File \"/workspace/agents/weather-log-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "search-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/search-agent/discord.py\", line 215, in <module>\n    init_db()\n  File \"/workspace/agents/search-agent/db.py\", line 17, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "goal-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/goal-agent/discord.py\", line 203, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/goal-agent/discord.py\", line 118, in handle_message\n    goal_id = add_goal(\n              ^^^^^^^^^\n  File \"/workspace/agents/goal-agent/db.py\", line 61, in add_goal\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "email-agent",
+    "status": "skip",
+    "reason": "discord.py not found"
+  },
+  {
+    "name": "wishlist-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/wishlist-agent/discord.py\", line 207, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/wishlist-agent/discord.py\", line 102, in handle_message\n    item_id = add_item(\n              ^^^^^^^^^\n  File \"/workspace/agents/wishlist-agent/db.py\", line 48, in add_item\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "investment-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/investment-agent/discord.py\", line 356, in <module>\n    init_db()\n  File \"/workspace/agents/investment-agent/db.py\", line 17, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "notification-agent",
+    "status": "skip",
+    "reason": "discord.py not found"
+  },
+  {
+    "name": "clipboard-agent",
+    "status": "skip",
+    "reason": "discord.py not found"
+  },
+  {
+    "name": "newsfeed-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/newsfeed-agent/discord.py\", line 261, in <module>\n    init_db()\n  File \"/workspace/agents/newsfeed-agent/db.py\", line 15, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "game-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/game-agent/discord.py\", line 448, in <module>\n    init_db()\n  File \"/workspace/agents/game-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "file-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/file-agent/discord.py\", line 256, in <module>\n    init_db()\n  File \"/workspace/agents/file-agent/db.py\", line 17, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "fitness-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/fitness-agent/discord.py\", line 381, in <module>\n    init_db()\n  File \"/workspace/agents/fitness-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "quote-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/quote-agent/discord.py\", line 184, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/quote-agent/discord.py\", line 77, in handle_message\n    quote_id = add_quote(\n               ^^^^^^^^^^\n  File \"/workspace/agents/quote-agent/db.py\", line 48, in add_quote\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "feedback-agent",
+    "status": "skip",
+    "reason": "discord.py not found"
+  },
+  {
+    "name": "birthday-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/birthday-agent/discord.py\", line 334, in <module>\n    init_db()\n  File \"/workspace/agents/birthday-agent/db.py\", line 14, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "brainstorm-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/brainstorm-agent/discord.py\", line 157, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/brainstorm-agent/discord.py\", line 72, in handle_message\n    session_id = create_session(parsed['topic'])\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/brainstorm-agent/db.py\", line 55, in create_session\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "workout-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/workout-agent/discord.py\", line 377, in <module>\n    init_db()\n  File \"/workspace/agents/workout-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "reading-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/reading-agent/discord.py\", line 283, in <module>\n    init_db()\n  File \"/workspace/agents/reading-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "journal-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/journal-agent/discord.py\", line 412, in <module>\n    init_db()\n  File \"/workspace/agents/journal-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "project-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/project-agent/discord.py\", line 208, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/project-agent/discord.py\", line 108, in handle_message\n    project_id = add_project(parsed['name'], parsed['description'])\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/project-agent/db.py\", line 62, in add_project\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "rss-agent",
+    "status": "skip",
+    "reason": "discord.py not found"
+  },
+  {
+    "name": "memo-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/memo-agent/discord.py\", line 208, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/memo-agent/discord.py\", line 103, in handle_message\n    memo_id = add_memo(title, content, category, tags)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/memo-agent/db.py\", line 87, in add_memo\n    cursor.execute('INSERT OR IGNORE INTO categories (name) VALUES (?)', (category,))\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "subscription-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/subscription-agent/discord.py\", line 190, in <module>\n    init_db()\n  File \"/workspace/agents/subscription-agent/db.py\", line 14, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "sleep-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/sleep-agent/discord.py\", line 302, in <module>\n    init_db()\n  File \"/workspace/agents/sleep-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "automation-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/automation-agent/discord.py\", line 10, in <module>\n    db = AutomationDB()\n         ^^^^^^^^^^^^^^\n  File \"/workspace/agents/automation-agent/db.py\", line 15, in __init__\n    self.init_db()\n  File \"/workspace/agents/automation-agent/db.py\", line 25, in init_db\n    conn = self.get_connection()\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/automation-agent/db.py\", line 19, in get_connection\n    conn = sqlite3.connect(self.db_path)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "mood-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/mood-agent/discord.py\", line 200, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/mood-agent/discord.py\", line 90, in handle_message\n    mood_id = add_mood(\n              ^^^^^^^^^\n  File \"/workspace/agents/mood-agent/db.py\", line 45, in add_mood\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "communication-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/communication-agent/discord.py\", line 219, in <module>\n    init_db()\n  File \"/workspace/agents/communication-agent/db.py\", line 15, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "analytics-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/analytics-agent/discord.py\", line 10, in <module>\n    db = AnalyticsDB()\n         ^^^^^^^^^^^^^\n  File \"/workspace/agents/analytics-agent/db.py\", line 15, in __init__\n    self.init_db()\n  File \"/workspace/agents/analytics-agent/db.py\", line 25, in init_db\n    conn = self.get_connection()\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/analytics-agent/db.py\", line 19, in get_connection\n    conn = sqlite3.connect(self.db_path)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "timer-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/timer-agent/discord.py\", line 184, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/timer-agent/discord.py\", line 83, in handle_message\n    timer_id = add_timer(parsed['name'], parsed['duration'])\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/timer-agent/db.py\", line 47, in add_timer\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "health-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/health-agent/discord.py\", line 221, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/health-agent/discord.py\", line 149, in handle_message\n    memo_id = add_exercise(\n              ^^^^^^^^^^^^^\n  File \"/workspace/agents/health-agent/db.py\", line 100, in add_exercise\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "team-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/team-agent/discord.py\", line 238, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/team-agent/discord.py\", line 96, in handle_message\n    parsed = parse_message(message)\n             ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/team-agent/discord.py\", line 14, in parse_message\n    return parse_add(add_match.group(1))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/team-agent/discord.py\", line 65, in parse_add\n    result['role'] = role_match.group(1).strip()\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'strip'\n"
+  },
+  {
+    "name": "bookmark-agent",
+    "status": "skip",
+    "reason": "discord.py not found"
+  },
+  {
+    "name": "movie-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/movie-agent/discord.py\", line 174, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/movie-agent/discord.py\", line 76, in handle_message\n    movie_id = add_movie(\n               ^^^^^^^^^^\n  File \"/workspace/agents/movie-agent/db.py\", line 57, in add_movie\n    cursor.execute('INSERT OR IGNORE INTO genres (name) VALUES (?)', (genre,))\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "stress-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/stress-agent/discord.py\", line 270, in <module>\n    init_db()\n  File \"/workspace/agents/stress-agent/db.py\", line 17, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "todo-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/todo-agent/discord.py\", line 247, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/todo-agent/discord.py\", line 136, in handle_message\n    todo_id = add_todo(\n              ^^^^^^^^^\n  File \"/workspace/agents/todo-agent/db.py\", line 57, in add_todo\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "learning-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/learning-agent/discord.py\", line 447, in <module>\n    init_db()\n  File \"/workspace/agents/learning-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "budget-expense-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/budget-expense-agent/discord.py\", line 324, in <module>\n    init_db()\n  File \"/workspace/agents/budget-expense-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "social-agent",
+    "status": "skip",
+    "reason": "discord.py not found"
+  },
+  {
+    "name": "habit-tracker-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/habit-tracker-agent/discord.py\", line 268, in <module>\n    init_db()\n  File \"/workspace/agents/habit-tracker-agent/db.py\", line 16, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "code-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/code-agent/discord.py\", line 189, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/code-agent/discord.py\", line 81, in handle_message\n    snippet_id = add_snippet(\n                 ^^^^^^^^^^^^\n  File \"/workspace/agents/code-agent/db.py\", line 54, in add_snippet\n    cursor.execute('INSERT OR IGNORE INTO languages (name) VALUES (?)', (language,))\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "anniversary-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/anniversary-agent/discord.py\", line 305, in <module>\n    init_db()\n  File \"/workspace/agents/anniversary-agent/db.py\", line 15, in init_db\n    conn = sqlite3.connect(DB_PATH)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: unable to open database file\n"
+  },
+  {
+    "name": "book-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/book-agent/discord.py\", line 176, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/book-agent/discord.py\", line 76, in handle_message\n    book_id = add_book(\n              ^^^^^^^^^\n  File \"/workspace/agents/book-agent/db.py\", line 58, in add_book\n    cursor.execute('INSERT OR IGNORE INTO genres (name) VALUES (?)', (genre,))\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "news-agent",
+    "status": "skip",
+    "reason": "discord.py not found"
+  },
+  {
+    "name": "reminder-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/reminder-agent/discord.py\", line 169, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/reminder-agent/discord.py\", line 106, in handle_message\n    reminder_id = add_reminder(\n                  ^^^^^^^^^^^^^\n  File \"/workspace/agents/reminder-agent/db.py\", line 44, in add_reminder\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  },
+  {
+    "name": "integration-agent",
+    "status": "skip",
+    "reason": "discord.py not found"
+  },
+  {
+    "name": "asset-agent",
+    "status": "error",
+    "error": "Traceback (most recent call last):\n  File \"/workspace/agents/asset-agent/discord.py\", line 154, in <module>\n    result = handle_message(msg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/agents/asset-agent/discord.py\", line 84, in handle_message\n    asset_id = add_asset(\n               ^^^^^^^^^^\n  File \"/workspace/agents/asset-agent/db.py\", line 59, in add_asset\n    cursor.execute('''\nsqlite3.OperationalError: attempt to write a readonly database\n"
+  }
+]

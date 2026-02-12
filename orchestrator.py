@@ -129,7 +129,7 @@ class AgentOrchestrator:
         with open(self.progress_file, 'w') as f:
             json.dump(self.progress, f, indent=2)
 
-    def get_next_batch(self, batch_size: int = 5) -> List[Dict]:
+    def get_next_batch(self, batch_size: int = 2) -> List[Dict]:
         """次のバッチを取得"""
         completed = set(self.progress['completed'])
         in_progress = [a['id'] for a in self.progress['subagents'].values() if a['status'] == 'running']

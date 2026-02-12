@@ -52,6 +52,22 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - `trash` > `rm` (recoverable beats gone forever)
 - When in doubt, ask.
 
+## Git ルール (必須)
+
+作業が完了したら、**必ず** git commit & push を行うこと。例外なし。
+
+```
+git add -A
+git commit -m "<type>: <what you did>"
+git push
+```
+
+- タイプ: feat, fix, docs, chore, refactor, test
+- 日本語メッセージ OK
+- ファイル作成・編集・削除など、ワークスペースに変更を加えたらすべて対象
+- memory/ の更新、HEARTBEAT.md の変更も含む
+- push に失敗したら原因を調べて対処すること (upstream 未設定なら `git push -u origin main`)
+
 ## External vs Internal
 
 **Safe to do freely:**

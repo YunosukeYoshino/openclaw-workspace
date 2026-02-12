@@ -140,7 +140,7 @@ def update_progress(status, agent_id, agent_name, subagent=None):
     with open(PROGRESS_FILE, 'w') as f:
         json.dump(data, f, indent=2)
 
-def get_next_batch(batch_size=5):
+def get_next_batch(batch_size=2):
     """次の開発バッチを取得"""
     with open(PROGRESS_FILE, 'r') as f:
         data = json.load(f)

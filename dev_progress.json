@@ -165,15 +165,34 @@
       "name": "integration-agent",
       "description": "統合管理",
       "completed_at": "2026-02-11T19:45:00"
+    },
+    {
+      "name": "energy-agent",
+      "description": "エネルギーレベル記録",
+      "completed_at": "2026-02-12T02:00:00"
+    },
+    {
+      "name": "stress-agent",
+      "description": "ストレスレベル記録",
+      "completed_at": "2026-02-12T02:00:00"
+    },
+    {
+      "name": "mood-tracker-agent",
+      "description": "気分トラッカー",
+      "completed_at": "2026-02-12T02:00:00"
+    },
+    {
+      "name": "gift-agent",
+      "description": "ギフト記録",
+      "completed_at": "2026-02-12T02:00:00"
+    },
+    {
+      "name": "clothing-agent",
+      "description": "服飾管理",
+      "completed_at": "2026-02-12T02:42:00"
     }
   ],
-  "in_progress": [
-    [62, "energy-agent", "エネルギーレベル記録", "daily energy tracking"],
-    [63, "stress-agent", "ストレスレベル記録", "stress tracking, management"],
-    [64, "mood-tracker-agent", "気分トラッカー", "mood patterns, triggers"],
-    [66, "gift-agent", "ギフト記録", "gifts given/received, ideas"],
-    [67, "clothing-agent", "服飾管理", "wardrobe, shopping, outfits"]
-  ],
+  "in_progress": [],
   "pending": [
     [68, "household-agent", "家事管理", "chores, maintenance, repairs"],
     [69, "garden-agent", "園芸記録", "plants, garden activities"],
