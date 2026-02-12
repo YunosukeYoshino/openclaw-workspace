@@ -220,6 +220,21 @@
       "name": "network-agent",
       "description": "ネットワーク管理 (WiFi, passwords, settings)",
       "completed_at": "2026-02-12T05:19:00.000000"
+    },
+    {
+      "name": "performance-agent",
+      "description": "パフォーマンス管理",
+      "completed_at": "2026-02-12T05:20:00.000000"
+    },
+    {
+      "name": "scale-agent",
+      "description": "スケール管理",
+      "completed_at": "2026-02-12T05:20:00.000000"
+    },
+    {
+      "name": "backup-schedule-agent",
+      "description": "バックアップスケジュール",
+      "completed_at": "2026-02-12T05:20:00.000000"
     }
   ],
   "in_progress": [
@@ -290,24 +305,6 @@
       "metrics, alerts"
     ],
     [
-      96,
-      "performance-agent",
-      "パフォーマンス管理",
-      "optimization, benchmarks"
-    ],
-    [
-      97,
-      "scale-agent",
-      "スケール管理",
-      "scaling, capacity planning"
-    ],
-    [
-      98,
-      "backup-schedule-agent",
-      "バックアップスケジュール",
-      "scheduled backups"
-    ],
-    [
       99,
       "cleanup-agent",
       "クリーニング管理",
@@ -322,7 +319,7 @@
   ],
   "subagents": {
     "agent-dev-70-77": {
-      "status": "running",
+      "status": "completed",
       "agent_ids": [
         70,
         71,
@@ -330,7 +327,8 @@
         76,
         77
       ],
-      "started_at": "2026-02-12T05:13:03.102613"
+      "started_at": "2026-02-12T05:13:03.102613",
+      "completed_at": "2026-02-12T05:13:03.102662"
     },
     "agent-dev-batch-1": {
       "status": "completed",
@@ -343,7 +341,17 @@
       ],
       "started_at": "2026-02-12T05:19:00.000000",
       "completed_at": "2026-02-12T05:19:00.000000"
+    },
+    "agent-dev-batch-2": {
+      "status": "completed",
+      "agent_names": [
+        "performance-agent",
+        "scale-agent",
+        "backup-schedule-agent"
+      ],
+      "started_at": "2026-02-12T05:20:00.000000",
+      "completed_at": "2026-02-12T05:20:00.000000"
     }
   },
-  "last_updated": "2026-02-12T05:19:00.000000"
+  "last_updated": "2026-02-12T05:20:00.000000"
 }
