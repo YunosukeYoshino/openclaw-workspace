@@ -1,0 +1,14 @@
+{
+  "project_id": "security-audit",
+  "project_name": "Security Audit",
+  "description": "セキュリティ監査の実施",
+  "type": "audit",
+  "priority": 1,
+  "version": "1.0.0",
+  "enabled": true,
+  "settings": {
+    "scan_frequency": "daily",
+    "notification_enabled": true,
+    "log_level": "INFO"
+  }
+}

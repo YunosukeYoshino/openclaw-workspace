@@ -1,0 +1,16 @@
+{
+  "project_id": "config-audit",
+  "project_name": "設定監査",
+  "audit_type": "config-audit",
+  "tasks": [
+    "環境変数チェック",
+    "設定ファイル監査",
+    "シークレット管理"
+  ],
+  "severity_levels": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ]
+}

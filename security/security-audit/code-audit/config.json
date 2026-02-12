@@ -1,0 +1,16 @@
+{
+  "project_id": "code-audit",
+  "project_name": "コード監査",
+  "audit_type": "code-audit",
+  "tasks": [
+    "静的解析",
+    "コードレビュー",
+    "脆弱性スキャン"
+  ],
+  "severity_levels": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "project_id": "compliance-audit",
+  "project_name": "コンプライアンス監査",
+  "audit_type": "compliance-audit",
+  "tasks": [
+    "GDPR",
+    "SOC2",
+    "ISO 27001"
+  ],
+  "severity_levels": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "project_id": "access-control-audit",
+  "project_name": "アクセス制御監査",
+  "audit_type": "access-control-audit",
+  "tasks": [
+    "パーミッションチェック",
+    "認証監査",
+    "認可監査"
+  ],
+  "severity_levels": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ]
+}

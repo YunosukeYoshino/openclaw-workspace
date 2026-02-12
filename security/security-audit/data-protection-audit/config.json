@@ -1,0 +1,16 @@
+{
+  "project_id": "data-protection-audit",
+  "project_name": "データ保護監査",
+  "audit_type": "data-protection-audit",
+  "tasks": [
+    "暗号化チェック",
+    "データバックアップ監査",
+    "GDPR準拠"
+  ],
+  "severity_levels": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ]
+}

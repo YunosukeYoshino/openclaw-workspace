@@ -1,0 +1,16 @@
+{
+  "project_id": "dependency-audit",
+  "project_name": "依存関係監査",
+  "audit_type": "dependency-audit",
+  "tasks": [
+    "脆弱性スキャン",
+    "ライセンスチェック",
+    "バージョン監査"
+  ],
+  "severity_levels": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ]
+}

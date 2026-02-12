@@ -1,0 +1,57 @@
+{
+  "started_at": "2026-02-12T16:15:20.509334",
+  "completed_at": "2026-02-12T16:43:32.692108",
+  "projects": {
+    "code-audit": {
+      "name": "コード監査",
+      "status": "completed",
+      "module_dir": "/workspace/security/security-audit/code-audit",
+      "completed_at": "2026-02-12T16:43:32.682086"
+    },
+    "config-audit": {
+      "name": "設定監査",
+      "status": "completed",
+      "module_dir": "/workspace/security/security-audit/config-audit",
+      "completed_at": "2026-02-12T16:43:32.684848"
+    },
+    "access-control-audit": {
+      "name": "アクセス制御監査",
+      "status": "completed",
+      "module_dir": "/workspace/security/security-audit/access-control-audit",
+      "completed_at": "2026-02-12T16:43:32.686547"
+    },
+    "dependency-audit": {
+      "name": "依存関係監査",
+      "status": "completed",
+      "module_dir": "/workspace/security/security-audit/dependency-audit",
+      "completed_at": "2026-02-12T16:43:32.687552"
+    },
+    "network-audit": {
+      "name": "ネットワーク監査",
+      "status": "completed",
+      "module_dir": "/workspace/security/security-audit/network-audit",
+      "completed_at": "2026-02-12T16:43:32.688188"
+    },
+    "data-protection-audit": {
+      "name": "データ保護監査",
+      "status": "completed",
+      "module_dir": "/workspace/security/security-audit/data-protection-audit",
+      "completed_at": "2026-02-12T16:43:32.689085"
+    },
+    "vulnerability-scan": {
+      "name": "脆弱性スキャン",
+      "status": "completed",
+      "module_dir": "/workspace/security/security-audit/vulnerability-scan",
+      "completed_at": "2026-02-12T16:43:32.690029"
+    },
+    "compliance-audit": {
+      "name": "コンプライアンス監査",
+      "status": "completed",
+      "module_dir": "/workspace/security/security-audit/compliance-audit",
+      "completed_at": "2026-02-12T16:43:32.691884"
+    }
+  },
+  "current_project": null,
+  "total_projects": 8,
+  "completed_count": 8
+}

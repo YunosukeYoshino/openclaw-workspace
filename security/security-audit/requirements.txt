@@ -1,0 +1,14 @@
+# Standard Library
+os
+json
+pathlib
+typing
+datetime
+re
+subprocess
+
+# Security (optional)
+# safety>=2.3.0
+# bandit>=1.7.0
+# pip-audit>=2.5.0
+# truffleHog3>=3.0.0

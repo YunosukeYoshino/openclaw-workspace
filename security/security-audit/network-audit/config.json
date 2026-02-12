@@ -1,0 +1,16 @@
+{
+  "project_id": "network-audit",
+  "project_name": "ネットワーク監査",
+  "audit_type": "network-audit",
+  "tasks": [
+    "ポートスキャン",
+    "ファイアウォールチェック",
+    "TLS監査"
+  ],
+  "severity_levels": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ]
+}
