@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 AI Agents Dashboard</h1>
+            <p class="subtitle">AIエージェント管理システム</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-agents">-</div>
+                <div class="stat-label">総エージェント数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="active-agents">-</div>
+                <div class="stat-label">稼働中</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="inactive-agents">-</div>
+                <div class="stat-label">停止中</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="error-agents">-</div>
+                <div class="stat-label">エラー</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <section class="agent-list">
+                <h2>エージェント一覧</h2>
+                <div id="agent-cards" class="agent-cards"></div>
+            </section>
+
+            <section class="agent-details">
+                <h2>詳細情報</h2>
+                <div id="detail-view" class="detail-view">
+                    <p class="empty-state">エージェントを選択してください</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+{
+  "start_time": "2026-02-12T11:12:00.000000",
+  "project": "Web Dashboard Development",
+  "completed": [
+    {
+      "id": "dash-001",
+      "name": "dashboard-structure",
+      "description": "ダッシュボードの基本構造作成（HTML/CSS/JS）",
+      "completed_at": "2026-02-12T11:14:23.370731"
+    },
+    {
+      "id": "dash-006",
+      "name": "dashboard-api",
+      "description": "バックエンドAPI開発",
+      "completed_at": "2026-02-12T11:14:23.370774"
+    }
+  ],
+  "in_progress": [],
+  "pending": [
+    {
+      "id": "dash-002",
+      "name": "agent-status-display",
+      "description": "エージェントステータスの表示機能（実装済み）",
+      "status": "pending"
+    },
+    {
+      "id": "dash-003",
+      "name": "data-visualization",
+      "description": "データ可視化（チャート、グラフ）",
+      "status": "pending"
+    },
+    {
+      "id": "dash-004",
+      "name": "agent-details",
+      "description": "各エージェントの詳細表示（実装済み）",
+      "status": "pending"
+    },
+    {
+      "id": "dash-005",
+      "name": "management-ui",
+      "description": "管理画面（エージェントの起動/停止など）（実装済み）",
+      "status": "pending"
+    }
+  ],
+  "last_updated": "2026-02-12T11:14:23.370796",
+  "project_status": "in_progress"
+}
