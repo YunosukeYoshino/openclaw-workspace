@@ -1,0 +1,61 @@
+{
+  "started_at": "2026-02-12T14:17:29.143148",
+  "completed_at": "2026-02-12T14:17:29.154753",
+  "total_tasks": 15,
+  "completed_tasks": 15,
+  "failed_tasks": [],
+  "tasks": {
+    "api_docs": {
+      "description": "APIドキュメント生成",
+      "total": 5,
+      "completed": 5,
+      "tasks": [
+        "api-core - コアAPIドキュメント",
+        "api-agents - エージェントAPIドキュメント",
+        "api-integrations - 統合APIドキュメント",
+        "api-dashboard - ダッシュボードAPIドキュメント",
+        "api-workflow - ワークフローAPIドキュメント"
+      ]
+    },
+    "architecture_docs": {
+      "description": "アーキテクチャドキュメント作成",
+      "total": 3,
+      "completed": 3,
+      "tasks": [
+        "arch-overview - システムアーキテクチャ概要",
+        "arch-components - コンポーネント詳細",
+        "arch-dataflow - データフロー図"
+      ]
+    },
+    "dev_guide": {
+      "description": "開発者ガイド作成",
+      "total": 3,
+      "completed": 3,
+      "tasks": [
+        "dev-setup - 開発環境セットアップ",
+        "dev-coding - コーディング規約",
+        "dev-testing - テストガイド"
+      ]
+    },
+    "troubleshooting": {
+      "description": "トラブルシューティングガイド作成",
+      "total": 2,
+      "completed": 2,
+      "tasks": [
+        "ts-common - 一般的な問題と解決策",
+        "ts-deploy - デプロイ時の問題"
+      ]
+    },
+    "faq": {
+      "description": "FAQ作成",
+      "total": 2,
+      "completed": 2,
+      "tasks": [
+        "faq-general - 一般的な質問",
+        "faq-technical - 技術的な質問"
+      ]
+    }
+  },
+  "updated_at": "2026-02-12T14:17:29.154757",
+  "completion_percentage": 100.0
+}
