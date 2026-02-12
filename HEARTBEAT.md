@@ -2,9 +2,9 @@
 
 ## Checks (rotate through)
 
-- [ ] memory/ の今日のファイルを確認・更新 (memory/YYYY-MM-DD.md)
-- [ ] workspace の git status を確認。変更があれば commit & push
-- [ ] MEMORY.md が最新か確認。古い情報があれば整理
+- [x] memory/ の今日のファイルを確認・更新 (memory/YYYY-MM-DD.md)
+- [x] workspace の git status を確認。変更があれば commit & push
+- [x] MEMORY.md が最新か確認。古い情報があれば整理
 
 ## Completed Projects (2026-02-12)
 
