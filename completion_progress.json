@@ -53,5 +53,726 @@
     }
   },
   "timestamp": "2026-02-12T10:17:00Z",
-  "errors": []
+  "errors": [],
+  "completed": [
+    "achievement-agent",
+    "analytics-agent",
+    "anniversary-agent",
+    "api-agent",
+    "archive-agent",
+    "asset-agent",
+    "assistant-agent",
+    "audio-agent",
+    "audio-summarizer",
+    "automation-agent",
+    "backup-agent",
+    "backup-schedule-agent",
+    "birthday-agent",
+    "book-agent",
+    "bookmark-agent",
+    "brainstorm-agent",
+    "budget-agent",
+    "budget-expense-agent",
+    "calendar-agent",
+    "calendar-event-agent",
+    "calendar-integration-agent",
+    "car-agent",
+    "checklist-agent",
+    "cleanup-agent",
+    "clipboard-agent",
+    "clothing-agent",
+    "cloud-agent",
+    "code-agent",
+    "communication-agent",
+    "cooking-agent",
+    "crypto-agent",
+    "debt-agent",
+    "debug-agent",
+    "deploy-agent",
+    "device-agent",
+    "diet-agent",
+    "dream-agent",
+    "email-agent",
+    "energy-agent",
+    "event-agent",
+    "feedback-agent",
+    "file-agent",
+    "finance-agent",
+    "fitness-agent",
+    "game-agent",
+    "garden-agent",
+    "gift-agent",
+    "goal-agent",
+    "gratitude-agent",
+    "habit-agent",
+    "habit-tracker-agent",
+    "health-agent",
+    "holiday-agent",
+    "household-agent",
+    "hydration-agent",
+    "insurance-agent",
+    "integration-agent",
+    "inventory-agent",
+    "investment-agent",
+    "journal-agent",
+    "language-agent",
+    "learning-agent",
+    "log-agent",
+    "medication-agent",
+    "meditation-agent",
+    "memo-agent",
+    "message-agent",
+    "monitor-agent",
+    "monitoring-agent",
+    "mood-agent",
+    "mood-tracker-agent",
+    "movie-agent",
+    "music-agent",
+    "network-agent",
+    "news-agent",
+    "newsfeed-agent",
+    "notification-agent",
+    "password-agent",
+    "performance-agent",
+    "pet-agent",
+    "phone-agent",
+    "plants-agent",
+    "project-agent",
+    "quote-agent",
+    "reading-agent",
+    "recipe-agent",
+    "reminder-agent",
+    "report-agent",
+    "rss-agent",
+    "savings-agent",
+    "scale-agent",
+    "search-agent",
+    "security-agent",
+    "shift-agent",
+    "shopping-agent",
+    "skills-agent",
+    "sleep-agent",
+    "social-agent",
+    "software-agent",
+    "stress-agent",
+    "study-agent",
+    "subscription-agent",
+    "support-agent",
+    "survey-agent",
+    "tax-agent",
+    "team-agent",
+    "test-agent",
+    "ticket-agent",
+    "timer-agent",
+    "todo-agent",
+    "translate-agent",
+    "travel-agent",
+    "voice-agent",
+    "watchlist-agent",
+    "weather-agent",
+    "weather-log-agent",
+    "webhook-agent",
+    "wishlist-agent",
+    "workout-agent"
+  ],
+  "in_progress": [
+    "budget-expense-agent",
+    "calendar-agent",
+    "checklist-agent",
+    "cleanup-agent",
+    "code-agent"
+  ],
+  "pending": [
+    {
+      "name": "budget-expense-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "budget expense agent\u306f\u3001budgetexpense\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "calendar-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "calendar agent\u306f\u3001calendar\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "checklist-agent",
+      "missing": [
+        "agent.py"
+      ],
+      "description": "\u30c1\u30a7\u30c3\u30af\u30ea\u30b9\u30c8\u306e\u4f5c\u6210\u3001\u9805\u76ee\u306e\u7ba1\u7406\u3001\u9032\u6357\u8ffd\u8de1\u3092\u884c\u3046\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3002"
+    },
+    {
+      "name": "cleanup-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "A Discord bot agent for managing scheduled cleanup tasks, file retention policies, and automated disk maintenance."
+    },
+    {
+      "name": "code-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "code agent\u306f\u3001code\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "communication-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "communication agent\u306f\u3001communication\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "cooking-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "cooking agent\u306f\u3001cooking\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "event-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "event agent\u306f\u3001event\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "file-agent",
+      "missing": [
+        "agent.py"
+      ],
+      "description": "\u30d5\u30a1\u30a4\u30eb\u306e\u767b\u9332\u30fb\u691c\u7d22\u30fb\u7ba1\u7406\u3092\u7c21\u5358\u306b\u3067\u304d\u308b\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3002"
+    },
+    {
+      "name": "finance-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "finance agent\u306f\u3001finance\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "fitness-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "fitness agent\u306f\u3001fitness\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "game-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "game agent\u306f\u3001game\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "garden-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "garden agent\u306f\u3001garden\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "habit-tracker-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "habit tracker \u30c8\u30e9\u30c3\u30ab\u30fc\u306f\u3001habit-tracker\u306e\u8a18\u9332\u3068\u8ffd\u8de1\u3092\u7ba1\u7406\u3059\u308bAI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "health-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "health agent\u306f\u3001health\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "holiday-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "holiday agent\u306f\u3001holiday\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "hydration-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "hydration agent\u306f\u3001hydration\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "insurance-agent",
+      "missing": [
+        "agent.py"
+      ],
+      "description": "Discord-based insurance agent with SQLite database and natural language processing. Supports both Japanese and English languages."
+    },
+    {
+      "name": "inventory-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "inventory agent\u306f\u3001inventory\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "investment-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "investment agent\u306f\u3001investment\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "journal-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "journal agent\u306f\u3001journal\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "language-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "language agent\u306f\u3001language\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "learning-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "learning agent\u306f\u3001learning\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "medication-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "medication agent\u306f\u3001medication\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "meditation-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "Meditation Agent helps you track your meditation sessions, techniques, and progress."
+    },
+    {
+      "name": "memo-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8100\u500b\u306e2\u3064\u76ee\uff01"
+    },
+    {
+      "name": "message-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "\u30e1\u30c3\u30bb\u30fc\u30b8\u3068\u30b3\u30df\u30e5\u30cb\u30b1\u30fc\u30b7\u30e7\u30f3\u306e\u7ba1\u7406\u3092\u62c5\u5f53\u3059\u308bAI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3002\u30c6\u30ad\u30b9\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u3001\u901a\u4fe1\u30ed\u30b0\u3001\u30b3\u30f3\u30bf\u30af\u30c8\u60c5\u5831\u3092\u8ffd\u8de1\u3057\u307e\u3059\u3002"
+    },
+    {
+      "name": "monitor-agent",
+      "missing": [
+        "agent.py"
+      ],
+      "description": "\u30e1\u30c8\u30ea\u30af\u30b9\u3068\u30a2\u30e9\u30fc\u30c8\u7ba1\u7406\u306e\u305f\u3081\u306eDiscord\u30dc\u30c3\u30c8"
+    },
+    {
+      "name": "mood-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "mood agent\u306f\u3001mood\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "mood-tracker-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "mood tracker \u30c8\u30e9\u30c3\u30ab\u30fc\u306f\u3001mood-tracker\u306e\u8a18\u9332\u3068\u8ffd\u8de1\u3092\u7ba1\u7406\u3059\u308bAI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "movie-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "movie agent\u306f\u3001movie\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "music-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "music agent\u306f\u3001music\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "network-agent",
+      "missing": [
+        "agent.py"
+      ],
+      "description": "Network management Discord bot with NLP-based message processing."
+    },
+    {
+      "name": "news-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "news agent\u306f\u3001news\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "newsfeed-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "newsfeed agent\u306f\u3001newsfeed\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "performance-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "\u30d1\u30d5\u30a9\u30fc\u30de\u30f3\u30b9\u7ba1\u7406\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8 - \u6700\u9069\u5316\u3068\u30d9\u30f3\u30c1\u30de\u30fc\u30af\u8ffd\u8de1"
+    },
+    {
+      "name": "pet-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "pet agent\u306f\u3001pet\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "plants-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "plants agent\u306f\u3001plants\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "project-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "project agent\u306f\u3001project\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "quote-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "quote agent\u306f\u3001quote\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "reading-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "Reading Agent helps you track your reading progress, manage books, and keep notes about what you've read."
+    },
+    {
+      "name": "recipe-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "recipe agent\u306f\u3001recipe\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "reminder-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "reminder agent\u306f\u3001reminder\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "report-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt",
+        "db.py"
+      ],
+      "description": "report agent\u306f\u3001report\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "savings-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "savings agent\u306f\u3001savings\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "scale-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "\u30b9\u30b1\u30fc\u30eb\u7ba1\u7406\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8 - \u30b9\u30b1\u30fc\u30ea\u30f3\u30b0\u3068\u30ad\u30e3\u30d1\u30b7\u30c6\u30a3\u30d7\u30e9\u30f3\u30cb\u30f3\u30b0"
+    },
+    {
+      "name": "search-agent",
+      "missing": [
+        "agent.py"
+      ],
+      "description": "\u30a6\u30a7\u30d6\u691c\u7d22\u30fb\u30ed\u30fc\u30ab\u30eb\u30d5\u30a1\u30a4\u30eb\u691c\u7d22\u30fb\u691c\u7d22\u5c65\u6b74\u7ba1\u7406\u3092\u7d71\u5408\u3057\u305f\u691c\u7d22\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3002"
+    },
+    {
+      "name": "shift-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "shift agent\u306f\u3001shift\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "shopping-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "shopping agent\u306f\u3001shopping\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "skills-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "skills agent\u306f\u3001skills\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "sleep-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "Sleep Agent helps you track your sleep patterns, sleep quality, and maintain a sleep journal."
+    },
+    {
+      "name": "software-agent",
+      "missing": [
+        "agent.py"
+      ],
+      "description": "Discord-based software management agent with SQLite database and NLP-based message processing."
+    },
+    {
+      "name": "stress-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "stress agent\u306f\u3001stress\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "study-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "study agent\u306f\u3001study\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "subscription-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "subscription agent\u306f\u3001subscription\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "tax-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "SQLite \u30d9\u30fc\u30b9\u306e\u7a0e\u91d1\u8a18\u9332\u7ba1\u7406\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3002\u81ea\u7136\u8a00\u8a9e\u89e3\u6790\u306b\u3088\u308b\u30e1\u30c3\u30bb\u30fc\u30b8\u51e6\u7406\u3092\u30b5\u30dd\u30fc\u30c8\u3057\u3001\u65e5\u672c\u8a9e\u3068\u82f1\u8a9e\u306b\u5bfe\u5fdc\u3057\u3066\u3044\u307e\u3059\u3002"
+    },
+    {
+      "name": "team-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "team agent\u306f\u3001team\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "test-agent",
+      "missing": [
+        "agent.py"
+      ],
+      "description": "\u30c6\u30b9\u30c8\u30b1\u30fc\u30b9\u3068\u30c6\u30b9\u30c8\u7d50\u679c\u7ba1\u7406\u306e\u305f\u3081\u306eDiscord\u30dc\u30c3\u30c8"
+    },
+    {
+      "name": "ticket-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "ticket agent\u306f\u3001ticket\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "timer-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "timer agent\u306f\u3001timer\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "todo-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "todo agent\u306f\u3001todo\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "translate-agent",
+      "missing": [
+        "agent.py"
+      ],
+      "description": "\u591a\u8a00\u8a9e\u7ffb\u8a33\u30fb\u7ffb\u8a33\u5c65\u6b74\u7ba1\u7406\u30fb\u5b9a\u578b\u6587\u7ba1\u7406\u6a5f\u80fd\u3092\u5099\u3048\u305f\u7ffb\u8a33\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3002"
+    },
+    {
+      "name": "travel-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "travel agent\u306f\u3001travel\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "voice-agent",
+      "missing": [
+        "agent.py"
+      ],
+      "description": "\u97f3\u58f0\u8a8d\u8b58\u30fb\u97f3\u58f0\u5408\u6210\u30fb\u97f3\u58f0\u30b3\u30de\u30f3\u30c9\u7ba1\u7406\u6a5f\u80fd\u3092\u5099\u3048\u305f\u97f3\u58f0\u30a2\u30b7\u30b9\u30bf\u30f3\u30c8\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3002"
+    },
+    {
+      "name": "watchlist-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "watchlist agent\u306f\u3001watchlist\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "weather-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "weather agent\u306f\u3001weather\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "weather-log-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "weather log \u30ed\u30b0\u306f\u3001weatherlog\u306e\u30ed\u30b0\u3092\u8a18\u9332\u30fb\u7ba1\u7406\u3059\u308bAI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "webhook-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "Webhook URL\u306e\u767b\u9332\u30fb\u7ba1\u7406\u3001\u30a4\u30d9\u30f3\u30c8\u30ed\u30b0\u8a18\u9332\u3001\u8a2d\u5b9a\u306e\u66f4\u65b0\u30fb\u524a\u9664\u3001\u5c65\u6b74\u7167\u4f1a\u3092\u884c\u3046\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    },
+    {
+      "name": "wishlist-agent",
+      "missing": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "description": "wishlist agent\u306f\u3001wishlist\u306e\u7ba1\u7406\u3068\u8ffd\u8de1\u3092\u884c\u3046AI\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u3067\u3059\u3002"
+    }
+  ],
+  "subagents": {
+    "completion-budget-expense-agent-d5186839": {
+      "status": "running",
+      "agent_name": "budget-expense-agent",
+      "missing_files": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "started_at": "2026-02-12T10:45:06.413035"
+    },
+    "completion-calendar-agent-33901dd8": {
+      "status": "running",
+      "agent_name": "calendar-agent",
+      "missing_files": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "started_at": "2026-02-12T10:45:06.413698"
+    },
+    "completion-checklist-agent-54da25f1": {
+      "status": "running",
+      "agent_name": "checklist-agent",
+      "missing_files": [
+        "agent.py"
+      ],
+      "started_at": "2026-02-12T10:45:06.414634"
+    },
+    "completion-cleanup-agent-c7f56050": {
+      "status": "running",
+      "agent_name": "cleanup-agent",
+      "missing_files": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "started_at": "2026-02-12T10:45:06.415475"
+    },
+    "completion-code-agent-79dd8a55": {
+      "status": "running",
+      "agent_name": "code-agent",
+      "missing_files": [
+        "agent.py",
+        "requirements.txt"
+      ],
+      "started_at": "2026-02-12T10:45:06.416186"
+    }
+  },
+  "history": [],
+  "last_updated": "2026-02-12T10:45:06.416191"
 }
