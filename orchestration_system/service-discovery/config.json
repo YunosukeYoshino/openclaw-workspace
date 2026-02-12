@@ -1,0 +1,7 @@
+{
+  "task_id": "service-discovery",
+  "task_name": "Service Discovery",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

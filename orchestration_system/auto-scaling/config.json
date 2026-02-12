@@ -1,0 +1,7 @@
+{
+  "task_id": "auto-scaling",
+  "task_name": "Auto-Scaling",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

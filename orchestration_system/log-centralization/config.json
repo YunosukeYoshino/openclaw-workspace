@@ -1,0 +1,7 @@
+{
+  "task_id": "log-centralization",
+  "task_name": "Log Centralization",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

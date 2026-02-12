@@ -1,0 +1,7 @@
+{
+  "task_id": "api-gateway",
+  "task_name": "API Gateway",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

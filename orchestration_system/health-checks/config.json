@@ -1,0 +1,7 @@
+{
+  "task_id": "health-checks",
+  "task_name": "Health Checks",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

@@ -1,0 +1,7 @@
+{
+  "task_id": "system-integration",
+  "task_name": "System Integration",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

@@ -1,0 +1,7 @@
+{
+  "task_id": "backup-automation",
+  "task_name": "Backup Automation",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

@@ -1,0 +1,7 @@
+{
+  "task_id": "notification-system",
+  "task_name": "Notification System",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

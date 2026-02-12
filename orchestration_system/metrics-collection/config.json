@@ -1,0 +1,7 @@
+{
+  "task_id": "metrics-collection",
+  "task_name": "Metrics Collection",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}
