@@ -1,0 +1,704 @@
+#!/usr/bin/env python3
+"""
+Monitor Agent - Discord Integration
+Natural language processing for monitoring management
+"""
+
+import discord
+from discord.ext import commands
+import sqlite3
+from pathlib import Path
+import json
+from datetime import datetime, timedelta
+import re
+
+from db import (
+    init_db, create_service, get_services, delete_service,
+    record_metric, get_metrics, delete_metric,
+    create_alert, get_alerts, delete_alert, trigger_alert, get_alert_triggers, acknowledge_trigger,
+    record_health_check, get_health_checks, delete_health_check, aggregate_metrics,
+    create_incident, update_incident, delete_incident, get_incidents,
+    create_dashboard, get_dashboards, delete_dashboard, add_widget, get_widgets, delete_widget,
+    get_monitoring_summary
+)
+
+# Initialize database
+DB_PATH = Path(__file__).parent / "monitor.db"
+if not DB_PATH.exists():
+    init_db()
+
+# Discord bot setup
+intents = discord.Intents.default()
+intents.message_content = True
+bot = commands.Bot(command_prefix='!', intents=intents)
+
+# Natural language patterns
+PATTERNS = {
+    # Service operations
+    r'サービス作成|サービス追加|create.*service|new.*service': 'create_service',
+    r'サービス一覧|service|list.*service': 'list_services',
+
+    # Metric operations
+    r'メトリック記録|記録.*metric|record.*metric': 'record_metric',
+    r'メトリック|metric|list.*metric': 'list_metrics',
+
+    # Alert operations
+    r'アラート作成|アラート追加|create.*alert|new.*alert': 'create_alert',
+    r'アラート一覧|alert.*list|alerts': 'list_alerts',
+    r'アラート履歴|alert.*history|triggered.*alert': 'alert_history',
+    r'アラート承認|acknowledge.*alert': 'acknowledge_alert',
+
+    # Health checks
+    r'ヘルスチェック|health.*check': 'health_checks',
+
+    # Incident operations
+    r'インシデント作成|incident.*create': 'create_incident',
+    r'インシデント一覧|incident.*list|incidents': 'list_incidents',
+    r'インシデント解決|incident.*resolve': 'resolve_incident',
+
+    # Dashboard operations
+    r'ダッシュボード作成|create.*dashboard': 'create_dashboard',
+    r'ダッシュボード一覧|dashboard.*list|dashboards': 'list_dashboards',
+
+    # Summary
+    r'モニタリング概要|monitoring.*summary|summary': 'monitoring_summary',
+
+    # Delete operations
+    r'サービス削除|delete.*service|remove.*service': 'delete_service',
+    r'メトリック削除|delete.*metric|remove.*metric': 'delete_metric',
+    r'アラート削除|delete.*alert|remove.*alert': 'delete_alert',
+    r'ヘルスチェック削除|delete.*health|remove.*health': 'delete_health_check',
+    r'インシデント削除|delete.*incident|remove.*incident': 'delete_incident',
+    r'ダッシュボード削除|delete.*dashboard|remove.*dashboard': 'delete_dashboard',
+    r'ウィジェット削除|delete.*widget|remove.*widget': 'delete_widget',
+
+    # Help
+    r'ヘルプ|使い方|help': 'help',
+}
+
+def parse_message(message):
+    """Parse natural language message to extract intent and parameters"""
+    message_lower = message.lower()
+
+    for pattern, intent in PATTERNS.items():
+        if re.search(pattern, message_lower, re.IGNORECASE):
+            return intent
+
+    return None
+
+def extract_params(message, intent):
+    """Extract parameters from message based on intent"""
+    params = {}
+
+    if intent == 'create_service':
+        # Extract name and type
+        parts = message.split('"')
+        if len(parts) >= 2:
+            params['name'] = parts[1]
+        if 'api' in message.lower():
+            params['service_type'] = 'api'
+        elif 'database|db' in message.lower():
+            params['service_type'] = 'database'
+        elif 'cache|redis' in message.lower():
+            params['service_type'] = 'cache'
+        elif 'queue' in message.lower():
+            params['service_type'] = 'queue'
+
+    elif intent == 'record_metric':
+        # Extract metric name and value
+        match = re.search(r'([a-z_]+)\s*[:\s]*([\d.]+)', message.lower())
+        if match:
+            params['metric_name'] = match.group(1)
+            params['value'] = float(match.group(2))
+
+    elif intent == 'create_alert':
+        # Extract alert name, metric, threshold
+        match = re.search(r'"([^"]+)"', message)
+        if match:
+            params['name'] = match.group(1)
+        threshold_match = re.search(r'threshold\s*[:\s]*([\d.]+)', message.lower())
+        if threshold_match:
+            params['threshold'] = float(threshold_match.group(1))
+
+    elif intent == 'acknowledge_alert':
+        # Extract trigger ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['trigger_id'] = int(match.group(1))
+
+    elif intent == 'resolve_incident':
+        # Extract incident ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['incident_id'] = int(match.group(1))
+
+    elif intent == 'create_incident':
+        # Extract title
+        match = re.search(r'"([^"]+)"', message)
+        if match:
+            params['title'] = match.group(1)
+        if 'critical' in message.lower():
+            params['severity'] = 'critical'
+
+    elif intent == 'create_dashboard':
+        # Extract name
+        match = re.search(r'"([^"]+)"', message)
+        if match:
+            params['name'] = match.group(1)
+
+    elif intent == 'delete_service':
+        # Extract service ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['service_id'] = int(match.group(1))
+
+    elif intent == 'delete_metric':
+        # Extract metric ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['metric_id'] = int(match.group(1))
+
+    elif intent == 'delete_alert':
+        # Extract alert ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['alert_id'] = int(match.group(1))
+
+    elif intent == 'delete_health_check':
+        # Extract health check ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['health_check_id'] = int(match.group(1))
+
+    elif intent == 'delete_incident':
+        # Extract incident ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['incident_id'] = int(match.group(1))
+
+    elif intent == 'delete_dashboard':
+        # Extract dashboard ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['dashboard_id'] = int(match.group(1))
+
+    elif intent == 'delete_widget':
+        # Extract widget ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['widget_id'] = int(match.group(1))
+
+    return params
+
+async def create_service_handler(ctx, params):
+    """Handle service creation"""
+    if 'name' not in params:
+        await ctx.send('❌ サービス名を指定してください。例: サービス作成 "API Service" api')
+        return
+
+    service_type = params.get('service_type', 'api')
+    service_id = create_service(params['name'], service_type)
+    await ctx.send(f'✅ サービスを作成しました (ID: {service_id}): {params["name"]} ({service_type})')
+
+async def list_services_handler(ctx, params):
+    """Handle listing services"""
+    services = get_services()
+
+    if not services:
+        await ctx.send('📋 サービスがありません')
+        return
+
+    embed = discord.Embed(title='🖥️ サービス一覧', color=discord.Color.blue())
+
+    for svc in services:
+        type_emoji = {'api': '🌐', 'database': '🗄️', 'cache': '⚡', 'queue': '📬', 'worker': '👷', 'external': '🔗'}.get(svc['type'], '❓')
+        health = get_health_checks(service_id=svc['id'], limit=1)
+        status_emoji = {'healthy': '✅', 'unhealthy': '❌', 'degraded': '⚠️', 'unknown': '⚪'}.get(health[0]['status'] if health else 'unknown', '⚪')
+
+        embed.add_field(
+            name=f"{status_emoji} {type_emoji} ID {svc['id']}: {svc['name']}",
+            value=f"Type: {svc['type']} | Environment: {svc.get('environment', 'N/A')}",
+            inline=False
+        )
+
+    await ctx.send(embed=embed)
+
+async def record_metric_handler(ctx, params):
+    """Handle recording a metric"""
+    if 'metric_name' not in params or 'value' not in params:
+        await ctx.send('❌ メトリック名と値を指定してください。例: メトリック記録 cpu_usage 75.5')
+        return
+
+    record_metric(params['metric_name'], params['value'])
+    await ctx.send(f'📊 メトリックを記録しました: {params["metric_name"]} = {params["value"]}')
+
+async def list_metrics_handler(ctx, params):
+    """Handle listing metrics"""
+    metrics = get_metrics(limit=50)
+
+    if not metrics:
+        await ctx.send('📋 メトリックがありません')
+        return
+
+    embed = discord.Embed(title='📊 最近のメトリック', color=discord.Color.green())
+
+    for metric in metrics[:15]:
+        timestamp = datetime.fromisoformat(metric['timestamp']).strftime('%H:%M:%S')
+        embed.add_field(
+            name=f"{metric['metric_name']}",
+            value=f"{metric['value']} {metric.get('unit', '')} | {timestamp}",
+            inline=True
+        )
+
+    await ctx.send(embed=embed)
+
+async def create_alert_handler(ctx, params):
+    """Handle alert creation"""
+    if 'name' not in params:
+        await ctx.send('❌ アラート名を指定してください。例: アラート作成 "High CPU" threshold 80')
+        return
+
+    threshold = params.get('threshold', 100)
+    alert_id = create_alert(params['name'], 'cpu_usage', threshold, severity='warning')
+    await ctx.send(f'🚨 アラートを作成しました (ID: {alert_id}): {params["name"]} (threshold: {threshold})')
+
+async def list_alerts_handler(ctx, params):
+    """Handle listing alerts"""
+    alerts = get_alerts()
+
+    if not alerts:
+        await ctx.send('📋 アラートがありません')
+        return
+
+    embed = discord.Embed(title='🚨 アラート一覧', color=discord.Color.red())
+
+    for alert in alerts:
+        severity_emoji = {'info': 'ℹ️', 'warning': '⚠️', 'error': '❌', 'critical': '🔴'}.get(alert['severity'], '⚪')
+        last_triggered = datetime.fromisoformat(alert['last_triggered']).strftime('%Y-%m-%d %H:%M') if alert.get('last_triggered') else 'Never'
+
+        embed.add_field(
+            name=f"{severity_emoji} ID {alert['id']}: {alert['name']}",
+            value=f"Metric: {alert['metric_name']} | Threshold: {alert['threshold']}\nTriggered: {last_triggered} | Count: {alert['trigger_count']}",
+            inline=False
+        )
+
+    await ctx.send(embed=embed)
+
+async def alert_history_handler(ctx, params):
+    """Handle showing alert history"""
+    triggers = get_alert_triggers(limit=20)
+
+    if not triggers:
+        await ctx.send('📋 アラート履歴がありません')
+        return
+
+    embed = discord.Embed(title='📜 アラート履歴', color=discord.Color.orange())
+
+    for trigger in triggers[:10]:
+        severity_emoji = {'info': 'ℹ️', 'warning': '⚠️', 'error': '❌', 'critical': '🔴'}.get(trigger['severity'], '⚪')
+        triggered_at = datetime.fromisoformat(trigger['triggered_at']).strftime('%Y-%m-%d %H:%M')
+        status = '✅' if trigger.get('acknowledged') else '⏳'
+
+        embed.add_field(
+            name=f"{status} {severity_emoji} Trigger {trigger['id']}",
+            value=f"Alert ID: {trigger['alert_id']} | Value: {trigger['actual_value']}\nTime: {triggered_at}",
+            inline=False
+        )
+
+    await ctx.send(embed=embed)
+
+async def acknowledge_alert_handler(ctx, params):
+    """Handle acknowledging an alert"""
+    if 'trigger_id' not in params:
+        await ctx.send('❌ トリガーIDを指定してください。例: アラート承認 ID: 123')
+        return
+
+    acknowledge_trigger(params['trigger_id'], ctx.author.name)
+    await ctx.send(f'✅ アラートを承認しました (Trigger ID: {params["trigger_id"]})')
+
+async def health_checks_handler(ctx, params):
+    """Handle showing health checks"""
+    checks = get_health_checks(limit=30)
+
+    if not checks:
+        await ctx.send('📋 ヘルスチェックがありません')
+        return
+
+    embed = discord.Embed(title='💚 ヘルスチェック', color=discord.Color.green())
+
+    healthy = sum(1 for c in checks if c['status'] == 'healthy')
+    unhealthy = sum(1 for c in checks if c['status'] == 'unhealthy')
+    degraded = sum(1 for c in checks if c['status'] == 'degraded')
+
+    embed.add_field(name='Summary', value=f'✅ Healthy: {healthy} | ⚠️ Degraded: {degraded} | ❌ Unhealthy: {unhealthy}', inline=False)
+
+    for check in checks[:10]:
+        service_name = f"Service {check['service_id']}"  # Simplified
+        response_time = check.get('response_time_ms', 0)
+        status_emoji = {'healthy': '✅', 'unhealthy': '❌', 'degraded': '⚠️', 'unknown': '⚪'}.get(check['status'], '⚪')
+        checked_at = datetime.fromisoformat(check['checked_at']).strftime('%H:%M:%S')
+
+        embed.add_field(
+            name=f"{status_emoji} {service_name} ({check['check_type']})",
+            value=f"Response: {response_time}ms | Checked: {checked_at}",
+            inline=False
+        )
+
+    await ctx.send(embed=embed)
+
+async def create_incident_handler(ctx, params):
+    """Handle incident creation"""
+    if 'title' not in params:
+        await ctx.send('❌ タイトルを指定してください。例: インシデント作成 "API Outage" critical')
+        return
+
+    severity = params.get('severity', 'major')
+    incident_id = create_incident(params['title'], severity=severity, created_by=ctx.author.name)
+    await ctx.send(f'🚨 インシデントを作成しました (ID: {incident_id}): {params["title"]} ({severity})')
+
+async def list_incidents_handler(ctx, params):
+    """Handle listing incidents"""
+    incidents = get_incidents(limit=20)
+
+    if not incidents:
+        await ctx.send('📋 インシデントがありません')
+        return
+
+    embed = discord.Embed(title='🚨 インシデント一覧', color=discord.Color.red())
+
+    for incident in incidents:
+        severity_emoji = {'minor': '🟡', 'major': '🟠', 'critical': '🔴'}.get(incident['severity'], '⚪')
+        status_emoji = {'open': '📌', 'investigating': '🔍', 'resolved': '✅', 'closed': '📦'}.get(incident['status'], '⚪')
+        detected_at = datetime.fromisoformat(incident['detected_at']).strftime('%Y-%m-%d %H:%M')
+
+        embed.add_field(
+            name=f"{status_emoji} {severity_emoji} ID {incident['id']}: {incident['title']}",
+            value=f"Status: {incident['status']} | Detected: {detected_at}",
+            inline=False
+        )
+
+    await ctx.send(embed=embed)
+
+async def resolve_incident_handler(ctx, params):
+    """Handle resolving an incident"""
+    if 'incident_id' not in params:
+        await ctx.send('❌ インシデントIDを指定してください。例: インシデント解決 ID: 123')
+        return
+
+    update_incident(params['incident_id'], status='resolved')
+    await ctx.send(f'✅ インシデントを解決しました (ID: {params["incident_id"]})')
+
+async def create_dashboard_handler(ctx, params):
+    """Handle dashboard creation"""
+    if 'name' not in params:
+        await ctx.send('❌ ダッシュボード名を指定してください。例: ダッシュボード作成 "Main Dashboard"')
+        return
+
+    dashboard_id = create_dashboard(params['name'])
+    await ctx.send(f'📊 ダッシュボードを作成しました (ID: {dashboard_id}): {params["name"]}')
+
+async def list_dashboards_handler(ctx, params):
+    """Handle listing dashboards"""
+    dashboards = get_dashboards()
+
+    if not dashboards:
+        await ctx.send('📋 ダッシュボードがありません')
+        return
+
+    embed = discord.Embed(title='📊 ダッシュボード一覧', color=discord.Color.purple())
+
+    for dash in dashboards:
+        created_at = datetime.fromisoformat(dash['created_at']).strftime('%Y-%m-%d')
+        embed.add_field(
+            name=f"ID {dash['id']}: {dash['name']}",
+            value=f"{dash.get('description', 'No description')}\nCreated: {created_at}",
+            inline=False
+        )
+
+    await ctx.send(embed=embed)
+
+async def monitoring_summary_handler(ctx, params):
+    """Handle showing monitoring summary"""
+    summary = get_monitoring_summary()
+
+    embed = discord.Embed(title='📈 モニタリング概要', color=discord.Color.blue())
+
+    # Services
+    services = summary.get('services', {})
+    enabled_count = services.get('enabled_services', 0)
+    embed.add_field(name='Monitored Services', value=str(enabled_count), inline=True)
+
+    # Incidents
+    active_incidents = summary.get('active_incidents', 0)
+    incident_emoji = '🔴' if active_incidents > 0 else '✅'
+    embed.add_field(name=f'{incident_emoji} Active Incidents', value=str(active_incidents), inline=True)
+
+    # Alerts
+    recent_alerts = summary.get('recent_alerts', 0)
+    alert_emoji = '🚨' if recent_alerts > 0 else '✅'
+    embed.add_field(name=f'{alert_emoji} Recent Alerts (1h)', value=str(recent_alerts), inline=True)
+
+    # Health
+    health = summary.get('health', {})
+    healthy = health.get('healthy', 0)
+    unhealthy = health.get('unhealthy', 0)
+    degraded = health.get('degraded', 0)
+    embed.add_field(
+        name='Health Status (5m)',
+        value=f'✅ {healthy} | ⚠️ {degraded} | ❌ {unhealthy}',
+        inline=False
+    )
+
+    await ctx.send(embed=embed)
+
+async def delete_service_handler(ctx, params):
+    """Handle deleting a service"""
+    if 'service_id' not in params:
+        await ctx.send('❌ サービスIDを指定してください。例: サービス削除 ID: 123')
+        return
+
+    success = delete_service(params['service_id'])
+    if success:
+        await ctx.send(f'🗑️ サービスを削除しました (ID: {params["service_id"]})')
+    else:
+        await ctx.send(f'❌ サービスの削除に失敗しました (ID: {params["service_id"]})')
+
+async def delete_metric_handler(ctx, params):
+    """Handle deleting a metric"""
+    if 'metric_id' not in params:
+        await ctx.send('❌ メトリックIDを指定してください。例: メトリック削除 ID: 123')
+        return
+
+    success = delete_metric(params['metric_id'])
+    if success:
+        await ctx.send(f'🗑️ メトリックを削除しました (ID: {params["metric_id"]})')
+    else:
+        await ctx.send(f'❌ メトリックの削除に失敗しました (ID: {params["metric_id"]})')
+
+async def delete_alert_handler(ctx, params):
+    """Handle deleting an alert"""
+    if 'alert_id' not in params:
+        await ctx.send('❌ アラートIDを指定してください。例: アラート削除 ID: 123')
+        return
+
+    success = delete_alert(params['alert_id'])
+    if success:
+        await ctx.send(f'🗑️ アラートを削除しました (ID: {params["alert_id"]})')
+    else:
+        await ctx.send(f'❌ アラートの削除に失敗しました (ID: {params["alert_id"]})')
+
+async def delete_health_check_handler(ctx, params):
+    """Handle deleting a health check"""
+    if 'health_check_id' not in params:
+        await ctx.send('❌ ヘルスチェックIDを指定してください。例: ヘルスチェック削除 ID: 123')
+        return
+
+    success = delete_health_check(params['health_check_id'])
+    if success:
+        await ctx.send(f'🗑️ ヘルスチェックを削除しました (ID: {params["health_check_id"]})')
+    else:
+        await ctx.send(f'❌ ヘルスチェックの削除に失敗しました (ID: {params["health_check_id"]})')
+
+async def delete_incident_handler(ctx, params):
+    """Handle deleting an incident"""
+    if 'incident_id' not in params:
+        await ctx.send('❌ インシデントIDを指定してください。例: インシデント削除 ID: 123')
+        return
+
+    success = delete_incident(params['incident_id'])
+    if success:
+        await ctx.send(f'🗑️ インシデントを削除しました (ID: {params["incident_id"]})')
+    else:
+        await ctx.send(f'❌ インシデントの削除に失敗しました (ID: {params["incident_id"]})')
+
+async def delete_dashboard_handler(ctx, params):
+    """Handle deleting a dashboard"""
+    if 'dashboard_id' not in params:
+        await ctx.send('❌ ダッシュボードIDを指定してください。例: ダッシュボード削除 ID: 123')
+        return
+
+    success = delete_dashboard(params['dashboard_id'])
+    if success:
+        await ctx.send(f'🗑️ ダッシュボードを削除しました (ID: {params["dashboard_id"]})')
+    else:
+        await ctx.send(f'❌ ダッシュボードの削除に失敗しました (ID: {params["dashboard_id"]})')
+
+async def delete_widget_handler(ctx, params):
+    """Handle deleting a widget"""
+    if 'widget_id' not in params:
+        await ctx.send('❌ ウィジェットIDを指定してください。例: ウィジェット削除 ID: 123')
+        return
+
+    success = delete_widget(params['widget_id'])
+    if success:
+        await ctx.send(f'🗑️ ウィジェットを削除しました (ID: {params["widget_id"]})')
+    else:
+        await ctx.send(f'❌ ウィジェットの削除に失敗しました (ID: {params["widget_id"]})')
+
+async def help_handler(ctx, params):
+    """Handle help command"""
+    embed = discord.Embed(title='📚 Monitor Agent - ヘルプ', color=discord.Color.blue())
+
+    embed.add_field(name='サービス', value='サービス作成 "ServiceName" (api/database/cache)\nサービス一覧\nサービス削除 ID: 123', inline=False)
+    embed.add_field(name='メトリック', value='メトリック記録 cpu_usage 75.5\nメトリック\nメトリック削除 ID: 123', inline=False)
+    embed.add_field(name='アラート', value='アラート作成 "High CPU" threshold 80\nアラート一覧\nアラート履歴\nアラート承認 ID: 123\nアラート削除 ID: 123', inline=False)
+    embed.add_field(name='ヘルスチェック', value='ヘルスチェック\nヘルスチェック削除 ID: 123', inline=False)
+    embed.add_field(name='インシデント', value='インシデント作成 "API Outage"\nインシデント一覧\nインシデント解決 ID: 123\nインシデント削除 ID: 123', inline=False)
+    embed.add_field(name='ダッシュボード', value='ダッシュボード作成 "Dashboard Name"\nダッシュボード一覧\nダッシュボード削除 ID: 123', inline=False)
+    embed.add_field(name='概要', value='モニタリング概要', inline=False)
+
+    await ctx.send(embed=embed)
+
+# Intent handlers
+HANDLERS = {
+    'create_service': create_service_handler,
+    'list_services': list_services_handler,
+    'record_metric': record_metric_handler,
+    'list_metrics': list_metrics_handler,
+    'create_alert': create_alert_handler,
+    'list_alerts': list_alerts_handler,
+    'alert_history': alert_history_handler,
+    'acknowledge_alert': acknowledge_alert_handler,
+    'health_checks': health_checks_handler,
+    'create_incident': create_incident_handler,
+    'list_incidents': list_incidents_handler,
+    'resolve_incident': resolve_incident_handler,
+    'create_dashboard': create_dashboard_handler,
+    'list_dashboards': list_dashboards_handler,
+    'monitoring_summary': monitoring_summary_handler,
+    'delete_service': delete_service_handler,
+    'delete_metric': delete_metric_handler,
+    'delete_alert': delete_alert_handler,
+    'delete_health_check': delete_health_check_handler,
+    'delete_incident': delete_incident_handler,
+    'delete_dashboard': delete_dashboard_handler,
+    'delete_widget': delete_widget_handler,
+    'help': help_handler,
+}
+
+@bot.event
+async def on_ready():
+    print(f'{bot.user.name} が起動しました')
+
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
+
+    # Check for bot mention
+    if bot.user in message.mentions:
+        content = message.content.replace(f'<@{bot.user.id}>', '').strip()
+
+        # Parse intent
+        intent = parse_message(content)
+        if not intent:
+            await message.channel.send('❌ コマンドを理解できませんでした。「ヘルプ」を入力すると使い方を確認できます。')
+            return
+
+        # Extract parameters
+        params = extract_params(message.content, intent)
+
+        # Execute handler
+        handler = HANDLERS.get(intent)
+        if handler:
+            ctx = await bot.get_context(message)
+            await handler(ctx, params)
+        else:
+            await message.channel.send('❌ コマンド処理エラーが発生しました')
+
+    await bot.process_commands(message)
+
+def run_bot(token):
+    """Run the Discord bot"""
+    bot.run(token)
+
+if __name__ == '__main__':
+    init_db()
+    # token = os.environ.get('DISCORD_TOKEN')
+    # if token:
+    #     run_bot(token)
+
+
+# ============================================
+# Test Code / テストコード
+# ============================================
+
+"""
+# Test parsing
+def test_parse_message():
+    messages = [
+        "サービス作成 \"API Service\" api",
+        "サービス一覧",
+        "メトリック記録 cpu_usage 75.5",
+        "メトリック",
+        "アラート作成 \"High CPU\" threshold 80",
+        "アラート一覧",
+        "アラート履歴",
+        "アラート承認 ID: 123",
+        "ヘルスチェック",
+        "インシデント作成 \"API Outage\" critical",
+        "インシデント一覧",
+        "インシデント解決 ID: 123",
+        "ダッシュボード作成 \"Main Dashboard\"",
+        "ダッシュボード一覧",
+        "モニタリング概要",
+        "サービス削除 ID: 123",
+        "メトリック削除 ID: 123",
+        "アラート削除 ID: 123",
+        "ヘルスチェック削除 ID: 123",
+        "インシデント削除 ID: 123",
+        "ダッシュボード削除 ID: 123",
+        "ウィジェット削除 ID: 123",
+        "ヘルプ",
+    ]
+
+    for msg in messages:
+        intent = parse_message(msg)
+        params = extract_params(msg, intent)
+        print(f"Message: {msg}")
+        print(f"  Intent: {intent}")
+        print(f"  Params: {params}")
+        print()
+
+# Test create_service
+def test_create_service():
+    service_id = create_service("Test Service", "api")
+    print(f"Created service with ID: {service_id}")
+
+# Test record_metric
+def test_record_metric():
+    record_metric("cpu_usage", 75.5)
+    print("Recorded metric: cpu_usage = 75.5")
+
+# Test create_alert
+def test_create_alert():
+    alert_id = create_alert("Test Alert", "cpu_usage", 80, severity="warning")
+    print(f"Created alert with ID: {alert_id}")
+
+# Test create_incident
+def test_create_incident():
+    incident_id = create_incident("Test Incident", severity="major", created_by="test")
+    print(f"Created incident with ID: {incident_id}")
+
+# Test get_monitoring_summary
+def test_get_monitoring_summary():
+    summary = get_monitoring_summary()
+    print(f"Monitoring summary: {summary}")
+
+# Test delete functions
+def test_delete():
+    service_id = create_service("Test Delete", "api")
+    result = delete_service(service_id)
+    print(f"Delete service {service_id}: {result}")
+
+if __name__ == '__main__':
+    # Run tests
+    print("=== Testing Monitor Agent ===")
+    test_parse_message()
+    test_create_service()
+    test_record_metric()
+    test_create_alert()
+    test_create_incident()
+    test_get_monitoring_summary()
+    test_delete()
+"""
