@@ -1,0 +1,36 @@
+{
+  "project_name": "VTuber Agent Project",
+  "project_id": "vtuber-agent-proj",
+  "start_time": "2026-02-12T21:20:00Z",
+  "agents": [
+    {
+      "name": "vtuber-schedule-agent",
+      "description": "VTuber配信スケジュール管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "vtuber-archive-agent",
+      "description": "VTuberアーカイブ管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "vtuber-news-agent",
+      "description": "VTuberニュース・コラボ情報収集エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "vtuber-merch-agent",
+      "description": "VTuberグッズ情報管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "vtuber-ranking-agent",
+      "description": "VTuberランキング・統計エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    }
+  ],
+  "orchestrator_script": "vtuber_agent_orchestrator.py",
+  "progress_file": "vtuber_agent_progress.json",
+  "total_agents": 5,
+  "status": "in_progress"
+}
