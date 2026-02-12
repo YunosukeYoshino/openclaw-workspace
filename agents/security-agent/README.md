@@ -1,133 +1,167 @@
-# Security Agent
+# Security Agent / セキュリティエージェント
 
-セキュリティ管理を担当するAIエージェント。脅威、インシデント、セキュリティ対策を管理します。
+An AI agent for managing security threats, incidents, and countermeasures.
 
-## 機能
+セキュリティ脅威、インシデント、対策を管理するAIエージェント。
 
-- **脅威管理 (Threats)**: セキュリティ脅威の検知、追跡、解決管理
-- **インシデント管理 (Incidents)**: セキュリティインシデントの記録とステータス追跡
-- **対策管理 (Measures)**: セキュリティ対策/コントロールの管理
+## Features / 機能
 
-## データベース構造
+- **Threat Management / 脅威管理**: Track and resolve security threats / セキュリティ脅威の追跡と解決
+- **Incident Management / インシデント管理**: Log and manage security incidents / セキュリティインシデントの記録と管理
+- **Security Measures / セキュリティ対策**: Track preventive and corrective controls / 予防的・是正的コントロールの追跡
 
-### テーブル: threats
-| カラム | 型 | 説明 |
-|--------|-----|------|
-| id | INTEGER | 主キー |
-| type | TEXT | 脅威タイプ |
-| severity | TEXT | 重大度 (low/medium/high/critical) |
-| title | TEXT | タイトル |
-| description | TEXT | 説明 |
-| status | TEXT | ステータス (open/investigating/resolved/false_positive) |
-| source | TEXT | 検知元 |
-| detected_at | TIMESTAMP | 検知日時 |
-| resolved_at | TIMESTAMP | 解決日時 |
-| metadata | TEXT | 追加情報 (JSON) |
+## Database Schema / データベース構造
 
-### テーブル: incidents
-| カラム | 型 | 説明 |
-|--------|-----|------|
-| id | INTEGER | 主キー |
-| title | TEXT | タイトル |
-| description | TEXT | 説明 |
-| severity | TEXT | 重大度 (low/medium/high/critical) |
-| status | TEXT | ステータス (active/contained/investigating/resolved/closed) |
-| affected_systems | TEXT | 影響を受けたシステム |
-| created_at | TIMESTAMP | 作成日時 |
-| updated_at | TIMESTAMP | 更新日時 |
-| resolved_at | TIMESTAMP | 解決日時 |
-| impact | TEXT | 影響の詳細 |
+### Table: threats (脅威テーブル)
+| Column | Type | Description / 説明 |
+|--------|------|---------------------|
+| id | INTEGER | Primary key / 主キー |
+| type | TEXT | Threat type / 脅威タイプ |
+| severity | TEXT | Severity (low/medium/high/critical) / 重大度 |
+| title | TEXT | Threat title / 脅威タイトル |
+| description | TEXT | Description / 説明 |
+| status | TEXT | Status (open/investigating/resolved/false_positive) / ステータス |
+| source | TEXT | Source / 発生源 |
+| detected_at | TIMESTAMP | Detection time / 検知日時 |
+| resolved_at | TIMESTAMP | Resolution time / 解決日時 |
+| metadata | TEXT | Additional data (JSON) / 追加データ |
 
-### テーブル: measures
-| カラム | 型 | 説明 |
-|--------|-----|------|
-| id | INTEGER | 主キー |
-| name | TEXT | 名称 |
-| description | TEXT | 説明 |
-| type | TEXT | タイプ (preventive/detective/corrective/deterrent) |
-| status | TEXT | ステータス (active/inactive/decommissioned) |
-| implemented_at | TIMESTAMP | 実装日時 |
-| last_tested_at | TIMESTAMP | 最終テスト日時 |
-| effectiveness | TEXT | 有効性評価 |
-| related_threats | TEXT | 関連脅威 |
+### Table: incidents (インシデントテーブル)
+| Column | Type | Description / 説明 |
+|--------|------|---------------------|
+| id | INTEGER | Primary key / 主キー |
+| title | TEXT | Incident title / インシデントタイトル |
+| description | TEXT | Description / 説明 |
+| severity | TEXT | Severity (low/medium/high/critical) / 重大度 |
+| status | TEXT | Status (active/contained/investigating/resolved/closed) / ステータス |
+| affected_systems | TEXT | Affected systems / 影響システム |
+| created_at | TIMESTAMP | Creation time / 作成日時 |
+| updated_at | TIMESTAMP | Update time / 更新日時 |
+| resolved_at | TIMESTAMP | Resolution time / 解決日時 |
+| impact | TEXT | Impact assessment / 影響評価 |
 
-## Discord コマンド
+### Table: measures (対策テーブル)
+| Column | Type | Description / 説明 |
+|--------|------|---------------------|
+| id | INTEGER | Primary key / 主キー |
+| name | TEXT | Measure name / 対策名 |
+| description | TEXT | Description / 説明 |
+| type | TEXT | Type (preventive/detective/corrective/deterrent) / タイプ |
+| status | TEXT | Status (active/inactive/decommissioned) / ステータス |
+| implemented_at | TIMESTAMP | Implementation time / 実装日時 |
+| last_tested_at | TIMESTAMP | Last test date / 最終テスト日 |
+| effectiveness | TEXT | Effectiveness rating / 有効性評価 |
+| related_threats | TEXT | Related threats / 関連脅威 |
 
-### 脅威管理
+## Discord Commands / Discord コマンド
+
+### Threat Management / 脅威管理
 ```
-threat add phishing critical ユーザーへのフィッシングメール
-threat list
+threat add <type> <severity> [description]
+threat add malware critical "Ransomware detected on server"
+
+threat list [status] [severity]
 threat list open high
+
+threat resolve <id>
 threat resolve 123
 ```
 
-### インシデント管理
+### Incident Management / インシデント管理
 ```
-incident add "Ransomware attack" high 顧客データへの影響
+incident add <title> <severity> [description]
+incident add "Data breach" high "Customer data exposed"
+
+incident list [status]
 incident list active
-incident update 123 contained
+
+incident update <id> <status>
+incident update 456 resolved
 ```
 
-### セキュリティ対策
+### Security Measures / セキュリティ対策
 ```
-measure add preventive MFA実装 多要素認証の導入
+measure add <type> <name> [description]
+measure add preventive "2FA enforcement"
+
 measure list
 ```
 
-### 統計
+### Statistics / 統計
 ```
 stats
 ```
 
-## 使用例
+## Usage Examples / 使用例
 
-### 脅威の追加
+### Adding a threat / 脅威の追加
 ```
-threat add sql-injection high ログインフォームでのSQLインジェクション脆弱性
+threat add malware critical "Ransomware detected on production server"
 ```
 
-### アクティブな高リスク脅威の一覧
+### Listing open threats / 未解決脅威の一覧
 ```
 threat list open high
 ```
 
-### インシデントの記録
+### Creating an incident / インシデントの作成
 ```
-incident add "DDoS Attack" critical メインサイトへのDDoS攻撃
+incident add "Unauthorized access" high "Employee credentials compromised"
 ```
 
-### セキュリティ統計の確認
+### Adding a security measure / セキュリティ対策の追加
+```
+measure add preventive "Multi-factor authentication"
+```
+
+### Viewing statistics / 統計の表示
 ```
 stats
 ```
 
-## API 使用例
+## API Usage / API 使用例
 
 ```python
 from agents.security_agent.db import SecurityDB
-from agents.security_agent.discord import SecurityDiscordHandler
+from agents.security_agent.agent import SecurityDiscordHandler
 
-# データベース初期化
+# Initialize database / データベース初期化
 db = SecurityDB()
 
-# ハンドラー作成
+# Create handler / ハンドラー作成
 handler = SecurityDiscordHandler(db)
 
-# メッセージ処理
-response = handler.process_message("threat add malware medium 悪意のあるソフトウェア検出")
+# Add a threat / 脅威追加
+response = handler.process_message("threat add malware critical Ransomware")
+print(response)
+
+# List threats / 脅威一覧
+response = handler.process_message("threat list open")
+print(response)
+
+# Show statistics / 統計表示
+response = handler.process_message("stats")
 print(response)
 ```
 
-## 脅威の重大度レベル
+## Severity Levels / 重大度レベル
 
-- **critical**: 即時対応が必要な重大な脅威
-- **high**: 迅速な対応が必要な脅威
-- **medium**: 計画的な対応が必要な脅威
-- **low**: 監視で十分な脅威
+- **critical** - Critical impact / クリティカルな影響
+- **high** - High impact / 高い影響
+- **medium** - Medium impact / 中程度の影響
+- **low** - Low impact / 低い影響
 
-## セキュリティ対策のタイプ
+## Incident Status / インシデントステータス
 
-- **preventive**: 発生を防ぐ対策（認証、暗号化など）
-- **detective**: 検知する対策（ログ、監視など）
-- **corrective**: 事後対応の対策（バックアップ、復旧手順など）
-- **deterrent**: 抑制する対策（ポリシー、警告など）
+- **active** - Active incident / アクティブなインシデント
+- **contained** - Contained / 封じ込め済み
+- **investigating** - Under investigation / 調査中
+- **resolved** - Resolved / 解決済み
+- **closed** - Closed / クローズ
+
+## Measure Types / 対策タイプ
+
+- **preventive** - Preventive controls / 予防的コントロール
+- **detective** - Detective controls / 検知的コントロール
+- **corrective** - Corrective controls / 是正的コントロール
+- **deterrent** - Deterrent controls / 抑止的コントロール
