@@ -152,3 +152,218 @@ async def get_stats():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+# ============================================
+# エージェント制御エンドポイント
+# ============================================
+
+class AgentManager:
+    def __init__(self):
+        self.agents_dir = "/workspace/agents"
+        self.active_agents = {}
+
+    def list_agents(self):
+        agents = []
+        agents_dir = Path(self.agents_dir)
+        if agents_dir.exists():
+            for agent_dir in agents_dir.iterdir():
+                if agent_dir.is_dir():
+                    agent_file = agent_dir / "agent.py"
+                    if agent_file.exists():
+                        agents.append({
+                            "name": agent_dir.name,
+                            "status": "running" if agent_dir.name in self.active_agents else "stopped",
+                            "path": str(agent_dir)
+                        })
+        return agents
+
+    def start_agent(self, agent_name):
+        if agent_name in self.active_agents:
+            return {"status": "error", "message": f"{agent_name} is already running"}
+
+        agent_file = Path(self.agents_dir) / agent_name / "agent.py"
+        if not agent_file.exists():
+            return {"status": "error", "message": f"Agent {agent_name} not found"}
+
+        self.active_agents[agent_name] = {
+            "started_at": datetime.now().isoformat(),
+            "pid": len(self.active_agents) + 1000
+        }
+
+        return {"status": "success", "message": f"{agent_name} started"}
+
+    def stop_agent(self, agent_name):
+        if agent_name not in self.active_agents:
+            return {"status": "error", "message": f"{agent_name} is not running"}
+
+        del self.active_agents[agent_name]
+
+        return {"status": "success", "message": f"{agent_name} stopped"}
+
+agent_manager = AgentManager()
+
+@app.get("/api/agents/list")
+async def list_agents():
+    return agent_manager.list_agents()
+
+@app.post("/api/agents/{agent_name}/start")
+async def start_agent(agent_name: str):
+    return agent_manager.start_agent(agent_name)
+
+@app.post("/api/agents/{agent_name}/stop")
+async def stop_agent(agent_name: str):
+    return agent_manager.stop_agent(agent_name)
+
+# ============================================
+# ログ管理エンドポイント
+# ============================================
+
+class LogManager:
+    def __init__(self):
+        self.logs = []
+
+    def add_log(self, level, message, agent="system"):
+        log_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "level": level,
+            "agent": agent,
+            "message": message
+        }
+        self.logs.append(log_entry)
+        if len(self.logs) > 100:
+            self.logs = self.logs[-100:]
+
+    def get_logs(self, limit=50):
+        return self.logs[-limit:]
+
+log_manager = LogManager()
+
+@app.get("/api/logs")
+async def get_logs(limit: int = 50):
+    return log_manager.get_logs(limit)
+
+# ============================================
+# アクティビティ追跡エンドポイント
+# ============================================
+
+class ActivityTracker:
+    def __init__(self):
+        self.activities = []
+        for i in range(24):
+            self.activities.append({
+                "hour": i,
+                "count": int(5 + 3 * (i % 6) + (i // 4)),
+                "type": "agent_start" if i % 2 == 0 else "agent_stop"
+            })
+
+    def get_activity_chart_data(self):
+        return self.activities
+
+activity_tracker = ActivityTracker()
+
+@app.get("/api/activity/chart")
+async def get_activity_chart():
+    return activity_tracker.get_activity_chart_data()
+
+# ============================================
+# エージェントグラフエンドポイント
+# ============================================
+
+@app.get("/api/agents/graph")
+async def get_agent_graph():
+    return {
+        "nodes": [
+            {"id": "orchestrator", "label": "Orchestrator", "type": "controller"},
+            {"id": "monitor-agent", "label": "Monitor Agent", "type": "agent"},
+            {"id": "deploy-agent", "label": "Deploy Agent", "type": "agent"},
+            {"id": "notification-agent", "label": "Notification Agent", "type": "agent"},
+            {"id": "calendar-integration-agent", "label": "Calendar Agent", "type": "agent"},
+        ],
+        "edges": [
+            {"source": "orchestrator", "target": "monitor-agent", "type": "controls"},
+            {"source": "orchestrator", "target": "deploy-agent", "type": "controls"},
+            {"source": "monitor-agent", "target": "notification-agent", "type": "notifies"},
+            {"source": "deploy-agent", "target": "notification-agent", "type": "notifies"},
+            {"source": "orchestrator", "target": "calendar-integration-agent", "type": "uses"},
+        ]
+    }
+
+# ============================================
+# 認証エンドポイント
+# ============================================
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+security = HTTPBearer()
+
+class AuthManager:
+    def __init__(self):
+        self.valid_tokens = {
+            "dev-token-12345": {"user": "admin", "role": "admin"},
+            "dev-token-67890": {"user": "viewer", "role": "viewer"}
+        }
+
+    def verify_token(self, credentials: HTTPAuthorizationCredentials = Depends(security)):
+        token = credentials.credentials
+        if token not in self.valid_tokens:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token"
+            )
+        return self.valid_tokens[token]
+
+auth_manager = AuthManager()
+
+@app.get("/api/auth/me")
+async def get_current_user(user = Depends(auth_manager.verify_token)):
+    return user
+
+# ============================================
+# 設定管理エンドポイント
+# ============================================
+
+from pydantic import BaseModel
+
+class SettingItem(BaseModel):
+    key: str
+    value: str
+
+class SettingsManager:
+    def __init__(self):
+        self.settings = {
+            "theme": "dark",
+            "refresh_interval": "30",
+            "log_level": "info",
+            "notifications_enabled": "true"
+        }
+
+    def get_settings(self):
+        return self.settings
+
+    def update_setting(self, key, value):
+        if key in self.settings:
+            self.settings[key] = value
+            return {"status": "success", "key": key, "value": value}
+        return {"status": "error", "message": f"Setting {key} not found"}
+
+    def update_multiple(self, settings_list):
+        results = []
+        for item in settings_list:
+            result = self.update_setting(item.key, item.value)
+            results.append(result)
+        return {"results": results}
+
+settings_manager = SettingsManager()
+
+@app.get("/api/settings")
+async def get_settings():
+    return settings_manager.get_settings()
+
+@app.post("/api/settings")
+async def update_setting(setting: SettingItem):
+    return settings_manager.update_setting(setting.key, setting.value)
+
+@app.post("/api/settings/batch")
+async def update_multiple_settings(settings: list[SettingItem]):
+    return settings_manager.update_multiple(settings)

@@ -3,15 +3,26 @@
 class Dashboard {
     constructor() {
         this.agents = [];
+        this.logs = [];
+        this.settings = {};
         this.selectedAgent = null;
         this.init();
     }
 
     async init() {
-        await this.loadAgents();
+        await Promise.all([
+            this.loadAgents(),
+            this.loadLogs(),
+            this.loadSettings(),
+            this.loadActivityData(),
+            this.loadAgentGraph()
+        ]);
         this.renderStats();
         this.renderAgentCards();
         this.renderCharts();
+        this.renderLogs();
+        this.renderAgentGraph();
+        this.renderSettings();
         this.setupEventListeners();
         this.startAutoRefresh();
     }
@@ -23,6 +34,51 @@ class Dashboard {
         } catch (error) {
             console.error('Failed to load agents:', error);
             this.agents = [];
+        }
+    }
+
+    async loadLogs() {
+        try {
+            const response = await fetch('/api/logs?limit=20');
+            this.logs = await response.json();
+        } catch (error) {
+            console.error('Failed to load logs:', error);
+            this.logs = [];
+        }
+    }
+
+    async loadSettings() {
+        try {
+            const response = await fetch('/api/settings');
+            this.settings = await response.json();
+        } catch (error) {
+            console.error('Failed to load settings:', error);
+            this.settings = {
+                theme: 'dark',
+                refresh_interval: '30',
+                log_level: 'info',
+                notifications_enabled: 'true'
+            };
+        }
+    }
+
+    async loadActivityData() {
+        try {
+            const response = await fetch('/api/activity/chart');
+            this.activityData = await response.json();
+        } catch (error) {
+            console.error('Failed to load activity data:', error);
+            this.activityData = [];
+        }
+    }
+
+    async loadAgentGraph() {
+        try {
+            const response = await fetch('/api/agents/graph');
+            this.agentGraph = await response.json();
+        } catch (error) {
+            console.error('Failed to load agent graph:', error);
+            this.agentGraph = { nodes: [], edges: [] };
         }
     }
 
@@ -55,6 +111,136 @@ class Dashboard {
             card.addEventListener('click', () => this.selectAgent(agent));
             container.appendChild(card);
         });
+    }
+
+    renderLogs() {
+        const container = document.getElementById('logs-container');
+        container.innerHTML = '';
+
+        if (this.logs.length === 0) {
+            container.innerHTML = '<p class="empty-state">ログがありません</p>';
+            return;
+        }
+
+        this.logs.forEach(log => {
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${log.level.toLowerCase()}`;
+
+            const timestamp = new Date(log.timestamp).toLocaleString('ja-JP');
+            logEntry.innerHTML = `
+                <span class="log-timestamp">${timestamp}</span>
+                <span class="log-level">[${log.level.toUpperCase()}]</span>
+                <span class="log-agent">${log.agent}</span>
+                <span class="log-message">${log.message}</span>
+            `;
+
+            container.appendChild(logEntry);
+        });
+    }
+
+    renderAgentGraph() {
+        const canvas = document.createElement('canvas');
+        const container = document.getElementById('agent-graph');
+        container.innerHTML = '';
+        container.appendChild(canvas);
+
+        const ctx = canvas.getContext('2d');
+        canvas.width = container.clientWidth || 800;
+        canvas.height = 400;
+
+        // ノードの描画
+        const nodes = this.agentGraph.nodes || [];
+        const edges = this.agentGraph.edges || [];
+
+        // ノードの位置を計算（簡易レイアウト）
+        const positions = {};
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        nodes.forEach((node, index) => {
+            const angle = (2 * Math.PI * index) / nodes.length;
+            const radius = Math.min(canvas.width, canvas.height) / 3;
+            positions[node.id] = {
+                x: centerX + radius * Math.cos(angle),
+                y: centerY + radius * Math.sin(angle)
+            };
+        });
+
+        // エッジを描画
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 2;
+        edges.forEach(edge => {
+            const from = positions[edge.source];
+            const to = positions[edge.target];
+            if (from && to) {
+                ctx.beginPath();
+                ctx.moveTo(from.x, from.y);
+                ctx.lineTo(to.x, to.y);
+                ctx.stroke();
+            }
+        });
+
+        // ノードを描画
+        nodes.forEach(node => {
+            const pos = positions[node.id];
+            if (!pos) return;
+
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 20, 0, 2 * Math.PI);
+
+            // ノードタイプによって色を変える
+            if (node.type === 'controller') {
+                ctx.fillStyle = '#8b5cf6';
+            } else {
+                ctx.fillStyle = '#3b82f6';
+            }
+            ctx.fill();
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // ラベル
+            ctx.fillStyle = '#f1f5f9';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(node.label, pos.x, pos.y + 35);
+        });
+    }
+
+    renderSettings() {
+        document.getElementById('theme').value = this.settings.theme || 'dark';
+        document.getElementById('refresh-interval').value = this.settings.refresh_interval || '30';
+        document.getElementById('log-level').value = this.settings.log_level || 'info';
+    }
+
+    async saveSettings() {
+        const theme = document.getElementById('theme').value;
+        const refreshInterval = document.getElementById('refresh-interval').value;
+        const logLevel = document.getElementById('log-level').value;
+
+        try {
+            await Promise.all([
+                fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key: 'theme', value: theme })
+                }),
+                fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key: 'refresh_interval', value: refreshInterval })
+                }),
+                fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key: 'log_level', value: logLevel })
+                })
+            ]);
+            alert('設定を保存しました');
+        } catch (error) {
+            console.error('Failed to save settings:', error);
+            alert('設定の保存に失敗しました');
+        }
     }
 
     getStatusText(status) {
@@ -120,22 +306,26 @@ class Dashboard {
     }
 
     setupEventListeners() {
-        // Additional event listeners can be added here
+        document.getElementById('save-settings').addEventListener('click', () => this.saveSettings());
     }
 
     startAutoRefresh() {
-        // Auto-refresh every 30 seconds
-        setInterval(() => {
-            this.loadAgents().then(() => {
-                this.renderStats();
-                if (this.selectedAgent) {
-                    const updated = this.agents.find(a => a.name === this.selectedAgent.name);
-                    if (updated) {
-                        this.selectAgent(updated);
-                    }
+        const refreshInterval = (parseInt(this.settings.refresh_interval) || 30) * 1000;
+
+        setInterval(async () => {
+            await Promise.all([
+                this.loadAgents(),
+                this.loadLogs()
+            ]);
+            this.renderStats();
+            this.renderLogs();
+            if (this.selectedAgent) {
+                const updated = this.agents.find(a => a.name === this.selectedAgent.name);
+                if (updated) {
+                    this.selectAgent(updated);
                 }
-            });
-        }, 30000);
+            }
+        }, refreshInterval);
     }
 }
 

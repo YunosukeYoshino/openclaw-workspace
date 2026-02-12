@@ -5,24 +5,66 @@
     {
       "id": "dash-001",
       "name": "dashboard-structure",
-      "description": "ダッシュボードの基本構造作成（HTML/CSS/JS）",
+      "description": "\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9\u306e\u57fa\u672c\u69cb\u9020\u4f5c\u6210\uff08HTML/CSS/JS\uff09",
       "completed_at": "2026-02-12T11:14:23.370731"
     },
     {
       "id": "dash-006",
       "name": "dashboard-api",
-      "description": "バックエンドAPI開発",
+      "description": "\u30d0\u30c3\u30af\u30a8\u30f3\u30c9API\u958b\u767a",
       "completed_at": "2026-02-12T11:14:23.370774"
     },
     {
       "id": "dash-003",
       "name": "data-visualization",
-      "description": "データ可視化（チャート、グラフ）",
+      "description": "\u30c7\u30fc\u30bf\u53ef\u8996\u5316\uff08\u30c1\u30e3\u30fc\u30c8\u3001\u30b0\u30e9\u30d5\uff09",
       "completed_at": "2026-02-12T11:15:00.000000"
+    },
+    {
+      "id": "dash-004",
+      "name": "agent-control",
+      "description": "\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u306e\u8d77\u52d5/\u505c\u6b62\u30ed\u30b8\u30c3\u30af\u5b9f\u88c5",
+      "priority": 1,
+      "completed_at": "2026-02-12T11:45:00.284696"
+    },
+    {
+      "id": "dash-005",
+      "name": "realtime-logs",
+      "description": "\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u30ed\u30b0\u8868\u793a\u6a5f\u80fd",
+      "priority": 2,
+      "completed_at": "2026-02-12T11:45:00.285415"
+    },
+    {
+      "id": "dash-007",
+      "name": "activity-chart",
+      "description": "\u30a2\u30af\u30c6\u30a3\u30d3\u30c6\u30a3\u5c65\u6b74\u30c1\u30e3\u30fc\u30c8",
+      "priority": 3,
+      "completed_at": "2026-02-12T11:45:00.286271"
+    },
+    {
+      "id": "dash-008",
+      "name": "agent-graph",
+      "description": "\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u9593\u9023\u643a\u306e\u8996\u899a\u5316\uff08\u30b0\u30e9\u30d5\uff09",
+      "priority": 4,
+      "completed_at": "2026-02-12T11:45:00.286994"
+    },
+    {
+      "id": "dash-009",
+      "name": "authentication",
+      "description": "\u30e6\u30fc\u30b6\u30fc\u8a8d\u8a3c\u30fb\u8a8d\u53ef\u30b7\u30b9\u30c6\u30e0",
+      "priority": 5,
+      "completed_at": "2026-02-12T11:45:00.287783"
+    },
+    {
+      "id": "dash-010",
+      "name": "settings-panel",
+      "description": "\u8a2d\u5b9a\u7ba1\u7406\u753b\u9762",
+      "priority": 6,
+      "completed_at": "2026-02-12T11:45:00.288720"
     }
   ],
   "in_progress": [],
   "pending": [],
-  "last_updated": "2026-02-12T11:15:00.000000",
+  "last_updated": "2026-02-12T11:45:00.289063",
   "project_status": "completed"
 }
