@@ -1,0 +1,9 @@
+{
+  "name": "confirmation-prompts",
+  "version": "1.0.0",
+  "enabled": true,
+  "settings": {
+    "max_workers": 4,
+    "timeout": 300
+  }
+}

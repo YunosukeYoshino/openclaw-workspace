@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-02-12T15:16:15.760499",
+  "last_updated": "2026-02-12T15:19:38.609825",
   "tasks": [
     {
       "id": "ml-model-compression",
@@ -521,12 +521,596 @@
       "priority": 5,
       "metadata": {},
       "estimated_duration": 240
+    },
+    {
+      "id": "cron-scheduler",
+      "type": "scheduling",
+      "name": "Cron\u30b9\u30b1\u30b8\u30e5\u30fc\u30e9\u30fc",
+      "description": "\u9ad8\u5ea6\u306acron\u5f0f\u30fb\u30bf\u30a4\u30e0\u30be\u30fc\u30f3\u5bfe\u5fdc\u30fb\u6c38\u7d9a\u5316",
+      "tags": [
+        "cron",
+        "scheduling",
+        "persistence"
+      ],
+      "dependencies": [],
+      "priority": 5,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "task-queue",
+      "type": "scheduling",
+      "name": "\u30bf\u30b9\u30af\u30ad\u30e5\u30fc",
+      "description": "Celery/Redis\u306b\u3088\u308b\u5206\u6563\u30bf\u30b9\u30af\u7ba1\u7406",
+      "tags": [
+        "queue",
+        "distributed",
+        "redis"
+      ],
+      "dependencies": [
+        "cron-scheduler"
+      ],
+      "priority": 5,
+      "metadata": {},
+      "estimated_duration": 240
+    },
+    {
+      "id": "scheduler-ui",
+      "type": "scheduling",
+      "name": "\u30b9\u30b1\u30b8\u30e5\u30fc\u30e9\u30fcUI",
+      "description": "\u8996\u899a\u7684\u306a\u30b8\u30e7\u30d6\u7ba1\u7406\u30fb\u76e3\u8996\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9",
+      "tags": [
+        "ui",
+        "dashboard",
+        "monitoring"
+      ],
+      "dependencies": [
+        "task-queue"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "scheduler-notifications",
+      "type": "scheduling",
+      "name": "\u901a\u77e5\u30b7\u30b9\u30c6\u30e0",
+      "description": "Slack\u30fbEmail\u30fbWebhook\u306b\u3088\u308b\u30b8\u30e7\u30d6\u901a\u77e5",
+      "tags": [
+        "notifications",
+        "alerts",
+        "integration"
+      ],
+      "dependencies": [
+        "scheduler-ui"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 120
+    },
+    {
+      "id": "scheduler-audit",
+      "type": "scheduling",
+      "name": "\u76e3\u67fb\u30ed\u30b0",
+      "description": "\u30b8\u30e7\u30d6\u5b9f\u884c\u5c65\u6b74\u30fb\u30e6\u30fc\u30b6\u30fc\u64cd\u4f5c\u30ed\u30b0",
+      "tags": [
+        "audit",
+        "logging",
+        "compliance"
+      ],
+      "dependencies": [
+        "scheduler-notifications"
+      ],
+      "priority": 3,
+      "metadata": {},
+      "estimated_duration": 120
+    },
+    {
+      "id": "cli-framework",
+      "type": "cli",
+      "name": "CLI\u30d5\u30ec\u30fc\u30e0\u30ef\u30fc\u30af\u5f37\u5316",
+      "description": "Click/Typer\u306b\u3088\u308b\u30e2\u30c0\u30f3CLI\u69cb\u7bc9",
+      "tags": [
+        "cli",
+        "framework",
+        "ux"
+      ],
+      "dependencies": [
+        "scheduler-audit"
+      ],
+      "priority": 5,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "cli-autocomplete",
+      "type": "cli",
+      "name": "\u81ea\u52d5\u88dc\u5b8c",
+      "description": "\u30b7\u30a7\u30eb\u81ea\u52d5\u88dc\u5b8c\u30fb\u30b3\u30de\u30f3\u30c9\u5019\u88dc\u8868\u793a",
+      "tags": [
+        "cli",
+        "autocomplete",
+        "shell"
+      ],
+      "dependencies": [
+        "cli-framework"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 120
+    },
+    {
+      "id": "cli-theming",
+      "type": "cli",
+      "name": "\u30c6\u30fc\u30de\u30fb\u30ab\u30e9\u30fc\u30b7\u30b9\u30c6\u30e0",
+      "description": "Rich/Termcolor\u306b\u3088\u308b\u7f8e\u3057\u3044\u51fa\u529b",
+      "tags": [
+        "cli",
+        "theme",
+        "ui"
+      ],
+      "dependencies": [
+        "cli-autocomplete"
+      ],
+      "priority": 3,
+      "metadata": {},
+      "estimated_duration": 120
+    },
+    {
+      "id": "cli-config",
+      "type": "cli",
+      "name": "\u8a2d\u5b9a\u7ba1\u7406",
+      "description": "\u30e6\u30fc\u30b6\u30fc\u8a2d\u5b9a\u30d5\u30a1\u30a4\u30eb\u30fb\u74b0\u5883\u5909\u6570\u306e\u7ba1\u7406",
+      "tags": [
+        "cli",
+        "config",
+        "settings"
+      ],
+      "dependencies": [
+        "cli-theming"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "interactive-wizard",
+      "type": "interactive",
+      "name": "\u30a4\u30f3\u30bf\u30e9\u30af\u30c6\u30a3\u30d6\u30a6\u30a3\u30b6\u30fc\u30c9",
+      "description": "\u8cea\u554f\u5f62\u5f0f\u3067\u30b3\u30de\u30f3\u30c9\u3092\u30ac\u30a4\u30c9",
+      "tags": [
+        "interactive",
+        "wizard",
+        "ux"
+      ],
+      "dependencies": [
+        "cli-config"
+      ],
+      "priority": 5,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "confirmation-prompts",
+      "type": "interactive",
+      "name": "\u78ba\u8a8d\u30d7\u30ed\u30f3\u30d7\u30c8",
+      "description": "\u5371\u967a\u64cd\u4f5c\u306e\u78ba\u8a8d\u30fb\u78ba\u8a8d\u30b9\u30ad\u30c3\u30d7\u6a5f\u80fd",
+      "tags": [
+        "interactive",
+        "safety",
+        "confirmation"
+      ],
+      "dependencies": [
+        "interactive-wizard"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 120
+    },
+    {
+      "id": "progress-bars",
+      "type": "interactive",
+      "name": "\u9032\u6357\u8868\u793a",
+      "description": "\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u9032\u6357\u30d0\u30fc\u30fb\u30b9\u30c6\u30fc\u30bf\u30b9\u8868\u793a",
+      "tags": [
+        "interactive",
+        "progress",
+        "ui"
+      ],
+      "dependencies": [
+        "confirmation-prompts"
+      ],
+      "priority": 3,
+      "metadata": {},
+      "estimated_duration": 120
+    },
+    {
+      "id": "multiselect",
+      "type": "interactive",
+      "name": "\u8907\u6570\u9078\u629eUI",
+      "description": "\u30c1\u30a7\u30c3\u30af\u30dc\u30c3\u30af\u30b9\u30fb\u30e9\u30b8\u30aa\u30dc\u30bf\u30f3\u5f62\u5f0f\u306e\u9078\u629e",
+      "tags": [
+        "interactive",
+        "ui",
+        "selection"
+      ],
+      "dependencies": [
+        "progress-bars"
+      ],
+      "priority": 3,
+      "metadata": {},
+      "estimated_duration": 120
+    },
+    {
+      "id": "agent-discovery",
+      "type": "discovery",
+      "name": "\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u81ea\u52d5\u691c\u51fa",
+      "description": "filesystem\u30fb\u30ec\u30b8\u30b9\u30c8\u30ea\u304b\u3089\u306e\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u63a2\u7d22",
+      "tags": [
+        "discovery",
+        "agents",
+        "auto"
+      ],
+      "dependencies": [
+        "multiselect"
+      ],
+      "priority": 5,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "service-discovery",
+      "type": "discovery",
+      "name": "\u30b5\u30fc\u30d3\u30b9\u691c\u51fa",
+      "description": "\u5b9f\u884c\u4e2d\u306e\u30b5\u30fc\u30d3\u30b9\u30fb\u30dd\u30fc\u30c8\u30b9\u30ad\u30e3\u30f3",
+      "tags": [
+        "discovery",
+        "services",
+        "network"
+      ],
+      "dependencies": [
+        "agent-discovery"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "config-discovery",
+      "type": "discovery",
+      "name": "\u8a2d\u5b9a\u30d5\u30a1\u30a4\u30eb\u691c\u51fa",
+      "description": "\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u8a2d\u5b9a\u306e\u81ea\u52d5\u8aad\u307f\u8fbc\u307f\u30fb\u89e3\u6790",
+      "tags": [
+        "discovery",
+        "config",
+        "parsing"
+      ],
+      "dependencies": [
+        "service-discovery"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 120
+    },
+    {
+      "id": "dependency-discovery",
+      "type": "discovery",
+      "name": "\u4f9d\u5b58\u95a2\u4fc2\u691c\u51fa",
+      "description": "import\u89e3\u6790\u30fbrequirements.txt\u306e\u81ea\u52d5\u751f\u6210",
+      "tags": [
+        "discovery",
+        "dependencies",
+        "analysis"
+      ],
+      "dependencies": [
+        "config-discovery"
+      ],
+      "priority": 3,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "agent-generator",
+      "type": "generation",
+      "name": "\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u751f\u6210\u5668",
+      "description": "\u30c6\u30f3\u30d7\u30ec\u30fc\u30c8\u304b\u3089\u306e\u65b0\u898f\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u751f\u6210",
+      "tags": [
+        "generation",
+        "agents",
+        "templates"
+      ],
+      "dependencies": [
+        "dependency-discovery"
+      ],
+      "priority": 5,
+      "metadata": {},
+      "estimated_duration": 240
+    },
+    {
+      "id": "config-generator",
+      "type": "generation",
+      "name": "\u8a2d\u5b9a\u30d5\u30a1\u30a4\u30eb\u751f\u6210\u5668",
+      "description": "\u5bfe\u8a71\u5f62\u5f0f\u3067\u306e\u8a2d\u5b9a\u30d5\u30a1\u30a4\u30eb\u4f5c\u6210",
+      "tags": [
+        "generation",
+        "config",
+        "interactive"
+      ],
+      "dependencies": [
+        "agent-generator"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "docker-generator",
+      "type": "generation",
+      "name": "Docker\u8a2d\u5b9a\u751f\u6210",
+      "description": "Dockerfile\u30fbdocker-compose.yml\u306e\u81ea\u52d5\u751f\u6210",
+      "tags": [
+        "generation",
+        "docker",
+        "container"
+      ],
+      "dependencies": [
+        "config-generator"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "ci-generator",
+      "type": "generation",
+      "name": "CI\u8a2d\u5b9a\u751f\u6210",
+      "description": "GitHub Actions\u30fbGitLab CI\u306e\u8a2d\u5b9a\u751f\u6210",
+      "tags": [
+        "generation",
+        "cicd",
+        "automation"
+      ],
+      "dependencies": [
+        "docker-generator"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "workflow-engine",
+      "type": "workflow",
+      "name": "\u30ef\u30fc\u30af\u30d5\u30ed\u30fc\u30a8\u30f3\u30b8\u30f3",
+      "description": "DAG\u30d9\u30fc\u30b9\u306e\u30bf\u30b9\u30af\u4f9d\u5b58\u7ba1\u7406",
+      "tags": [
+        "workflow",
+        "dag",
+        "automation"
+      ],
+      "dependencies": [
+        "ci-generator"
+      ],
+      "priority": 5,
+      "metadata": {},
+      "estimated_duration": 240
+    },
+    {
+      "id": "conditional-execution",
+      "type": "workflow",
+      "name": "\u6761\u4ef6\u4ed8\u304d\u5b9f\u884c",
+      "description": "if/else\u30fb\u5206\u5c90\u30ed\u30b8\u30c3\u30af\u306e\u30b5\u30dd\u30fc\u30c8",
+      "tags": [
+        "workflow",
+        "conditional",
+        "logic"
+      ],
+      "dependencies": [
+        "workflow-engine"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "parallel-execution",
+      "type": "workflow",
+      "name": "\u4e26\u5217\u5b9f\u884c",
+      "description": "\u8907\u6570\u30bf\u30b9\u30af\u306e\u540c\u6642\u5b9f\u884c\u30fb\u30ea\u30bd\u30fc\u30b9\u7ba1\u7406",
+      "tags": [
+        "workflow",
+        "parallel",
+        "performance"
+      ],
+      "dependencies": [
+        "conditional-execution"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "retry-strategy",
+      "type": "workflow",
+      "name": "\u30ea\u30c8\u30e9\u30a4\u6226\u7565",
+      "description": "\u6307\u6570\u30d0\u30c3\u30af\u30aa\u30d5\u30fb\u6761\u4ef6\u4ed8\u304d\u30ea\u30c8\u30e9\u30a4",
+      "tags": [
+        "workflow",
+        "retry",
+        "reliability"
+      ],
+      "dependencies": [
+        "parallel-execution"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 120
+    },
+    {
+      "id": "event-bus",
+      "type": "events",
+      "name": "\u30a4\u30d9\u30f3\u30c8\u30d0\u30b9",
+      "description": "Pub/Sub\u30d1\u30bf\u30fc\u30f3\u306b\u3088\u308b\u30a4\u30d9\u30f3\u30c8\u7ba1\u7406",
+      "tags": [
+        "events",
+        "pubsub",
+        "async"
+      ],
+      "dependencies": [
+        "retry-strategy"
+      ],
+      "priority": 5,
+      "metadata": {},
+      "estimated_duration": 240
+    },
+    {
+      "id": "event-handlers",
+      "type": "events",
+      "name": "\u30a4\u30d9\u30f3\u30c8\u30cf\u30f3\u30c9\u30e9\u30fc",
+      "description": "\u30a4\u30d9\u30f3\u30c8\u767b\u9332\u30fb\u30d5\u30a3\u30eb\u30bf\u30ea\u30f3\u30b0\u30fb\u30eb\u30fc\u30c6\u30a3\u30f3\u30b0",
+      "tags": [
+        "events",
+        "handlers",
+        "routing"
+      ],
+      "dependencies": [
+        "event-bus"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "event-store",
+      "type": "events",
+      "name": "\u30a4\u30d9\u30f3\u30c8\u30b9\u30c8\u30a2",
+      "description": "\u30a4\u30d9\u30f3\u30c8\u5c65\u6b74\u306e\u6c38\u7d9a\u5316\u30fb\u518d\u751f",
+      "tags": [
+        "events",
+        "storage",
+        "persistence"
+      ],
+      "dependencies": [
+        "event-handlers"
+      ],
+      "priority": 3,
+      "metadata": {},
+      "estimated_duration": 120
+    },
+    {
+      "id": "resource-monitor",
+      "type": "resources",
+      "name": "\u30ea\u30bd\u30fc\u30b9\u76e3\u8996",
+      "description": "CPU\u30fb\u30e1\u30e2\u30ea\u30fb\u30c7\u30a3\u30b9\u30af\u4f7f\u7528\u7387\u306e\u8ffd\u8de1",
+      "tags": [
+        "resources",
+        "monitoring",
+        "metrics"
+      ],
+      "dependencies": [
+        "event-store"
+      ],
+      "priority": 5,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "auto-scaling",
+      "type": "resources",
+      "name": "\u81ea\u52d5\u30b9\u30b1\u30fc\u30ea\u30f3\u30b0",
+      "description": "\u8ca0\u8377\u306b\u5fdc\u3058\u305f\u30ea\u30bd\u30fc\u30b9\u8abf\u6574",
+      "tags": [
+        "resources",
+        "scaling",
+        "automation"
+      ],
+      "dependencies": [
+        "resource-monitor"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 240
+    },
+    {
+      "id": "resource-quota",
+      "type": "resources",
+      "name": "\u30ea\u30bd\u30fc\u30b9\u30af\u30a9\u30fc\u30bf",
+      "description": "\u30e6\u30fc\u30b6\u30fc\u30fb\u30bf\u30b9\u30af\u3054\u3068\u306e\u30ea\u30bd\u30fc\u30b9\u5236\u9650",
+      "tags": [
+        "resources",
+        "quota",
+        "limits"
+      ],
+      "dependencies": [
+        "auto-scaling"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 120
+    },
+    {
+      "id": "error-detection",
+      "type": "errors",
+      "name": "\u30a8\u30e9\u30fc\u691c\u77e5",
+      "description": "\u4f8b\u5916\u6355\u6349\u30fb\u30ed\u30b0\u8a18\u9332\u30fb\u5206\u985e",
+      "tags": [
+        "errors",
+        "detection",
+        "logging"
+      ],
+      "dependencies": [
+        "resource-quota"
+      ],
+      "priority": 5,
+      "metadata": {},
+      "estimated_duration": 120
+    },
+    {
+      "id": "auto-recovery",
+      "type": "errors",
+      "name": "\u81ea\u52d5\u5fa9\u65e7",
+      "description": "\u5931\u6557\u30bf\u30b9\u30af\u306e\u81ea\u52d5\u518d\u8a66\u884c\u30fb\u30d5\u30a9\u30fc\u30eb\u30d0\u30c3\u30af",
+      "tags": [
+        "errors",
+        "recovery",
+        "automation"
+      ],
+      "dependencies": [
+        "error-detection"
+      ],
+      "priority": 5,
+      "metadata": {},
+      "estimated_duration": 180
+    },
+    {
+      "id": "error-reporting",
+      "type": "errors",
+      "name": "\u30a8\u30e9\u30fc\u30ec\u30dd\u30fc\u30c8",
+      "description": "\u30a8\u30e9\u30fc\u96c6\u8a08\u30fb\u7d71\u8a08\u30fb\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9",
+      "tags": [
+        "errors",
+        "reporting",
+        "analytics"
+      ],
+      "dependencies": [
+        "auto-recovery"
+      ],
+      "priority": 4,
+      "metadata": {},
+      "estimated_duration": 120
     }
   ],
   "workers": [
     {
       "id": "ml-worker",
       "name": "ML Worker",
+      "type": "default",
+      "capacity": 10,
+      "max_parallel_tasks": 1,
+      "metadata": {}
+    },
+    {
+      "id": "automation-worker",
+      "name": "Automation Worker",
       "type": "default",
       "capacity": 10,
       "max_parallel_tasks": 1,
@@ -843,10 +1427,351 @@
       "error_message": null,
       "retry_count": 0,
       "progress": 1.0
+    },
+    {
+      "task_id": "cron-scheduler",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.479783",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "task-queue",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.482585",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "scheduler-ui",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.487610",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "scheduler-notifications",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.491195",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "scheduler-audit",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.494677",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "cli-framework",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.498047",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "cli-autocomplete",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.501885",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "cli-theming",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.505221",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "cli-config",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.508587",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "interactive-wizard",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.512461",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "confirmation-prompts",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.516909",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "progress-bars",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.521313",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "multiselect",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.525578",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "agent-discovery",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.529018",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "service-discovery",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.532415",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "config-discovery",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.535183",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "dependency-discovery",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.538717",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "agent-generator",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.543445",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "config-generator",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.548101",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "docker-generator",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.551751",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "ci-generator",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.555669",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "workflow-engine",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.559518",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "conditional-execution",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.563722",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "parallel-execution",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.566524",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "retry-strategy",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.570128",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "event-bus",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.573406",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "event-handlers",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.578460",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "event-store",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.583121",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "resource-monitor",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.589209",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "auto-scaling",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.592083",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "resource-quota",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.596552",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "error-detection",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.600934",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "auto-recovery",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.606162",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
+    },
+    {
+      "task_id": "error-reporting",
+      "status": "completed",
+      "worker_id": null,
+      "started_at": null,
+      "completed_at": "2026-02-12T15:19:38.609824",
+      "error_message": null,
+      "retry_count": 0,
+      "progress": 1.0
     }
   ],
   "worker_tasks": {
-    "ml-worker": []
+    "ml-worker": [],
+    "automation-worker": []
   },
   "config": {
     "default_batch_size": 5,
