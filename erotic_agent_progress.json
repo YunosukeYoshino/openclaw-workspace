@@ -1,0 +1,320 @@
+{
+  "project": "erotic_content_agents",
+  "total": 5,
+  "completed": 5,
+  "failed": 0,
+  "agents": [
+    {
+      "name": "erotic-artwork-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-fanart-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-character-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-artist-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-tag-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-artwork-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-fanart-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-character-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-artist-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-tag-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-artwork-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-fanart-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-character-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-artist-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-tag-agent",
+      "status": "failed",
+      "files": [],
+      "error": "'query'"
+    },
+    {
+      "name": "erotic-artwork-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-fanart-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-character-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-artist-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-tag-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-artwork-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-fanart-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-character-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-artist-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-tag-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-artwork-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-fanart-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-character-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-artist-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-tag-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-artwork-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-fanart-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-character-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-artist-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    {
+      "name": "erotic-tag-agent",
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    }
+  ],
+  "started_at": "2026-02-12T23:45:30.746120",
+  "completed_at": "2026-02-12T23:52:12.724019"
+}

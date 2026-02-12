@@ -1,1 +1,0 @@
-# Requirements\n\n# No external dependencies required for basic functionality
