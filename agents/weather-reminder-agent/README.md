@@ -1,10 +1,10 @@
-# budget-agent
+# weather-reminder-agent
 
 ## 概要 (Overview)
 
-家計の収入・支出管理・予算追跡
+天気予報に基づいた行動リマインダー
 
-Household income, expense, and budget tracking
+Weather-based activity reminders and suggestions
 
 ## 機能 (Features)
 

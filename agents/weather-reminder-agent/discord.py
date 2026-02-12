@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-shopping-agent - Discord Bot Module
+weather-reminder-agent - Discord Bot Module
 
-Discord bot for shopping-agent - 買い物リスト管理・在庫管理
+Discord bot for weather-reminder-agent - 天気予報に基づいた行動リマインダー
 """
 
 import discord
@@ -17,7 +17,7 @@ from db import Database
 
 
 class DiscordBot(commands.Bot):
-    """Discord bot for shopping-agent"""
+    """Discord bot for weather-reminder-agent"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -26,7 +26,7 @@ class DiscordBot(commands.Bot):
         super().__init__(
             command_prefix='!',
             intents=intents,
-            description="Shopping list management and inventory tracking"
+            description="Weather-based activity reminders and suggestions"
         )
 
         self.db = Database()

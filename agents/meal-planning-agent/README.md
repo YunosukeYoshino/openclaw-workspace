@@ -1,10 +1,10 @@
-# budget-agent
+# meal-planning-agent
 
 ## 概要 (Overview)
 
-家計の収入・支出管理・予算追跡
+週間献立の計画・レシピ管理・買い物リスト生成
 
-Household income, expense, and budget tracking
+Weekly meal planning, recipe management, and shopping list generation
 
 ## 機能 (Features)
 

@@ -1,10 +1,10 @@
-# budget-agent
+# household-chores-agent
 
 ## 概要 (Overview)
 
-家計の収入・支出管理・予算追跡
+家事タスクの管理・スケジュール・リマインダー
 
-Household income, expense, and budget tracking
+Household chores management, scheduling, and reminders
 
 ## 機能 (Features)
 

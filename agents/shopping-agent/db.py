@@ -1,204 +1,221 @@
 #!/usr/bin/env python3
 """
-買い物エージェント #34
-- 買い物リスト管理
-- 商品・カテゴリ・価格・購入状況・優先順位
+shopping-agent - Database Module
+
+SQLite database operations for agent.
 """
 
 import sqlite3
-from pathlib import Path
 from datetime import datetime
+from typing import List, Dict, Optional
+from pathlib import Path
 
-DB_PATH = Path(__file__).parent / "shopping.db"
 
-def init_db():
-    """データベース初期化"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+class Database:
+    """Database manager for shopping-agent"""
 
-    # 商品テーブル
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS items (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        category TEXT,
-        price INTEGER,
-        quantity INTEGER DEFAULT 1,
-        status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'purchased', 'cancelled')),
-        priority INTEGER CHECK(priority IN (1,2,3)),
-        store TEXT,
-        notes TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        purchased_at TIMESTAMP
-    )
-    ''')
+    def __init__(self, db_path: str = None):
+        if db_path is None:
+            db_path = Path(__file__).parent / "data.db"
+        self.db_path = db_path
+        self.conn = None
+        self._initialize()
 
-    # 更新トリガー
-    cursor.execute('''
-    CREATE TRIGGER IF NOT EXISTS update_items_purchased_at
-    AFTER UPDATE OF status ON items
-    WHEN NEW.status = 'purchased' AND OLD.status != 'purchased'
-    BEGIN
-        UPDATE items SET purchased_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
-    END
-    ''')
+    def _initialize(self):
+        self.conn = sqlite3.connect(self.db_path)
+        self.conn.row_factory = sqlite3.Row
+        self._create_tables()
 
-    # インデックス
-    cursor.execute('CREATE INDEX IF NOT EXISTS idx_items_status ON items(status)')
-    cursor.execute('CREATE INDEX IF NOT EXISTS idx_items_category ON items(category)')
-    cursor.execute('CREATE INDEX IF NOT EXISTS idx_items_priority ON items(priority)')
+    def _create_tables(self):
+        cursor = self.conn.cursor()
 
-    conn.commit()
-    conn.close()
-    print("✅ データベース初期化完了")
+        cursor.execute(
+            "CREATE TABLE IF NOT EXISTS chores ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "title TEXT NOT NULL,"
+            "description TEXT,"
+            "category TEXT,"
+            "frequency TEXT DEFAULT 'once',"
+            "priority INTEGER DEFAULT 0,"
+            "status TEXT DEFAULT 'pending',"
+            "due_date TEXT,"
+            "completed_date TEXT,"
+            "assigned_to TEXT,"
+            "notes TEXT,"
+            "created_at TEXT DEFAULT CURRENT_TIMESTAMP,"
+            "updated_at TEXT DEFAULT CURRENT_TIMESTAMP"
+            ")"
+        )
 
-def add_item(name, category=None, price=None, quantity=1, status='pending', priority=None, store=None, notes=None):
-    """商品追加"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+        cursor.execute(
+            "CREATE TABLE IF NOT EXISTS shopping_items ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "name TEXT NOT NULL,"
+            "category TEXT,"
+            "quantity INTEGER DEFAULT 1,"
+            "unit TEXT,"
+            "priority INTEGER DEFAULT 0,"
+            "status TEXT DEFAULT 'needed',"
+            "estimated_price REAL,"
+            "notes TEXT,"
+            "created_at TEXT DEFAULT CURRENT_TIMESTAMP"
+            ")"
+        )
 
-    cursor.execute('''
-    INSERT INTO items (name, category, price, quantity, status, priority, store, notes)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (name, category, price, quantity, status, priority, store, notes))
+        cursor.execute(
+            "CREATE TABLE IF NOT EXISTS bills ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "name TEXT NOT NULL,"
+            "category TEXT,"
+            "amount REAL NOT NULL,"
+            "due_date TEXT NOT NULL,"
+            "status TEXT DEFAULT 'pending',"
+            "paid_date TEXT,"
+            "payment_method TEXT,"
+            "notes TEXT,"
+            "created_at TEXT DEFAULT CURRENT_TIMESTAMP"
+            ")"
+        )
 
-    item_id = cursor.lastrowid
-    conn.commit()
-    conn.close()
-    return item_id
+        self.conn.commit()
 
-def update_item(item_id, name=None, category=None, price=None, quantity=None, status=None, priority=None, store=None, notes=None):
-    """商品更新"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    def add_chore(self, title: str, description: str = None,
+                  category: str = None, frequency: str = 'once',
+                  priority: int = 0, due_date: str = None,
+                  assigned_to: str = None) -> int:
+        cursor = self.conn.cursor()
+        cursor.execute(
+            "INSERT INTO chores (title, description, category, frequency, priority, due_date, assigned_to) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (title, description, category, frequency, priority, due_date, assigned_to)
+        )
+        self.conn.commit()
+        return cursor.lastrowid
 
-    updates = []
-    params = []
+    def get_chore(self, chore_id: int) -> Optional[Dict]:
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT * FROM chores WHERE id = ?', (chore_id,))
+        row = cursor.fetchone()
+        return dict(row) if row else None
 
-    if name:
-        updates.append("name = ?")
-        params.append(name)
-    if category:
-        updates.append("category = ?")
-        params.append(category)
-    if price is not None:
-        updates.append("price = ?")
-        params.append(price)
-    if quantity is not None:
-        updates.append("quantity = ?")
-        params.append(quantity)
-    if status:
-        updates.append("status = ?")
-        params.append(status)
-    if priority:
-        updates.append("priority = ?")
-        params.append(priority)
-    if store:
-        updates.append("store = ?")
-        params.append(store)
-    if notes:
-        updates.append("notes = ?")
-        params.append(notes)
+    def list_chores(self, status: str = None,
+                    category: str = None) -> List[Dict]:
+        cursor = self.conn.cursor()
+        query = 'SELECT * FROM chores WHERE 1=1'
+        params = []
 
-    if updates:
-        query = f"UPDATE items SET {', '.join(updates)} WHERE id = ?"
-        params.append(item_id)
+        if status:
+            query += ' AND status = ?'
+            params.append(status)
+
+        if category:
+            query += ' AND category = ?'
+            params.append(category)
+
+        query += ' ORDER BY priority DESC, due_date ASC'
         cursor.execute(query, params)
-        conn.commit()
+        return [dict(row) for row in cursor.fetchall()]
 
-    conn.close()
+    def update_chore(self, chore_id: int, **kwargs) -> bool:
+        valid_fields = ['title', 'description', 'category', 'frequency',
+                       'priority', 'status', 'due_date', 'completed_date',
+                       'assigned_to', 'notes']
+        update_fields = {k: v for k, v in kwargs.items() if k in valid_fields}
 
-def delete_item(item_id):
-    """商品削除"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+        if not update_fields:
+            return False
 
-    cursor.execute('DELETE FROM items WHERE id = ?', (item_id,))
+        update_fields['updated_at'] = datetime.now().isoformat()
+        set_clause = ', '.join([f'{k} = ?' for k in update_fields.keys()])
+        values = list(update_fields.values()) + [chore_id]
 
-    conn.commit()
-    conn.close()
+        cursor = self.conn.cursor()
+        cursor.execute(
+            f"UPDATE chores SET {set_clause} WHERE id = ?",
+            values
+        )
+        self.conn.commit()
+        return cursor.rowcount > 0
 
-def list_items(status=None, category=None, store=None, limit=20):
-    """商品一覧"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    def add_shopping_item(self, name: str, category: str = None,
+                         quantity: int = 1, unit: str = None,
+                         priority: int = 0, estimated_price: float = None) -> int:
+        cursor = self.conn.cursor()
+        cursor.execute(
+            "INSERT INTO shopping_items (name, category, quantity, unit, priority, estimated_price) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            (name, category, quantity, unit, priority, estimated_price)
+        )
+        self.conn.commit()
+        return cursor.lastrowid
 
-    query = '''
-    SELECT id, name, category, price, quantity, status, priority, store, notes, created_at, purchased_at
-    FROM items
-    '''
+    def list_shopping_items(self, status: str = None,
+                            category: str = None) -> List[Dict]:
+        cursor = self.conn.cursor()
+        query = 'SELECT * FROM shopping_items WHERE 1=1'
+        params = []
 
-    params = []
-    conditions = []
+        if status:
+            query += ' AND status = ?'
+            params.append(status)
 
-    if status:
-        conditions.append("status = ?")
-        params.append(status)
-    if category:
-        conditions.append("category = ?")
-        params.append(category)
-    if store:
-        conditions.append("store = ?")
-        params.append(store)
+        if category:
+            query += ' AND category = ?'
+            params.append(category)
 
-    if conditions:
-        query += ' WHERE ' + ' AND '.join(conditions)
+        query += ' ORDER BY priority DESC, created_at ASC'
+        cursor.execute(query, params)
+        return [dict(row) for row in cursor.fetchall()]
 
-    query += ' ORDER BY priority DESC, created_at ASC LIMIT ?'
-    params.append(limit)
+    def add_bill(self, name: str, amount: float, due_date: str,
+                 category: str = None, payment_method: str = None) -> int:
+        cursor = self.conn.cursor()
+        cursor.execute(
+            "INSERT INTO bills (name, category, amount, due_date, payment_method) "
+            "VALUES (?, ?, ?, ?, ?)",
+            (name, category, amount, due_date, payment_method)
+        )
+        self.conn.commit()
+        return cursor.lastrowid
 
-    cursor.execute(query, params)
-    items = cursor.fetchall()
-    conn.close()
-    return items
+    def list_bills(self, status: str = None) -> List[Dict]:
+        cursor = self.conn.cursor()
+        query = 'SELECT * FROM bills WHERE 1=1'
+        params = []
 
-def search_items(keyword):
-    """商品検索"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+        if status:
+            query += ' AND status = ?'
+            params.append(status)
 
-    cursor.execute('''
-    SELECT id, name, category, price, quantity, status, priority, store, notes, created_at, purchased_at
-    FROM items
-    WHERE name LIKE ? OR category LIKE ? OR store LIKE ? OR notes LIKE ?
-    ORDER BY priority DESC, created_at ASC
-    ''', (f'%{keyword}%', f'%{keyword}%', f'%{keyword}%', f'%{keyword}%'))
+        query += ' ORDER BY due_date ASC'
+        cursor.execute(query, params)
+        return [dict(row) for row in cursor.fetchall()]
 
-    items = cursor.fetchall()
-    conn.close()
-    return items
+    def get_statistics(self) -> Dict:
+        cursor = self.conn.cursor()
 
-def get_stats():
-    """統計情報"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+        cursor.execute('SELECT COUNT(*) FROM chores WHERE status = "pending"')
+        pending_chores = cursor.fetchone()[0]
 
-    stats = {}
+        cursor.execute('SELECT COUNT(*) FROM shopping_items WHERE status = "needed"')
+        needed_items = cursor.fetchone()[0]
 
-    # 全商品数
-    cursor.execute('SELECT COUNT(*) FROM items')
-    stats['total'] = cursor.fetchone()[0]
+        cursor.execute('SELECT SUM(amount) FROM bills WHERE status = "pending"')
+        pending_bills = cursor.fetchone()[0] or 0
 
-    # 未購入
-    cursor.execute('SELECT COUNT(*) FROM items WHERE status = "pending"')
-    stats['pending'] = cursor.fetchone()[0]
+        return {
+            'pending_chores': pending_chores,
+            'needed_shopping_items': needed_items,
+            'pending_bill_amount': round(pending_bills, 2)
+        }
 
-    # 購入済み
-    cursor.execute('SELECT COUNT(*) FROM items WHERE status = "purchased"')
-    stats['purchased'] = cursor.fetchone()[0]
+    def close(self):
+        if self.conn:
+            self.conn.close()
 
-    # 総額
-    cursor.execute('SELECT SUM(price * quantity) FROM items WHERE price IS NOT NULL')
-    total_amount = cursor.fetchone()[0]
-    stats['total_amount'] = total_amount if total_amount else 0
-
-    # 未購入の総額
-    cursor.execute('SELECT SUM(price * quantity) FROM items WHERE status = "pending" AND price IS NOT NULL')
-    pending_amount = cursor.fetchone()[0]
-    stats['pending_amount'] = pending_amount if pending_amount else 0
-
-    conn.close()
-    return stats
 
 if __name__ == '__main__':
-    init_db()
+    db = Database()
+    print(f"Database initialized at {db.db_path}")
+    print(f"Statistics: {db.get_statistics()}")
+    db.close()

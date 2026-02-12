@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-shopping-agent - Discord Bot Module
+appointment-agent - Discord Bot Module
 
-Discord bot for shopping-agent - 買い物リスト管理・在庫管理
+Discord bot for appointment-agent - 予約・約束の管理・リマインダー
 """
 
 import discord
@@ -17,7 +17,7 @@ from db import Database
 
 
 class DiscordBot(commands.Bot):
-    """Discord bot for shopping-agent"""
+    """Discord bot for appointment-agent"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -26,7 +26,7 @@ class DiscordBot(commands.Bot):
         super().__init__(
             command_prefix='!',
             intents=intents,
-            description="Shopping list management and inventory tracking"
+            description="Appointment and commitment management and reminders"
         )
 
         self.db = Database()

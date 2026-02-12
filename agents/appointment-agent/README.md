@@ -1,10 +1,10 @@
-# budget-agent
+# appointment-agent
 
 ## 概要 (Overview)
 
-家計の収入・支出管理・予算追跡
+予約・約束の管理・リマインダー
 
-Household income, expense, and budget tracking
+Appointment and commitment management and reminders
 
 ## 機能 (Features)
 

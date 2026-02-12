@@ -1,10 +1,10 @@
-# budget-agent
+# bill-tracking-agent
 
 ## 概要 (Overview)
 
-家計の収入・支出管理・予算追跡
+請求書・支払いの管理・リマインダー
 
-Household income, expense, and budget tracking
+Bill and payment management and reminders
 
 ## 機能 (Features)
 

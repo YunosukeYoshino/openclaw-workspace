@@ -1,10 +1,10 @@
-# budget-agent
+# home-maintenance-agent
 
 ## 概要 (Overview)
 
-家計の収入・支出管理・予算追跡
+家のメンテナンス・修理の計画・記録
 
-Household income, expense, and budget tracking
+Home maintenance and repair planning and recording
 
 ## 機能 (Features)
 

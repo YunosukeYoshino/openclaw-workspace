@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-shopping-agent - Discord Bot Module
+home-maintenance-agent - Discord Bot Module
 
-Discord bot for shopping-agent - 買い物リスト管理・在庫管理
+Discord bot for home-maintenance-agent - 家のメンテナンス・修理の計画・記録
 """
 
 import discord
@@ -17,7 +17,7 @@ from db import Database
 
 
 class DiscordBot(commands.Bot):
-    """Discord bot for shopping-agent"""
+    """Discord bot for home-maintenance-agent"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -26,7 +26,7 @@ class DiscordBot(commands.Bot):
         super().__init__(
             command_prefix='!',
             intents=intents,
-            description="Shopping list management and inventory tracking"
+            description="Home maintenance and repair planning and recording"
         )
 
         self.db = Database()

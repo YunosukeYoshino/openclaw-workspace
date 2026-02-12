@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-budget-agent - Database Module
+home-maintenance-agent - Database Module
 
 SQLite database operations for agent.
 """
@@ -12,7 +12,7 @@ from pathlib import Path
 
 
 class Database:
-    """Database manager for budget-agent"""
+    """Database manager for home-maintenance-agent"""
 
     def __init__(self, db_path: str = None):
         if db_path is None:

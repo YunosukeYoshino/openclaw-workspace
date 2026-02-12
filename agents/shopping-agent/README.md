@@ -1,74 +1,51 @@
 # shopping-agent
 
-shopping agentは、shoppingの管理と追跡を行うAIエージェントです。
+## 概要 (Overview)
 
-## Features
+買い物リスト管理・在庫管理
 
-- shoppingの記録
-- 統計情報の表示
-- 履歴管理
-- 検索・フィルタ機能
+Shopping list management and inventory tracking
 
-## Installation
+## 機能 (Features)
+
+- 家事タスク管理 (Household chore management)
+- ショッピングリスト管理 (Shopping list management)
+- 請求管理・リマインダー (Bill management and reminders)
+- 予算・支出追跡 (Budget and expense tracking)
+- スケジュール管理 (Schedule management)
+- 統計情報の表示 (Statistics display)
+- Discord Botによる自然言語操作 (Natural language control via Discord Bot)
+
+## インストール (Installation)
 
 ```bash
-cd agents/shopping-agent
 pip install -r requirements.txt
 ```
 
-## Usage
-
-### Discord Botとして実行
-
-```bash
-python discord.py
-```
-
-### データベース操作
+## 使用方法 (Usage)
 
 ```python
-from db import shopping_agentDB
+from db import Database
 
-db = shopping_agentDB()
-db.add_record({'field1': 'value1', 'field2': 'value2'})
-records = db.get_all_records()
+db = Database()
+
+# 家事追加 (Add chore)
+chore_id = db.add_chore(
+    title="掃除",
+    category="cleaning",
+    priority=2
+)
+
+# 一覧 (List)
+chores = db.list_chores(status='pending')
+
+# 完了 (Complete)
+db.update_chore(chore_id, status='completed')
+
+# 統計 (Statistics)
+stats = db.get_statistics()
 ```
 
-## Database Schema
+## ライセンス (License)
 
-The agent uses SQLite with the following schema:
-
-```sql
-CREATE TABLE shopping_agent (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-## Natural Language Commands
-
-The agent supports the following natural language commands (via Discord):
-
-- "Add shopping record"
-- "Show my shopping history"
-- "List recent shopping entries"
-
-## Configuration
-
-Configuration is stored in `config.json`:
-
-```json
-{
-    "database_path": "shopping-agent.db",
-    "log_level": "INFO"
-}
-```
-
-## Requirements
-
-See `requirements.txt` for dependencies.
-
-## License
-
-MIT License
+MIT
