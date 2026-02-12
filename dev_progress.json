@@ -190,12 +190,30 @@
       "name": "clothing-agent",
       "description": "服飾管理",
       "completed_at": "2026-02-12T02:42:00"
+    },
+    {
+      "name": "household-agent",
+      "description": "家事管理",
+      "completed_at": "2026-02-12T03:45:00"
+    },
+    {
+      "name": "garden-agent",
+      "description": "園芸記録",
+      "completed_at": "2026-02-12T03:45:00"
+    },
+    {
+      "name": "log-agent",
+      "description": "ログ管理",
+      "completed_at": "2026-02-12T03:45:00"
+    },
+    {
+      "name": "report-agent",
+      "description": "レポート管理",
+      "completed_at": "2026-02-12T03:45:00"
     }
   ],
   "in_progress": [],
   "pending": [
-    [68, "household-agent", "家事管理", "chores, maintenance, repairs"],
-    [69, "garden-agent", "園芸記録", "plants, garden activities"],
     [70, "car-agent", "車管理", "maintenance, fuel, repairs"],
     [71, "insurance-agent", "保険管理", "policies, claims, renewals"],
     [72, "tax-agent", "税金管理", "documents, deductions, filings"],
@@ -208,8 +226,6 @@
     [83, "message-agent", "メッセージ管理", "text messages, communication logs"],
     [85, "calendar-integration-agent", "カレンダー連携", "sync calendars, events"],
     [87, "webhook-agent", "Webhook管理", "webhook URLs, events, logs"],
-    [90, "report-agent", "レポート管理", "reports, analytics, exports"],
-    [91, "log-agent", "ログ管理", "system logs, monitoring"],
     [92, "debug-agent", "デバッグ管理", "debug sessions, issues"],
     [93, "test-agent", "テスト管理", "test cases, results"],
     [94, "deploy-agent", "デプロイ管理", "deployments, rollbacks"],
@@ -220,7 +236,5 @@
     [99, "cleanup-agent", "クリーンアップ管理", "scheduled cleanups"],
     [100, "archive-agent", "アーカイブ管理", "archiving, retention"]
   ],
-  "subagents": {
-    "agent-dev-62-66": "active"
-  }
+  "subagents": {}
 }
