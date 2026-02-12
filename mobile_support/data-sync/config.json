@@ -1,0 +1,9 @@
+{
+  "module": "data-sync",
+  "enabled": true,
+  "settings": {
+    "platform": "react-native",
+    "timeout": 30,
+    "retry_attempts": 3
+  }
+}

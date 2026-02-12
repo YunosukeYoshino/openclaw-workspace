@@ -1,0 +1,6 @@
+# Base requirements
+asyncio>=3.4.3
+typing>=3.10.0
+# UI
+@react-navigation/native>=6.1.0
+flutter_riverpod>=2.4.0

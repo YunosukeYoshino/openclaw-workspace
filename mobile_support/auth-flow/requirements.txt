@@ -1,0 +1,6 @@
+# Base requirements
+asyncio>=3.4.3
+typing>=3.10.0
+# Auth
+firebase>=6.0.0
+auth0-python>=4.0.0

@@ -1,0 +1,6 @@
+# Base requirements
+asyncio>=3.4.3
+typing>=3.10.0
+# Framework
+react-native>=0.72.0
+flutter>=3.16.0
