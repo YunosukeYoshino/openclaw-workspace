@@ -107,32 +107,87 @@ class AgentOrchestrator:
 
     def __init__(self):
         self.supervisor = Supervisor()
-        self.progress_file = Path(__file__).parent / "orchestrator_progress.json"
+        self.progress_file = Path(__file__).parent / "dev_progress.json"
         self.load_progress()
 
     def load_progress(self):
-        """進捗をロード"""
+        """進捗をロード (dev_progress.json から)"""
         if self.progress_file.exists():
             with open(self.progress_file, 'r') as f:
-                self.progress = json.load(f)
+                data = json.load(f)
+                # dev_progress.json形式を内部形式に変換
+                completed_names = [a['name'] for a in data.get('completed', [])]
+                completed_ids = []
+                for agent in self.ALL_AGENTS:
+                    if agent[1] in completed_names:
+                        completed_ids.append(agent[0])
+
+                in_progress_names = [a['name'] for a in data.get('in_progress', [])]
+                in_progress_ids = []
+                for agent in self.ALL_AGENTS:
+                    if agent[1] in in_progress_names:
+                        in_progress_ids.append(agent[0])
+
+                self.progress = {
+                    'start_time': data.get('start_time', datetime.now().isoformat()),
+                    'completed': completed_ids,
+                    'in_progress': in_progress_ids,
+                    'subagents': data.get('subagents', {}),
+                    'history': []
+                }
         else:
             self.progress = {
                 'start_time': datetime.now().isoformat(),
                 'completed': list(range(1, self.INITIAL_COMPLETED + 1)),
+                'in_progress': [],
                 'subagents': {},
                 'history': []
             }
 
     def save_progress(self):
-        """進捗を保存"""
-        self.progress['last_updated'] = datetime.now().isoformat()
-        with open(self.progress_file, 'w') as f:
-            json.dump(self.progress, f, indent=2)
+        """進捗を保存 (dev_progress.json形式で)"""
+        # 内部形式からdev_progress.json形式に変換
+        completed_names = {}
+        in_progress_list = []
 
-    def get_next_batch(self, batch_size: int = 2) -> List[Dict]:
+        for agent in self.ALL_AGENTS:
+            agent_id, name, description, tags = agent
+            if agent_id in self.progress['completed']:
+                if name not in completed_names:
+                    completed_names[name] = {
+                        'name': name,
+                        'description': description,
+                        'completed_at': datetime.now().isoformat()
+                    }
+            elif agent_id in self.progress['in_progress']:
+                in_progress_list.append({
+                    'name': name,
+                    'description': description
+                })
+
+        data = {
+            'start_time': self.progress['start_time'],
+            'completed': list(completed_names.values()),
+            'in_progress': in_progress_list,
+            'pending': [],
+            'subagents': self.progress['subagents'],
+            'last_updated': datetime.now().isoformat()
+        }
+
+        # pendingエージェントを追加
+        for agent in self.ALL_AGENTS:
+            agent_id, name, description, tags = agent
+            if agent_id not in self.progress['completed'] and agent_id not in self.progress['in_progress']:
+                if not any(p['name'] == name for p in in_progress_list):
+                    data['pending'].append([agent_id, name, description, tags])
+
+        with open(self.progress_file, 'w') as f:
+            json.dump(data, f, indent=2)
+
+    def get_next_batch(self, batch_size: int = 5) -> List[Dict]:
         """次のバッチを取得"""
         completed = set(self.progress['completed'])
-        in_progress = [a['id'] for a in self.progress['subagents'].values() if a['status'] == 'running']
+        in_progress = set(self.progress['in_progress'])
 
         pending = []
         for agent in self.ALL_AGENTS:
@@ -148,33 +203,55 @@ class AgentOrchestrator:
         return pending[:batch_size]
 
     def assign_batch(self, batch: List[Dict]) -> str:
-        """バッチをサブエージェントに割り当て（シミュレーション）"""
-        # ここではシミュレーション
-        # 実際には sessions_spawn を使用
+        """バッチをサブエージェントに割り当て"""
+        if not batch:
+            return "割り当てるタスクがありません"
 
+        # バッチのサマリーを作成
         batch_summary = '\n'.join([
             f"{a['id']}. {a['name']} - {a['description']}"
             for a in batch
         ])
 
-        print(f"\n📋 次のバッチ:\n{batch_summary}")
+        # タスクを記述
+        agent_names = ", ".join([a['name'] for a in batch])
+        task = f"以下のAIエージェントを開発してください:\n{batch_summary}\n\n各エージェント:\n- README.mdを作成\n- requirements.txtを作成\n- db.pyを作成（SQLiteを使用）\n- discord.pyの自然言語解析を追加\n- dev_progress.jsonに進捗を記録してgit pushしてください"
 
-        return batch_summary
+        # サブエージェント名を生成
+        import uuid
+        subagent_name = f"agent-dev-{batch[0]['id']}-{batch[-1]['id']}"
+
+        # 進行中にマーク
+        agent_ids = [a['id'] for a in batch]
+        self.mark_in_progress(agent_ids, subagent_name)
+
+        print(f"\n📋 次のバッチをサブエージェント '{subagent_name}' に割り当てました:")
+        print(f"{batch_summary}")
+
+        return subagent_name
 
     def get_summary(self) -> Dict:
         """サマリーを取得"""
         completed = len(self.progress['completed'])
+        in_progress = len(self.progress['in_progress'])
         total = len(self.ALL_AGENTS)
 
         return {
             'total': total,
             'completed': completed,
-            'remaining': total - completed,
+            'in_progress': in_progress,
+            'remaining': total - completed - in_progress,
             'progress_percent': (completed / total) * 100 if total > 0 else 0
         }
 
     def update_completion(self, agent_ids: List[int], subagent_name: str):
         """完了を更新"""
+        # in_progressから削除
+        for agent_id in agent_ids:
+            if agent_id in self.progress['in_progress']:
+                self.progress['in_progress'].remove(agent_id)
+
+        # completedに追加
         for agent_id in agent_ids:
             if agent_id not in self.progress['completed']:
                 self.progress['completed'].append(agent_id)
@@ -188,6 +265,20 @@ class AgentOrchestrator:
 
         self.save_progress()
 
+    def mark_in_progress(self, agent_ids: List[int], subagent_name: str):
+        """進行中にマーク"""
+        for agent_id in agent_ids:
+            if agent_id not in self.progress['completed'] and agent_id not in self.progress['in_progress']:
+                self.progress['in_progress'].append(agent_id)
+
+        self.progress['subagents'][subagent_name] = {
+            'status': 'running',
+            'agent_ids': agent_ids,
+            'started_at': datetime.now().isoformat()
+        }
+
+        self.save_progress()
+
     def display_status(self):
         """ステータスを表示"""
         summary = self.get_summary()
@@ -195,6 +286,7 @@ class AgentOrchestrator:
         print("\n📊 オーケストレーターステータス:")
         print(f"  全体: {summary['total']}個")
         print(f"  完了: {summary['completed']}個")
+        print(f"  進行中: {summary['in_progress']}個")
         print(f"  残り: {summary['remaining']}個")
         print(f"  進捗: {summary['progress_percent']:.1f}%")
 

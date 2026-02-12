@@ -4,9 +4,9 @@
 
 ### AIエージェント開発プロジェクト
 
-**目標**: 100個のAIエージェントを開発
+**目標**: 60個のAIエージェントを開発
 
-**進捗**: 2026-02-11現在、60個完了
+**進捗**: 2026-02-12現在、39個完了 (65.0%)
 
 **アーキテクチャ**:
 - 各エージェント: `db.py` (SQLite) + `discord.py` (自然言語解析)
@@ -17,14 +17,19 @@
 
 **監視システム**:
 - `supervisor.py`: サブエージェントの状態監視、ハートビートチェック、自動再起動
-- `orchestrator.py`: バッチ管理、進捗追跡
+- `orchestrator.py`: バッチ管理、進捗追跡、dev_progress.json と統合
 - `dev_progress_tracker.py`: 全体進捗管理
 
-**オーケストレーション汎用化**:
-- `generic_orchestrator.py`: 汎用タスクオーケストレーター
-- `generic_supervisor.py`: 汎用ワーカー監視
-- 他のプロジェクトでも使用可能
-- 完了したタスク: 2026-02-11 16:18
+**オーケストレーター修正 (2026-02-12)**:
+- orchestrator.py を dev_progress.json と統合
+- orchestrator_progress.json を廃止して dev_progress.json を一本化
+- in_progress 状態の管理を追加
+- バッチサイズを5個に変更（デフォルト）
+
+**使用するツール**:
+- `python3 orchestrator.py` - オーケストレーター実行
+- `python3 check_progress.py` - 進捗確認
+- `python3 check_remaining_agents.py` - 残りエージェント確認
 
 ### 完了したエージェント (60個)
 
