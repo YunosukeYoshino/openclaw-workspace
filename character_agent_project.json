@@ -1,0 +1,36 @@
+{
+  "project_name": "Character Agent Project",
+  "project_id": "character-agent-proj",
+  "start_time": "2026-02-12T21:20:00Z",
+  "agents": [
+    {
+      "name": "character-tracker-agent",
+      "description": "アニメ・ゲームキャラクター追跡エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "character-favorites-agent",
+      "description": "お気に入りキャラクターコレクションエージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "character-news-agent",
+      "description": "キャラクターニュース・情報収集エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "character-quotes-agent",
+      "description": "キャラクター名言・セリフ収集エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "character-media-agent",
+      "description": "キャラクターメディア（画像・動画）管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    }
+  ],
+  "orchestrator_script": "character_agent_orchestrator.py",
+  "progress_file": "character_agent_progress.json",
+  "total_agents": 5,
+  "status": "in_progress"
+}
