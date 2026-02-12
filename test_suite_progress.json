@@ -1,0 +1,76 @@
+{
+  "started_at": "2026-02-12T14:14:56.540604",
+  "completed_at": "2026-02-12T14:14:56.557625",
+  "total_tasks": 30,
+  "completed_tasks": 30,
+  "failed_tasks": [],
+  "tasks": {
+    "unit_tests": {
+      "description": "単体テスト構築",
+      "total": 10,
+      "completed": 10,
+      "tasks": [
+        "test-core - コアモジュールテスト",
+        "test-agents - エージェントテスト",
+        "test-integrations - 統合モジュールテスト",
+        "test-dashboard - ダッシュボードテスト",
+        "test-event-bus - イベントバステスト",
+        "test-message-bus - メッセージバステスト",
+        "test-workflow - ワークフローエンジンテスト",
+        "test-discovery - エージェントディスカバリーテスト",
+        "test-logger - イベントロガーテスト",
+        "test-webhook - Webhookマネージャーテスト"
+      ]
+    },
+    "integration_tests": {
+      "description": "統合テスト構築",
+      "total": 8,
+      "completed": 8,
+      "tasks": [
+        "test-agent-event - エージェントイベント連携テスト",
+        "test-integration-google - Google Calendar統合テスト",
+        "test-integration-notion - Notion統合テスト",
+        "test-integration-slack - Slack統合テスト",
+        "test-integration-teams - Teams統合テスト",
+        "test-dashboard-api - ダッシュボードAPIテスト",
+        "test-orc - オーケストレーター統合テスト",
+        "test-end-to-end - エンドツーエンド統合テスト"
+      ]
+    },
+    "e2e_tests": {
+      "description": "エンドツーエンドテスト構築",
+      "total": 6,
+      "completed": 6,
+      "tasks": [
+        "test-e2e-agent - エージェントライフサイクルE2E",
+        "test-e2e-workflow - ワークフロー実行E2E",
+        "test-e2e-dashboard - ダッシュボード操作E2E",
+        "test-e2e-integration - 外部統合E2E",
+        "test-e2e-deploy - デプロイメントE2E",
+        "test-e2e-rollback - ロールバックE2E"
+      ]
+    },
+    "load_tests": {
+      "description": "負荷テスト構築",
+      "total": 4,
+      "completed": 4,
+      "tasks": [
+        "test-load-agents - エージェント負荷テスト",
+        "test-load-api - API負荷テスト",
+        "test-load-db - データベース負荷テスト",
+        "test-load-event - イベントシステム負荷テスト"
+      ]
+    },
+    "coverage": {
+      "description": "カバレッジレポート設定",
+      "total": 2,
+      "completed": 2,
+      "tasks": [
+        "coverage-config - カバレッジ設定",
+        "coverage-report - カバレッジレポート生成"
+      ]
+    }
+  },
+  "updated_at": "2026-02-12T14:14:56.557630",
+  "completion_percentage": 100.0
+}
