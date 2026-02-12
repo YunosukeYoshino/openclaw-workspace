@@ -13,10 +13,14 @@ from datetime import datetime
 import re
 
 from db import (
-    init_db, create_suite, get_suites, create_case, get_cases,
-    start_test_run, complete_test_run, add_test_result, get_test_results,
-    get_test_runs, add_test_data, get_test_data, save_coverage, get_coverage,
-    create_test_issue, get_test_issues, resolve_issue, get_test_summary
+    init_db, create_suite, get_suites, delete_suite,
+    create_case, get_cases, delete_case,
+    start_test_run, complete_test_run, delete_test_run,
+    add_test_result, get_test_results, delete_test_result,
+    get_test_runs, add_test_data, get_test_data, delete_test_data,
+    save_coverage, get_coverage, delete_coverage,
+    create_test_issue, get_test_issues, resolve_issue, delete_test_issue,
+    get_test_summary
 )
 
 # Initialize database

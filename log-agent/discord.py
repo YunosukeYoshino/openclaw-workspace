@@ -15,7 +15,8 @@ import re
 from db import (
     init_db, add_log, get_logs, get_log_stats,
     create_source, get_sources, create_alert, get_alerts,
-    get_alert_history, acknowledge_alert, export_logs_to_file, search_logs
+    get_alert_history, acknowledge_alert, export_logs_to_file, search_logs,
+    delete_log, delete_source, delete_alert
 )
 
 # Initialize database
@@ -48,6 +49,11 @@ PATTERNS = {
 
     # Export
     r'ログエクスポート|export.*log': 'export_logs',
+
+    # Delete operations
+    r'ログ削除|delete.*log|remove.*log': 'delete_log',
+    r'ソース削除|delete.*source|remove.*source': 'delete_source',
+    r'アラート削除|delete.*alert|remove.*alert': 'delete_alert',
 
     # Help
     r'ヘルプ|使い方|help': 'help',
@@ -121,6 +127,24 @@ def extract_params(message, intent):
         match = re.search(r'ID[:\s]*(\d+)', message)
         if match:
             params['alert_history_id'] = int(match.group(1))
+
+    elif intent == 'delete_log':
+        # Extract log ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['log_id'] = int(match.group(1))
+
+    elif intent == 'delete_source':
+        # Extract source ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['source_id'] = int(match.group(1))
+
+    elif intent == 'delete_alert':
+        # Extract alert ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['alert_id'] = int(match.group(1))
 
     return params
 
@@ -324,13 +348,49 @@ async def export_logs_handler(ctx, params):
     output_path = export_logs_to_file()
     await ctx.send(f'📤 ログをエクスポートしました: {output_path}')
 
+async def delete_log_handler(ctx, params):
+    """Handle deleting a log"""
+    if 'log_id' not in params:
+        await ctx.send('❌ ログIDを指定してください。例: ログ削除 ID: 123')
+        return
+
+    success = delete_log(params['log_id'])
+    if success:
+        await ctx.send(f'🗑️ ログを削除しました (ID: {params["log_id"]})')
+    else:
+        await ctx.send(f'❌ ログの削除に失敗しました (ID: {params["log_id"]})')
+
+async def delete_source_handler(ctx, params):
+    """Handle deleting a log source"""
+    if 'source_id' not in params:
+        await ctx.send('❌ ソースIDを指定してください。例: ソース削除 ID: 123')
+        return
+
+    success = delete_source(params['source_id'])
+    if success:
+        await ctx.send(f'🗑️ ソースを削除しました (ID: {params["source_id"]})')
+    else:
+        await ctx.send(f'❌ ソースの削除に失敗しました (ID: {params["source_id"]})')
+
+async def delete_alert_handler(ctx, params):
+    """Handle deleting an alert"""
+    if 'alert_id' not in params:
+        await ctx.send('❌ アラートIDを指定してください。例: アラート削除 ID: 123')
+        return
+
+    success = delete_alert(params['alert_id'])
+    if success:
+        await ctx.send(f'🗑️ アラートを削除しました (ID: {params["alert_id"]})')
+    else:
+        await ctx.send(f'❌ アラートの削除に失敗しました (ID: {params["alert_id"]})')
+
 async def help_handler(ctx, params):
     """Handle help command"""
     embed = discord.Embed(title='📚 Log Agent - ヘルプ', color=discord.Color.blue())
 
-    embed.add_field(name='ログ操作', value='ログ記録 "Message"\nログ表示\nerror ログ\nwarning ログ\nログ検索 "query"\nログ統計', inline=False)
-    embed.add_field(name='ソース', value='ソース', inline=False)
-    embed.add_field(name='アラート', value='アラート\nアラート履歴\nアラート作成 "Alert Name" threshold 10', inline=False)
+    embed.add_field(name='ログ操作', value='ログ記録 "Message"\nログ表示\nerror ログ\nwarning ログ\nログ検索 "query"\nログ統計\nログ削除 ID: 123', inline=False)
+    embed.add_field(name='ソース', value='ソース\nソース削除 ID: 123', inline=False)
+    embed.add_field(name='アラート', value='アラート\nアラート履歴\nアラート作成 "Alert Name" threshold 10\nアラート削除 ID: 123', inline=False)
     embed.add_field(name='エクスポート', value='ログエクスポート', inline=False)
 
     await ctx.send(embed=embed)
@@ -348,6 +408,9 @@ HANDLERS = {
     'alert_history': alert_history_handler,
     'create_alert': create_alert_handler,
     'export_logs': export_logs_handler,
+    'delete_log': delete_log_handler,
+    'delete_source': delete_source_handler,
+    'delete_alert': delete_alert_handler,
     'help': help_handler,
 }
 
@@ -392,3 +455,86 @@ if __name__ == '__main__':
     # token = os.environ.get('DISCORD_TOKEN')
     # if token:
     #     run_bot(token)
+
+
+# ============================================
+# Test Code / テストコード
+# ============================================
+
+# Test functions (commented out, use for testing)
+"""
+# Test parsing
+def test_parse_message():
+    messages = [
+        "ログ記録 \"Error occurred\"",
+        "ログ表示",
+        "error ログ",
+        "warning ログ",
+        "ログ検索 \"database\"",
+        "ログ統計",
+        "ソース",
+        "アラート",
+        "アラート履歴",
+        "アラート作成 \"High Errors\" threshold 10",
+        "ログエクスポート",
+        "ログ削除 ID: 123",
+        "ソース削除 ID: 456",
+        "アラート削除 ID: 789",
+        "ヘルプ",
+    ]
+
+    for msg in messages:
+        intent = parse_message(msg)
+        params = extract_params(msg, intent)
+        print(f"Message: {msg}")
+        print(f"  Intent: {intent}")
+        print(f"  Params: {params}")
+        print()
+
+# Test add_log
+def test_add_log():
+    log_id = add_log(level='INFO', message='Test message', source='test')
+    print(f"Added log with ID: {log_id}")
+
+    logs = get_logs(limit=1)
+    print(f"Latest log: {logs[0]}")
+
+# Test search_logs
+def test_search_logs():
+    results = search_logs('error', limit=10)
+    print(f"Found {len(results)} logs matching 'error'")
+
+# Test log_stats
+def test_log_stats():
+    stats = get_log_stats(days=7)
+    print(f"Log stats: {stats}")
+
+# Test create_alert
+def test_create_alert():
+    alert_id = create_alert('Test Alert', 'ERROR logs > 10', level='ERROR', threshold=10)
+    print(f"Created alert with ID: {alert_id}")
+
+# Test delete functions
+def test_delete():
+    log_id = add_log(level='INFO', message='Test delete', source='test')
+    result = delete_log(log_id)
+    print(f"Delete log {log_id}: {result}")
+
+# Test acknowledge_alert
+def test_acknowledge_alert():
+    history = get_alert_history(limit=1)
+    if history:
+        acknowledge_alert(history[0]['id'])
+        print(f"Acknowledged alert trigger {history[0]['id']}")
+
+if __name__ == '__main__':
+    # Run tests
+    print("=== Testing Log Agent ===")
+    test_parse_message()
+    test_add_log()
+    test_search_logs()
+    test_log_stats()
+    test_create_alert()
+    test_delete()
+    test_acknowledge_alert()
+"""

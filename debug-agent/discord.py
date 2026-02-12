@@ -13,10 +13,12 @@ from datetime import datetime
 import re
 
 from db import (
-    init_db, create_session, get_session, list_sessions, update_session_status,
-    create_issue, get_issues, update_issue_status,
-    add_note, get_notes, create_solution, get_solutions, verify_solution,
-    add_resource, get_resources, start_time_entry, end_time_entry
+    init_db, create_session, get_session, list_sessions, update_session_status, delete_session,
+    create_issue, get_issues, update_issue_status, delete_issue,
+    add_note, get_notes, delete_note,
+    create_solution, get_solutions, verify_solution, delete_solution,
+    add_resource, get_resources, delete_resource,
+    start_time_entry, end_time_entry
 )
 
 # Initialize database
@@ -50,6 +52,13 @@ PATTERNS = {
 
     # Resource operations
     r'リソース|resource|add.*resource': 'add_resource',
+
+    # Delete operations
+    r'セッション削除|delete.*session|remove.*session': 'delete_session',
+    r'課題削除|delete.*issue|remove.*issue': 'delete_issue',
+    r'ノート削除|delete.*note|remove.*note': 'delete_note',
+    r'解決策削除|delete.*solution|remove.*solution': 'delete_solution',
+    r'リソース削除|delete.*resource|remove.*resource': 'delete_resource',
 
     # Help
     r'ヘルプ|使い方|help': 'help',
@@ -153,6 +162,36 @@ def extract_params(message, intent):
             params['resource_type'] = 'screenshot'
         elif 'log|ログ' in message.lower():
             params['resource_type'] = 'log'
+
+    elif intent == 'delete_session':
+        # Extract session ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['session_id'] = int(match.group(1))
+
+    elif intent == 'delete_issue':
+        # Extract issue ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['issue_id'] = int(match.group(1))
+
+    elif intent == 'delete_note':
+        # Extract note ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['note_id'] = int(match.group(1))
+
+    elif intent == 'delete_solution':
+        # Extract solution ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['solution_id'] = int(match.group(1))
+
+    elif intent == 'delete_resource':
+        # Extract resource ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['resource_id'] = int(match.group(1))
 
     return params
 
@@ -324,15 +363,75 @@ async def add_resource_handler(ctx, params):
     add_resource(session_id, resource_type, description=params['description'])
     await ctx.send(f'📎 リソースを追加しました: {params["description"]} ({resource_type})')
 
+async def delete_session_handler(ctx, params):
+    """Handle deleting a session"""
+    if 'session_id' not in params:
+        await ctx.send('❌ セッションIDを指定してください。例: セッション削除 ID: 123')
+        return
+
+    success = delete_session(params['session_id'])
+    if success:
+        await ctx.send(f'🗑️ セッションを削除しました (ID: {params["session_id"]})')
+    else:
+        await ctx.send(f'❌ セッションの削除に失敗しました (ID: {params["session_id"]})')
+
+async def delete_issue_handler(ctx, params):
+    """Handle deleting an issue"""
+    if 'issue_id' not in params:
+        await ctx.send('❌ 課題IDを指定してください。例: 課題削除 ID: 123')
+        return
+
+    success = delete_issue(params['issue_id'])
+    if success:
+        await ctx.send(f'🗑️ 課題を削除しました (ID: {params["issue_id"]})')
+    else:
+        await ctx.send(f'❌ 課題の削除に失敗しました (ID: {params["issue_id"]})')
+
+async def delete_note_handler(ctx, params):
+    """Handle deleting a note"""
+    if 'note_id' not in params:
+        await ctx.send('❌ ノートIDを指定してください。例: ノート削除 ID: 123')
+        return
+
+    success = delete_note(params['note_id'])
+    if success:
+        await ctx.send(f'🗑️ ノートを削除しました (ID: {params["note_id"]})')
+    else:
+        await ctx.send(f'❌ ノートの削除に失敗しました (ID: {params["note_id"]})')
+
+async def delete_solution_handler(ctx, params):
+    """Handle deleting a solution"""
+    if 'solution_id' not in params:
+        await ctx.send('❌ 解決策IDを指定してください。例: 解決策削除 ID: 123')
+        return
+
+    success = delete_solution(params['solution_id'])
+    if success:
+        await ctx.send(f'🗑️ 解決策を削除しました (ID: {params["solution_id"]})')
+    else:
+        await ctx.send(f'❌ 解決策の削除に失敗しました (ID: {params["solution_id"]})')
+
+async def delete_resource_handler(ctx, params):
+    """Handle deleting a resource"""
+    if 'resource_id' not in params:
+        await ctx.send('❌ リソースIDを指定してください。例: リソース削除 ID: 123')
+        return
+
+    success = delete_resource(params['resource_id'])
+    if success:
+        await ctx.send(f'🗑️ リソースを削除しました (ID: {params["resource_id"]})')
+    else:
+        await ctx.send(f'❌ リソースの削除に失敗しました (ID: {params["resource_id"]})')
+
 async def help_handler(ctx, params):
     """Handle help command"""
     embed = discord.Embed(title='📚 Debug Agent - ヘルプ', color=discord.Color.blue())
 
-    embed.add_field(name='セッション', value='セッション作成 "Title"\nセッション一覧\nセッション完了 ID: 123', inline=False)
-    embed.add_field(name='課題', value='課題作成 "Title"\n課題一覧\n課題解決 ID: 123', inline=False)
-    embed.add_field(name='ノート', value='ノート "Note content"', inline=False)
-    embed.add_field(name='解決策', value='解決策 "Solution description"\n解決策検証 ID: 123', inline=False)
-    embed.add_field(name='リソース', value='リソース "Description" (screenshot/log)', inline=False)
+    embed.add_field(name='セッション', value='セッション作成 "Title"\nセッション一覧\nセッション完了 ID: 123\nセッション削除 ID: 123', inline=False)
+    embed.add_field(name='課題', value='課題作成 "Title"\n課題一覧\n課題解決 ID: 123\n課題削除 ID: 123', inline=False)
+    embed.add_field(name='ノート', value='ノート "Note content"\nノート削除 ID: 123', inline=False)
+    embed.add_field(name='解決策', value='解決策 "Solution description"\n解決策検証 ID: 123\n解決策削除 ID: 123', inline=False)
+    embed.add_field(name='リソース', value='リソース "Description" (screenshot/log)\nリソース削除 ID: 123', inline=False)
 
     await ctx.send(embed=embed)
 
@@ -348,6 +447,11 @@ HANDLERS = {
     'add_solution': add_solution_handler,
     'verify_solution': verify_solution_handler,
     'add_resource': add_resource_handler,
+    'delete_session': delete_session_handler,
+    'delete_issue': delete_issue_handler,
+    'delete_note': delete_note_handler,
+    'delete_solution': delete_solution_handler,
+    'delete_resource': delete_resource_handler,
     'help': help_handler,
 }
 
@@ -392,3 +496,73 @@ if __name__ == '__main__':
     # token = os.environ.get('DISCORD_TOKEN')
     # if token:
     #     run_bot(token)
+
+
+# ============================================
+# Test Code / テストコード
+# ============================================
+
+"""
+# Test parsing
+def test_parse_message():
+    messages = [
+        "セッション作成 \"Login Bug\"",
+        "セッション一覧",
+        "セッション完了 ID: 123",
+        "課題作成 \"Login Error\"",
+        "課題一覧",
+        "課題解決 ID: 123",
+        "ノート \"This is a note\"",
+        "解決策 \"Fixed by updating API\"",
+        "解決策検証 ID: 123",
+        "リソース \"Error screenshot\"",
+        "セッション削除 ID: 123",
+        "課題削除 ID: 123",
+        "ノート削除 ID: 123",
+        "解決策削除 ID: 123",
+        "リソース削除 ID: 123",
+        "ヘルプ",
+    ]
+
+    for msg in messages:
+        intent = parse_message(msg)
+        params = extract_params(msg, intent)
+        print(f"Message: {msg}")
+        print(f"  Intent: {intent}")
+        print(f"  Params: {params}")
+        print()
+
+# Test create_session
+def test_create_session():
+    session_id = create_session("Test Session", description="Test description", priority="normal")
+    print(f"Created session with ID: {session_id}")
+
+# Test list_sessions
+def test_list_sessions():
+    sessions = list_sessions(limit=10)
+    print(f"Found {len(sessions)} sessions")
+    for s in sessions:
+        print(f"  ID {s['id']}: {s['title']} ({s['status']})")
+
+# Test create_issue
+def test_create_issue():
+    sessions = list_sessions(limit=1)
+    if sessions:
+        issue_id = create_issue(sessions[0]['id'], "Test Issue", severity="major")
+        print(f"Created issue with ID: {issue_id}")
+
+# Test delete functions
+def test_delete():
+    session_id = create_session("Test Delete")
+    result = delete_session(session_id)
+    print(f"Delete session {session_id}: {result}")
+
+if __name__ == '__main__':
+    # Run tests
+    print("=== Testing Debug Agent ===")
+    test_parse_message()
+    test_create_session()
+    test_list_sessions()
+    test_create_issue()
+    test_delete()
+"""
