@@ -55,6 +55,12 @@ PATTERNS = {
     r'テスト課題|test.*issues|issues': 'test_issues',
     r'課題解決|resolve.*issue': 'resolve_issue',
 
+    # Delete operations
+    r'スイート削除|delete.*suite|remove.*suite': 'delete_suite',
+    r'ケース削除|delete.*case|remove.*case': 'delete_case',
+    r'実行削除|delete.*run|remove.*run': 'delete_run',
+    r'課題削除|delete.*issue|remove.*issue': 'delete_issue',
+
     # Summary
     r'テスト概要|test.*summary|summary': 'test_summary',
 
@@ -118,6 +124,30 @@ def extract_params(message, intent):
     elif intent == 'resolve_issue':
         # Extract issue ID
         match = re.search(r'(\d+)', message)
+        if match:
+            params['issue_id'] = int(match.group(1))
+
+    elif intent == 'delete_suite':
+        # Extract suite ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['suite_id'] = int(match.group(1))
+
+    elif intent == 'delete_case':
+        # Extract case ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['case_id'] = int(match.group(1))
+
+    elif intent == 'delete_run':
+        # Extract run ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['run_id'] = int(match.group(1))
+
+    elif intent == 'delete_issue':
+        # Extract issue ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
         if match:
             params['issue_id'] = int(match.group(1))
 
@@ -290,6 +320,54 @@ async def resolve_issue_handler(ctx, params):
     resolve_issue(params['issue_id'])
     await ctx.send(f'✅ 課題を解決しました (ID: {params["issue_id"]})')
 
+async def delete_suite_handler(ctx, params):
+    """Handle deleting a test suite"""
+    if 'suite_id' not in params:
+        await ctx.send('❌ スイートIDを指定してください。例: スイート削除 ID: 123')
+        return
+
+    success = delete_suite(params['suite_id'])
+    if success:
+        await ctx.send(f'🗑️ テストスイートを削除しました (ID: {params["suite_id"]})')
+    else:
+        await ctx.send(f'❌ スイートの削除に失敗しました (ID: {params["suite_id"]})')
+
+async def delete_case_handler(ctx, params):
+    """Handle deleting a test case"""
+    if 'case_id' not in params:
+        await ctx.send('❌ ケースIDを指定してください。例: ケース削除 ID: 123')
+        return
+
+    success = delete_case(params['case_id'])
+    if success:
+        await ctx.send(f'🗑️ テストケースを削除しました (ID: {params["case_id"]})')
+    else:
+        await ctx.send(f'❌ ケースの削除に失敗しました (ID: {params["case_id"]})')
+
+async def delete_run_handler(ctx, params):
+    """Handle deleting a test run"""
+    if 'run_id' not in params:
+        await ctx.send('❌ 実行IDを指定してください。例: 実行削除 ID: 123')
+        return
+
+    success = delete_test_run(params['run_id'])
+    if success:
+        await ctx.send(f'🗑️ テスト実行を削除しました (ID: {params["run_id"]})')
+    else:
+        await ctx.send(f'❌ 実行の削除に失敗しました (ID: {params["run_id"]})')
+
+async def delete_issue_handler(ctx, params):
+    """Handle deleting a test issue"""
+    if 'issue_id' not in params:
+        await ctx.send('❌ 課題IDを指定してください。例: 課題削除 ID: 123')
+        return
+
+    success = delete_test_issue(params['issue_id'])
+    if success:
+        await ctx.send(f'🗑️ テスト課題を削除しました (ID: {params["issue_id"]})')
+    else:
+        await ctx.send(f'❌ 課題の削除に失敗しました (ID: {params["issue_id"]})')
+
 async def test_summary_handler(ctx, params):
     """Handle showing test summary"""
     summary = get_test_summary()
@@ -317,11 +395,11 @@ async def help_handler(ctx, params):
     """Handle help command"""
     embed = discord.Embed(title='📚 Test Agent - ヘルプ', color=discord.Color.blue())
 
-    embed.add_field(name='テストスイート', value='スイート作成 "Suite Name"\nスイート一覧', inline=False)
-    embed.add_field(name='テストケース', value='ケース作成 "Case Name" - スイートID: 1\nテストケース', inline=False)
-    embed.add_field(name='テスト実行', value='テスト実行 "Run Name" (environment: staging)\nテスト実行中\nテスト結果', inline=False)
+    embed.add_field(name='テストスイート', value='スイート作成 "Suite Name"\nスイート一覧\nスイート削除 ID: 123', inline=False)
+    embed.add_field(name='テストケース', value='ケース作成 "Case Name" - スイートID: 1\nテストケース\nケース削除 ID: 123', inline=False)
+    embed.add_field(name='テスト実行', value='テスト実行 "Run Name" (environment: staging)\nテスト実行中\nテスト結果\n実行削除 ID: 123', inline=False)
     embed.add_field(name='カバレッジ', value='カバレッジ', inline=False)
-    embed.add_field(name='課題管理', value='テスト課題\n課題解決 ID: 123', inline=False)
+    embed.add_field(name='課題管理', value='テスト課題\n課題解決 ID: 123\n課題削除 ID: 123', inline=False)
     embed.add_field(name='概要', value='テスト概要', inline=False)
 
     await ctx.send(embed=embed)
@@ -338,6 +416,10 @@ HANDLERS = {
     'coverage': coverage_handler,
     'test_issues': test_issues_handler,
     'resolve_issue': resolve_issue_handler,
+    'delete_suite': delete_suite_handler,
+    'delete_case': delete_case_handler,
+    'delete_run': delete_run_handler,
+    'delete_issue': delete_issue_handler,
     'test_summary': test_summary_handler,
     'help': help_handler,
 }
@@ -383,3 +465,70 @@ if __name__ == '__main__':
     # token = os.environ.get('DISCORD_TOKEN')
     # if token:
     #     run_bot(token)
+
+
+# ============================================
+# Test Code / テストコード
+# ============================================
+
+"""
+# Test parsing
+def test_parse_message():
+    messages = [
+        "スイート作成 \"My Suite\" \"Description\"",
+        "スイート一覧",
+        "ケース作成 \"My Case\"",
+        "テストケース",
+        "テスト実行 \"Run Name\"",
+        "テスト実行中",
+        "テスト結果",
+        "カバレッジ",
+        "テスト課題",
+        "課題解決 ID: 123",
+        "スイート削除 ID: 123",
+        "ケース削除 ID: 123",
+        "実行削除 ID: 123",
+        "課題削除 ID: 123",
+        "テスト概要",
+        "ヘルプ",
+    ]
+
+    for msg in messages:
+        intent = parse_message(msg)
+        params = extract_params(msg, intent)
+        print(f"Message: {msg}")
+        print(f"  Intent: {intent}")
+        print(f"  Params: {params}")
+        print()
+
+# Test create_suite
+def test_create_suite():
+    suite_id = create_suite("Test Suite", "Test description")
+    print(f"Created suite with ID: {suite_id}")
+
+# Test create_case
+def test_create_case():
+    suite_id = create_suite("Test Suite")
+    case_id = create_case(suite_id, "Test Case", test_type="unit", priority="medium")
+    print(f"Created case with ID: {case_id}")
+
+# Test start_test_run
+def test_start_run():
+    run_id = start_test_run("Test Run", "development")
+    print(f"Started test run with ID: {run_id}")
+
+# Test delete functions
+def test_delete():
+    suite_id = create_suite("Test Delete Suite")
+    result = delete_suite(suite_id)
+    print(f"Delete suite {suite_id}: {result}")
+
+if __name__ == '__main__':
+    # Run tests
+    print("=== Testing Test Agent ===")
+    test_parse_message()
+    test_create_suite()
+    test_create_case()
+    test_start_run()
+    test_delete()
+"""

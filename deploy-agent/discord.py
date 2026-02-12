@@ -13,13 +13,13 @@ from datetime import datetime
 import re
 
 from db import (
-    init_db, create_environment, get_environments,
-    start_deployment, complete_deployment, get_deployments,
-    add_deployment_step, update_deployment_step, get_deployment_steps,
-    start_rollback, complete_rollback, get_rollbacks,
-    add_artifact, get_artifacts, add_config, get_configs,
-    add_health_check, update_health_check, get_health_checks,
-    add_notification, get_notifications, get_deployment_stats
+    init_db, create_environment, get_environments, delete_environment,
+    start_deployment, complete_deployment, delete_deployment, get_deployments,
+    add_deployment_step, update_deployment_step, delete_deployment_step, get_deployment_steps,
+    start_rollback, complete_rollback, delete_rollback, get_rollbacks,
+    add_artifact, delete_artifact, get_artifacts, add_config, delete_config, get_configs,
+    add_health_check, update_health_check, delete_health_check, get_health_checks,
+    add_notification, delete_notification, get_notifications, get_deployment_stats
 )
 
 # Initialize database
@@ -57,6 +57,14 @@ PATTERNS = {
 
     # Statistics
     r'デプロイ統計|deploy.*stat|deployment.*stat': 'deploy_stats',
+
+    # Delete operations
+    r'環境削除|delete.*environment|remove.*environment': 'delete_environment',
+    r'デプロイ削除|delete.*deploy|remove.*deploy': 'delete_deployment',
+    r'ロールバック削除|delete.*rollback|remove.*rollback': 'delete_rollback',
+    r'アーティファクト削除|delete.*artifact|remove.*artifact': 'delete_artifact',
+    r'設定削除|delete.*config|remove.*config': 'delete_config',
+    r'ヘルスチェック削除|delete.*health|remove.*health': 'delete_health_check',
 
     # Help
     r'ヘルプ|使い方|help': 'help',
@@ -121,6 +129,42 @@ def extract_params(message, intent):
         match = re.search(r'ID[:\s]*(\d+)', message)
         if match:
             params['deployment_id'] = int(match.group(1))
+
+    elif intent == 'delete_environment':
+        # Extract environment ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['env_id'] = int(match.group(1))
+
+    elif intent == 'delete_deployment':
+        # Extract deployment ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['deployment_id'] = int(match.group(1))
+
+    elif intent == 'delete_rollback':
+        # Extract rollback ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['rollback_id'] = int(match.group(1))
+
+    elif intent == 'delete_artifact':
+        # Extract artifact ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['artifact_id'] = int(match.group(1))
+
+    elif intent == 'delete_config':
+        # Extract config ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['config_id'] = int(match.group(1))
+
+    elif intent == 'delete_health_check':
+        # Extract health check ID
+        match = re.search(r'ID[:\s]*(\d+)', message)
+        if match:
+            params['health_check_id'] = int(match.group(1))
 
     return params
 
@@ -381,14 +425,86 @@ async def deploy_stats_handler(ctx, params):
 
     await ctx.send(embed=embed)
 
+async def delete_environment_handler(ctx, params):
+    """Handle deleting an environment"""
+    if 'env_id' not in params:
+        await ctx.send('❌ 環境IDを指定してください。例: 環境削除 ID: 123')
+        return
+
+    success = delete_environment(params['env_id'])
+    if success:
+        await ctx.send(f'🗑️ 環境を削除しました (ID: {params["env_id"]})')
+    else:
+        await ctx.send(f'❌ 環境の削除に失敗しました (ID: {params["env_id"]})')
+
+async def delete_deployment_handler(ctx, params):
+    """Handle deleting a deployment"""
+    if 'deployment_id' not in params:
+        await ctx.send('❌ デプロイIDを指定してください。例: デプロイ削除 ID: 123')
+        return
+
+    success = delete_deployment(params['deployment_id'])
+    if success:
+        await ctx.send(f'🗑️ デプロイを削除しました (ID: {params["deployment_id"]})')
+    else:
+        await ctx.send(f'❌ デプロイの削除に失敗しました (ID: {params["deployment_id"]})')
+
+async def delete_rollback_handler(ctx, params):
+    """Handle deleting a rollback"""
+    if 'rollback_id' not in params:
+        await ctx.send('❌ ロールバックIDを指定してください。例: ロールバック削除 ID: 123')
+        return
+
+    success = delete_rollback(params['rollback_id'])
+    if success:
+        await ctx.send(f'🗑️ ロールバックを削除しました (ID: {params["rollback_id"]})')
+    else:
+        await ctx.send(f'❌ ロールバックの削除に失敗しました (ID: {params["rollback_id"]})')
+
+async def delete_artifact_handler(ctx, params):
+    """Handle deleting an artifact"""
+    if 'artifact_id' not in params:
+        await ctx.send('❌ アーティファクトIDを指定してください。例: アーティファクト削除 ID: 123')
+        return
+
+    success = delete_artifact(params['artifact_id'])
+    if success:
+        await ctx.send(f'🗑️ アーティファクトを削除しました (ID: {params["artifact_id"]})')
+    else:
+        await ctx.send(f'❌ アーティファクトの削除に失敗しました (ID: {params["artifact_id"]})')
+
+async def delete_config_handler(ctx, params):
+    """Handle deleting a config"""
+    if 'config_id' not in params:
+        await ctx.send('❌ 設定IDを指定してください。例: 設定削除 ID: 123')
+        return
+
+    success = delete_config(params['config_id'])
+    if success:
+        await ctx.send(f'🗑️ 設定を削除しました (ID: {params["config_id"]})')
+    else:
+        await ctx.send(f'❌ 設定の削除に失敗しました (ID: {params["config_id"]})')
+
+async def delete_health_check_handler(ctx, params):
+    """Handle deleting a health check"""
+    if 'health_check_id' not in params:
+        await ctx.send('❌ ヘルスチェックIDを指定してください。例: ヘルスチェック削除 ID: 123')
+        return
+
+    success = delete_health_check(params['health_check_id'])
+    if success:
+        await ctx.send(f'🗑️ ヘルスチェックを削除しました (ID: {params["health_check_id"]})')
+    else:
+        await ctx.send(f'❌ ヘルスチェックの削除に失敗しました (ID: {params["health_check_id"]})')
+
 async def help_handler(ctx, params):
     """Handle help command"""
     embed = discord.Embed(title='📚 Deploy Agent - ヘルプ', color=discord.Color.blue())
 
-    embed.add_field(name='環境管理', value='環境作成 "EnvName" (staging/production)\n環境一覧', inline=False)
-    embed.add_field(name='デプロイ', value='デプロイ "Version" (staging/production)\nデプロイ中\nデプロイ履歴\nデプロイ完了 ID: 123 success', inline=False)
-    embed.add_field(name='ロールバック', value='ロールバック ID: 123\nロールバック履歴', inline=False)
-    embed.add_field(name='詳細', value='アーティファクト\n設定\nヘルスチェック', inline=False)
+    embed.add_field(name='環境管理', value='環境作成 "EnvName" (staging/production)\n環境一覧\n環境削除 ID: 123', inline=False)
+    embed.add_field(name='デプロイ', value='デプロイ "Version" (staging/production)\nデプロイ中\nデプロイ履歴\nデプロイ完了 ID: 123 success\nデプロイ削除 ID: 123', inline=False)
+    embed.add_field(name='ロールバック', value='ロールバック ID: 123\nロールバック履歴\nロールバック削除 ID: 123', inline=False)
+    embed.add_field(name='詳細', value='アーティファクト\nアーティファクト削除 ID: 123\n設定\n設定削除 ID: 123\nヘルスチェック\nヘルスチェック削除 ID: 123', inline=False)
     embed.add_field(name='統計', value='デプロイ統計', inline=False)
 
     await ctx.send(embed=embed)
@@ -407,6 +523,12 @@ HANDLERS = {
     'configs': configs_handler,
     'health_checks': health_checks_handler,
     'deploy_stats': deploy_stats_handler,
+    'delete_environment': delete_environment_handler,
+    'delete_deployment': delete_deployment_handler,
+    'delete_rollback': delete_rollback_handler,
+    'delete_artifact': delete_artifact_handler,
+    'delete_config': delete_config_handler,
+    'delete_health_check': delete_health_check_handler,
     'help': help_handler,
 }
 
@@ -451,3 +573,74 @@ if __name__ == '__main__':
     # token = os.environ.get('DISCORD_TOKEN')
     # if token:
     #     run_bot(token)
+
+
+# ============================================
+# Test Code / テストコード
+# ============================================
+
+"""
+# Test parsing
+def test_parse_message():
+    messages = [
+        "環境作成 \"Staging\" staging",
+        "環境一覧",
+        "デプロイ \"v1.0.0\" staging",
+        "デプロイ中",
+        "デプロイ履歴",
+        "デプロイ完了 ID: 123 success",
+        "ロールバック ID: 123",
+        "ロールバック履歴",
+        "アーティファクト",
+        "設定",
+        "ヘルスチェック",
+        "デプロイ統計",
+        "環境削除 ID: 123",
+        "デプロイ削除 ID: 123",
+        "ロールバック削除 ID: 123",
+        "アーティファクト削除 ID: 123",
+        "設定削除 ID: 123",
+        "ヘルスチェック削除 ID: 123",
+        "ヘルプ",
+    ]
+
+    for msg in messages:
+        intent = parse_message(msg)
+        params = extract_params(msg, intent)
+        print(f"Message: {msg}")
+        print(f"  Intent: {intent}")
+        print(f"  Params: {params}")
+        print()
+
+# Test create_environment
+def test_create_environment():
+    env_id = create_environment("Test Environment", "development")
+    print(f"Created environment with ID: {env_id}")
+
+# Test start_deployment
+def test_start_deployment():
+    envs = get_environments()
+    if envs:
+        dep_id = start_deployment(envs[0]['id'], "v1.0.0", "test_user")
+        print(f"Started deployment with ID: {dep_id}")
+
+# Test get_deployment_stats
+def test_get_deployment_stats():
+    stats = get_deployment_stats(days=30)
+    print(f"Deployment stats: {stats}")
+
+# Test delete functions
+def test_delete():
+    env_id = create_environment("Test Delete", "development")
+    result = delete_environment(env_id)
+    print(f"Delete environment {env_id}: {result}")
+
+if __name__ == '__main__':
+    # Run tests
+    print("=== Testing Deploy Agent ===")
+    test_parse_message()
+    test_create_environment()
+    test_start_deployment()
+    test_get_deployment_stats()
+    test_delete()
+"""
