@@ -33,3 +33,4 @@ npm-debug.log*
 Thumbs.db
 
 venv
+agents/webhook-agent/webhook.db
