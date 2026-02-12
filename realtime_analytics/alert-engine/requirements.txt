@@ -1,0 +1,4 @@
+# Base requirements
+asyncio>=3.4.3
+aiohttp>=3.9.0
+slack-sdk>=3.23.0
