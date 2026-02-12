@@ -1,0 +1,6 @@
+# Base requirements
+asyncio>=3.4.3
+typing>=3.10.0
+# NLP
+nltk>=3.8.1
+spacy>=3.7.0

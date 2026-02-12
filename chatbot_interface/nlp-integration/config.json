@@ -1,0 +1,9 @@
+{
+  "module": "nlp-integration",
+  "enabled": true,
+  "settings": {
+    "max_messages": 100,
+    "timeout": 30,
+    "retry_attempts": 3
+  }
+}

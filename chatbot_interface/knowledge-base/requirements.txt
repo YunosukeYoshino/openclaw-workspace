@@ -1,0 +1,6 @@
+# Base requirements
+asyncio>=3.4.3
+typing>=3.10.0
+# Knowledge base
+faiss-cpu>=1.7.4
+sentence-transformers>=2.2.2

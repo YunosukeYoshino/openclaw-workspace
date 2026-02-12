@@ -1,0 +1,6 @@
+# Base requirements
+asyncio>=3.4.3
+typing>=3.10.0
+# Analytics
+pandas>=2.1.0
+matplotlib>=3.8.0

@@ -1,0 +1,5 @@
+# Base requirements
+asyncio>=3.4.3
+typing>=3.10.0
+# Chat engine
+websockets>=11.0.3

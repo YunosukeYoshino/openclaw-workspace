@@ -1,0 +1,6 @@
+# Base requirements
+asyncio>=3.4.3
+typing>=3.10.0
+# Platforms
+discord.py>=2.3.0
+slack-sdk>=3.23.0

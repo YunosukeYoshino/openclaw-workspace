@@ -1,0 +1,6 @@
+# Base requirements
+asyncio>=3.4.3
+typing>=3.10.0
+# Intent recognition
+transformers>=4.35.0
+torch>=2.1.0
