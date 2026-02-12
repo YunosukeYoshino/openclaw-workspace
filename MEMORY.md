@@ -127,3 +127,48 @@
 - エージェント間連携の強化
 - 外部サービス統合
 - テストとデプロイ準備
+
+---
+
+### Webダッシュボード開発プロジェクト
+
+**目標**: AIエージェントを管理・監視するためのWebダッシュボード
+
+**進捗**: 2026-02-12現在、基本機能完了
+**状態**: 🎉 基本完了
+
+**完了したタスク**:
+- ✅ dashboard-structure - HTML/CSS/JS基本構造
+- ✅ dashboard-api - FastAPIバックエンド
+- ✅ data-visualization - Chart.js可視化機能
+
+**実装済み機能**:
+- エージェント一覧表示
+- ステータス確認（稼働中/停止中/エラー）
+- エージェント詳細情報表示
+- 統計情報のリアルタイム表示
+- ステータス分布ドーナツチャート
+- 30秒ごとの自動リフレッシュ
+
+**作成したファイル**:
+- `/workspace/dashboard_orchestrator.py` - オーケストレーター
+- `/workspace/dashboard_orchestrator_viz.py` - 可視化オーケストレーター
+- `/workspace/dashboard_progress.json` - 進捗管理
+- `/workspace/dashboard/templates/index.html` - HTMLテンプレート
+- `/workspace/dashboard/static/css/style.css` - スタイルシート
+- `/workspace/dashboard/static/js/app.js` - フロントエンドアプリ
+- `/workspace/dashboard/api.py` - FastAPIアプリケーション
+- `/workspace/dashboard/requirements.txt` - 依存パッケージ
+- `/workspace/dashboard/README.md` - ドキュメント
+
+**Git Commits**:
+- `2964c54` - feat: Webダッシュボード開発開始 - 基本構造とAPI作成
+- `d9bd37c` - feat: Webダッシュボードにデータ可視化機能を追加
+
+**今後の拡張**:
+- エージェントの実際の起動/停止ロジック
+- リアルタイムログ表示
+- アクティビティ履歴チャート
+- エージェント間連携の視覚化
+- ユーザー認証・認可
+- 設定管理画面
