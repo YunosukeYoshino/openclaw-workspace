@@ -1,0 +1,36 @@
+{
+  "project_name": "Live Event Agent Project",
+  "project_id": "live-event-agent-proj",
+  "start_time": "2026-02-12T21:25:00Z",
+  "agents": [
+    {
+      "name": "live-event-schedule-agent",
+      "description": "ライブイベント・コンサートスケジュール管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "live-event-ticket-agent",
+      "description": "チケット販売・予約管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "live-event-voting-agent",
+      "description": "投票・アンケート管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "live-event-recap-agent",
+      "description": "イベントレポート・まとめ作成エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "live-stream-info-agent",
+      "description": "ライブ配信情報・アーカイブ管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    }
+  ],
+  "orchestrator_script": "live_event_agent_orchestrator.py",
+  "progress_file": "live_event_agent_progress.json",
+  "total_agents": 5,
+  "status": "in_progress"
+}

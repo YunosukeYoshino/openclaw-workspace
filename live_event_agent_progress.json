@@ -1,0 +1,34 @@
+{
+  "project": "Live Event Agent Project",
+  "start_time": "2026-02-12T21:25:00Z",
+  "agents": {
+    "live-event-schedule-agent": {
+      "status": "completed",
+      "path": "agents/live-event-schedule-agent",
+      "completed_at": "2026-02-12T21:19:28.460684"
+    },
+    "live-event-ticket-agent": {
+      "status": "completed",
+      "path": "agents/live-event-ticket-agent",
+      "completed_at": "2026-02-12T21:19:28.462516"
+    },
+    "live-event-voting-agent": {
+      "status": "completed",
+      "path": "agents/live-event-voting-agent",
+      "completed_at": "2026-02-12T21:19:28.464900"
+    },
+    "live-event-recap-agent": {
+      "status": "completed",
+      "path": "agents/live-event-recap-agent",
+      "completed_at": "2026-02-12T21:19:28.467343"
+    },
+    "live-stream-info-agent": {
+      "status": "completed",
+      "path": "agents/live-stream-info-agent",
+      "completed_at": "2026-02-12T21:19:28.470884"
+    }
+  },
+  "total": 5,
+  "completed": 5,
+  "last_update": "2026-02-12T21:19:28.470892"
+}
