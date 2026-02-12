@@ -1,0 +1,15 @@
+{
+  "module_name": "アラートルール",
+  "module_id": "alerting-rules",
+  "category": "monitoring",
+  "enabled": true,
+  "settings": {
+    "log_level": "INFO",
+    "timeout": 300,
+    "retry_attempts": 3
+  },
+  "production": {
+    "enabled": true,
+    "environment": "production"
+  }
+}

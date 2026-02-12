@@ -1,0 +1,15 @@
+{
+  "module_name": "セキュリティ強化",
+  "module_id": "security-hardening",
+  "category": "security",
+  "enabled": true,
+  "settings": {
+    "log_level": "INFO",
+    "timeout": 300,
+    "retry_attempts": 3
+  },
+  "production": {
+    "enabled": true,
+    "environment": "production"
+  }
+}
