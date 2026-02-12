@@ -53,8 +53,7 @@ class TaxDatabase:
         # Categories table
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS categories (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT UNIQUE NOT NULL,
+                name TEXT PRIMARY KEY,
                 name_en TEXT NOT NULL,
                 name_ja TEXT NOT NULL
             )
@@ -88,9 +87,9 @@ class TaxDatabase:
         cursor = self.conn.cursor()
         for cat_id, name_en, name_ja in default_categories:
             cursor.execute("""
-                INSERT OR IGNORE INTO categories (id, name, name_en, name_ja)
-                VALUES (?, ?, ?, ?)
-            """, (cat_id, cat_id, name_en, name_ja))
+                INSERT OR IGNORE INTO categories (name, name_en, name_ja)
+                VALUES (?, ?, ?)
+            """, (cat_id, name_en, name_ja))
         self.conn.commit()
 
     # User Settings
