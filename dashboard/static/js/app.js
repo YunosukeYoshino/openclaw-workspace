@@ -11,6 +11,7 @@ class Dashboard {
         await this.loadAgents();
         this.renderStats();
         this.renderAgentCards();
+        this.renderCharts();
         this.setupEventListeners();
         this.startAutoRefresh();
     }
@@ -110,6 +111,7 @@ class Dashboard {
                 await this.loadAgents();
                 this.renderStats();
                 this.renderAgentCards();
+                this.renderCharts();
                 this.selectAgent(result.agent);
             }
         } catch (error) {
@@ -138,3 +140,71 @@ class Dashboard {
 }
 
 const dashboard = new Dashboard();
+
+
+    renderCharts() {
+        this.renderStatusChart();
+    }
+
+    renderStatusChart() {
+        const ctx = document.getElementById('statusChart');
+        if (!ctx) return;
+
+        // 既存のチャートを破棄
+        if (this.statusChart) {
+            this.statusChart.destroy();
+        }
+
+        const active = this.agents.filter(a => a.status === 'active').length;
+        const inactive = this.agents.filter(a => a.status === 'inactive').length;
+        const error = this.agents.filter(a => a.status === 'error').length;
+
+        this.statusChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['稼働中', '停止中', 'エラー'],
+                datasets: [{
+                    data: [active, inactive, error],
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(148, 163, 184, 0.8)',
+                        'rgba(239, 68, 68, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(16, 185, 129, 1)',
+                        'rgba(148, 163, 184, 1)',
+                        'rgba(239, 68, 68, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#f1f5f9',
+                            padding: 20,
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'エージェントステータス分布',
+                        color: '#f1f5f9',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        padding: {
+                            bottom: 20
+                        }
+                    }
+                }
+            }
+        });
+    }
