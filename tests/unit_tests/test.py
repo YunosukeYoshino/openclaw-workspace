@@ -6,6 +6,7 @@ Unit Test Suite
 """
 
 import pytest
+import time
 from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime
 from typing import Dict, Any
