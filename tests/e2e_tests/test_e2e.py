@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 """
-test - load-event - イベントシステム負荷テスト
+test - e2e-rollback - ロールバックE2E
 
 Unit Test Suite
 """
 
 import pytest
+import time
 from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime
 from typing import Dict, Any
 
 
 class Test:
-    """load-event - イベントシステム負荷テスト テストスイート"""
+    """e2e-rollback - ロールバックE2E テストスイート"""
 
     def setup_method(self):
         """各テストメソッドの前に実行"""
@@ -84,7 +85,7 @@ class Test:
 
 # 統合テスト用クラス
 class TestIntegration:
-    """load-event - イベントシステム負荷テスト 統合テストスイート"""
+    """e2e-rollback - ロールバックE2E 統合テストスイート"""
 
     @pytest.fixture
     def mock_integration_service(self):
@@ -111,7 +112,7 @@ class TestIntegration:
 
 # パフォーマンステスト用クラス
 class TestPerformance:
-    """load-event - イベントシステム負荷テスト パフォーマンステストスイート"""
+    """e2e-rollback - ロールバックE2E パフォーマンステストスイート"""
 
     def test_response_time(self):
         """応答時間テスト"""

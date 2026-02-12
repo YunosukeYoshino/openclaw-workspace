@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 """
-test - e2e-rollback - ロールバックE2E
+test - end-to-end - エンドツーエンド統合テスト
 
 Unit Test Suite
 """
 
 import pytest
+import time
 from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime
 from typing import Dict, Any
 
 
 class Test:
-    """e2e-rollback - ロールバックE2E テストスイート"""
+    """end-to-end - エンドツーエンド統合テスト テストスイート"""
 
     def setup_method(self):
         """各テストメソッドの前に実行"""
@@ -84,7 +85,7 @@ class Test:
 
 # 統合テスト用クラス
 class TestIntegration:
-    """e2e-rollback - ロールバックE2E 統合テストスイート"""
+    """end-to-end - エンドツーエンド統合テスト 統合テストスイート"""
 
     @pytest.fixture
     def mock_integration_service(self):
@@ -111,7 +112,7 @@ class TestIntegration:
 
 # パフォーマンステスト用クラス
 class TestPerformance:
-    """e2e-rollback - ロールバックE2E パフォーマンステストスイート"""
+    """end-to-end - エンドツーエンド統合テスト パフォーマンステストスイート"""
 
     def test_response_time(self):
         """応答時間テスト"""
