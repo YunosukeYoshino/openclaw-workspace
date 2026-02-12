@@ -135,6 +135,48 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 
 **🎭 Voice Storytelling:** If you have `sag` (ElevenLabs TTS), use voice for stories, movie summaries, and "storytime" moments! Way more engaging than walls of text. Surprise people with funny voices.
 
+**📎 Sending Files to Discord:**
+
+Use the `message` tool with `sendAttachment` action to send files:
+
+```json
+{
+  "action": "sendAttachment",
+  "media": "/workspace/output.png",
+  "caption": "Here's the result",
+  "filename": "output.png"
+}
+```
+
+Or use `send` action with `media` parameter for inline media:
+
+```json
+{
+  "action": "send",
+  "message": "Here's what I found",
+  "media": "/workspace/chart.png"
+}
+```
+
+For base64-encoded content (generated in-memory):
+
+```json
+{
+  "action": "sendAttachment",
+  "buffer": "data:image/png;base64,iVBOR...",
+  "filename": "chart.png",
+  "caption": "Generated chart"
+}
+```
+
+Parameters:
+- `media`: File path (workspace-relative) or URL
+- `buffer`: Base64-encoded content or data: URL
+- `filename`: Override the filename shown in Discord
+- `contentType` / `mimeType`: Specify media type (auto-detected from filename)
+- `caption`: Text to include with the attachment
+- File size limit: 8MB
+
 **📝 Platform Formatting:**
 
 - **Discord/WhatsApp:** No markdown tables! Use bullet lists instead
