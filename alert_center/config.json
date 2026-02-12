@@ -1,0 +1,4 @@
+{
+  "db_path": "data/alerts.db",
+  "retention_days": 30
+}
