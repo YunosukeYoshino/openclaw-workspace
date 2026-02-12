@@ -1,0 +1,36 @@
+{
+  "project_name": "Creative Content Agent Project",
+  "project_id": "creative-content-agent-proj",
+  "start_time": "2026-02-12T21:25:00Z",
+  "agents": [
+    {
+      "name": "artwork-agent",
+      "description": "イラスト・アートワーク管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "fanart-agent",
+      "description": "ファンアートコレクション管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "doujin-agent",
+      "description": "同人誌・同人ソフト管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "figure-agent",
+      "description": "フィギュア・グッズコレクション管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "cosplay-agent",
+      "description": "コスプレ・衣装管理エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    }
+  ],
+  "orchestrator_script": "creative_content_agent_orchestrator.py",
+  "progress_file": "creative_content_agent_progress.json",
+  "total_agents": 5,
+  "status": "in_progress"
+}
