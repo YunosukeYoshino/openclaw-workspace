@@ -1,0 +1,106 @@
+{
+  "started_at": "2026-02-12T13:13:24.398305",
+  "projects": {
+    "ai_assistant_enhancement": {
+      "name": "AIアシスタントの強化",
+      "priority": 1,
+      "tasks": {
+        "nlu-enhancement": {
+          "name": "自然言語理解の向上",
+          "estimated_hours": 8,
+          "completed": true,
+          "started": true,
+          "started_at": "2026-02-12T13:13:24.398908",
+          "completed_at": null
+        },
+        "context-management": {
+          "name": "コンテキストマネジメント",
+          "estimated_hours": 6,
+          "completed": true,
+          "started": true,
+          "started_at": null,
+          "completed_at": null
+        },
+        "multimodal-support": {
+          "name": "マルチモーダル対応",
+          "estimated_hours": 10,
+          "completed": true,
+          "started": true,
+          "started_at": null,
+          "completed_at": null
+        }
+      },
+      "completed": true,
+      "started": true
+    },
+    "scalability": {
+      "name": "スケーラビリティの改善",
+      "priority": 2,
+      "tasks": {
+        "microservices": {
+          "name": "マイクロサービス化",
+          "estimated_hours": 12,
+          "completed": true,
+          "started": true,
+          "started_at": null,
+          "completed_at": null
+        },
+        "cloud-deployment": {
+          "name": "クラウドデプロイ",
+          "estimated_hours": 8,
+          "completed": true,
+          "started": true,
+          "started_at": null,
+          "completed_at": null
+        },
+        "load-balancing": {
+          "name": "負荷分散",
+          "estimated_hours": 6,
+          "completed": true,
+          "started": true,
+          "started_at": null,
+          "completed_at": null
+        }
+      },
+      "completed": true,
+      "started": false
+    },
+    "security": {
+      "name": "セキュリティ強化",
+      "priority": 1,
+      "tasks": {
+        "authentication": {
+          "name": "認証・認可システム",
+          "estimated_hours": 8,
+          "completed": true,
+          "started": true,
+          "started_at": null,
+          "completed_at": null
+        },
+        "encryption": {
+          "name": "データ暗号化",
+          "estimated_hours": 6,
+          "completed": true,
+          "started": true,
+          "started_at": null,
+          "completed_at": null
+        },
+        "access-logging": {
+          "name": "アクセスログ",
+          "estimated_hours": 6,
+          "completed": true,
+          "started": true,
+          "started_at": null,
+          "completed_at": null
+        }
+      },
+      "completed": true,
+      "started": false
+    }
+  },
+  "completed_tasks": [],
+  "in_progress_task": null,
+  "total_estimated_hours": 70,
+  "completed_hours": 70,
+  "updated_at": "2026-02-12T13:20:18.629403"
+}
