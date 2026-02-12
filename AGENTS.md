@@ -129,6 +129,33 @@ Reactions are lightweight social signals. Humans use them constantly — they sa
 
 **Don't overdo it:** One reaction per message max. Pick the one that fits best.
 
+## Sandbox Environment
+
+You run inside a Docker sandbox. Exec security is **full** — you can run any installed command freely.
+
+**Available commands:**
+- **Node.js/JS**: `node`, `npm`, `npx`, `bun`, `bunx`
+- **Python**: `python3`, `pip3`, `uv` (fast package manager: `uv pip install <pkg>`)
+- **Git/GitHub**: `git`, `gh` (if GH_TOKEN is set)
+- **Shell**: `bash`, `sh`, `cat`, `ls`, `find`, `mkdir`, `cp`, `mv`, `rm`, `touch`, `chmod`, `echo`, `printf`, `env`, `whoami`, `id`, `date`, `pwd`
+- **Text processing**: `jq`, `grep`, `rg` (ripgrep), `cut`, `sort`, `uniq`, `head`, `tail`, `tr`, `wc`, `sed`, `awk`, `xargs`, `tee`, `diff`, `patch`
+- **Network**: `curl`, `wget`
+- **Archives**: `tar`, `gzip`, `gunzip`, `zip`, `unzip`
+- **Media**: `ffmpeg`
+- **System**: `ps`, `file`
+
+**NOT available** (not installed in container):
+- `docker`, `docker-compose` (sandbox has no Docker-in-Docker)
+- `openclaw` (gateway CLI is outside the sandbox)
+- `apt-get`, `dpkg` (read-only filesystem)
+
+**Tips:**
+- If `pip3` doesn't work, use `uv pip install <pkg>` instead
+- For JS packages: `npm install <pkg>` or `bun add <pkg>`
+- Python venvs: `python3 -m venv /home/sandbox/venv && source /home/sandbox/venv/bin/activate`
+- HOME is `/home/sandbox`, TMPDIR is `/home/sandbox/tmp` (both writable + executable)
+- Workspace is at `/workspace` (read-write)
+
 ## Tools
 
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (camera names, SSH details, voice preferences) in `TOOLS.md`.
