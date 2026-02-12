@@ -235,6 +235,26 @@
       "name": "backup-schedule-agent",
       "description": "バックアップスケジュール",
       "completed_at": "2026-02-12T05:20:00.000000"
+    },
+    {
+      "name": "debug-agent",
+      "description": "デバッグ管理",
+      "completed_at": "2026-02-12T05:30:00.000000"
+    },
+    {
+      "name": "test-agent",
+      "description": "テスト管理",
+      "completed_at": "2026-02-12T05:30:00.000000"
+    },
+    {
+      "name": "deploy-agent",
+      "description": "デプロイ管理",
+      "completed_at": "2026-02-12T05:30:00.000000"
+    },
+    {
+      "name": "monitor-agent",
+      "description": "モニタリング管理",
+      "completed_at": "2026-02-12T05:30:00.000000"
     }
   ],
   "in_progress": [
@@ -279,30 +299,6 @@
       "webhook-agent",
       "Webhook管理",
       "webhook URLs, events, logs"
-    ],
-    [
-      92,
-      "debug-agent",
-      "デバッグ管理",
-      "debug sessions, issues"
-    ],
-    [
-      93,
-      "test-agent",
-      "テスト管理",
-      "test cases, results"
-    ],
-    [
-      94,
-      "deploy-agent",
-      "デプロイ管理",
-      "deployments, rollbacks"
-    ],
-    [
-      95,
-      "monitor-agent",
-      "モニタリング管理",
-      "metrics, alerts"
     ],
     [
       99,
@@ -351,7 +347,18 @@
       ],
       "started_at": "2026-02-12T05:20:00.000000",
       "completed_at": "2026-02-12T05:20:00.000000"
+    },
+    "agent-dev-ops-batch-3": {
+      "status": "completed",
+      "agent_names": [
+        "debug-agent",
+        "test-agent",
+        "deploy-agent",
+        "monitor-agent"
+      ],
+      "started_at": "2026-02-12T05:30:00.000000",
+      "completed_at": "2026-02-12T05:30:00.000000"
     }
   },
-  "last_updated": "2026-02-12T05:20:00.000000"
+  "last_updated": "2026-02-12T05:30:00.000000"
 }
