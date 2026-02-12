@@ -1,0 +1,7 @@
+{
+  "task_id": "text-generation",
+  "task_name": "Text Generation",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

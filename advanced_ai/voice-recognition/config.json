@@ -1,0 +1,7 @@
+{
+  "task_id": "voice-recognition",
+  "task_name": "Voice Recognition",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

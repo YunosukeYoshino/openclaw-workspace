@@ -1,0 +1,7 @@
+{
+  "task_id": "image-generation",
+  "task_name": "Image Generation",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

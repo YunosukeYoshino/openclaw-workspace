@@ -1,0 +1,7 @@
+{
+  "task_id": "qa-system",
+  "task_name": "Question Answering System",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

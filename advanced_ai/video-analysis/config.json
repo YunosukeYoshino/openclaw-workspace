@@ -1,0 +1,7 @@
+{
+  "task_id": "video-analysis",
+  "task_name": "Video Analysis",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

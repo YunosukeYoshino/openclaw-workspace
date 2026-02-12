@@ -1,0 +1,7 @@
+{
+  "task_id": "multimodal-fusion",
+  "task_name": "Multimodal Fusion",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

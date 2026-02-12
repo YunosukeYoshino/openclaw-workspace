@@ -1,0 +1,7 @@
+{
+  "task_id": "ocr-processing",
+  "task_name": "OCR Processing",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

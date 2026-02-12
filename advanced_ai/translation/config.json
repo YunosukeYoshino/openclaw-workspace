@@ -1,0 +1,7 @@
+{
+  "task_id": "translation",
+  "task_name": "Translation",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

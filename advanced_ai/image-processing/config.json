@@ -1,0 +1,7 @@
+{
+  "task_id": "image-processing",
+  "task_name": "Image Processing",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}

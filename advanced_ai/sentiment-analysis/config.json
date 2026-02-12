@@ -1,0 +1,7 @@
+{
+  "task_id": "sentiment-analysis",
+  "task_name": "Sentiment Analysis",
+  "enabled": true,
+  "log_level": "INFO",
+  "settings": {}
+}
