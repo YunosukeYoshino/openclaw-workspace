@@ -1,0 +1,11 @@
+{
+  "completed": [
+    "baseball-historical-match-agent",
+    "baseball-legend-profile-agent",
+    "baseball-evolution-agent",
+    "baseball-stadium-history-agent",
+    "baseball-culture-agent"
+  ],
+  "failed": [],
+  "total": 5
+}

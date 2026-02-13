@@ -1,0 +1,5 @@
+# 野球文化エージェント Requirements
+# Baseball Culture Agent Requirements
+
+discord.py>=2.3.0
+py-cord>=2.4.0

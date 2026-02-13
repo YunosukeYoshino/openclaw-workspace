@@ -1,0 +1,5 @@
+# 野球戦術・ルール進化エージェント Requirements
+# Baseball Evolution Agent Requirements
+
+discord.py>=2.3.0
+py-cord>=2.4.0

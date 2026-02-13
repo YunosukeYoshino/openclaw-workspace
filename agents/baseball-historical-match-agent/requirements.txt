@@ -1,0 +1,5 @@
+# 野球歴史的名試合エージェント Requirements
+# Baseball Historical Match Agent Requirements
+
+discord.py>=2.3.0
+py-cord>=2.4.0

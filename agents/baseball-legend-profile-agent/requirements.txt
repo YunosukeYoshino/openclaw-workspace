@@ -1,0 +1,5 @@
+# 野球伝説選手プロフィールエージェント Requirements
+# Baseball Legend Profile Agent Requirements
+
+discord.py>=2.3.0
+py-cord>=2.4.0
