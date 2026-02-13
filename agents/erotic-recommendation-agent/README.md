@@ -1,0 +1,94 @@
+# erotic-recommendation-agent
+
+えっちコンテンツ推薦エージェント
+
+## Description
+
+Recommend erotic content based on user preferences and history
+
+ユーザーの好みと履歴に基づいてえっちコンテンツを推薦
+
+## Features
+
+- エントリーの追加・管理
+- タグベースの検索・分類
+- Discord Botによる対話的な操作
+- SQLiteデータベースによるデータ永続化
+
+## Installation
+
+```bash
+cd agents/erotic-recommendation-agent
+pip install -r requirements.txt
+```
+
+## Usage
+
+### As a Python Module
+
+```python
+from erotic-recommendation-agent.agent import EroticRecommendationAgentAgent
+
+agent = EroticRecommendationAgentAgent()
+entry_id = agent.add_entry(
+    title="サンプルタイトル",
+    content="サンプルコンテンツ",
+    artist="イラストレーター名",
+    tags=["tag1", "tag2"]
+)
+print(f"Created entry: {{entry_id}}")
+```
+
+### Discord Bot
+
+```bash
+export DISCORD_BOT_TOKEN="your_token_here"
+python -m erotic-recommendation-agent.discord
+```
+
+## Discord Commands
+
+| Command | Description |
+|---------|-------------|
+| `!add <title> [content]` | エントリーを追加 |
+| `!list [limit]` | エントリー一覧 |
+| `!search <query>` | エントリーを検索 |
+| `!get <id>` | エントリー詳細 |
+| `!help` | ヘルプ |
+
+## Database Schema
+
+- `entries` - コンテンツエントリー
+- `tags` - タグ
+- `entry_tags` - エントリーとタグの紐付け
+- recommendations
+- user_preferences
+- entries
+
+## API Reference
+
+### Agent Class
+
+```python
+class EroticRecommendationAgentAgent:
+    def __init__(self, db_path: str = "erotic-recommendation-agent.db")
+    def add_entry(self, title, content="", source_url="", artist="", tags=None) -> int
+    def get_entry(self, entry_id) -> Optional[Dict]
+    def list_entries(self, limit=100, offset=0) -> List[Dict]
+    def search_entries(self, query) -> List[Dict]
+```
+
+## Development
+
+```bash
+# Run tests
+pytest tests/
+
+# Format code
+black .
+flake8 .
+```
+
+## License
+
+MIT License
