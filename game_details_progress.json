@@ -1,0 +1,28 @@
+{
+  "project_name": "ゲーム詳細エージェント",
+  "project_id": "game_details_agents",
+  "started_at": "2026-02-13T00:16:54.347703",
+  "completed_at": "2026-02-13T00:16:54.359909",
+  "agents": {
+    "game-walkthrough-agent": {
+      "status": "completed",
+      "created_at": "2026-02-13T00:16:54.349717"
+    },
+    "game-cheat-agent": {
+      "status": "completed",
+      "created_at": "2026-02-13T00:16:54.351970"
+    },
+    "game-mod-agent": {
+      "status": "completed",
+      "created_at": "2026-02-13T00:16:54.352754"
+    },
+    "game-community-agent": {
+      "status": "completed",
+      "created_at": "2026-02-13T00:16:54.353918"
+    },
+    "game-speedrun-agent": {
+      "status": "completed",
+      "created_at": "2026-02-13T00:16:54.359742"
+    }
+  }
+}
