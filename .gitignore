@@ -29,6 +29,11 @@ build/
 *.log
 npm-debug.log*
 
+# Backups
+backups/
+health_check_result.json
+maintenance_report_*.json
+
 # OS
 Thumbs.db
 
