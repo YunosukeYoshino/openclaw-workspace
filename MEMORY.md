@@ -1,9 +1,9 @@
 # MEMORY.md
 
-## 全プロジェクト進捗サマリー (2026-02-13 05:45 UTC)
+## 全プロジェクト進捗サマリー (2026-02-13 07:27 UTC)
 
-**完了済みプロジェクト**: 56個
-**総エージェント数**: 257個 (100%完全 - agent.py, db.py, discord.py, README.md, requirements.txt)
+**完了済みプロジェクト**: 58個
+**総エージェント数**: 267個 (100%完全 - agent.py, db.py, discord.py, README.md, requirements.txt)
 
 ### 完了済みプロジェクト一覧
 
@@ -462,6 +462,20 @@
     - erotic-discovery-agent - えっちコンテンツディスカバリーエージェント
     - erotic-personalization-agent - えっちコンテンツパーソナライゼーションエージェント
 
+57. ✅ **野球エキスパートエージェント** (5個)
+    - baseball-scouting-pro-agent - 野球スカウティングプロエージェント
+    - baseball-analytics-pro-agent - 野球アナリティクスプロエージェント
+    - baseball-coaching-agent - 野球コーチングエージェント
+    - baseball-market-agent - 野球マーケットエージェント
+    - baseball-broadcast-agent - 野球放送エージェント
+
+58. ✅ **えっちコンテンツ高度エージェントV6** (5個)
+    - erotic-ai-generator-agent - えっちAI生成エージェント
+    - erotic-analytics-advanced-agent - えっち高度アナリティクスエージェント
+    - erotic-content-filter-agent - えっちコンテンツフィルターエージェント
+    - erotic-recommendation-ml-agent - えっちML推薦エージェント
+    - erotic-tag-auto-agent - えっち自動タグ付けエージェント
+
 55. ✅ **野球高度分析エージェントV4** (5個)
     - baseball-advanced-metrics-agent - 野球高度メトリクス分析エージェント
     - baseball-machine-learning-agent - 野球機械学習予測エージェント
@@ -474,8 +488,8 @@
 ## システム稼働モード
 
 ### 現在の状態
-- ✅ 55個のプロジェクト完了
-- ✅ 252個のエージェント運用可能
+- ✅ 58個のプロジェクト完了
+- ✅ 267個のエージェント運用可能
 - ✅ テストスイート構築完了
 - ✅ モニタリング・ロギングシステム完了
 - ✅ 本番環境デプロイ準備完了
