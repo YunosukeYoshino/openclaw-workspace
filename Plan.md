@@ -644,3 +644,19 @@
 - 毎日: memory/ の更新、git commit & push
 - 毎週: システムヘルスチェック実行
 - 毎月: 全テスト実行
+
+---
+
+## 次期プロジェクト案 V20 (2026-02-13 15:45)
+
+詳細は `next_projects_v20.md` を参照
+
+**5つの優先順位プロジェクト** (各5エージェント):
+1. 野球歴史・伝承エージェント / Baseball History & Legacy Agents
+2. ゲームモデリング・シミュレーションエージェント / Game Modeling & Simulation Agents
+3. えっちコンテンツAI解析・推薦エージェント / Erotic Content AI Analysis & Recommendation Agents
+4. 野球スカウティング・ドラフトエージェント / Baseball Scouting & Draft Agents
+5. ゲームeスポーツ・大会エージェント / Game Esports & Tournament Agents
+
+**予定新規エージェント数**: 25個
+**実施予定**: 2026-02-13 以降
