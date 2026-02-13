@@ -1,7 +1,4 @@
-# ゲーム理論エージェント Requirements
-# Game Theory Agent Requirements
-
 discord.py>=2.3.0
-py-cord>=2.4.0
+aiohttp>=3.9.0
+python-dotenv>=1.0.0
 numpy>=1.24.0
-scipy>=1.10.0

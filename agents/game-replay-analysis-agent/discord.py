@@ -1,58 +1,172 @@
 #!/usr/bin/env python3
 """
-ゲームリプレイ分析エージェント Discord インテグレーション
+ゲームリプレイ分析エージェント - Discord Bot Module
+ゲームモデリング・シミュレーションエージェントDiscordボットモジュール
 """
 
 import discord
 from discord.ext import commands
 import logging
+import json
+from typing import Optional
 
-class GameReplayAnalysisAgentDiscord(commands.Cog):
-    """ゲームリプレイ分析エージェント Discord ボット"""
+from db import GameReplayAnalysisAgentDatabase
 
-    def __init__(self, bot, db):
-        self.bot = bot
-        self.db = db
-        self.logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
-    @commands.command(name="game_replay_analysis_agent_info")
-    async def agent_info(self, ctx):
-        """エージェント情報を表示"""
-        embed = discord.Embed(
-            title="ゲームリプレイ分析エージェント",
-            description="リプレイファイルの解析、重要局面の抽出、プレイヤー行動のパターン認識",
-            color=discord.Color.blue()
-        )
-        embed.add_field(name="エージェント名", value="game-replay-analysis-agent")
-        await ctx.send(embed=embed)
+class GameReplayAnalysisAgentBot(commands.Bot):
+    """ゲームモデリング・シミュレーションDiscordボット"""
 
-    @commands.command(name="game_replay_analysis_agent_sim")
-    async def run_simulation(self, ctx, iterations: int = 1000):
-        """シミュレーションを実行"""
-        await ctx.send(f"シミュレーションを実行中 ({iterations}回)...")
+    def __init__(self, command_prefix: str = "!modeling", db_path: str = "game_modeling.db"):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix=command_prefix, intents=intents)
 
-    @commands.command(name="game_replay_analysis_agent_stats")
-    async def show_stats(self, ctx):
-        """統計情報を表示"""
-        simulations = self.db.list_simulations(limit=10)
-        if not simulations:
-            await ctx.send("シミュレーション結果がありません")
+        self.db = GameReplayAnalysisAgentDatabase(db_path)
+
+    async def on_ready(self):
+        logger.info(f"{self.user.name} is ready!")
+
+    async def on_message(self, message: discord.Message):
+        if message.author == self.user:
+            return
+
+        await self.process_commands(message)
+
+    @commands.command(name="prob", aliases=["probability"])
+    async def get_probability(self, ctx: commands.Context, event_name: Optional[str] = None):
+        """確率計算結果を表示"""
+        calcs = self.db.get_probability_calculations(event_name)
+
+        if not calcs:
+            await ctx.send("No probability calculations found.")
             return
 
         embed = discord.Embed(
-            title="ゲームリプレイ分析エージェント - 統計",
-            color=discord.Color.green()
+            title="Probability Calculations / 確率計算",
+            color=discord.Color.blue()
         )
-        for sim in simulations[:5]:
+
+        for calc in calcs[:5]:
             embed.add_field(
-                name=sim['name'] or f"ID: {sim['id']}",
-                value=f"作成日: {sim['created_at']}",
+                name=f"{calc['event_name']}",
+                value=f"Success Rate: {calc['success_rate']}\nCalculated: {calc['calculated_probability']:.4f}\nTrials: {calc['trials']}",
                 inline=False
             )
+
         await ctx.send(embed=embed)
 
-def setup(bot):
-    """ボットにCogを追加"""
-    from .db import GameReplayAnalysisAgentDB
-    db = GameReplayAnalysisAgentDB()
-    bot.add_cog(GameReplayAnalysisAgentDiscord(bot, db))
+    @commands.command(name="sim", aliases=["simulation"])
+    async def get_simulation(self, ctx: commands.Context, sim_type: Optional[str] = None):
+        """シミュレーション結果を表示"""
+        sims = self.db.get_simulations(sim_type)
+
+        if not sims:
+            await ctx.send("No simulations found.")
+            return
+
+        embed = discord.Embed(
+            title="Simulations / シミュレーション",
+            color=discord.Color.green()
+        )
+
+        for sim in sims[:5]:
+            results = json.loads(sim.get("results_json", "[]"))[:3]
+            embed.add_field(
+                name=f"{sim['simulation_type']} ({sim['iterations']} iterations)",
+                value=f"Average: {sim['average_result']:.2f}\nSample: {results}",
+                inline=False
+            )
+
+        await ctx.send(embed=embed)
+
+    @commands.command(name="mech", aliases=["mechanics"])
+    async def get_mechanics(self, ctx: commands.Context):
+        """メカニクス一覧を表示"""
+        mechanics = self.db.get_mechanics()
+
+        if not mechanics:
+            await ctx.send("No mechanics found.")
+            return
+
+        embed = discord.Embed(
+            title="Game Mechanics / ゲームメカニクス",
+            color=discord.Color.orange()
+        )
+
+        for mech in mechanics[:5]:
+            balance = f"Balance: {mech.get('balance_score', 'N/A')}"
+            embed.add_field(
+                name=f"{mech['mechanic_name']}",
+                value=f"Formula: {mech.get('formula', 'N/A')}\n{balance}",
+                inline=False
+            )
+
+        await ctx.send(embed=embed)
+
+    @commands.command(name="theory", aliases=["gametheory"])
+    async def get_game_theory(self, ctx: commands.Context):
+        """ゲーム理論分析を表示"""
+        analyses = self.db.get_game_theory_analyses()
+
+        if not analyses:
+            await ctx.send("No game theory analyses found.")
+            return
+
+        embed = discord.Embed(
+            title="Game Theory Analyses / ゲーム理論分析",
+            color=discord.Color.purple()
+        )
+
+        for analysis in analyses[:5]:
+            embed.add_field(
+                name=f"{analysis['scenario_name']} ({analysis['players_count']} players)",
+                value=f"Nash: {analysis.get('nash_equilibrium', 'N/A')}\nOptimal: {analysis.get('optimal_strategy', 'N/A')}",
+                inline=False
+            )
+
+        await ctx.send(embed=embed)
+
+    @commands.command(name="replay", aliases=["replays"])
+    async def get_replays(self, ctx: commands.Context, game_name: Optional[str] = None):
+        """リプレイ一覧を表示"""
+        replays = self.db.get_replays(game_name)
+
+        if not replays:
+            await ctx.send("No replays found.")
+            return
+
+        embed = discord.Embed(
+            title="Replay Analyses / リプレイ分析",
+            color=discord.Color.gold()
+        )
+
+        for replay in replays[:5]:
+            patterns = json.loads(replay.get("patterns_found", "[]"))[:3]
+            embed.add_field(
+                name=f"{replay['game_name']} - {replay['player_name']}",
+                value=f"Patterns: {patterns}",
+                inline=False
+            )
+
+        await ctx.send(embed=embed)
+
+    @commands.command(name="calculate", aliases=["calc"])
+    async def calculate_prob(self, ctx: commands.Context, success_rate: float):
+        """確率を計算"""
+        await ctx.send(f"Calculating probability with success rate: {success_rate}")
+        # 実際の計算は agent.py を使用
+
+def main():
+    import os
+
+    token = os.getenv("DISCORD_TOKEN")
+    if not token:
+        logger.error("DISCORD_TOKEN environment variable not set")
+        return
+
+    bot = GameReplayAnalysisAgentBot()
+    bot.run(token)
+
+if __name__ == "__main__":
+    main()

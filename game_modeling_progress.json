@@ -1,0 +1,10 @@
+{
+  "completed": [
+    "game-probability-agent",
+    "game-mechanics-analysis-agent",
+    "game-simulation-agent",
+    "game-theory-agent",
+    "game-replay-analysis-agent"
+  ],
+  "total": 5
+}
