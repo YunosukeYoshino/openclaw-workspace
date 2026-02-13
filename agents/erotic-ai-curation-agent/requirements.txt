@@ -1,0 +1,5 @@
+# えっちAIキュレーションエージェント Requirements
+# Erotic AI Curation Agent Requirements
+
+discord.py>=2.3.0
+py-cord>=2.4.0

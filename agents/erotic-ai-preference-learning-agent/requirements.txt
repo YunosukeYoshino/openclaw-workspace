@@ -1,0 +1,5 @@
+# えっち嗜好AI学習エージェント Requirements
+# Erotic AI Preference Learning Agent Requirements
+
+discord.py>=2.3.0
+py-cord>=2.4.0

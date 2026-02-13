@@ -1,0 +1,5 @@
+# えっち品質AI評価エージェント Requirements
+# Erotic AI Quality Assessment Agent Requirements
+
+discord.py>=2.3.0
+py-cord>=2.4.0
