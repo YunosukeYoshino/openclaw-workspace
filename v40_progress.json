@@ -1,0 +1,31 @@
+{
+  "completed": [
+    "baseball-ai-strategy-agent",
+    "baseball-simulator-agent",
+    "baseball-decision-support-agent",
+    "baseball-scout-ai-agent",
+    "baseball-game-planner-agent",
+    "game-ui-designer-agent",
+    "game-ux-researcher-agent",
+    "game-prototyper-agent",
+    "game-accessibility-designer-agent",
+    "game-design-system-agent",
+    "erotic-compliance-agent",
+    "erotic-age-verification-agent",
+    "erotic-legal-audit-agent",
+    "erotic-policy-enforcer-agent",
+    "erotic-content-screener-agent",
+    "container-orchestrator-agent",
+    "docker-manager-agent",
+    "microservice-gateway-agent",
+    "service-discovery-agent",
+    "load-balancer-agent",
+    "rest-api-builder-agent",
+    "graphql-api-agent",
+    "api-tester-agent",
+    "api-docs-generator-agent",
+    "api-mock-server-agent"
+  ],
+  "current_project": "API\u958b\u767a\u30fbREST/GraphQL\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8",
+  "total_agents": 25
+}

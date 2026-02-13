@@ -1,8 +1,8 @@
-# erotic-age-verification-agent
+# api-tester-agent
 
-えっち年齢認証エージェント。年齢認証システム。
+APIテスターエージェント。APIのテスト。
 
-えっち年齢認証エージェント。年齢認証システム。
+APIテスターエージェント。APIのテスト。
 
 ## Files
 
@@ -45,4 +45,4 @@ python discord.py
 
 ## Project
 
-えっちコンテンツコンプライアンス・法務エージェント
+API開発・REST/GraphQLエージェント

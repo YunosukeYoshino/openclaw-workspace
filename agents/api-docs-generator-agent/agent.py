@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-えっち年齢認証エージェント。年齢認証システム。
+APIドキュメント生成エージェント。APIドキュメントの自動生成。
 
-えっち年齢認証エージェント。年齢認証システム。
+APIドキュメント生成エージェント。APIドキュメントの自動生成。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class EroticAgeVerificationAgentBot(commands.Bot):
-    """erotic-age-verification-agent Bot"""
+class ApiDocsGeneratorAgentBot(commands.Bot):
+    """api-docs-generator-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class EroticAgeVerificationAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = EroticAgeVerificationAgentBot()
+    bot = ApiDocsGeneratorAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
-# erotic-age-verification-agent
+# baseball-scout-ai-agent
 
-えっち年齢認証エージェント。年齢認証システム。
+野球スカウトAIエージェント。AI選手スカウティング。
 
-えっち年齢認証エージェント。年齢認証システム。
+野球スカウトAIエージェント。AI選手スカウティング。
 
 ## Files
 
@@ -45,4 +45,4 @@ python discord.py
 
 ## Project
 
-えっちコンテンツコンプライアンス・法務エージェント
+野球戦術・戦略高度化エージェント

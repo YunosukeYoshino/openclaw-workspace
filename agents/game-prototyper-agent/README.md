@@ -1,8 +1,8 @@
-# erotic-age-verification-agent
+# game-prototyper-agent
 
-えっち年齢認証エージェント。年齢認証システム。
+ゲームプロトタイパーエージェント。UIプロトタイプ作成。
 
-えっち年齢認証エージェント。年齢認証システム。
+ゲームプロトタイパーエージェント。UIプロトタイプ作成。
 
 ## Files
 
@@ -45,4 +45,4 @@ python discord.py
 
 ## Project
 
-えっちコンテンツコンプライアンス・法務エージェント
+ゲームUI・UXデザインエージェント

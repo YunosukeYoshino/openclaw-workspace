@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-えっち年齢認証エージェント。年齢認証システム。
+野球ゲームプランナーエージェント。試合プランの作成。
 
-えっち年齢認証エージェント。年齢認証システム。
+野球ゲームプランナーエージェント。試合プランの作成。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class EroticAgeVerificationAgentBot(commands.Bot):
-    """erotic-age-verification-agent Bot"""
+class BaseballGamePlannerAgentBot(commands.Bot):
+    """baseball-game-planner-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class EroticAgeVerificationAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = EroticAgeVerificationAgentBot()
+    bot = BaseballGamePlannerAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

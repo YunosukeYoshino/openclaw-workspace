@@ -1,8 +1,8 @@
-# erotic-age-verification-agent
+# rest-api-builder-agent
 
-えっち年齢認証エージェント。年齢認証システム。
+REST APIビルダーエージェント。REST APIの構築。
 
-えっち年齢認証エージェント。年齢認証システム。
+REST APIビルダーエージェント。REST APIの構築。
 
 ## Files
 
@@ -45,4 +45,4 @@ python discord.py
 
 ## Project
 
-えっちコンテンツコンプライアンス・法務エージェント
+API開発・REST/GraphQLエージェント

@@ -1,8 +1,8 @@
-# erotic-age-verification-agent
+# api-docs-generator-agent
 
-えっち年齢認証エージェント。年齢認証システム。
+APIドキュメント生成エージェント。APIドキュメントの自動生成。
 
-えっち年齢認証エージェント。年齢認証システム。
+APIドキュメント生成エージェント。APIドキュメントの自動生成。
 
 ## Files
 
@@ -45,4 +45,4 @@ python discord.py
 
 ## Project
 
-えっちコンテンツコンプライアンス・法務エージェント
+API開発・REST/GraphQLエージェント

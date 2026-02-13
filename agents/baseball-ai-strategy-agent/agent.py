@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-えっち年齢認証エージェント。年齢認証システム。
+野球AI戦略エージェント。AIによる最適戦略提案。
 
-えっち年齢認証エージェント。年齢認証システム。
+野球AI戦略エージェント。AIによる最適戦略提案。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class EroticAgeVerificationAgentBot(commands.Bot):
-    """erotic-age-verification-agent Bot"""
+class BaseballAiStrategyAgentBot(commands.Bot):
+    """baseball-ai-strategy-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class EroticAgeVerificationAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = EroticAgeVerificationAgentBot()
+    bot = BaseballAiStrategyAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

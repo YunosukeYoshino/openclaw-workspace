@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-erotic-age-verification-agent - データベースモジュール
+game-design-system-agent - データベースモジュール
 """
 
 import sqlite3
 from datetime import datetime
 from typing import List, Dict, Optional
 
-class EroticAgeVerificationAgentDB:
-    """erotic-age-verification-agent データベース"""
+class GameDesignSystemAgentDB:
+    """game-design-system-agent データベース"""
 
-    def __init__(self, db_path: str = "erotic-age-verification-agent.db"):
+    def __init__(self, db_path: str = "game-design-system-agent.db"):
         """初期化"""
         self.db_path = db_path
         self.conn = sqlite3.connect(db_path)
@@ -80,12 +80,12 @@ class EroticAgeVerificationAgentDB:
 
 def main():
     """メイン関数"""
-    db = EroticAgeVerificationAgentDB()
+    db = GameDesignSystemAgentDB()
 
     # サンプルエントリー追加
     entry_id = db.add_entry(
         "Sample Entry",
-        "This is a sample entry for erotic-age-verification-agent"
+        "This is a sample entry for game-design-system-agent"
     )
     print(f"Added entry with ID: {entry_id}")
 

@@ -1,8 +1,8 @@
-# erotic-age-verification-agent
+# docker-manager-agent
 
-えっち年齢認証エージェント。年齢認証システム。
+Dockerマネージャーエージェント。Dockerコンテナの管理。
 
-えっち年齢認証エージェント。年齢認証システム。
+Dockerマネージャーエージェント。Dockerコンテナの管理。
 
 ## Files
 
@@ -45,4 +45,4 @@ python discord.py
 
 ## Project
 
-えっちコンテンツコンプライアンス・法務エージェント
+クラウドネイティブ・コンテナ化エージェント

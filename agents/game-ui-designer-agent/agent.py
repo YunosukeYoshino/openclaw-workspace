@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-えっち年齢認証エージェント。年齢認証システム。
+ゲームUIデザイナーエージェント。ゲームUIのデザイン。
 
-えっち年齢認証エージェント。年齢認証システム。
+ゲームUIデザイナーエージェント。ゲームUIのデザイン。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class EroticAgeVerificationAgentBot(commands.Bot):
-    """erotic-age-verification-agent Bot"""
+class GameUiDesignerAgentBot(commands.Bot):
+    """game-ui-designer-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class EroticAgeVerificationAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = EroticAgeVerificationAgentBot()
+    bot = GameUiDesignerAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

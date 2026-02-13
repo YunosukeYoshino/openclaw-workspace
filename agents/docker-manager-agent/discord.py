@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-erotic-age-verification-agent - Discord Botモジュール
+docker-manager-agent - Discord Botモジュール
 """
 
 import discord
 from discord.ext import commands
-from db import EroticAgeVerificationAgentDB
+from db import DockerManagerAgentDB
 
-class EroticAgeVerificationAgentDiscordBot(commands.Bot):
-    """erotic-age-verification-agent Discord Bot"""
+class DockerManagerAgentDiscordBot(commands.Bot):
+    """docker-manager-agent Discord Bot"""
 
-    def __init__(self, db_path: str = "erotic-age-verification-agent.db"):
+    def __init__(self, db_path: str = "docker-manager-agent.db"):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix="!", intents=intents)
-        self.db = EroticAgeVerificationAgentDB(db_path)
+        self.db = DockerManagerAgentDB(db_path)
 
     async def setup_hook(self):
         """Bot起動時の処理"""
@@ -50,7 +50,7 @@ class EroticAgeVerificationAgentDiscordBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = EroticAgeVerificationAgentDiscordBot()
+    bot = DockerManagerAgentDiscordBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

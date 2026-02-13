@@ -1,8 +1,8 @@
-# erotic-age-verification-agent
+# graphql-api-agent
 
-えっち年齢認証エージェント。年齢認証システム。
+GraphQL APIエージェント。GraphQL APIの構築。
 
-えっち年齢認証エージェント。年齢認証システム。
+GraphQL APIエージェント。GraphQL APIの構築。
 
 ## Files
 
@@ -45,4 +45,4 @@ python discord.py
 
 ## Project
 
-えっちコンテンツコンプライアンス・法務エージェント
+API開発・REST/GraphQLエージェント

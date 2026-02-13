@@ -1,8 +1,8 @@
-# erotic-age-verification-agent
+# erotic-policy-enforcer-agent
 
-えっち年齢認証エージェント。年齢認証システム。
+えっちポリシー強制エージェント。ポリシーの強制執行。
 
-えっち年齢認証エージェント。年齢認証システム。
+えっちポリシー強制エージェント。ポリシーの強制執行。
 
 ## Files
 

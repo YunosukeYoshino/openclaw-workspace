@@ -1,8 +1,8 @@
-# erotic-age-verification-agent
+# api-mock-server-agent
 
-えっち年齢認証エージェント。年齢認証システム。
+APIモックサーバーエージェント。APIモックサーバーの構築。
 
-えっち年齢認証エージェント。年齢認証システム。
+APIモックサーバーエージェント。APIモックサーバーの構築。
 
 ## Files
 
@@ -45,4 +45,4 @@ python discord.py
 
 ## Project
 
-えっちコンテンツコンプライアンス・法務エージェント
+API開発・REST/GraphQLエージェント
