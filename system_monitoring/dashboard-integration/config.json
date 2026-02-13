@@ -1,0 +1,20 @@
+{
+  "module": "dashboard-integration",
+  "version": "1.0.0",
+  "interval": 60,
+  "thresholds": {
+    "warning": 70,
+    "critical": 90
+  },
+  "notifications": {
+    "enabled": true,
+    "channels": [
+      "email",
+      "discord"
+    ]
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "logs/monitor.log"
+  }
+}
