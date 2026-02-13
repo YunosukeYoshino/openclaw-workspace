@@ -1,172 +1,142 @@
 #!/usr/bin/env python3
 """
-ゲームシミュレーションエージェント - Discord Bot Module
-ゲームモデリング・シミュレーションエージェントDiscordボットモジュール
+Discord Bot Integration for ゲームシミュレーションエージェント / Game Simulation Agent
 """
 
 import discord
 from discord.ext import commands
 import logging
-import json
 from typing import Optional
-
-from db import GameSimulationAgentDatabase
 
 logger = logging.getLogger(__name__)
 
-class GameSimulationAgentBot(commands.Bot):
-    """ゲームモデリング・シミュレーションDiscordボット"""
 
-    def __init__(self, command_prefix: str = "!modeling", db_path: str = "game_modeling.db"):
+class DiscordBot(commands.Bot):
+    """Discord Bot for game-simulation-agent"""
+
+    def __init__(self, command_prefix: str = "!", db=None):
         intents = discord.Intents.default()
         intents.message_content = True
+        intents.guilds = True
         super().__init__(command_prefix=command_prefix, intents=intents)
+        self.db = db
+        self.agent_id = "game-simulation-agent"
 
-        self.db = GameSimulationAgentDatabase(db_path)
+    async def setup_hook(self):
+        """Bot setup"""
+        logger.info(f"Setting up {self.agent_id} Discord bot...")
+        await self.add_cog(GameSimulationAgentCommands(self))
 
     async def on_ready(self):
+        """Bot is ready"""
         logger.info(f"{self.user.name} is ready!")
 
-    async def on_message(self, message: discord.Message):
-        if message.author == self.user:
-            return
 
-        await self.process_commands(message)
+class GameSimulationAgentCommands(commands.Cog):
+    """Commands for game-simulation-agent"""
 
-    @commands.command(name="prob", aliases=["probability"])
-    async def get_probability(self, ctx: commands.Context, event_name: Optional[str] = None):
-        """確率計算結果を表示"""
-        calcs = self.db.get_probability_calculations(event_name)
+    def __init__(self, bot: DiscordBot):
+        self.bot = bot
 
-        if not calcs:
-            await ctx.send("No probability calculations found.")
-            return
+    @commands.command(name="status")
+    async def status(self, ctx: commands.Context):
+        """Check agent status"""
+        await ctx.send(f"✅ {self.bot.agent_id} is active!")
 
-        embed = discord.Embed(
-            title="Probability Calculations / 確率計算",
-            color=discord.Color.blue()
-        )
+    @commands.command(name="help")
+    async def help_command(self, ctx: commands.Context):
+        """Show help"""
+        help_text = f"""
+📚 **ゲームシミュレーションエージェント Help**
 
-        for calc in calcs[:5]:
-            embed.add_field(
-                name=f"{calc['event_name']}",
-                value=f"Success Rate: {calc['success_rate']}\nCalculated: {calc['calculated_probability']:.4f}\nTrials: {calc['trials']}",
-                inline=False
-            )
+**Features:**
+            - Combat Sim
+            - Economy Sim
+            - Production Sim
+            - Scenario Testing
+            - AI vs AI
+            - Power Measurement
 
-        await ctx.send(embed=embed)
+**Commands:**
+- `!status` - Check agent status
+- `!help` - Show this help message
+- `!create <title> <content>` - Create new entry
+- `!list [category]` - List entries
+- `!search <query>` - Search entries
+- `!get <id>` - Get entry by ID
+"""
+        help_text = help_text.replace("game-simulation-agent", agent['id'])
+        help_text = help_text.replace("ゲームシミュレーションエージェント", agent['name_ja'])
+        help_text = help_text.replace("            - Combat Sim
+            - Economy Sim
+            - Production Sim
+            - Scenario Testing
+            - AI vs AI
+            - Power Measurement", features_list)
+        help_text = help_text.replace("GameSimulationAgent", snake_to_camel(agent['id']))
+        await ctx.send(help_text)
 
-    @commands.command(name="sim", aliases=["simulation"])
-    async def get_simulation(self, ctx: commands.Context, sim_type: Optional[str] = None):
-        """シミュレーション結果を表示"""
-        sims = self.db.get_simulations(sim_type)
+    @commands.command(name="create")
+    async def create_entry(self, ctx: commands.Context, title: str, *, content: str):
+        """Create a new entry"""
+        if self.bot.db:
+            entry_id = await self.bot.db.create_entry(title, content)
+            await ctx.send(f"✅ Created entry #{entry_id}")
+        else:
+            await ctx.send("❌ Database not connected")
 
-        if not sims:
-            await ctx.send("No simulations found.")
-            return
+    @commands.command(name="list")
+    async def list_entries(self, ctx: commands.Context, category: str = None):
+        """List entries"""
+        if self.bot.db:
+            entries = await self.bot.db.list_entries(category, limit=10)
+            if entries:
+                response = "📋 **Entries:\n"
+                for entry in entries:
+                    response += f"- #{entry['id']}: {entry['title']}\n"
+                await ctx.send(response)
+            else:
+                await ctx.send("No entries found")
+        else:
+            await ctx.send("❌ Database not connected")
 
-        embed = discord.Embed(
-            title="Simulations / シミュレーション",
-            color=discord.Color.green()
-        )
+    @commands.command(name="search")
+    async def search_entries(self, ctx: commands.Context, *, query: str):
+        """Search entries"""
+        if self.bot.db:
+            entries = await self.bot.db.search_entries(query)
+            if entries:
+                response = f"🔍 **Search Results for '{query}':\n"
+                for entry in entries:
+                    response += f"- #{entry['id']}: {entry['title']}\n"
+                await ctx.send(response)
+            else:
+                await ctx.send("No results found")
+        else:
+            await ctx.send("❌ Database not connected")
 
-        for sim in sims[:5]:
-            results = json.loads(sim.get("results_json", "[]"))[:3]
-            embed.add_field(
-                name=f"{sim['simulation_type']} ({sim['iterations']} iterations)",
-                value=f"Average: {sim['average_result']:.2f}\nSample: {results}",
-                inline=False
-            )
+    @commands.command(name="get")
+    async def get_entry(self, ctx: commands.Context, entry_id: int):
+        """Get entry by ID"""
+        if self.bot.db:
+            entry = await self.bot.db.get_entry(entry_id)
+            if entry:
+                response = f"""
+📄 **Entry #{entry['id']}**
+**Title:** {entry['title']}
+**Category:** {entry.get('category', 'N/A')}
+**Content:** {entry['content'][:500]}
+{'...' if len(entry['content']) > 500 else ''}
+**Tags:** {', '.join(entry.get('tags', []))}
+"""
+                await ctx.send(response)
+            else:
+                await ctx.send(f"Entry #{entry_id} not found")
+        else:
+            await ctx.send("❌ Database not connected")
 
-        await ctx.send(embed=embed)
 
-    @commands.command(name="mech", aliases=["mechanics"])
-    async def get_mechanics(self, ctx: commands.Context):
-        """メカニクス一覧を表示"""
-        mechanics = self.db.get_mechanics()
-
-        if not mechanics:
-            await ctx.send("No mechanics found.")
-            return
-
-        embed = discord.Embed(
-            title="Game Mechanics / ゲームメカニクス",
-            color=discord.Color.orange()
-        )
-
-        for mech in mechanics[:5]:
-            balance = f"Balance: {mech.get('balance_score', 'N/A')}"
-            embed.add_field(
-                name=f"{mech['mechanic_name']}",
-                value=f"Formula: {mech.get('formula', 'N/A')}\n{balance}",
-                inline=False
-            )
-
-        await ctx.send(embed=embed)
-
-    @commands.command(name="theory", aliases=["gametheory"])
-    async def get_game_theory(self, ctx: commands.Context):
-        """ゲーム理論分析を表示"""
-        analyses = self.db.get_game_theory_analyses()
-
-        if not analyses:
-            await ctx.send("No game theory analyses found.")
-            return
-
-        embed = discord.Embed(
-            title="Game Theory Analyses / ゲーム理論分析",
-            color=discord.Color.purple()
-        )
-
-        for analysis in analyses[:5]:
-            embed.add_field(
-                name=f"{analysis['scenario_name']} ({analysis['players_count']} players)",
-                value=f"Nash: {analysis.get('nash_equilibrium', 'N/A')}\nOptimal: {analysis.get('optimal_strategy', 'N/A')}",
-                inline=False
-            )
-
-        await ctx.send(embed=embed)
-
-    @commands.command(name="replay", aliases=["replays"])
-    async def get_replays(self, ctx: commands.Context, game_name: Optional[str] = None):
-        """リプレイ一覧を表示"""
-        replays = self.db.get_replays(game_name)
-
-        if not replays:
-            await ctx.send("No replays found.")
-            return
-
-        embed = discord.Embed(
-            title="Replay Analyses / リプレイ分析",
-            color=discord.Color.gold()
-        )
-
-        for replay in replays[:5]:
-            patterns = json.loads(replay.get("patterns_found", "[]"))[:3]
-            embed.add_field(
-                name=f"{replay['game_name']} - {replay['player_name']}",
-                value=f"Patterns: {patterns}",
-                inline=False
-            )
-
-        await ctx.send(embed=embed)
-
-    @commands.command(name="calculate", aliases=["calc"])
-    async def calculate_prob(self, ctx: commands.Context, success_rate: float):
-        """確率を計算"""
-        await ctx.send(f"Calculating probability with success rate: {success_rate}")
-        # 実際の計算は agent.py を使用
-
-def main():
-    import os
-
-    token = os.getenv("DISCORD_TOKEN")
-    if not token:
-        logger.error("DISCORD_TOKEN environment variable not set")
-        return
-
-    bot = GameSimulationAgentBot()
-    bot.run(token)
-
-if __name__ == "__main__":
-    main()
+def create_bot(db, token: str, command_prefix: str = "!") -> DiscordBot:
+    """Create and return Discord bot instance"""
+    bot = DiscordBot(command_prefix=command_prefix, db=db)
+    return bot

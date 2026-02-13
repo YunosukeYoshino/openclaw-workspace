@@ -1,251 +1,174 @@
 #!/usr/bin/env python3
 """
-ゲーム理論エージェント - Database Module
-ゲームモデリング・シミュレーションエージェントデータベースモジュール
+Database for ゲーム理論エージェント / Game Theory Agent
 """
 
 import sqlite3
 import logging
-import json
-from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from datetime import datetime
-from contextlib import contextmanager
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-class GameTheoryAgentDatabase:
-    """ゲームモデリング・シミュレーションデータベースクラス"""
 
-    def __init__(self, db_path: str = "game_modeling.db"):
-        self.db_path = db_path
-        self._init_db()
+class Database:
+    """Database for game-theory-agent"""
 
-    @contextmanager
-    def _get_connection(self):
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        try:
-            yield conn
-            conn.commit()
-        except Exception as e:
-            conn.rollback()
-            logger.error(f"Database error: {e}")
-            raise
-        finally:
-            conn.close()
+    def __init__(self, db_path: str = "data/game-theory-agent.db"):
+        self.db_path = Path(db_path)
+        self.conn: Optional[sqlite3.Connection] = None
 
-    def _init_db(self):
-        """データベースを初期化"""
-        with self._get_connection() as conn:
-            conn.executescript("""
-                CREATE TABLE IF NOT EXISTS probability_calculations (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    event_name TEXT NOT NULL,
-                    success_rate REAL NOT NULL,
-                    calculated_probability REAL NOT NULL,
-                    trials INTEGER NOT NULL,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
+    async def initialize(self):
+        """Initialize database and create tables"""
+        self.conn = sqlite3.connect(self.db_path)
+        self._create_tables()
+        logger.info(f"Database initialized: {self.db_path}")
 
-                CREATE TABLE IF NOT EXISTS simulations (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    simulation_type TEXT NOT NULL,
-                    iterations INTEGER NOT NULL,
-                    average_result REAL NOT NULL,
-                    results_json TEXT,
-                    parameters TEXT,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
+    def _create_tables(self):
+        """Create database tables"""
+        cursor = self.conn.cursor()
 
-                CREATE TABLE IF NOT EXISTS mechanics (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    mechanic_name TEXT NOT NULL,
-                    formula TEXT NOT NULL,
-                    balance_score REAL,
-                    description TEXT,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
-
-                CREATE TABLE IF NOT EXISTS game_theory_analyses (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    scenario_name TEXT NOT NULL,
-                    players_count INTEGER NOT NULL,
-                    nash_equilibrium TEXT,
-                    optimal_strategy TEXT,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
-
-                CREATE TABLE IF NOT EXISTS replays (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    game_name TEXT NOT NULL,
-                    player_name TEXT NOT NULL,
-                    replay_path TEXT,
-                    analysis_results TEXT,
-                    patterns_found TEXT,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
-
-                CREATE INDEX IF NOT EXISTS idx_prob_event ON probability_calculations(event_name);
-                CREATE INDEX IF NOT EXISTS idx_sim_type ON simulations(simulation_type);
-                CREATE INDEX IF NOT EXISTS idx_mech_name ON mechanics(mechanic_name);
-                CREATE INDEX IF NOT EXISTS idx_replay_game ON replays(game_name);
-            """)
-
-    def add_probability_calculation(self, calc_data: Dict) -> int:
-        """確率計算結果を追加"""
-        with self._get_connection() as conn:
-            cursor = conn.execute(
-                """INSERT INTO probability_calculations
-                   (event_name, success_rate, calculated_probability, trials)
-                   VALUES (?, ?, ?, ?)""",
-                (
-                    calc_data.get("event_name"),
-                    calc_data.get("success_rate"),
-                    calc_data.get("calculated_probability"),
-                    calc_data.get("trials")
-                )
+        # Main entries table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS entries (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL,
+                category TEXT,
+                tags TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-            return cursor.lastrowid
+        """)
 
-    def get_probability_calculations(self, event_name: Optional[str] = None) -> List[Dict]:
-        """確率計算結果を取得"""
-        query = "SELECT * FROM probability_calculations WHERE 1=1"
-        params = []
-
-        if event_name:
-            query += " AND event_name = ?"
-            params.append(event_name)
-
-        query += " ORDER BY timestamp DESC"
-
-        with self._get_connection() as conn:
-            cursor = conn.execute(query, params)
-            return [dict(row) for row in cursor.fetchall()]
-
-    def add_simulation(self, sim_data: Dict) -> int:
-        """シミュレーション結果を追加"""
-        with self._get_connection() as conn:
-            cursor = conn.execute(
-                """INSERT INTO simulations
-                   (simulation_type, iterations, average_result, results_json, parameters)
-                   VALUES (?, ?, ?, ?, ?)""",
-                (
-                    sim_data.get("simulation_type"),
-                    sim_data.get("iterations"),
-                    sim_data.get("average_result"),
-                    json.dumps(sim_data.get("results", [])),
-                    json.dumps(sim_data.get("parameters", {}))
-                )
+        # Tags table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tags (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT UNIQUE NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-            return cursor.lastrowid
+        """)
 
-    def get_simulations(self, sim_type: Optional[str] = None) -> List[Dict]:
-        """シミュレーション結果を取得"""
-        query = "SELECT * FROM simulations WHERE 1=1"
-        params = []
-
-        if sim_type:
-            query += " AND simulation_type = ?"
-            params.append(sim_type)
-
-        query += " ORDER BY timestamp DESC"
-
-        with self._get_connection() as conn:
-            cursor = conn.execute(query, params)
-            return [dict(row) for row in cursor.fetchall()]
-
-    def add_mechanic(self, mechanic_data: Dict) -> int:
-        """メカニクスを追加"""
-        with self._get_connection() as conn:
-            cursor = conn.execute(
-                """INSERT INTO mechanics
-                   (mechanic_name, formula, balance_score, description)
-                   VALUES (?, ?, ?, ?)""",
-                (
-                    mechanic_data.get("mechanic_name"),
-                    mechanic_data.get("formula"),
-                    mechanic_data.get("balance_score"),
-                    mechanic_data.get("description")
-                )
+        # Entry tags relation table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS entry_tags (
+                entry_id INTEGER,
+                tag_id INTEGER,
+                PRIMARY KEY (entry_id, tag_id),
+                FOREIGN KEY (entry_id) REFERENCES entries(id),
+                FOREIGN KEY (tag_id) REFERENCES tags(id)
             )
-            return cursor.lastrowid
+        """)
 
-    def get_mechanics(self) -> List[Dict]:
-        """メカニクス一覧を取得"""
-        with self._get_connection() as conn:
-            cursor = conn.execute("SELECT * FROM mechanics ORDER BY mechanic_name")
-            return [dict(row) for row in cursor.fetchall()]
+        self.conn.commit()
 
-    def add_game_theory_analysis(self, analysis_data: Dict) -> int:
-        """ゲーム理論分析を追加"""
-        with self._get_connection() as conn:
-            cursor = conn.execute(
-                """INSERT INTO game_theory_analyses
-                   (scenario_name, players_count, nash_equilibrium, optimal_strategy)
-                   VALUES (?, ?, ?, ?)""",
-                (
-                    analysis_data.get("scenario_name"),
-                    analysis_data.get("players_count"),
-                    analysis_data.get("nash_equilibrium"),
-                    analysis_data.get("optimal_strategy")
-                )
-            )
-            return cursor.lastrowid
+    async def create_entry(self, title: str, content: str, category: str = None, tags: List[str] = None) -> int:
+        """Create a new entry"""
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            INSERT INTO entries (title, content, category, tags)
+            VALUES (?, ?, ?, ?)
+        """, (title, content, category, ','.join(tags or [])))
+        self.conn.commit()
+        entry_id = cursor.lastrowid
 
-    def get_game_theory_analyses(self) -> List[Dict]:
-        """ゲーム理論分析を取得"""
-        with self._get_connection() as conn:
-            cursor = conn.execute("SELECT * FROM game_theory_analyses ORDER BY timestamp DESC")
-            return [dict(row) for row in cursor.fetchall()]
+        if tags:
+            for tag in tags:
+                await self._add_tag_to_entry(entry_id, tag)
 
-    def add_replay(self, replay_data: Dict) -> int:
-        """リプレイを追加"""
-        with self._get_connection() as conn:
-            cursor = conn.execute(
-                """INSERT INTO replays
-                   (game_name, player_name, replay_path, analysis_results, patterns_found)
-                   VALUES (?, ?, ?, ?, ?)""",
-                (
-                    replay_data.get("game_name"),
-                    replay_data.get("player_name"),
-                    replay_data.get("replay_path"),
-                    json.dumps(replay_data.get("analysis_results", {})),
-                    json.dumps(replay_data.get("patterns_found", []))
-                )
-            )
-            return cursor.lastrowid
+        return entry_id
 
-    def get_replays(self, game_name: Optional[str] = None) -> List[Dict]:
-        """リプレイ一覧を取得"""
-        query = "SELECT * FROM replays WHERE 1=1"
-        params = []
+    async def _add_tag_to_entry(self, entry_id: int, tag_name: str):
+        """Add a tag to an entry"""
+        cursor = self.conn.cursor()
+        cursor.execute('INSERT OR IGNORE INTO tags (name) VALUES (?)', (tag_name,))
+        self.conn.commit()
+        cursor.execute('SELECT id FROM tags WHERE name = ?', (tag_name,))
+        tag_id = cursor.fetchone()[0]
+        cursor.execute('INSERT OR IGNORE INTO entry_tags (entry_id, tag_id) VALUES (?, ?)',
+                      (entry_id, tag_id))
+        self.conn.commit()
 
-        if game_name:
-            query += " AND game_name = ?"
-            params.append(game_name)
+    async def get_entry(self, entry_id: int) -> Optional[Dict[str, Any]]:
+        """Get an entry by ID"""
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT * FROM entries WHERE id = ?', (entry_id,))
+        row = cursor.fetchone()
+        if row:
+            return {
+                "id": row[0], "title": row[1], "content": row[2],
+                "category": row[3], "tags": row[4].split(',') if row[4] else [],
+                "created_at": row[5], "updated_at": row[6]
+            }
+        return None
 
-        query += " ORDER BY timestamp DESC"
+    async def list_entries(self, category: str = None, limit: int = 100) -> List[Dict[str, Any]]:
+        """List entries"""
+        cursor = self.conn.cursor()
+        if category:
+            cursor.execute('SELECT * FROM entries WHERE category = ? ORDER BY created_at DESC LIMIT ?',
+                          (category, limit))
+        else:
+            cursor.execute('SELECT * FROM entries ORDER BY created_at DESC LIMIT ?', (limit,))
+        rows = cursor.fetchall()
+        return [{
+            "id": row[0], "title": row[1], "content": row[2],
+            "category": row[3], "tags": row[4].split(',') if row[4] else [],
+            "created_at": row[5], "updated_at": row[6]
+        } for row in rows]
 
-        with self._get_connection() as conn:
-            cursor = conn.execute(query, params)
-            return [dict(row) for row in cursor.fetchall()]
+    async def search_entries(self, query: str) -> List[Dict[str, Any]]:
+        """Search entries"""
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT * FROM entries WHERE title LIKE ? OR content LIKE ? ORDER BY created_at DESC
+        """, (f'%{query}%', f'%{query}%'))
+        rows = cursor.fetchall()
+        return [{
+            "id": row[0], "title": row[1], "content": row[2],
+            "category": row[3], "tags": row[4].split(',') if row[4] else [],
+            "created_at": row[5], "updated_at": row[6]
+        } for row in rows]
 
-def main():
-    """テスト実行"""
-    db = GameTheoryAgentDatabase()
+    async def update_entry(self, entry_id: int, title: str = None, content: str = None,
+                          category: str = None, tags: List[str] = None) -> bool:
+        """Update an entry"""
+        cursor = self.conn.cursor()
+        updates = []
+        values = []
 
-    # テストデータを追加
-    sim_id = db.add_simulation({
-        "simulation_type": "combat",
-        "iterations": 1000,
-        "average_result": 52.3,
-        "results": [50, 55, 48, 52, 54],
-        "parameters": {"base_value": 50, "variance": 10}
-    })
+        if title:
+            updates.append("title = ?")
+            values.append(title)
+        if content:
+            updates.append("content = ?")
+            values.append(content)
+        if category:
+            updates.append("category = ?")
+            values.append(category)
+        if tags is not None:
+            updates.append("tags = ?")
+            values.append(','.join(tags))
 
-    print(f"Added simulation ID: {sim_id}")
-    print(f"Simulations: {len(db.get_simulations())}")
+        if updates:
+            updates.append("updated_at = CURRENT_TIMESTAMP")
+            values.append(entry_id)
+            cursor.execute(f"UPDATE entries SET {', '.join(updates)} WHERE id = ?", values)
+            self.conn.commit()
+            return cursor.rowcount > 0
+        return False
 
-if __name__ == "__main__":
-    main()
+    async def delete_entry(self, entry_id: int) -> bool:
+        """Delete an entry"""
+        cursor = self.conn.cursor()
+        cursor.execute('DELETE FROM entry_tags WHERE entry_id = ?', (entry_id,))
+        cursor.execute('DELETE FROM entries WHERE id = ?', (entry_id,))
+        self.conn.commit()
+        return cursor.rowcount > 0
+
+    def close(self):
+        """Close database connection"""
+        if self.conn:
+            self.conn.close()

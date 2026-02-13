@@ -1,105 +1,95 @@
 # ゲームメカニクス分析エージェント / Game Mechanics Analysis Agent
 
-ゲーム内メカニクスの逆解析、数式化、バランス問題の検出
+game-mechanics-analysis-agent
 
 ## 概要 / Overview
 
-Reverse engineers game mechanics, formulates equations, detects balance issues
+ゲーム内メカニクスの逆解析、数式化、バランス問題、不公平性の検出、パッチ変更によるメカニクス変化の追跡
+
+Reverse engineer game mechanics, mathematical modeling, detect balance issues and unfairness, track mechanics changes from patches
 
 ## 機能 / Features
 
-- 確率計算と期待値の算出
-- Monte Carloシミュレーション
-- メカニクスの分析とバランスチェック
-- ゲーム理論の適用
-- リプレイ分析とパターン認識
-- Discord Bot インテグレーション
+- Mechanics Reverse
+- Math Modeling
+- Balance Detection
+- Patch Tracking
+- Unfairness Alert
+- Mechanics Docs
+
+## 技術スタック / Tech Stack
+
+- pandas, numpy, scipy, scikit-learn, matplotlib
 
 ## インストール / Installation
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd game-mechanics-analysis-agent
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-## 使用方法 / Usage
+## 使い方 / Usage
 
-### エージェントとして使用 / As Agent
+### エージェントとして使用 / As an Agent
 
 ```python
+from db import Database
 from agent import GameMechanicsAnalysisAgent
 
-agent = GameMechanicsAnalysisAgent()
-result = await agent.run("calculate probability")
+# Initialize database
+db = Database(db_path="data/game-mechanics-analysis-agent.db")
+await db.initialize()
+
+# Initialize agent
+agent = GameMechanicsAnalysisAgent(db)
+await agent.initialize()
+
+# Process data
+result = await agent.process({"key": "value"})
+print(result)
 ```
 
-### データベースとして使用 / As Database
+### Discord Botとして使用 / As a Discord Bot
 
 ```python
-from db import GameMechanicsAnalysisAgentDatabase
+from discord import DiscordBot
 
-db = GameMechanicsAnalysisAgentDatabase()
-simulations = db.get_simulations("combat")
+# Create bot
+bot = create_bot(db, token="YOUR_DISCORD_TOKEN", command_prefix="!")
+
+# Run bot
+bot.run()
 ```
-
-### Discord Bot として使用 / As Discord Bot
-
-```bash
-export DISCORD_TOKEN=your_bot_token
-python discord.py
-```
-
-## コマンド / Commands
-
-- `!modeling prob [event]` - 確率計算結果 / Probability calculations
-- `!modeling sim [type]` - シミュレーション結果 / Simulations
-- `!modeling mech` - メカニクス一覧 / Mechanics
-- `!modeling theory` - ゲーム理論分析 / Game theory analyses
-- `!modeling replay [game]` - リプレイ分析 / Replay analyses
-- `!modeling calc <rate>` - 確率を計算 / Calculate probability
 
 ## データベース構造 / Database Schema
 
-### probability_calculations
-- id: プライマリキー
-- event_name: イベント名
-- success_rate: 成功率
-- calculated_probability: 計算された確率
-- trials: 試行回数
+### entries テーブル
 
-### simulations
-- id: プライマリキー
-- simulation_type: シミュレーションタイプ
-- iterations: 反復回数
-- average_result: 平均結果
-- results_json: 結果（JSON）
-- parameters: パラメータ（JSON）
+| カラム | 型 | 説明 |
+|--------|------|------|
+| id | INTEGER | 主キー |
+| title | TEXT | タイトル |
+| content | TEXT | コンテンツ |
+| category | TEXT | カテゴリ |
+| tags | TEXT | タグ（カンマ区切り） |
+| created_at | TIMESTAMP | 作成日時 |
+| updated_at | TIMESTAMP | 更新日時 |
 
-### mechanics
-- id: プライマリキー
-- mechanic_name: メカニクス名
-- formula: 数式
-- balance_score: バランススコア
-- description: 説明
+## Discordコマンド / Discord Commands
 
-### game_theory_analyses
-- id: プライマリキー
-- scenario_name: シナリオ名
-- players_count: プレイヤー数
-- nash_equilibrium: ナッシュ均衡
-- optimal_strategy: 最適戦略
-
-### replays
-- id: プライマリキー
-- game_name: ゲーム名
-- player_name: プレイヤー名
-- replay_path: リプレイパス
-- analysis_results: 分析結果（JSON）
-- patterns_found: 見つかったパターン（JSON）
+| コマンド | 説明 |
+|----------|------|
+| `!status` | エージェントのステータスを確認 |
+| `!help` | ヘルプを表示 |
+| `!create <title> <content>` | 新しいエントリーを作成 |
+| `!list [category]` | エントリーを一覧表示 |
+| `!search <query>` | エントリーを検索 |
+| `!get <id>` | IDでエントリーを取得 |
 
 ## ライセンス / License
 
 MIT License
-
-## 作者 / Author
-
-OpenClaw Project

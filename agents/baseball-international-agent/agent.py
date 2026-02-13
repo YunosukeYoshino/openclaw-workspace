@@ -1,31 +1,61 @@
 #!/usr/bin/env python3
 """
 野球国際選手エージェント / Baseball International Agent
-海外選手の情報収集、ポスティングシステム分析 / Overseas player information gathering and posting system analysis
+baseball-international-agent
+
+海外選手（アジア、中南米等）の情報収集、ポスティングシステム、FA市場の分析、文化適応、移籍のリスク評価
+Collect info on international players (Asia, Latin America, etc.), analyze posting system, FA market, cultural adaptation, transfer risk assessment
 """
 
+import asyncio
 import logging
+from typing import Any, Dict, List, Optional
 from datetime import datetime
+
+from .db import Database
+from .discord import DiscordBot
+
+logger = logging.getLogger(__name__)
+
 
 class BaseballInternationalAgent:
     """野球国際選手エージェント"""
 
-    def __init__(self):
-        self.logger = logging.getLogger(__name__)
-        self.logger.info("野球国際選手エージェント initialized")
+    def __init__(self, db: Database, discord: Optional[DiscordBot] = None):
+        self.db = db
+        self.discord = discord
+        self.agent_id = "baseball-international-agent"
 
-    def process(self, input_data):
-        """入力データを処理する"""
-        self.logger.info(f"Processing input: {input_data}")
-        return {"status": "success", "message": "Processed successfully"}
+    async def initialize(self):
+        """初期化処理"""
+        logger.info(f"Initializing {self.agent_id}...")
+        await self.db.initialize()
 
-    def get_historical_matches(self):
-        """歴史的な名試合を取得"""
-        return []
+    async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        メイン処理
 
-    def analyze_event(self, event_id):
-        """イベントを分析"""
-        return {"event_id": event_id, "analysis": "Complete"}
+        Args:
+            data: 入力データ
 
-def to_camel_case(snake_str):
-    return ''.join(word.capitalize() for word in snake_str.split('-'))
+        Returns:
+            処理結果
+        """
+        try:
+            result = {"status": "success", "data": data}
+            return result
+        except Exception as e:
+            logger.error(f"Error in {self.agent_id}: {e}")
+            return {"status": "error", "message": str(e)}
+
+    async def get_status(self) -> Dict[str, Any]:
+        """ステータス取得"""
+        return {
+            "agent_id": self.agent_id,
+            "status": "active",
+            "timestamp": datetime.utcnow().isoformat()
+        }
+
+    async def cleanup(self):
+        """クリーンアップ"""
+        logger.info(f"Cleaning up {self.agent_id}...")

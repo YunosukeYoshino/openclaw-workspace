@@ -1,56 +1,142 @@
 #!/usr/bin/env python3
 """
-野球場歴史エージェント Discord インテグレーション
+Discord Bot Integration for 野球場歴史エージェント / Baseball Stadium History Agent
 """
 
 import discord
 from discord.ext import commands
 import logging
+from typing import Optional
 
-class BaseballStadiumHistoryAgentDiscord(commands.Cog):
-    """野球場歴史エージェント Discord ボット"""
+logger = logging.getLogger(__name__)
 
-    def __init__(self, bot, db):
-        self.bot = bot
+
+class DiscordBot(commands.Bot):
+    """Discord Bot for baseball-stadium-history-agent"""
+
+    def __init__(self, command_prefix: str = "!", db=None):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        intents.guilds = True
+        super().__init__(command_prefix=command_prefix, intents=intents)
         self.db = db
-        self.logger = logging.getLogger(__name__)
+        self.agent_id = "baseball-stadium-history-agent"
 
-    @commands.command(name="baseball_stadium_history_agent_info")
-    async def agent_info(self, ctx):
-        """エージェント情報を表示"""
-        embed = discord.Embed(
-            title="野球場歴史エージェント",
-            description="歴史的野球場の建設、改名、移転などの歴史管理",
-            color=discord.Color.blue()
-        )
-        embed.add_field(name="エージェント名", value="baseball-stadium-history-agent")
-        await ctx.send(embed=embed)
+    async def setup_hook(self):
+        """Bot setup"""
+        logger.info(f"Setting up {self.agent_id} Discord bot...")
+        await self.add_cog(BaseballStadiumHistoryAgentCommands(self))
 
-    @commands.command(name="baseball_stadium_history_agent_list")
-    async def list_records(self, ctx, limit: int = 10):
-        """レコード一覧を表示"""
-        records = self.db.list_records(limit=limit)
-        if not records:
-            await ctx.send("レコードがありません")
-            return
+    async def on_ready(self):
+        """Bot is ready"""
+        logger.info(f"{self.user.name} is ready!")
 
-        embed = discord.Embed(
-            title="野球場歴史エージェント - レコード一覧",
-            color=discord.Color.green()
-        )
-        for record in records[:10]:
-            embed.add_field(
-                name=record['title'] or f"ID: {record['id']}",
-                value=record['description'] or "説明なし",
-                inline=False
-            )
-        await ctx.send(embed=embed)
 
-def setup(bot):
-    """ボットにCogを追加"""
-    from .db import BaseballStadiumHistoryAgentDB
-    db = BaseballStadiumHistoryAgentDB()
-    bot.add_cog(BaseballStadiumHistoryAgentDiscord(bot, db))
+class BaseballStadiumHistoryAgentCommands(commands.Cog):
+    """Commands for baseball-stadium-history-agent"""
 
-def to_camel_case(snake_str):
-    return ''.join(word.capitalize() for word in snake_str.split('-'))
+    def __init__(self, bot: DiscordBot):
+        self.bot = bot
+
+    @commands.command(name="status")
+    async def status(self, ctx: commands.Context):
+        """Check agent status"""
+        await ctx.send(f"✅ {self.bot.agent_id} is active!")
+
+    @commands.command(name="help")
+    async def help_command(self, ctx: commands.Context):
+        """Show help"""
+        help_text = f"""
+📚 **野球場歴史エージェント Help**
+
+**Features:**
+            - Stadium Histories
+            - Feature Tracking
+            - Event Records
+            - Historic Matches
+            - Tour Planning
+            - Anniversary Alerts
+
+**Commands:**
+- `!status` - Check agent status
+- `!help` - Show this help message
+- `!create <title> <content>` - Create new entry
+- `!list [category]` - List entries
+- `!search <query>` - Search entries
+- `!get <id>` - Get entry by ID
+"""
+        help_text = help_text.replace("baseball-stadium-history-agent", agent['id'])
+        help_text = help_text.replace("野球場歴史エージェント", agent['name_ja'])
+        help_text = help_text.replace("            - Stadium Histories
+            - Feature Tracking
+            - Event Records
+            - Historic Matches
+            - Tour Planning
+            - Anniversary Alerts", features_list)
+        help_text = help_text.replace("BaseballStadiumHistoryAgent", snake_to_camel(agent['id']))
+        await ctx.send(help_text)
+
+    @commands.command(name="create")
+    async def create_entry(self, ctx: commands.Context, title: str, *, content: str):
+        """Create a new entry"""
+        if self.bot.db:
+            entry_id = await self.bot.db.create_entry(title, content)
+            await ctx.send(f"✅ Created entry #{entry_id}")
+        else:
+            await ctx.send("❌ Database not connected")
+
+    @commands.command(name="list")
+    async def list_entries(self, ctx: commands.Context, category: str = None):
+        """List entries"""
+        if self.bot.db:
+            entries = await self.bot.db.list_entries(category, limit=10)
+            if entries:
+                response = "📋 **Entries:\n"
+                for entry in entries:
+                    response += f"- #{entry['id']}: {entry['title']}\n"
+                await ctx.send(response)
+            else:
+                await ctx.send("No entries found")
+        else:
+            await ctx.send("❌ Database not connected")
+
+    @commands.command(name="search")
+    async def search_entries(self, ctx: commands.Context, *, query: str):
+        """Search entries"""
+        if self.bot.db:
+            entries = await self.bot.db.search_entries(query)
+            if entries:
+                response = f"🔍 **Search Results for '{query}':\n"
+                for entry in entries:
+                    response += f"- #{entry['id']}: {entry['title']}\n"
+                await ctx.send(response)
+            else:
+                await ctx.send("No results found")
+        else:
+            await ctx.send("❌ Database not connected")
+
+    @commands.command(name="get")
+    async def get_entry(self, ctx: commands.Context, entry_id: int):
+        """Get entry by ID"""
+        if self.bot.db:
+            entry = await self.bot.db.get_entry(entry_id)
+            if entry:
+                response = f"""
+📄 **Entry #{entry['id']}**
+**Title:** {entry['title']}
+**Category:** {entry.get('category', 'N/A')}
+**Content:** {entry['content'][:500]}
+{'...' if len(entry['content']) > 500 else ''}
+**Tags:** {', '.join(entry.get('tags', []))}
+"""
+                await ctx.send(response)
+            else:
+                await ctx.send(f"Entry #{entry_id} not found")
+        else:
+            await ctx.send("❌ Database not connected")
+
+
+def create_bot(db, token: str, command_prefix: str = "!") -> DiscordBot:
+    """Create and return Discord bot instance"""
+    bot = DiscordBot(command_prefix=command_prefix, db=db)
+    return bot

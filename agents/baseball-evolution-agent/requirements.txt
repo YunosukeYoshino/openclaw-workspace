@@ -1,5 +1,17 @@
-# 野球戦術・ルール進化エージェント Requirements
-# Baseball Evolution Agent Requirements
+# Core dependencies
+discord.py>=2.3.2
+aiohttp>=3.9.0
 
-discord.py>=2.3.0
-py-cord>=2.4.0
+# Database
+aiosqlite>=0.19.0
+
+# Tech stack specific
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+
+# Utilities
+python-dotenv>=1.0.0
+pyyaml>=6.0

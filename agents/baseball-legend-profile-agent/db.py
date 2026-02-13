@@ -1,345 +1,174 @@
 #!/usr/bin/env python3
 """
-野球伝説選手プロフィールエージェント データベースモジュール
+Database for 野球伝説選手プロフィールエージェント / Baseball Legend Profile Agent
 """
 
-import aiosqlite
-import json
+import sqlite3
 import logging
-from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 from datetime import datetime
+from pathlib import Path
 
-class BaseballLegendProfileAgentDB:
-    """野球伝説選手プロフィールエージェント データベース管理"""
+logger = logging.getLogger(__name__)
 
-    def __init__(self, db_path=None, logger=None):
-        if db_path is None:
-            db_path = Path("data/baseball-legend-profile-agent.db")
-        self.db_path = str(db_path)
-        self.logger = logger or logging.getLogger(__name__)
-        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
+
+class Database:
+    """Database for baseball-legend-profile-agent"""
+
+    def __init__(self, db_path: str = "data/baseball-legend-profile-agent.db"):
+        self.db_path = Path(db_path)
+        self.conn: Optional[sqlite3.Connection] = None
 
     async def initialize(self):
-        """データベースを初期化"""
-        self.connection = await aiosqlite.connect(self.db_path)
-        await self._create_tables()
-        await self._create_indexes()
-        self.logger.info(f"Database initialized: {self.db_path}")
+        """Initialize database and create tables"""
+        self.conn = sqlite3.connect(self.db_path)
+        self._create_tables()
+        logger.info(f"Database initialized: {self.db_path}")
 
-    async def _create_tables(self):
-        """テーブルを作成"""
-        await self.connection.execute("""
-            CREATE TABLE IF NOT EXISTS items (
+    def _create_tables(self):
+        """Create database tables"""
+        cursor = self.conn.cursor()
+
+        # Main entries table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS entries (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
-                description TEXT,
-                content TEXT,
+                content TEXT NOT NULL,
                 category TEXT,
                 tags TEXT,
-                metadata TEXT,
-                user_id TEXT,
-                rating REAL DEFAULT 0,
-                view_count INTEGER DEFAULT 0,
-                is_public BOOLEAN DEFAULT 0,
-                status TEXT DEFAULT 'active',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
 
-        await self.connection.execute("""
+        # Tags table
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS tags (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT UNIQUE NOT NULL,
-                count INTEGER DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
 
-        await self.connection.execute("""
-            CREATE TABLE IF NOT EXISTS item_tags (
-                item_id INTEGER,
+        # Entry tags relation table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS entry_tags (
+                entry_id INTEGER,
                 tag_id INTEGER,
-                PRIMARY KEY (item_id, tag_id),
-                FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
-                FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+                PRIMARY KEY (entry_id, tag_id),
+                FOREIGN KEY (entry_id) REFERENCES entries(id),
+                FOREIGN KEY (tag_id) REFERENCES tags(id)
             )
         """)
 
-        await self.connection.execute("""
-            CREATE TABLE IF NOT EXISTS favorites (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id TEXT NOT NULL,
-                item_id INTEGER NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
-                UNIQUE(user_id, item_id)
-            )
-        """)
+        self.conn.commit()
 
-        await self.connection.execute("""
-            CREATE TABLE IF NOT EXISTS activity_log (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id TEXT,
-                action TEXT NOT NULL,
-                item_id INTEGER,
-                metadata TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
+    async def create_entry(self, title: str, content: str, category: str = None, tags: List[str] = None) -> int:
+        """Create a new entry"""
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            INSERT INTO entries (title, content, category, tags)
+            VALUES (?, ?, ?, ?)
+        """, (title, content, category, ','.join(tags or [])))
+        self.conn.commit()
+        entry_id = cursor.lastrowid
 
-        await self.connection.commit()
+        if tags:
+            for tag in tags:
+                await self._add_tag_to_entry(entry_id, tag)
 
-    async def _create_indexes(self):
-        """インデックスを作成"""
-        indexes = [
-            'CREATE INDEX IF NOT EXISTS idx_items_category ON items(category)',
-            'CREATE INDEX IF NOT EXISTS idx_items_status ON items(status)',
-            'CREATE INDEX IF NOT EXISTS idx_items_rating ON items(rating)',
-            'CREATE INDEX IF NOT EXISTS idx_items_created_at ON items(created_at)',
-            'CREATE INDEX IF NOT EXISTS idx_activity_log_user_id ON activity_log(user_id)',
-            'CREATE INDEX IF NOT EXISTS idx_activity_log_action ON activity_log(action)',
-            'CREATE INDEX IF NOT EXISTS idx_favorites_user_id ON favorites(user_id)'
-        ]
+        return entry_id
 
-        for index in indexes:
-            await self.connection.execute(index)
-        await self.connection.commit()
+    async def _add_tag_to_entry(self, entry_id: int, tag_name: str):
+        """Add a tag to an entry"""
+        cursor = self.conn.cursor()
+        cursor.execute('INSERT OR IGNORE INTO tags (name) VALUES (?)', (tag_name,))
+        self.conn.commit()
+        cursor.execute('SELECT id FROM tags WHERE name = ?', (tag_name,))
+        tag_id = cursor.fetchone()[0]
+        cursor.execute('INSERT OR IGNORE INTO entry_tags (entry_id, tag_id) VALUES (?, ?)',
+                      (entry_id, tag_id))
+        self.conn.commit()
 
-    async def add(self, data: Dict[str, Any]) -> int:
-        """アイテムを追加"""
-        async with self.connection.execute('''
-            INSERT INTO items (title, description, content, category, tags, metadata, user_id, rating, is_public)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            data.get('title', ''),
-            data.get('description', ''),
-            data.get('content', ''),
-            data.get('category', 'general'),
-            json.dumps(data.get('tags', [])),
-            json.dumps(data.get('metadata', {})),
-            data.get('user_id'),
-            data.get('rating', 0),
-            data.get('is_public', False)
-        )) as cursor:
-            item_id = cursor.lastrowid
-            await self.connection.commit()
-
-            if 'tags' in data:
-                await self._add_tags(item_id, data['tags'])
-
-            await self._log_activity(data.get('user_id'), 'add', item_id)
-
-            return item_id
-
-    async def update(self, item_id: int, data: Dict[str, Any]) -> bool:
-        """アイテムを更新"""
-        update_fields = []
-        values = []
-
-        for field in ['title', 'description', 'content', 'category', 'rating', 'is_public', 'status']:
-            if field in data:
-                update_fields.append(f"{field} = ?")
-                values.append(data[field])
-
-        if not update_fields:
-            return False
-
-        update_fields.append("updated_at = CURRENT_TIMESTAMP")
-        values.append(item_id)
-
-        await self.connection.execute(f'''
-            UPDATE items SET {', '.join(update_fields)}
-            WHERE id = ?
-        ''', values)
-
-        await self.connection.commit()
-
-        if 'tags' in data:
-            await self._update_tags(item_id, data['tags'])
-
-        await self._log_activity(None, 'update', item_id)
-
-        return True
-
-    async def delete(self, item_id: int) -> bool:
-        """アイテムを削除"""
-        await self.connection.execute('DELETE FROM items WHERE id = ?', (item_id,))
-        await self.connection.commit()
-        return True
-
-    async def get(self, item_id: int) -> Optional[Dict[str, Any]]:
-        """アイテムを取得"""
-        async with self.connection.execute('''
-            SELECT * FROM items WHERE id = ?
-        ''', (item_id,)) as cursor:
-            row = await cursor.fetchone()
-            if row:
-                return await self._row_to_dict(cursor, row)
+    async def get_entry(self, entry_id: int) -> Optional[Dict[str, Any]]:
+        """Get an entry by ID"""
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT * FROM entries WHERE id = ?', (entry_id,))
+        row = cursor.fetchone()
+        if row:
+            return {
+                "id": row[0], "title": row[1], "content": row[2],
+                "category": row[3], "tags": row[4].split(',') if row[4] else [],
+                "created_at": row[5], "updated_at": row[6]
+            }
         return None
 
-    async def search(self, query: str, category: str = None, limit: int = 20) -> List[Dict[str, Any]]:
-        """検索"""
-        search_pattern = f'%{query}%'
-
+    async def list_entries(self, category: str = None, limit: int = 100) -> List[Dict[str, Any]]:
+        """List entries"""
+        cursor = self.conn.cursor()
         if category:
-            async with self.connection.execute('''
-                SELECT * FROM items
-                WHERE (title LIKE ? OR description LIKE ? OR content LIKE ?)
-                AND category = ?
-                AND status = 'active'
-                ORDER BY rating DESC, created_at DESC
-                LIMIT ?
-            ''', (search_pattern, search_pattern, search_pattern, category, limit)) as cursor:
-                rows = await cursor.fetchall()
-                return await self._rows_to_dicts(cursor, rows)
+            cursor.execute('SELECT * FROM entries WHERE category = ? ORDER BY created_at DESC LIMIT ?',
+                          (category, limit))
         else:
-            async with self.connection.execute('''
-                SELECT * FROM items
-                WHERE (title LIKE ? OR description LIKE ? OR content LIKE ?)
-                AND status = 'active'
-                ORDER BY rating DESC, created_at DESC
-                LIMIT ?
-            ''', (search_pattern, search_pattern, search_pattern, limit)) as cursor:
-                rows = await cursor.fetchall()
-                return await self._rows_to_dicts(cursor, rows)
+            cursor.execute('SELECT * FROM entries ORDER BY created_at DESC LIMIT ?', (limit,))
+        rows = cursor.fetchall()
+        return [{
+            "id": row[0], "title": row[1], "content": row[2],
+            "category": row[3], "tags": row[4].split(',') if row[4] else [],
+            "created_at": row[5], "updated_at": row[6]
+        } for row in rows]
 
-    async def get_statistics(self) -> Dict[str, Any]:
-        """統計情報を取得"""
-        async with self.connection.execute('SELECT COUNT(*) FROM items WHERE status = "active"') as cursor:
-            total_items = (await cursor.fetchone())[0]
+    async def search_entries(self, query: str) -> List[Dict[str, Any]]:
+        """Search entries"""
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT * FROM entries WHERE title LIKE ? OR content LIKE ? ORDER BY created_at DESC
+        """, (f'%{query}%', f'%{query}%'))
+        rows = cursor.fetchall()
+        return [{
+            "id": row[0], "title": row[1], "content": row[2],
+            "category": row[3], "tags": row[4].split(',') if row[4] else [],
+            "created_at": row[5], "updated_at": row[6]
+        } for row in rows]
 
-        async with self.connection.execute('SELECT category, COUNT(*) FROM items WHERE status = "active" GROUP BY category') as cursor:
-            by_category = dict(await cursor.fetchall())
+    async def update_entry(self, entry_id: int, title: str = None, content: str = None,
+                          category: str = None, tags: List[str] = None) -> bool:
+        """Update an entry"""
+        cursor = self.conn.cursor()
+        updates = []
+        values = []
 
-        async with self.connection.execute('SELECT AVG(rating) FROM items WHERE status = "active" AND rating > 0') as cursor:
-            avg_rating = (await cursor.fetchone())[0] or 0
+        if title:
+            updates.append("title = ?")
+            values.append(title)
+        if content:
+            updates.append("content = ?")
+            values.append(content)
+        if category:
+            updates.append("category = ?")
+            values.append(category)
+        if tags is not None:
+            updates.append("tags = ?")
+            values.append(','.join(tags))
 
-        async with self.connection.execute('SELECT COUNT(DISTINCT user_id) FROM items') as cursor:
-            total_users = (await cursor.fetchone())[0]
+        if updates:
+            updates.append("updated_at = CURRENT_TIMESTAMP")
+            values.append(entry_id)
+            cursor.execute(f"UPDATE entries SET {', '.join(updates)} WHERE id = ?", values)
+            self.conn.commit()
+            return cursor.rowcount > 0
+        return False
 
-        async with self.connection.execute('SELECT COUNT(*) FROM tags') as cursor:
-            total_tags = (await cursor.fetchone())[0]
+    async def delete_entry(self, entry_id: int) -> bool:
+        """Delete an entry"""
+        cursor = self.conn.cursor()
+        cursor.execute('DELETE FROM entry_tags WHERE entry_id = ?', (entry_id,))
+        cursor.execute('DELETE FROM entries WHERE id = ?', (entry_id,))
+        self.conn.commit()
+        return cursor.rowcount > 0
 
-        return {
-            "total_items": total_items,
-            "by_category": by_category,
-            "average_rating": round(avg_rating, 2),
-            "total_users": total_users,
-            "total_tags": total_tags
-        }
-
-    async def get_recommendations(self, user_id: str, limit: int = 5) -> List[Dict[str, Any]]:
-        """おすすめを取得"""
-        async with self.connection.execute('''
-            SELECT * FROM items
-            WHERE id NOT IN (SELECT item_id FROM favorites WHERE user_id = ?)
-            AND status = 'active'
-            AND is_public = 1
-            ORDER BY rating DESC, view_count DESC
-            LIMIT ?
-        ''', (user_id, limit)) as cursor:
-            rows = await cursor.fetchall()
-            return await self._rows_to_dicts(cursor, rows)
-
-    async def get_trending(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """トレンドを取得"""
-        async with self.connection.execute('''
-            SELECT * FROM items
-            WHERE status = 'active'
-            ORDER BY view_count DESC, rating DESC
-            LIMIT ?
-        ''', (limit,)) as cursor:
-            rows = await cursor.fetchall()
-            return await self._rows_to_dicts(cursor, rows)
-
-    async def get_related(self, item_id: int, limit: int = 5) -> List[Dict[str, Any]]:
-        """関連アイテムを取得"""
-        item = await self.get(item_id)
-        if not item:
-            return []
-
-        async with self.connection.execute('''
-            SELECT * FROM items
-            WHERE category = ?
-            AND id != ?
-            AND status = 'active'
-            ORDER BY rating DESC
-            LIMIT ?
-        ''', (item.get('category'), item_id, limit)) as cursor:
-            rows = await cursor.fetchall()
-            return await self._rows_to_dicts(cursor, rows)
-
-    async def _add_tags(self, item_id: int, tags: List[str]):
-        """タグを追加"""
-        for tag_name in tags:
-            async with self.connection.execute(
-                'SELECT id FROM tags WHERE name = ?',
-                (tag_name,)
-            ) as cursor:
-                row = await cursor.fetchone()
-                if row:
-                    tag_id = row[0]
-                    await self.connection.execute(
-                        'UPDATE tags SET count = count + 1 WHERE id = ?',
-                        (tag_id,)
-                    )
-                else:
-                    await self.connection.execute(
-                        'INSERT INTO tags (name, count) VALUES (?, 1)',
-                        (tag_name,)
-                    )
-                    tag_id = cursor.lastrowid
-
-            try:
-                await self.connection.execute(
-                    'INSERT INTO item_tags (item_id, tag_id) VALUES (?, ?)',
-                    (item_id, tag_id)
-                )
-            except:
-                pass
-
-        await self.connection.commit()
-
-    async def _update_tags(self, item_id: int, tags: List[str]):
-        """タグを更新"""
-        await self.connection.execute(
-            'DELETE FROM item_tags WHERE item_id = ?',
-            (item_id,)
-        )
-        await self._add_tags(item_id, tags)
-
-    async def _log_activity(self, user_id: Optional[str], action: str, item_id: Optional[int]):
-        """アクティビティを記録"""
-        await self.connection.execute('''
-            INSERT INTO activity_log (user_id, action, item_id)
-            VALUES (?, ?, ?)
-        ''', (user_id, action, item_id))
-        await self.connection.commit()
-
-    async def _rows_to_dicts(self, cursor, rows) -> List[Dict[str, Any]]:
-        """行を辞書に変換"""
-        results = []
-        for row in rows:
-            results.append(await self._row_to_dict(cursor, row))
-        return results
-
-    async def _row_to_dict(self, cursor, row) -> Dict[str, Any]:
-        """行を辞書に変換"""
-        columns = [description[0] for description in cursor.description]
-        result = dict(zip(columns, row))
-
-        for field in ['tags', 'metadata']:
-            if field in result and result[field]:
-                try:
-                    result[field] = json.loads(result[field])
-                except:
-                    pass
-
-        return result
-
-    async def close(self):
-        """接続を閉じる"""
-        await self.connection.close()
-        self.logger.info("Database connection closed")
+    def close(self):
+        """Close database connection"""
+        if self.conn:
+            self.conn.close()
