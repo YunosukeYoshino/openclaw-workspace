@@ -1,9 +1,9 @@
 # MEMORY.md
 
-## 全プロジェクト進捗サマリー (2026-02-13 02:30 UTC)
+## 全プロジェクト進捗サマリー (2026-02-13 02:47 UTC)
 
-**完了済みプロジェクト**: 44個
-**総エージェント数**: 202個 (100%完全 - agent.py, db.py, discord.py, README.md, requirements.txt)
+**完了済みプロジェクト**: 46個
+**総エージェント数**: 212個 (100%完全 - agent.py, db.py, discord.py, README.md, requirements.txt)
 
 ### 完了済みプロジェクト一覧
 
@@ -372,6 +372,20 @@
     - erotic-bookmark-agent - えっちコンテンツブックマークエージェント
     - erotic-history-agent - えっちコンテンツ閲覧履歴エージェント
     - erotic-search-agent - えっちコンテンツ高度検索エージェント
+
+45. ✅ **野球追加エージェントV2** (5個)
+    - baseball-rule-agent - 野球ルール説明エージェント
+    - baseball-hof-agent - 野球殿堂エージェント
+    - baseball-award-agent - 野球賞エージェント
+    - baseball-stadium-agent - 野球場エージェント
+    - baseball-legend-agent - 野球伝説エージェント
+
+46. ✅ **ゲーム詳細エージェントV2** (5個)
+    - game-review-agent - ゲームレビューエージェント
+    - game-dlc-agent - ゲームDLCエージェント
+    - game-esports-agent - ゲームeスポーツエージェント
+    - game-guide-agent - ゲーム攻略ガイドエージェント
+    - game-newsletter-agent - ゲームニュースレターエージェント
 
 ---
 
