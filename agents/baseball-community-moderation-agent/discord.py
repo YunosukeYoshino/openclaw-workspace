@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-event-sourcing-agent - Discord Botモジュール
+baseball-community-moderation-agent - Discord Botモジュール
 """
 
 import discord
 from discord.ext import commands
-from db import EventSourcingAgentDB
+from db import BaseballCommunityModerationAgentDB
 
-class EventSourcingAgentDiscordBot(commands.Bot):
-    """event-sourcing-agent Discord Bot"""
+class BaseballCommunityModerationAgentDiscordBot(commands.Bot):
+    """baseball-community-moderation-agent Discord Bot"""
 
-    def __init__(self, db_path: str = "event-sourcing-agent.db"):
+    def __init__(self, db_path: str = "baseball-community-moderation-agent.db"):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix="!", intents=intents)
-        self.db = EventSourcingAgentDB(db_path)
+        self.db = BaseballCommunityModerationAgentDB(db_path)
 
     async def setup_hook(self):
         """Bot起動時の処理"""
@@ -50,7 +50,7 @@ class EventSourcingAgentDiscordBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = EventSourcingAgentDiscordBot()
+    bot = BaseballCommunityModerationAgentDiscordBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

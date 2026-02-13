@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-イベントソーシングエージェント。イベントソーシングの管理。
+デプロイスケジューラーエージェント。デプロイのスケジューリング。
 
-イベントソーシングエージェント。イベントソーシングの管理。
+デプロイスケジューラーエージェント。デプロイのスケジューリング。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class EventSourcingAgentBot(commands.Bot):
-    """event-sourcing-agent Bot"""
+class DeploySchedulerAgentBot(commands.Bot):
+    """deploy-scheduler-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class EventSourcingAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = EventSourcingAgentBot()
+    bot = DeploySchedulerAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

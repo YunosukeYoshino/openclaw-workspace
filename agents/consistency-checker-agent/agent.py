@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-イベントソーシングエージェント。イベントソーシングの管理。
+一貫性チェッカーエージェント。データ一貫性のチェック。
 
-イベントソーシングエージェント。イベントソーシングの管理。
+一貫性チェッカーエージェント。データ一貫性のチェック。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class EventSourcingAgentBot(commands.Bot):
-    """event-sourcing-agent Bot"""
+class ConsistencyCheckerAgentBot(commands.Bot):
+    """consistency-checker-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class EventSourcingAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = EventSourcingAgentBot()
+    bot = ConsistencyCheckerAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

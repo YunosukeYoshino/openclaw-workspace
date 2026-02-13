@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-イベントソーシングエージェント。イベントソーシングの管理。
+ゲームランキングシステムエージェント。ランキングの管理。
 
-イベントソーシングエージェント。イベントソーシングの管理。
+ゲームランキングシステムエージェント。ランキングの管理。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class EventSourcingAgentBot(commands.Bot):
-    """event-sourcing-agent Bot"""
+class GameRankingSystemAgentBot(commands.Bot):
+    """game-ranking-system-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class EventSourcingAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = EventSourcingAgentBot()
+    bot = GameRankingSystemAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

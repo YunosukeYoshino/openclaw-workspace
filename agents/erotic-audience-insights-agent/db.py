@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-event-sourcing-agent - データベースモジュール
+erotic-audience-insights-agent - データベースモジュール
 """
 
 import sqlite3
 from datetime import datetime
 from typing import List, Dict, Optional
 
-class EventSourcingAgentDB:
-    """event-sourcing-agent データベース"""
+class EroticAudienceInsightsAgentDB:
+    """erotic-audience-insights-agent データベース"""
 
-    def __init__(self, db_path: str = "event-sourcing-agent.db"):
+    def __init__(self, db_path: str = "erotic-audience-insights-agent.db"):
         """初期化"""
         self.db_path = db_path
         self.conn = sqlite3.connect(db_path)
@@ -80,12 +80,12 @@ class EventSourcingAgentDB:
 
 def main():
     """メイン関数"""
-    db = EventSourcingAgentDB()
+    db = EroticAudienceInsightsAgentDB()
 
     # サンプルエントリー追加
     entry_id = db.add_entry(
         "Sample Entry",
-        "This is a sample entry for event-sourcing-agent"
+        "This is a sample entry for erotic-audience-insights-agent"
     )
     print(f"Added entry with ID: {entry_id}")
 

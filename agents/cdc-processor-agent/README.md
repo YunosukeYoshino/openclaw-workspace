@@ -1,8 +1,8 @@
-# event-sourcing-agent
+# cdc-processor-agent
 
-イベントソーシングエージェント。イベントソーシングの管理。
+CDCプロセッサーエージェント。CDCの処理。
 
-イベントソーシングエージェント。イベントソーシングの管理。
+CDCプロセッサーエージェント。CDCの処理。
 
 ## Files
 

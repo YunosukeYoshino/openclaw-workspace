@@ -1,0 +1,31 @@
+{
+  "completed": [
+    "baseball-fan-forum-agent",
+    "baseball-social-feed-agent",
+    "baseball-discussion-agent",
+    "baseball-poll-manager-agent",
+    "baseball-community-moderation-agent",
+    "game-lobby-manager-agent",
+    "game-session-manager-agent",
+    "game-ranking-system-agent",
+    "game-tournament-orchestrator-agent",
+    "game-leaderboard-agent",
+    "erotic-creator-dashboard-agent",
+    "erotic-analytics-for-creators-agent",
+    "erotic-audience-insights-agent",
+    "erotic-content-planner-agent",
+    "erotic-collaboration-finder-agent",
+    "data-sync-manager-agent",
+    "replication-controller-agent",
+    "event-sourcing-agent",
+    "cdc-processor-agent",
+    "consistency-checker-agent",
+    "ci-pipeline-agent",
+    "cd-orchestrator-agent",
+    "build-manager-agent",
+    "deploy-scheduler-agent",
+    "rollback-manager-agent"
+  ],
+  "current_project": "CI/CD\u30fb\u30c7\u30d7\u30ed\u30a4\u81ea\u52d5\u5316\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8",
+  "total_agents": 25
+}

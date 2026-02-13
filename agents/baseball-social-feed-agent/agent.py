@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-イベントソーシングエージェント。イベントソーシングの管理。
+野球ソーシャルフィードエージェント。ソーシャルフィードの管理。
 
-イベントソーシングエージェント。イベントソーシングの管理。
+野球ソーシャルフィードエージェント。ソーシャルフィードの管理。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class EventSourcingAgentBot(commands.Bot):
-    """event-sourcing-agent Bot"""
+class BaseballSocialFeedAgentBot(commands.Bot):
+    """baseball-social-feed-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class EventSourcingAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = EventSourcingAgentBot()
+    bot = BaseballSocialFeedAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

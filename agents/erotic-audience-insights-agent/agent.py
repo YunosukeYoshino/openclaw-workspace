@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-イベントソーシングエージェント。イベントソーシングの管理。
+えっちオーディエンスインサイトエージェント。視聴者インサイト。
 
-イベントソーシングエージェント。イベントソーシングの管理。
+えっちオーディエンスインサイトエージェント。視聴者インサイト。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class EventSourcingAgentBot(commands.Bot):
-    """event-sourcing-agent Bot"""
+class EroticAudienceInsightsAgentBot(commands.Bot):
+    """erotic-audience-insights-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class EventSourcingAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = EventSourcingAgentBot()
+    bot = EroticAudienceInsightsAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

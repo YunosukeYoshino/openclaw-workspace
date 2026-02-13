@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-イベントソーシングエージェント。イベントソーシングの管理。
+えっちクリエイター分析エージェント。クリエイター用分析。
 
-イベントソーシングエージェント。イベントソーシングの管理。
+えっちクリエイター分析エージェント。クリエイター用分析。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class EventSourcingAgentBot(commands.Bot):
-    """event-sourcing-agent Bot"""
+class EroticAnalyticsForCreatorsAgentBot(commands.Bot):
+    """erotic-analytics-for-creators-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class EventSourcingAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = EventSourcingAgentBot()
+    bot = EroticAnalyticsForCreatorsAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":
