@@ -1,6 +1,6 @@
-# erotic-curation-agent
+# erotic-semantic-search-agent
 
-🎨 えっちコンテンツキュレーションエージェント / Erotic Content Curation Agent
+🔍 えっちコンテンツ意味検索エージェント / Erotic Content Semantic Search Agent
 
 ## 概要 (Overview)
 
@@ -41,10 +41,10 @@ pip install -r requirements.txt
 ### Python API
 
 ```python
-from agent import EroticCurationAgentAgent
+from agent import EroticSemanticSearchAgentAgent
 
 # エージェント初期化
-agent = EroticCurationAgentAgent()
+agent = EroticSemanticSearchAgentAgent()
 
 # コンテンツ追加
 agent.add_content(

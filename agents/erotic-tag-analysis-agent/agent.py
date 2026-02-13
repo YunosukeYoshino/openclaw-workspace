@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツキュレーションエージェント / Erotic Content Curation Agent
-erotic-curation-agent
+えっちタグ高度分析エージェント / Erotic Tag Advanced Analysis Agent
+erotic-tag-analysis-agent
 """
 
 import sqlite3
@@ -9,8 +9,8 @@ from datetime import datetime
 from pathlib import Path
 import json as json_module
 
-class EroticCurationAgentAgent:
-    """えっちコンテンツキュレーションエージェント"""
+class EroticTagAnalysisAgentAgent:
+    """えっちタグ高度分析エージェント"""
 
     def __init__(self, db_path=None):
         self.db_path = db_path or Path("data/erotic_advanced.db")
@@ -266,7 +266,7 @@ class EroticCurationAgentAgent:
 
 
 if __name__ == "__main__":
-    agent = EroticCurationAgentAgent()
+    agent = EroticTagAnalysisAgentAgent()
 
     # サンプルデータ追加
     agent.add_content("er001", "美少女の冒険", "ArtistA", "pixiv", "https://example.com/1", "アニメ,美少女,冒険", "かわいい")

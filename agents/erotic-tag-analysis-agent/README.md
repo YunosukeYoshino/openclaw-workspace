@@ -1,6 +1,6 @@
-# erotic-curation-agent
+# erotic-tag-analysis-agent
 
-🎨 えっちコンテンツキュレーションエージェント / Erotic Content Curation Agent
+🏷️ えっちタグ高度分析エージェント / Erotic Tag Advanced Analysis Agent
 
 ## 概要 (Overview)
 
@@ -41,10 +41,10 @@ pip install -r requirements.txt
 ### Python API
 
 ```python
-from agent import EroticCurationAgentAgent
+from agent import EroticTagAnalysisAgentAgent
 
 # エージェント初期化
-agent = EroticCurationAgentAgent()
+agent = EroticTagAnalysisAgentAgent()
 
 # コンテンツ追加
 agent.add_content(

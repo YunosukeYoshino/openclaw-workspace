@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツキュレーションエージェント Discord連携 / Erotic Content Curation Agent Discord Integration
-erotic-curation-agent
+えっちコレクション最適化エージェント Discord連携 / Erotic Collection Optimization Agent Discord Integration
+erotic-collection-optimizer-agent
 """
 
 import json
@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from db import EroticAdvancedDB
 
 
-class EroticCurationAgentDiscord:
+class EroticCollectionOptimizerAgentDiscord:
     """Discordボットインターフェース"""
 
     def __init__(self):
@@ -227,7 +227,7 @@ class EroticCurationAgentDiscord:
 
 
 if __name__ == "__main__":
-    bot = EroticCurationAgentDiscord()
+    bot = EroticCollectionOptimizerAgentDiscord()
 
     # テスト
     user_id = "test-user"

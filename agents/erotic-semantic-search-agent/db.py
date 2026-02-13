@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツキュレーションエージェント データベース管理 / Erotic Content Curation Agent Database Management
-erotic-curation-agent
+えっちコンテンツ意味検索エージェント データベース管理 / Erotic Content Semantic Search Agent Database Management
+erotic-semantic-search-agent
 """
 
 import sqlite3

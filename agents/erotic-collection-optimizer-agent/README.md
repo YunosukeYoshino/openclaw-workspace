@@ -1,6 +1,6 @@
-# erotic-curation-agent
+# erotic-collection-optimizer-agent
 
-🎨 えっちコンテンツキュレーションエージェント / Erotic Content Curation Agent
+📚 えっちコレクション最適化エージェント / Erotic Collection Optimization Agent
 
 ## 概要 (Overview)
 
@@ -41,10 +41,10 @@ pip install -r requirements.txt
 ### Python API
 
 ```python
-from agent import EroticCurationAgentAgent
+from agent import EroticCollectionOptimizerAgentAgent
 
 # エージェント初期化
-agent = EroticCurationAgentAgent()
+agent = EroticCollectionOptimizerAgentAgent()
 
 # コンテンツ追加
 agent.add_content(

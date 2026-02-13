@@ -1,6 +1,6 @@
-# erotic-curation-agent
+# erotic-content-discovery-agent
 
-🎨 えっちコンテンツキュレーションエージェント / Erotic Content Curation Agent
+✨ えっちコンテンツディスカバリーエージェント / Erotic Content Discovery Agent
 
 ## 概要 (Overview)
 
@@ -41,10 +41,10 @@ pip install -r requirements.txt
 ### Python API
 
 ```python
-from agent import EroticCurationAgentAgent
+from agent import EroticContentDiscoveryAgentAgent
 
 # エージェント初期化
-agent = EroticCurationAgentAgent()
+agent = EroticContentDiscoveryAgentAgent()
 
 # コンテンツ追加
 agent.add_content(
