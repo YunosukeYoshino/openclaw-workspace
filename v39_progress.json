@@ -1,0 +1,31 @@
+{
+  "completed": [
+    "baseball-journal-agent",
+    "baseball-beat-writer-agent",
+    "baseball-opinion-agent",
+    "baseball-press-release-agent",
+    "baseball-media-coverage-agent",
+    "game-broadcast-automation-agent",
+    "game-stream-scheduler-agent",
+    "game-media-kit-agent",
+    "game-press-coverage-agent",
+    "game-reviewer-agent",
+    "erotic-quality-scorer-agent",
+    "erotic-review-aggregator-agent",
+    "erotic-rating-calculator-agent",
+    "erotic-popularity-tracker-agent",
+    "erotic-sentiment-agent",
+    "data-validator-agent",
+    "data-cleanser-agent",
+    "data-dedup-agent",
+    "data-integrity-checker-agent",
+    "data-quality-score-agent",
+    "notification-broker-agent",
+    "email-sender-agent",
+    "sms-gateway-agent",
+    "push-notification-agent",
+    "notification-template-agent"
+  ],
+  "current_project": "\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u901a\u77e5\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8",
+  "total_agents": 25
+}
