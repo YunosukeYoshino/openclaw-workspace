@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-セイバーメトリクス分析エージェント Discord連携 / Sabermetrics Analysis Agent Discord Integration
-baseball-sabermetrics-agent
+機械学習試合予測エージェント Discord連携 / Machine Learning Prediction Agent Discord Integration
+baseball-prediction-ml-agent
 """
 
 import json
@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from db import BaseballAdvancedDB
 
 
-class BaseballSabermetricsAgentDiscord:
+class BaseballPredictionMlAgentDiscord:
     """Discordボットインターフェース"""
 
     def __init__(self):
@@ -226,7 +226,7 @@ class BaseballSabermetricsAgentDiscord:
 
 
 if __name__ == "__main__":
-    bot = BaseballSabermetricsAgentDiscord()
+    bot = BaseballPredictionMlAgentDiscord()
 
     # テスト
     user_id = "test-user"

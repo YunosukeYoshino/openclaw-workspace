@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-セイバーメトリクス分析エージェント / Sabermetrics Analysis Agent
-baseball-sabermetrics-agent
+守備分析エージェント / Fielding Analysis Agent
+baseball-fielding-agent
 """
 
 import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-class BaseballSabermetricsAgentAgent:
-    """セイバーメトリクス分析エージェント"""
+class BaseballFieldingAgentAgent:
+    """守備分析エージェント"""
 
     def __init__(self, db_path=None):
         self.db_path = db_path or Path("data/baseball_advanced.db")
@@ -221,7 +221,7 @@ class BaseballSabermetricsAgentAgent:
 
 
 if __name__ == "__main__":
-    agent = BaseballSabermetricsAgentAgent()
+    agent = BaseballFieldingAgentAgent()
 
     # サンプルデータ追加
     agent.add_sabermetric("player001", "山田太郎", "ヤンキース", 2024, "batting", "OPS", 0.923)

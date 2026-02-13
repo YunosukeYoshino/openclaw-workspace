@@ -1,6 +1,6 @@
-# baseball-sabermetrics-agent
+# baseball-pitcher-analysis-agent
 
-📊 セイバーメトリクス分析エージェント / Sabermetrics Analysis Agent
+⚾ 投手高度分析エージェント / Pitcher Advanced Analysis Agent
 
 ## 概要 (Overview)
 
@@ -49,10 +49,10 @@ pip install -r requirements.txt
 ### Python API
 
 ```python
-from agent import BaseballSabermetricsAgentAgent
+from agent import BaseballPitcherAnalysisAgentAgent
 
 # エージェント初期化
-agent = BaseballSabermetricsAgentAgent()
+agent = BaseballPitcherAnalysisAgentAgent()
 
 # セイバーメトリクス追加
 agent.add_sabermetric("player001", "山田太郎", "ヤンキース", 2024, "batting", "OPS", 0.923)

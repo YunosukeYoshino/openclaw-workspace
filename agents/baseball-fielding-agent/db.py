@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-セイバーメトリクス分析エージェント データベース管理 / Sabermetrics Analysis Agent Database Management
-baseball-sabermetrics-agent
+守備分析エージェント データベース管理 / Fielding Analysis Agent Database Management
+baseball-fielding-agent
 """
 
 import sqlite3
