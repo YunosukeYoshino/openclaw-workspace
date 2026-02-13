@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+"""
+野球ファンセグメンテーションエージェント - Discord Integration
+
+Discord bot integration for Baseball Fan Segmentation Agent.
+"""
+
+import discord
+from discord.ext import commands
+from typing import Optional
+
+
+class BaseballFanSegmentationAgentDiscord(commands.Cog):
+    """Discord Cog for 野球ファンセグメンテーションエージェント"""
+
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name="baseball-fan-segmentation-agent_help")
+    async def help_command(self, ctx):
+        """Show help for 野球ファンセグメンテーションエージェント"""
+        embed = discord.Embed(
+            title="野球ファンセグメンテーションエージェント / Baseball Fan Segmentation Agent",
+            description="ファンを細分化し、各セグメントの特徴を分析するエージェント。",
+            color=discord.Color.blue()
+        )
+        features = ["デモグラフィックセグメント", "行動パターンベースセグメント", "価値ベースセグメント", "セグメント別アクション提案"]
+        for i, feature in enumerate(features, 1):
+            embed.add_field(name=f"Feature {i}", value=feature, inline=False)
+        await ctx.send(embed=embed)
+
+    @commands.command(name="baseball-fan-segmentation-agent_status")
+    async def status_command(self, ctx):
+        """Show status of 野球ファンセグメンテーションエージェント"""
+        await ctx.send(f"✅ 野球ファンセグメンテーションエージェント is operational")
+
+
+def setup(bot):
+    bot.add_cog(BaseballFanSegmentationAgentDiscord(bot))
+    print(f"Discord Cog loaded: baseball-fan-segmentation-agent")
+
+
+def main():
+    # Standalone execution for testing
+    intents = discord.Intents.default()
+    bot = commands.Bot(command_prefix="!", intents=intents)
+    setup(bot)
+    print(f"Discord integration ready for baseball-fan-segmentation-agent")
+
+
+if __name__ == "__main__":
+    main()
