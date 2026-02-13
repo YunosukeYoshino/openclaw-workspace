@@ -1,0 +1,11 @@
+{
+  "completed": [
+    "baseball-scouting-pro-agent",
+    "baseball-analytics-pro-agent",
+    "baseball-coaching-agent",
+    "baseball-market-agent",
+    "baseball-broadcast-agent"
+  ],
+  "failed": [],
+  "total": 5
+}
