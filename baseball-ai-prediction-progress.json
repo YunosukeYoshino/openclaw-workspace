@@ -1,0 +1,39 @@
+{
+  "project": "baseball-ai-prediction-agents",
+  "started_at": "2026-02-13T11:48:00Z",
+  "agents": [
+    {
+      "name": "baseball-ml-prediction-agent",
+      "status": "pending",
+      "description": "機械学習による試合予測エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "baseball-pitching-prediction-agent",
+      "status": "pending",
+      "description": "投手の投球予測エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "baseball-batting-prediction-agent",
+      "status": "pending",
+      "description": "打者の打撃予測エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "baseball-injury-prediction-agent",
+      "status": "pending",
+      "description": "選手の怪我予測エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    },
+    {
+      "name": "baseball-season-prediction-agent",
+      "status": "pending",
+      "description": "シーズン順位予測エージェント",
+      "files": ["agent.py", "db.py", "discord.py", "README.md", "requirements.txt"]
+    }
+  ],
+  "overall_status": "in_progress",
+  "completed_agents": 0,
+  "total_agents": 5
+}
