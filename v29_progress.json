@@ -1,0 +1,148 @@
+{
+  "project_id": "v29",
+  "project_name": "次期プロジェクト案 V29",
+  "start_time": "2026-02-13T22:17:27.101695",
+  "projects": [
+    {
+      "name": "野球スタジアム・ファン体験エージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "baseball-stadium-guide-agent",
+          "status": "completed"
+        },
+        {
+          "name": "baseball-fan-zone-agent",
+          "status": "completed"
+        },
+        {
+          "name": "baseball-concession-agent",
+          "status": "completed"
+        },
+        {
+          "name": "baseball-seating-optimizer-agent",
+          "status": "completed"
+        },
+        {
+          "name": "baseball-game-day-experience-agent",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "name": "ゲームライブストリーミングプラットフォームエージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "live-stream-platform-agent",
+          "status": "completed"
+        },
+        {
+          "name": "stream-chat-overlay-agent",
+          "status": "completed"
+        },
+        {
+          "name": "stream-donation-agent",
+          "status": "completed"
+        },
+        {
+          "name": "stream-schedule-coordinator-agent",
+          "status": "completed"
+        },
+        {
+          "name": "stream-multi-platform-agent",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "name": "えっちコンテンツコミュニティモデレーションエージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "erotic-content-moderator-agent",
+          "status": "completed"
+        },
+        {
+          "name": "erotic-community-safety-agent",
+          "status": "completed"
+        },
+        {
+          "name": "erotic-report-system-agent",
+          "status": "completed"
+        },
+        {
+          "name": "erotic-user-behavior-agent",
+          "status": "completed"
+        },
+        {
+          "name": "erotic-policy-enforcer-agent",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "name": "AIモデル展開・MLOpsエージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "model-deployment-agent",
+          "status": "completed"
+        },
+        {
+          "name": "model-serving-agent",
+          "status": "completed"
+        },
+        {
+          "name": "model-versioning-agent",
+          "status": "completed"
+        },
+        {
+          "name": "ml-pipeline-orchestrator-agent",
+          "status": "completed"
+        },
+        {
+          "name": "ml-experiment-tracker-agent",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "name": "マルチテナント・SaaSエージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "multi-tenant-manager-agent",
+          "status": "completed"
+        },
+        {
+          "name": "tenant-isolation-agent",
+          "status": "completed"
+        },
+        {
+          "name": "saas-billing-agent",
+          "status": "completed"
+        },
+        {
+          "name": "tenant-analytics-agent",
+          "status": "completed"
+        },
+        {
+          "name": "saas-onboarding-agent",
+          "status": "completed"
+        }
+      ]
+    }
+  ],
+  "total_agents": 25,
+  "completed_agents": 25,
+  "status": "completed",
+  "updated_at": "2026-02-13T22:20:07.277361",
+  "end_time": "2026-02-13T22:20:07.277339",
+  "duration": 0.019128
+}
