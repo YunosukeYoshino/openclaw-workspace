@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-security-dashboard-agent - Discord Botモジュール
+log-search-agent - Discord Botモジュール
 """
 
 import discord
 from discord.ext import commands
-from db import SecurityDashboardAgentDB
+from db import LogSearchAgentDB
 
-class SecurityDashboardAgentDiscordBot(commands.Bot):
-    """security-dashboard-agent Discord Bot"""
+class LogSearchAgentDiscordBot(commands.Bot):
+    """log-search-agent Discord Bot"""
 
-    def __init__(self, db_path: str = "security-dashboard-agent.db"):
+    def __init__(self, db_path: str = "log-search-agent.db"):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix="!", intents=intents)
-        self.db = SecurityDashboardAgentDB(db_path)
+        self.db = LogSearchAgentDB(db_path)
 
     async def setup_hook(self):
         """Bot起動時の処理"""
@@ -50,7 +50,7 @@ class SecurityDashboardAgentDiscordBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = SecurityDashboardAgentDiscordBot()
+    bot = LogSearchAgentDiscordBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

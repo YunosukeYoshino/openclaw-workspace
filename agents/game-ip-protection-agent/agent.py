@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-セキュリティダッシュボードエージェント。セキュリティ状況の可視化。
+ゲームIP保護エージェント。知的財産の保護。
 
-セキュリティダッシュボードエージェント。セキュリティ状況の可視化。
+ゲームIP保護エージェント。知的財産の保護。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class SecurityDashboardAgentBot(commands.Bot):
-    """security-dashboard-agent Bot"""
+class GameIpProtectionAgentBot(commands.Bot):
+    """game-ip-protection-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class SecurityDashboardAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = SecurityDashboardAgentBot()
+    bot = GameIpProtectionAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

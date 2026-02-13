@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-security-dashboard-agent - データベースモジュール
+game-franchise-manager-agent - データベースモジュール
 """
 
 import sqlite3
 from datetime import datetime
 from typing import List, Dict, Optional
 
-class SecurityDashboardAgentDB:
-    """security-dashboard-agent データベース"""
+class GameFranchiseManagerAgentDB:
+    """game-franchise-manager-agent データベース"""
 
-    def __init__(self, db_path: str = "security-dashboard-agent.db"):
+    def __init__(self, db_path: str = "game-franchise-manager-agent.db"):
         """初期化"""
         self.db_path = db_path
         self.conn = sqlite3.connect(db_path)
@@ -80,12 +80,12 @@ class SecurityDashboardAgentDB:
 
 def main():
     """メイン関数"""
-    db = SecurityDashboardAgentDB()
+    db = GameFranchiseManagerAgentDB()
 
     # サンプルエントリー追加
     entry_id = db.add_entry(
         "Sample Entry",
-        "This is a sample entry for security-dashboard-agent"
+        "This is a sample entry for game-franchise-manager-agent"
     )
     print(f"Added entry with ID: {entry_id}")
 

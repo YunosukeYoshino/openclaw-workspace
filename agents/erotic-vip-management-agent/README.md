@@ -1,8 +1,8 @@
-# security-dashboard-agent
+# erotic-vip-management-agent
 
-セキュリティダッシュボードエージェント。セキュリティ状況の可視化。
+えっちVIP管理エージェント。VIPユーザーの管理。
 
-セキュリティダッシュボードエージェント。セキュリティ状況の可視化。
+えっちVIP管理エージェント。VIPユーザーの管理。
 
 ## Files
 
@@ -45,4 +45,4 @@ python discord.py
 
 ## Project
 
-セキュリティモニタリング・SOCエージェント
+えっちコンテンツ決済・マネタイズエージェント

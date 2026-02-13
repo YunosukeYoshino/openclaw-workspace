@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-セキュリティダッシュボードエージェント。セキュリティ状況の可視化。
+野球スポンサーシップエージェント。スポンサー管理。
 
-セキュリティダッシュボードエージェント。セキュリティ状況の可視化。
+野球スポンサーシップエージェント。スポンサー管理。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class SecurityDashboardAgentBot(commands.Bot):
-    """security-dashboard-agent Bot"""
+class BaseballSponsorshipAgentBot(commands.Bot):
+    """baseball-sponsorship-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class SecurityDashboardAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = SecurityDashboardAgentBot()
+    bot = BaseballSponsorshipAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":
