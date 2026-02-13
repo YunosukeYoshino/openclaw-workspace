@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-野球プレゼンテーション・スピーチエージェント
-baseball-presentation-agent - 野球プレゼンテーションエージェント。野球関連のプレゼンテーション資料の作成・管理。
+えっちコンテンツAI画像生成・編集エージェント
+erotic-ai-img-bg-remover-agent - えっちAI画像背景削除エージェント。背景の自動除去・置換。
 """
 
 import sqlite3
@@ -9,10 +9,10 @@ import threading
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class BaseballPresentation:
-    """野球プレゼンテーションエージェント。野球関連のプレゼンテーション資料の作成・管理。"""
+class EroticAiImgBgRemover:
+    """えっちAI画像背景削除エージェント。背景の自動除去・置換。"""
 
-    def __init__(self, db_path: str = "agents/baseball-presentation-agent/data.db"):
+    def __init__(self, db_path: str = "agents/erotic-ai-img-bg-remover-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -98,5 +98,5 @@ class BaseballPresentation:
 
 if __name__ == "__main__":
     import json
-    agent = BaseballPresentation()
+    agent = EroticAiImgBgRemover()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

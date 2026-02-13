@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 野球プレゼンテーション・スピーチエージェント
-baseball-presentation-agent - 野球プレゼンテーションエージェント。野球関連のプレゼンテーション資料の作成・管理。
+baseball-media-interview-agent - 野球メディアインタビューエージェント。メディア対応の準備・練習。
 """
 
 import sqlite3
@@ -9,10 +9,10 @@ import threading
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class BaseballPresentation:
-    """野球プレゼンテーションエージェント。野球関連のプレゼンテーション資料の作成・管理。"""
+class BaseballMediaInterview:
+    """野球メディアインタビューエージェント。メディア対応の準備・練習。"""
 
-    def __init__(self, db_path: str = "agents/baseball-presentation-agent/data.db"):
+    def __init__(self, db_path: str = "agents/baseball-media-interview-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -98,5 +98,5 @@ class BaseballPresentation:
 
 if __name__ == "__main__":
     import json
-    agent = BaseballPresentation()
+    agent = BaseballMediaInterview()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

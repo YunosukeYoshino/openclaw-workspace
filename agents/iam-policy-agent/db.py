@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Database schema for baseball-presentation-agent
+Database schema for iam-policy-agent
 """
 
 import sqlite3
 from pathlib import Path
 
-def init_db(db_path: str = "agents/baseball-presentation-agent/data.db"):
+def init_db(db_path: str = "agents/iam-policy-agent/data.db"):
     """Initialize database"""
     Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 

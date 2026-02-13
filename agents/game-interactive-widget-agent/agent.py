@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-野球プレゼンテーション・スピーチエージェント
-baseball-presentation-agent - 野球プレゼンテーションエージェント。野球関連のプレゼンテーション資料の作成・管理。
+ゲームライブ配信・インタラクションエージェント
+game-interactive-widget-agent - ゲームインタラクティブウィジェットエージェント。視聴者参加型ウィジェットの作成。
 """
 
 import sqlite3
@@ -9,10 +9,10 @@ import threading
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class BaseballPresentation:
-    """野球プレゼンテーションエージェント。野球関連のプレゼンテーション資料の作成・管理。"""
+class GameInteractiveWidget:
+    """ゲームインタラクティブウィジェットエージェント。視聴者参加型ウィジェットの作成。"""
 
-    def __init__(self, db_path: str = "agents/baseball-presentation-agent/data.db"):
+    def __init__(self, db_path: str = "agents/game-interactive-widget-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -98,5 +98,5 @@ class BaseballPresentation:
 
 if __name__ == "__main__":
     import json
-    agent = BaseballPresentation()
+    agent = GameInteractiveWidget()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))
