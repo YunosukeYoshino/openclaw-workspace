@@ -56,11 +56,59 @@ PROJECTS = {
     ],
 }
 
-# Agent templates
-AGENT_PY_TEMPLATE = '''#!/usr/bin/env python3
+def progress_save(data: dict):
+    """Save progress"""
+    with open(PROGRESS_FILE, "w") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+def progress_load() -> dict:
+    """Load progress"""
+    if os.path.exists(PROGRESS_FILE):
+        with open(PROGRESS_FILE) as f:
+            return json.load(f)
+    return {"completed": [], "total": sum(len(p) for p in PROJECTS.values())}
+
+def create_agent_files(project_name: str, agent_name: str, agent_desc: str) -> bool:
+    """Create agent files"""
+    class_name = "".join(w.capitalize() for w in agent_name.replace("-agent", "").replace("-", "_").split("_"))
+    agent_dir = BASE_DIR / agent_name
+    db_path = agent_dir / "data.db"
+
+    try:
+        agent_dir.mkdir(parents=True, exist_ok=True)
+
+        # agent.py
+        with open(agent_dir / "agent.py", "w") as f:
+            f.write(get_agent_py_content(project_name, agent_name, agent_desc, class_name, str(db_path)))
+
+        # db.py
+        with open(agent_dir / "db.py", "w") as f:
+            f.write(get_db_py_content(agent_name, str(db_path)))
+
+        # discord.py
+        with open(agent_dir / "discord.py", "w") as f:
+            f.write(get_discord_py_content(agent_name, class_name, str(db_path)))
+
+        # README.md
+        with open(agent_dir / "README.md", "w") as f:
+            f.write(get_readme_content(agent_name, agent_desc, project_name))
+
+        # requirements.txt
+        with open(agent_dir / "requirements.txt", "w") as f:
+            f.write("discord.py\n")
+
+        return True
+    except Exception as e:
+        print(f"Error creating {agent_name}: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+def get_agent_py_content(project_name, agent_name, agent_desc, class_name, db_path):
+    return f'''#!/usr/bin/env python3
 """
-{PROJECT_NAME}
-{AGENT_NAME} - {AGENT_DESC}
+{project_name}
+{agent_name} - {agent_desc}
 """
 
 import sqlite3
@@ -68,10 +116,10 @@ import threading
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class {CLASS_NAME}:
-    """{AGENT_DESC}"""
+class {class_name}:
+    """{agent_desc}"""
 
-    def __init__(self, db_path: str = "{DB_PATH}"):
+    def __init__(self, db_path: str = "{db_path}"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -96,11 +144,12 @@ class {CLASS_NAME}:
         """Create entry"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            sql = 'INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, ?)'
+            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, ?)"
+            metadata = data.get("metadata") or dict()
             cursor.execute(sql, (
                 data.get("title", ""),
                 data.get("content", ""),
-                json.dumps(data.get("metadata", {{}})),
+                json.dumps(metadata),
                 "active",
                 datetime.utcnow().isoformat()
             ))
@@ -111,7 +160,7 @@ class {CLASS_NAME}:
         """Get entry"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            sql = 'SELECT id, title, content, metadata, status, created_at, updated_at FROM entries WHERE id = ?'
+            sql = "SELECT id, title, content, metadata, status, created_at, updated_at FROM entries WHERE id = ?"
             cursor.execute(sql, (data.get("id"),))
             row = cursor.fetchone()
             if row:
@@ -124,11 +173,12 @@ class {CLASS_NAME}:
         """Update entry"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            sql = 'UPDATE entries SET title = ?, content = ?, metadata = ?, status = ?, updated_at = ? WHERE id = ?'
+            sql = "UPDATE entries SET title = ?, content = ?, metadata = ?, status = ?, updated_at = ? WHERE id = ?"
+            metadata = data.get("metadata") or dict()
             cursor.execute(sql, (
                 data.get("title", ""),
                 data.get("content", ""),
-                json.dumps(data.get("metadata", {{}})),
+                json.dumps(metadata),
                 data.get("status", "active"),
                 datetime.utcnow().isoformat(),
                 data.get("id")
@@ -140,7 +190,7 @@ class {CLASS_NAME}:
         """Delete entry"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            sql = 'DELETE FROM entries WHERE id = ?'
+            sql = "DELETE FROM entries WHERE id = ?"
             cursor.execute(sql, (data.get("id"),))
             conn.commit()
             return {{"success": True}}
@@ -149,27 +199,30 @@ class {CLASS_NAME}:
         """List entries"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            sql = 'SELECT id, title, content, status, created_at FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?'
+            sql = "SELECT id, title, content, status, created_at FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
             cursor.execute(sql, (data.get("status", "active"), data.get("limit", 50)))
             rows = cursor.fetchall()
-            return {{"items": [{{"id": r[0], "title": r[1], "content": r[2],
-                              "status": r[3], "created_at": r[4]}} for r in rows]}}
+            items = []
+            for r in rows:
+                items.append({{"id": r[0], "title": r[1], "content": r[2], "status": r[3], "created_at": r[4]}})
+            return {{"items": items}}
 
 if __name__ == "__main__":
     import json
-    agent = {CLASS_NAME}()
+    agent = {class_name}()
     print(json.dumps(agent.execute({{"action": "list"}}), indent=2, ensure_ascii=False))
 '''
 
-DB_PY_TEMPLATE = '''#!/usr/bin/env python3
+def get_db_py_content(agent_name, db_path):
+    return f'''#!/usr/bin/env python3
 """
-Database schema for {AGENT_NAME}
+Database schema for {agent_name}
 """
 
 import sqlite3
 from pathlib import Path
 
-def init_db(db_path: str = "{DB_PATH}"):
+def init_db(db_path: str = "{db_path}"):
     """Initialize database"""
     Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 
@@ -177,15 +230,15 @@ def init_db(db_path: str = "{DB_PATH}"):
         cursor = conn.cursor()
 
         # Entries table
-        sql = 'CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, metadata TEXT, status TEXT DEFAULT "active" CHECK(status IN ("active","archived","completed")), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)'
+        sql = "CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, metadata TEXT, status TEXT DEFAULT 'active' CHECK(status IN ('active','archived','completed')), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
         cursor.execute(sql)
 
         # Tags table
-        sql = 'CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL)'
+        sql = "CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL)"
         cursor.execute(sql)
 
         # Entry tags junction
-        sql = 'CREATE TABLE IF NOT EXISTS entry_tags (entry_id INTEGER, tag_id INTEGER, PRIMARY KEY (entry_id, tag_id), FOREIGN KEY (entry_id) REFERENCES entries(id) ON DELETE CASCADE, FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE)'
+        sql = "CREATE TABLE IF NOT EXISTS entry_tags (entry_id INTEGER, tag_id INTEGER, PRIMARY KEY (entry_id, tag_id), FOREIGN KEY (entry_id) REFERENCES entries(id) ON DELETE CASCADE, FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE)"
         cursor.execute(sql)
 
         conn.commit()
@@ -195,9 +248,10 @@ if __name__ == "__main__":
     print("Database initialized.")
 '''
 
-DISCORD_PY_TEMPLATE = '''#!/usr/bin/env python3
+def get_discord_py_content(agent_name, class_name, db_path):
+    return f'''#!/usr/bin/env python3
 """
-Discord integration for {AGENT_NAME}
+Discord integration for {agent_name}
 """
 
 import discord
@@ -206,10 +260,10 @@ import sqlite3
 import json
 from typing import Optional
 
-class {CLASS_NAME}Bot(commands.Bot):
-    """Discord bot for {AGENT_NAME}"""
+class {class_name}Bot(commands.Bot):
+    """Discord bot for {agent_name}"""
 
-    def __init__(self, command_prefix: str = "!", db_path: str = "{DB_PATH}"):
+    def __init__(self, command_prefix: str = "!", db_path: str = "{db_path}"):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix=command_prefix, intents=intents)
@@ -222,8 +276,8 @@ class {CLASS_NAME}Bot(commands.Bot):
         """Create entry"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            sql = 'INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, datetime("now"))'
-            cursor.execute(sql, (title, content, json.dumps({{}), ensure_ascii=False), "active"))
+            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+            cursor.execute(sql, (title, content, json.dumps(dict(), ensure_ascii=False), "active"))
             conn.commit()
             await ctx.send(f"Created: {{title}} (ID: {{cursor.lastrowid}})")
 
@@ -231,7 +285,7 @@ class {CLASS_NAME}Bot(commands.Bot):
         """List entries"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            sql = 'SELECT id, title FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?'
+            sql = "SELECT id, title FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
             cursor.execute(sql, ("active", limit))
             rows = cursor.fetchall()
             if rows:
@@ -242,19 +296,20 @@ class {CLASS_NAME}Bot(commands.Bot):
 
 if __name__ == "__main__":
     import os
-    bot = {CLASS_NAME}Bot()
+    bot = {class_name}Bot()
     token = os.getenv("DISCORD_TOKEN")
     if token:
         bot.run(token)
 '''
 
-README_TEMPLATE = '''# {AGENT_NAME}
+def get_readme_content(agent_name, agent_desc, project_name):
+    return f'''# {agent_name}
 
-{AGENT_DESC}
+{agent_desc}
 
 ## Description
 
-{PROJECT_NAME} - {AGENT_NAME}
+{project_name} - {agent_name}
 
 ## Installation
 
@@ -290,79 +345,6 @@ python3 agent.py
 
 - `DISCORD_TOKEN` - Discord bot token (optional)
 '''
-
-REQUIREMENTS_TEMPLATE = '''discord.py
-'''
-
-def progress_save(data: dict):
-    """Save progress"""
-    with open(PROGRESS_FILE, "w") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
-def progress_load() -> dict:
-    """Load progress"""
-    if os.path.exists(PROGRESS_FILE):
-        with open(PROGRESS_FILE) as f:
-            return json.load(f)
-    return {"completed": [], "total": sum(len(p) for p in PROJECTS.values())}
-
-def create_agent_files(project_name: str, agent_name: str, agent_desc: str) -> bool:
-    """Create agent files"""
-    class_name = "".join(w.capitalize() for w in agent_name.replace("-agent", "").replace("-", "_").split("_"))
-    agent_dir = BASE_DIR / agent_name
-    db_path = agent_dir / "data.db"
-
-    try:
-        agent_dir.mkdir(parents=True, exist_ok=True)
-
-        # agent.py
-        with open(agent_dir / "agent.py", "w") as f:
-            # Build agent.py content without f-string nesting
-            agent_py = AGENT_PY_TEMPLATE.format(
-                PROJECT_NAME=project_name,
-                AGENT_NAME=agent_name,
-                AGENT_DESC=agent_desc,
-                CLASS_NAME=class_name,
-                DB_PATH=str(db_path)
-            )
-            f.write(agent_py)
-
-        # db.py
-        with open(agent_dir / "db.py", "w") as f:
-            db_py = DB_PY_TEMPLATE.format(
-                AGENT_NAME=agent_name,
-                DB_PATH=str(db_path)
-            )
-            f.write(db_py)
-
-        # discord.py
-        with open(agent_dir / "discord.py", "w") as f:
-            discord_py = DISCORD_PY_TEMPLATE.format(
-                AGENT_NAME=agent_name,
-                CLASS_NAME=class_name,
-                DB_PATH=str(db_path)
-            )
-            f.write(discord_py)
-
-        # README.md
-        with open(agent_dir / "README.md", "w") as f:
-            readme_md = README_TEMPLATE.format(
-                AGENT_NAME=agent_name,
-                AGENT_DESC=agent_desc,
-                PROJECT_NAME=project_name
-            )
-            f.write(readme_md)
-
-        # requirements.txt
-        with open(agent_dir / "requirements.txt", "w") as f:
-            f.write(REQUIREMENTS_TEMPLATE)
-
-        return True
-    except Exception as e:
-        print(f"Error creating {agent_name}: {e}")
-        import traceback
-        traceback.print_exc()
-        return False
 
 def main():
     """Main orchestrator"""

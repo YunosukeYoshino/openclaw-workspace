@@ -1,62 +1,41 @@
-# {agent_name}
+# baseball-presentation-agent
 
-{japanese_name} - {description}
+野球プレゼンテーションエージェント。野球関連のプレゼンテーション資料の作成・管理。
 
-## Description / 概要
+## Description
 
-{full_description}
+野球プレゼンテーション・スピーチエージェント - baseball-presentation-agent
 
-## Features / 機能
-
-{features}
-
-## Installation / インストール
+## Installation
 
 ```bash
 pip install -r requirements.txt
+python3 db.py  # Initialize database
 ```
 
-## Usage / 使用方法
+## Usage
 
-```python
-from {agent_name} import {class_name}
-
-# Create an agent / エージェントを作成
-agent = {class_name}()
-
-# Add an entry / エントリーを追加
-agent.add_entry("Title", "Content")
-
-# List entries / エントリーを一覧
-entries = agent.list_entries()
+```bash
+python3 agent.py
 ```
 
-## Database Schema / データベーススキーマ
+## Files
 
-```sql
-CREATE TABLE {table_name} (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    {content_field} TEXT NOT NULL,
-    chart_type TEXT,
-    data_source TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
+- `agent.py` - Main agent logic
+- `db.py` - Database initialization
+- `discord.py` - Discord integration
+- `requirements.txt` - Dependencies
 
-## Discord Commands / Discordコマンド
+## API
 
-- `!{discord_prefix}add <title> <content>` - Add entry / エントリーを追加
-- `!{discord_prefix}list [limit]` - List entries / エントリーを一覧
-- `!{discord_prefix}search <query>` - Search entries / エントリーを検索
+### Actions
 
-## Requirements / 要件
+- `create` - Create new entry
+- `get` - Get entry by ID
+- `update` - Update entry
+- `delete` - Delete entry
+- `list` - List entries
 
-- Python 3.8+
-- discord.py
-- sqlite3
-- matplotlib (for visualization)
+## Environment Variables
 
-## License / ライセンス
-
-MIT
+- `DISCORD_TOKEN` - Discord bot token (optional)

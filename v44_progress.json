@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "baseball-presentation-agent",
+    "baseball-speech-writer-agent",
+    "baseball-media-interview-agent",
+    "baseball-press-conference-agent",
+    "baseball-announcer-script-agent",
+    "game-chat-bot-agent",
+    "game-interactive-widget-agent",
+    "game-audience-qna-agent",
+    "game-poll-widget-agent",
+    "game-fan-challenge-agent",
+    "erotic-ai-img-upscaler-agent",
+    "erotic-ai-img-inpainting-agent",
+    "erotic-ai-img-style-transfer-agent",
+    "erotic-ai-img-bg-remover-agent",
+    "erotic-ai-img-enhancer-agent",
+    "component-library-agent",
+    "micro-frontend-builder-agent",
+    "component-testing-agent",
+    "design-system-keeper-agent",
+    "component-doc-generator-agent",
+    "iam-policy-agent",
+    "role-manager-agent",
+    "permission-auditor-agent",
+    "zero-trust-verifier-agent",
+    "access-logger-agent"
+  ],
+  "total": 25
+}

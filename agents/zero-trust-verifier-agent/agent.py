@@ -37,11 +37,12 @@ class ZeroTrustVerifier:
         """Create entry"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            sql = 'INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, ?)'
+            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, ?)"
+            metadata = data.get("metadata") or dict()
             cursor.execute(sql, (
                 data.get("title", ""),
                 data.get("content", ""),
-                json.dumps(data.get("metadata", {})),
+                json.dumps(metadata),
                 "active",
                 datetime.utcnow().isoformat()
             ))
@@ -52,7 +53,7 @@ class ZeroTrustVerifier:
         """Get entry"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            sql = 'SELECT id, title, content, metadata, status, created_at, updated_at FROM entries WHERE id = ?'
+            sql = "SELECT id, title, content, metadata, status, created_at, updated_at FROM entries WHERE id = ?"
             cursor.execute(sql, (data.get("id"),))
             row = cursor.fetchone()
             if row:
@@ -65,11 +66,12 @@ class ZeroTrustVerifier:
         """Update entry"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            sql = 'UPDATE entries SET title = ?, content = ?, metadata = ?, status = ?, updated_at = ? WHERE id = ?'
+            sql = "UPDATE entries SET title = ?, content = ?, metadata = ?, status = ?, updated_at = ? WHERE id = ?"
+            metadata = data.get("metadata") or dict()
             cursor.execute(sql, (
                 data.get("title", ""),
                 data.get("content", ""),
-                json.dumps(data.get("metadata", {})),
+                json.dumps(metadata),
                 data.get("status", "active"),
                 datetime.utcnow().isoformat(),
                 data.get("id")
@@ -81,7 +83,7 @@ class ZeroTrustVerifier:
         """Delete entry"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            sql = 'DELETE FROM entries WHERE id = ?'
+            sql = "DELETE FROM entries WHERE id = ?"
             cursor.execute(sql, (data.get("id"),))
             conn.commit()
             return {"success": True}
@@ -90,11 +92,13 @@ class ZeroTrustVerifier:
         """List entries"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            sql = 'SELECT id, title, content, status, created_at FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?'
+            sql = "SELECT id, title, content, status, created_at FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
             cursor.execute(sql, (data.get("status", "active"), data.get("limit", 50)))
             rows = cursor.fetchall()
-            return {"items": [{"id": r[0], "title": r[1], "content": r[2],
-                              "status": r[3], "created_at": r[4]} for r in rows]}
+            items = []
+            for r in rows:
+                items.append({"id": r[0], "title": r[1], "content": r[2], "status": r[3], "created_at": r[4]})
+            return {"items": items}
 
 if __name__ == "__main__":
     import json
