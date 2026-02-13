@@ -352,10 +352,7 @@ class Database:
         """
         with get_connection(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute('''
-INSERT INTO predictions (input_data, prediction, features)
-VALUES (?, ?, ?)
-''', (
+            cursor.execute('INSERT INTO predictions (input_data, prediction, features) VALUES (?, ?, ?)', (
                 json.dumps(input_data, ensure_ascii=False),
                 json.dumps(prediction, ensure_ascii=False),
                 json.dumps(features or {}, ensure_ascii=False)
@@ -380,11 +377,7 @@ VALUES (?, ?, ?)
         """
         with get_connection(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute('''
-SELECT * FROM predictions
-ORDER BY created_at DESC
-LIMIT ? OFFSET ?
-''', (limit, offset))
+            cursor.execute('SELECT * FROM predictions ORDER BY created_at DESC LIMIT ? OFFSET ?', (limit, offset))
 
             results = []
             for row in cursor.fetchall():
@@ -410,9 +403,7 @@ LIMIT ? OFFSET ?
         """
         with get_connection(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute('''
-SELECT * FROM predictions WHERE id = ?
-''', (prediction_id,))
+            cursor.execute('SELECT * FROM predictions WHERE id = ?', (prediction_id,))
 
             row = cursor.fetchone()
             if row:
@@ -437,10 +428,7 @@ SELECT * FROM predictions WHERE id = ?
         """
         with get_connection(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute('''
-INSERT INTO training_results (model_type, result_data)
-VALUES (?, ?)
-''', (
+            cursor.execute('INSERT INTO training_results (model_type, result_data) VALUES (?, ?)', (
                 result_data.get("model_type", "unknown"),
                 json.dumps(result_data, ensure_ascii=False)
             ))
@@ -459,10 +447,7 @@ VALUES (?, ?)
         """
         with get_connection(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute('''
-INSERT INTO evaluation_results (metrics)
-VALUES (?)
-''', (json.dumps(metrics, ensure_ascii=False),))
+            cursor.execute('INSERT INTO evaluation_results (metrics) VALUES (?)', (json.dumps(metrics, ensure_ascii=False),))
             conn.commit()
             return cursor.lastrowid
 
@@ -506,10 +491,7 @@ VALUES (?)
         """
         with get_connection(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute('''
-DELETE FROM predictions
-WHERE created_at < datetime('now', '-' || ? || ' days')
-''', (days,))
+            cursor.execute("DELETE FROM predictions WHERE created_at < datetime('now', '-' || ? || ' days')", (days,))
             conn.commit()
             return cursor.rowcount
 '''
