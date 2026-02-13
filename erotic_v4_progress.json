@@ -1,0 +1,101 @@
+{
+  "project_name": "エロティックコンテンツ関連エージェントV4プロジェクト",
+  "start_time": "2026-02-13T04:17:29.897545",
+  "agents": [
+    {
+      "name": "erotic-creator-agent",
+      "display_name": "えっちクリエイターエージェント",
+      "english_name": "Erotic Creator Agent",
+      "description": "えっちなクリエイター情報、作品リスト、活動状況を管理するエージェント",
+      "english_description": "An agent for managing erotic creators, their works, and activity status",
+      "tables": {
+        "creators": "クリエイターテーブル",
+        "works": "作品テーブル"
+      },
+      "features": [
+        "クリエイター管理",
+        "作品追跡",
+        "活動状況",
+        "通知機能"
+      ]
+    },
+    {
+      "name": "erotic-series-agent",
+      "display_name": "えっちシリーズエージェント",
+      "english_name": "Erotic Series Agent",
+      "description": "えっちなシリーズ作品、連載状況、シリーズ順を管理するエージェント",
+      "english_description": "An agent for managing erotic series, publication status, and series order",
+      "tables": {
+        "series": "シリーズテーブル",
+        "volumes": "巻・回テーブル"
+      },
+      "features": [
+        "シリーズ管理",
+        "連載追跡",
+        "巻数管理",
+        "完結状況"
+      ]
+    },
+    {
+      "name": "erotic-platform-agent",
+      "display_name": "えっちプラットフォームエージェント",
+      "english_name": "Erotic Platform Agent",
+      "description": "えっちサイト、サービス情報、プラットフォームの比較を管理するエージェント",
+      "english_description": "An agent for managing erotic sites, service info, and platform comparisons",
+      "tables": {
+        "platforms": "プラットフォームテーブル",
+        "features": "機能テーブル"
+      },
+      "features": [
+        "サイト管理",
+        "機能比較",
+        "価格情報",
+        "利用状況"
+      ]
+    },
+    {
+      "name": "erotic-event-agent",
+      "display_name": "えっちイベントエージェント",
+      "english_name": "Erotic Event Agent",
+      "description": "えっちイベント、フェス、コンベンション情報を管理するエージェント",
+      "english_description": "An agent for managing erotic events, festivals, and conventions",
+      "tables": {
+        "events": "イベントテーブル",
+        "schedules": "スケジュールテーブル"
+      },
+      "features": [
+        "イベント管理",
+        "スケジュール",
+        "参加者情報",
+        "会場データ"
+      ]
+    },
+    {
+      "name": "erotic-community-agent",
+      "display_name": "えっちコミュニティエージェント",
+      "english_name": "Erotic Community Agent",
+      "description": "えっちコミュニティ、フォーラム、SNSグループ情報を管理するエージェント",
+      "english_description": "An agent for managing erotic communities, forums, and social groups",
+      "tables": {
+        "communities": "コミュニティテーブル",
+        "members": "メンバーテーブル"
+      },
+      "features": [
+        "コミュニティ管理",
+        "メンバー追跡",
+        "議論管理",
+        "通知機能"
+      ]
+    }
+  ],
+  "completed": [
+    "erotic-creator-agent",
+    "erotic-series-agent",
+    "erotic-platform-agent",
+    "erotic-event-agent",
+    "erotic-community-agent"
+  ],
+  "failed": [],
+  "status": "completed",
+  "end_time": "2026-02-13T04:17:29.908084"
+}
