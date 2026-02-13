@@ -1,9 +1,9 @@
 # MEMORY.md
 
-## 全プロジェクト進捗サマリー (2026-02-12 23:55 UTC)
+## 全プロジェクト進捗サマリー (2026-02-13 00:17 UTC)
 
-**完了済みプロジェクト**: 38個
-**総エージェント数**: 184個 (100%完全 - agent.py, db.py, discord.py, README.md, requirements.txt)
+**完了済みプロジェクト**: 39個
+**総エージェント数**: 189個 (100%完全 - agent.py, db.py, discord.py, README.md, requirements.txt)
 
 ### 完了済みプロジェクト一覧
 
@@ -338,13 +338,27 @@
     - erotic-artist-agent - えっちなイラストレーター管理エージェント
     - erotic-tag-agent - えっちなコンテンツのタグ・検索管理エージェント
 
+39. ✅ **野球詳細分析エージェント** (5個)
+    - baseball-stats-agent - 詳細な野球統計分析エージェント
+    - baseball-prediction-agent - 試合結果予測エージェント
+    - baseball-history-agent - 野球の歴史・記録管理エージェント
+    - baseball-scouting-agent - 選手スカウティング情報エージェント
+    - baseball-fantasy-agent - ファンタジー野球管理エージェント
+
+40. ✅ **ゲーム詳細エージェント** (5個)
+    - game-walkthrough-agent - ゲーム攻略・walkthroughエージェント
+    - game-cheat-agent - チートコード・裏技管理エージェント
+    - game-mod-agent - MOD・カスタムコンテンツ管理エージェント
+    - game-community-agent - ゲームコミュニティ・フォーラムエージェント
+    - game-speedrun-agent - スピードラン記録・RTA情報エージェント
+
 ---
 
 ## システム稼働モード
 
 ### 現在の状態
-- ✅ 38個のプロジェクト完了
-- ✅ 184個のエージェント運用可能
+- ✅ 40個のプロジェクト完了
+- ✅ 189個のエージェント運用可能
 - ✅ テストスイート構築完了
 - ✅ モニタリング・ロギングシステム完了
 - ✅ 本番環境デプロイ準備完了
