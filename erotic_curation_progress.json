@@ -1,0 +1,30 @@
+{
+  "project_name": "Erotic Content Curation Agents",
+  "version": "1.0.0",
+  "agents": {
+    "erotic-curation-collection-agent": {
+      "completed": true,
+      "completed_at": "2026-02-13T08:58:52.446386"
+    },
+    "erotic-curation-quality-agent": {
+      "completed": true,
+      "completed_at": "2026-02-13T08:58:52.448423"
+    },
+    "erotic-curation-trending-agent": {
+      "completed": true,
+      "completed_at": "2026-02-13T08:58:52.450630"
+    },
+    "erotic-curation-personal-agent": {
+      "completed": true,
+      "completed_at": "2026-02-13T08:58:52.452434"
+    },
+    "erotic-curation-discovery-agent": {
+      "completed": true,
+      "completed_at": "2026-02-13T08:58:52.453164"
+    }
+  },
+  "completed": 5,
+  "total": 5,
+  "started_at": "2026-02-13T08:58:52.444132",
+  "completed_at": "2026-02-13T08:58:52.453334"
+}
