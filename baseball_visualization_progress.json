@@ -1,0 +1,30 @@
+{
+  "project_name": "Baseball Visualization Agents",
+  "version": "1.0.0",
+  "agents": {
+    "baseball-chart-agent": {
+      "completed": true,
+      "completed_at": "2026-02-13T08:53:10.078864"
+    },
+    "baseball-graph-agent": {
+      "completed": true,
+      "completed_at": "2026-02-13T08:53:10.080393"
+    },
+    "baseball-dashboard-agent": {
+      "completed": true,
+      "completed_at": "2026-02-13T08:53:10.081939"
+    },
+    "baseball-report-agent": {
+      "completed": true,
+      "completed_at": "2026-02-13T08:53:10.083449"
+    },
+    "baseball-presentation-agent": {
+      "completed": true,
+      "completed_at": "2026-02-13T08:53:10.084990"
+    }
+  },
+  "completed": 5,
+  "total": 5,
+  "started_at": "2026-02-13T08:53:10.076871",
+  "completed_at": "2026-02-13T08:53:10.085095"
+}
