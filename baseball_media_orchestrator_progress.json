@@ -1,0 +1,57 @@
+{
+  "project": "野球メディア統合エージェント",
+  "started_at": "2026-02-13T12:54:13.723483",
+  "completed_at": "2026-02-13T12:54:13.732962",
+  "agents": {
+    "baseball-media-aggregator-agent": {
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    "baseball-news-analysis-agent": {
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    "baseball-video-summary-agent": {
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    "baseball-social-monitor-agent": {
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    },
+    "baseball-trend-tracker-agent": {
+      "status": "completed",
+      "files": [
+        "agent.py",
+        "db.py",
+        "discord.py",
+        "README.md",
+        "requirements.txt"
+      ]
+    }
+  }
+}

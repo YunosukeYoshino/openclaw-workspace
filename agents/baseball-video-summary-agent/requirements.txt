@@ -1,0 +1,10 @@
+# Requirements / 依存パッケージ
+
+# Core dependencies / コア依存パッケージ
+discord.py>=2.3.0
+
+# Optional dependencies / オプション依存パッケージ
+openai>=1.0.0
+transformers>=4.30.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0
