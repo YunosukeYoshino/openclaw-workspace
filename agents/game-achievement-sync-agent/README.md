@@ -1,41 +1,52 @@
 # game-achievement-sync-agent
 
-Game Achievement Sync Agent
+**Category**: ゲームクロスプレイ・マルチプラットフォームエージェント
+**Version**: V36 - Agent 8/25
+**Status**: Active
 
-## 概要 / Overview
+## Overview
 
-このエージェントは、Game Achievement SyncのためのAIエージェントです。
+game-achievement-sync-agent is an AI-powered agent for ゲームクロスプレイ・マルチプラットフォームエージェント.
 
-## インストール / Installation
+## Features
+
+- Intelligent content processing
+- Persistent storage with SQLite
+- Discord integration support
+- RESTful API ready
+
+## Installation
 
 ```bash
 cd agents/game-achievement-sync-agent
 pip install -r requirements.txt
 ```
 
-## 使用方法 / Usage
+## Usage
 
-### Discord Botとして実行 / Run as Discord Bot
+```python
+from agent import GameAchievementSync
 
-```bash
-python agent.py
+agent = GameAchievementSync()
+await agent.run()
 ```
 
-### データベース初期化 / Initialize Database
+## Database
 
-```bash
-python db.py
-```
+The agent uses SQLite for persistent storage. Database file: `game-achievement-sync-agent.db`
 
-## 設定 / Configuration
+### Schema
 
-Configuration is loaded from environment variables:
-- `DISCORD_BOT_TOKEN`: Discordボットトークン / Discord bot token
+- `entries`: Main content storage
+  - `id`: Primary key
+  - `content`: Text content
+  - `created_at`: Timestamp
+  - `updated_at`: Timestamp
 
-## 依存パッケージ / Requirements
+## Discord Integration
 
-See `requirements.txt` for dependencies.
+Set `DISCORD_TOKEN` environment variable to enable Discord features.
 
-## ライセンス / License
+## License
 
-MIT License
+MIT

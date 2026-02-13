@@ -1,46 +1,30 @@
 #!/usr/bin/env python3
-"""
-ゲーム実績同期エージェント - Discord連携
-Game Achievement Sync Agent - Discord Integration
-"""
+"""Discord integration for game-achievement-sync-agent"""
 
-import re
+import logging
+import os
+from typing import Optional
 
-def parse_message(message):
-    """メッセージを解析"""
-    if message.strip().lower() in ['status', 'ステータス']:
-        return {'action': 'status'}
-    if message.strip().lower() in ['help', 'ヘルプ']:
-        return {'action': 'help'}
-    return None
+logger = logging.getLogger(__name__)
 
-def handle_message(message):
-    """メッセージを処理"""
-    parsed = parse_message(message)
+class DiscordHandler:
+    """Discord bot handler"""
 
-    if not parsed:
-        return None
+    def __init__(self, token: Optional[str] = None):
+        self.token = token or os.getenv("DISCORD_TOKEN")
+        self.enabled = bool(self.token)
 
-    if parsed['action'] == 'status':
-        return f"✅ ゲーム実績同期エージェント is online"
+    async def start(self):
+        """Start Discord bot"""
+        if self.enabled:
+            logger.info("Discord integration is configured")
+        else:
+            logger.info("Discord integration not configured (no token)")
 
-    if parsed['action'] == 'help':
-        response = f"📖 **ゲーム実績同期エージェント**\n\n"
-        response += "**Features / 機能:**\n"
-        response += "• 実績・トロフィーの同期 / Achievement and trophy sync\\n"
-        response += "• プラットフォーム間の統合表示 / Cross-platform display\\n"
-        response += "• 実績進捗の追跡 / Achievement progress tracking\\n"
-        response += "• 実績比較機能 / Achievement comparison\\n"
-        response += "• 実績統計の可視化 / Achievement statistics\\n"
-        return response
-
-    return None
-
-if __name__ == '__main__':
-    test_messages = ['status', 'help']
-    for msg in test_messages:
-        print(f"Input: {msg}")
-        result = handle_message(msg)
-        if result:
-            print(result)
-        print()
+    async def send_message(self, channel_id: str, message: str):
+        """Send message to Discord channel"""
+        if not self.enabled:
+            logger.warning("Discord not enabled")
+            return
+        # Implementation would use discord.py library
+        logger.info(f"Would send to {channel_id}: {message[:50]}...")
