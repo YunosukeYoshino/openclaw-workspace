@@ -1,0 +1,148 @@
+{
+  "project_id": "v30",
+  "project_name": "次期プロジェクト案 V30",
+  "start_time": "2026-02-13T22:24:04.677471",
+  "projects": [
+    {
+      "name": "野球データサイエンスエージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "baseball-data-mining-agent",
+          "status": "completed"
+        },
+        {
+          "name": "baseball-predictive-analytics-agent",
+          "status": "completed"
+        },
+        {
+          "name": "baseball-performance-metrics-agent",
+          "status": "completed"
+        },
+        {
+          "name": "baseball-scouting-analytics-agent",
+          "status": "completed"
+        },
+        {
+          "name": "baseball-team-optimization-agent",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "name": "ゲームAI・NPCエージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "game-npc-behavior-agent",
+          "status": "completed"
+        },
+        {
+          "name": "game-ai-dialogue-agent",
+          "status": "completed"
+        },
+        {
+          "name": "game-procedural-gen-agent",
+          "status": "completed"
+        },
+        {
+          "name": "game-pathfinding-agent",
+          "status": "completed"
+        },
+        {
+          "name": "game-ai-balance-agent",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "name": "えっちコンテンツAI分析・推薦エージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "erotic-ai-preference-agent",
+          "status": "completed"
+        },
+        {
+          "name": "erotic-content-ranking-agent",
+          "status": "completed"
+        },
+        {
+          "name": "erotic-user-profiling-agent",
+          "status": "completed"
+        },
+        {
+          "name": "erotic-trend-prediction-agent",
+          "status": "completed"
+        },
+        {
+          "name": "erotic-ai-moderation-agent",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "name": "システムモニタリング・アラートエージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "system-metrics-agent",
+          "status": "completed"
+        },
+        {
+          "name": "alert-configuration-agent",
+          "status": "completed"
+        },
+        {
+          "name": "anomaly-detection-agent",
+          "status": "completed"
+        },
+        {
+          "name": "incident-response-agent",
+          "status": "completed"
+        },
+        {
+          "name": "health-dashboard-agent",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "name": "ユーザー行動分析エージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "user-journey-analyst-agent",
+          "status": "completed"
+        },
+        {
+          "name": "behavioral-segmentation-agent",
+          "status": "completed"
+        },
+        {
+          "name": "user-retention-agent",
+          "status": "completed"
+        },
+        {
+          "name": "engagement-scoring-agent",
+          "status": "completed"
+        },
+        {
+          "name": "user-feedback-analyzer-agent",
+          "status": "completed"
+        }
+      ]
+    }
+  ],
+  "total_agents": 25,
+  "completed_agents": 25,
+  "status": "completed",
+  "updated_at": "2026-02-13T22:24:04.693023",
+  "end_time": "2026-02-13T22:24:04.692956",
+  "duration": 0.015485
+}
