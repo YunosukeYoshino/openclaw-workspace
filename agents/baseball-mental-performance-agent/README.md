@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# baseball-mental-performance-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+野球メンタルパフォーマンスエージェント。メンタルトレーニング・集中力向上。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+野球コーチング・フィジカルトレーニングエージェント - baseball-mental-performance-agent
 
 ## Installation
 

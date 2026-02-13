@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# baseball-injury-rehab-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+野球怪我リハビリエージェント。怪我のリハビリテーションプログラム作成。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+野球コーチング・フィジカルトレーニングエージェント - baseball-injury-rehab-agent
 
 ## Installation
 

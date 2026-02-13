@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# game-stream-commentator-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+ゲームストリーム実況エージェント。ライブ配信の実況・解説。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+ゲームライブ配信・実況エージェント - game-stream-commentator-agent
 
 ## Installation
 

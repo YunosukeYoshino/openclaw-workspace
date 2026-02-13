@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-ゲームライブ配信・実況エージェント
-game-stream-analytics-agent - ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+サーバーレス・エッジコンピューティングエージェント
+edge-function-manager-agent - エッジファンクションマネージャーエージェント。エッジ関数のデプロイ・管理。
 """
 
 import sqlite3
@@ -9,10 +9,10 @@ import threading
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class GameStreamAnalytics:
-    """ゲームストリームアナリティクスエージェント。配信データの分析・統計。"""
+class EdgeFunctionManager:
+    """エッジファンクションマネージャーエージェント。エッジ関数のデプロイ・管理。"""
 
-    def __init__(self, db_path: str = "agents/game-stream-analytics-agent/data.db"):
+    def __init__(self, db_path: str = "agents/edge-function-manager-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -102,5 +102,5 @@ class GameStreamAnalytics:
 
 if __name__ == "__main__":
     import json
-    agent = GameStreamAnalytics()
+    agent = EdgeFunctionManager()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

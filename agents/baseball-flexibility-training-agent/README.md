@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# baseball-flexibility-training-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+野球柔軟性トレーニングエージェント。ストレッチ・柔軟性向上トレーニング。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+野球コーチング・フィジカルトレーニングエージェント - baseball-flexibility-training-agent
 
 ## Installation
 

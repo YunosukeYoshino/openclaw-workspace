@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# compliance-monitor-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+コンプライアンスモニターエージェント。コンプライアンスの監視・チェック。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+セキュリティログ・監査エージェント - compliance-monitor-agent
 
 ## Installation
 

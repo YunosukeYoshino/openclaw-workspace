@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# security-log-collector-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+セキュリティログコレクターエージェント。セキュリティログの収集。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+セキュリティログ・監査エージェント - security-log-collector-agent
 
 ## Installation
 

@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# baseball-strength-conditioning-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+野球ストレングス&コンディショニングエージェント。筋力・コンディショニングトレーニング。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+野球コーチング・フィジカルトレーニングエージェント - baseball-strength-conditioning-agent
 
 ## Installation
 

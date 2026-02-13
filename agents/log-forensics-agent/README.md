@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# log-forensics-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+ログフォレンジックエージェント。ログのフォレンジック分析。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+セキュリティログ・監査エージェント - log-forensics-agent
 
 ## Installation
 

@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# game-live-qa-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+ゲームライブQ&Aエージェント。視聴者からの質問にライブで回答。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+ゲームライブ配信・実況エージェント - game-live-qa-agent
 
 ## Installation
 

@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# erotic-ai-video-gen-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+えっちAI動画生成エージェント。AIによる動画の生成。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+えっちコンテンツAI動画生成・編集エージェント - erotic-ai-video-gen-agent
 
 ## Installation
 

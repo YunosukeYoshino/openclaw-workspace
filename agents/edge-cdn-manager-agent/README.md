@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# edge-cdn-manager-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+エッジCDNマネージャーエージェント。CDNキャッシュの管理。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+サーバーレス・エッジコンピューティングエージェント - edge-cdn-manager-agent
 
 ## Installation
 

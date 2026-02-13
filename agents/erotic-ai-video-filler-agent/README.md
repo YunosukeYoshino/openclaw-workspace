@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# erotic-ai-video-filler-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+えっちAI動画フィラーエージェント。動画の補間・滑らかな再生。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+えっちコンテンツAI動画生成・編集エージェント - erotic-ai-video-filler-agent
 
 ## Installation
 

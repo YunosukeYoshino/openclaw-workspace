@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# erotic-ai-video-upscaler-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+えっちAI動画アップスケーラーエージェント。動画の高解像度化。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+えっちコンテンツAI動画生成・編集エージェント - erotic-ai-video-upscaler-agent
 
 ## Installation
 

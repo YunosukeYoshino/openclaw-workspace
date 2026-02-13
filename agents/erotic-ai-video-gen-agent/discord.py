@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Discord integration for game-stream-analytics-agent
+Discord integration for erotic-ai-video-gen-agent
 """
 
 import discord
@@ -9,10 +9,10 @@ import sqlite3
 import json
 from typing import Optional
 
-class GameStreamAnalyticsBot(commands.Bot):
-    """Discord bot for game-stream-analytics-agent"""
+class EroticAiVideoGenBot(commands.Bot):
+    """Discord bot for erotic-ai-video-gen-agent"""
 
-    def __init__(self, command_prefix: str = "!", db_path: str = "agents/game-stream-analytics-agent/data.db"):
+    def __init__(self, command_prefix: str = "!", db_path: str = "agents/erotic-ai-video-gen-agent/data.db"):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix=command_prefix, intents=intents)
@@ -45,7 +45,7 @@ class GameStreamAnalyticsBot(commands.Bot):
 
 if __name__ == "__main__":
     import os
-    bot = GameStreamAnalyticsBot()
+    bot = EroticAiVideoGenBot()
     token = os.getenv("DISCORD_TOKEN")
     if token:
         bot.run(token)

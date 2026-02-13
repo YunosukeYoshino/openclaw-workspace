@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# game-caster-scheduler-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+ゲームキャスタースケジューラーエージェント。実況スケジュールの管理。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+ゲームライブ配信・実況エージェント - game-caster-scheduler-agent
 
 ## Installation
 

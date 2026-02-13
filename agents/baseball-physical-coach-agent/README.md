@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# baseball-physical-coach-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+野球フィジカルコーチエージェント。フィジカルトレーニングのプログラム作成・管理。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+野球コーチング・フィジカルトレーニングエージェント - baseball-physical-coach-agent
 
 ## Installation
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Database schema for game-stream-analytics-agent
+Database schema for security-incident-logger-agent
 """
 
 import sqlite3
 from pathlib import Path
 
-def init_db(db_path: str = "agents/game-stream-analytics-agent/data.db"):
+def init_db(db_path: str = "agents/security-incident-logger-agent/data.db"):
     """Initialize database"""
     Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 

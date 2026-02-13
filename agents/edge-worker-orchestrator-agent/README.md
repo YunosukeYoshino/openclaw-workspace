@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# edge-worker-orchestrator-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+エッジワーカーオーケストレーターエージェント。エッジワーカーのオーケストレーション。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+サーバーレス・エッジコンピューティングエージェント - edge-worker-orchestrator-agent
 
 ## Installation
 

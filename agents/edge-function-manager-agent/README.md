@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# edge-function-manager-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+エッジファンクションマネージャーエージェント。エッジ関数のデプロイ・管理。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+サーバーレス・エッジコンピューティングエージェント - edge-function-manager-agent
 
 ## Installation
 

@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# game-stream-recorder-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+ゲームストリームレコーダーエージェント。配信の録画・アーカイブ管理。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+ゲームライブ配信・実況エージェント - game-stream-recorder-agent
 
 ## Installation
 

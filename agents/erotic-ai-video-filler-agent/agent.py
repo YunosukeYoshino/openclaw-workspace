@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-ゲームライブ配信・実況エージェント
-game-stream-analytics-agent - ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+えっちコンテンツAI動画生成・編集エージェント
+erotic-ai-video-filler-agent - えっちAI動画フィラーエージェント。動画の補間・滑らかな再生。
 """
 
 import sqlite3
@@ -9,10 +9,10 @@ import threading
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class GameStreamAnalytics:
-    """ゲームストリームアナリティクスエージェント。配信データの分析・統計。"""
+class EroticAiVideoFiller:
+    """えっちAI動画フィラーエージェント。動画の補間・滑らかな再生。"""
 
-    def __init__(self, db_path: str = "agents/game-stream-analytics-agent/data.db"):
+    def __init__(self, db_path: str = "agents/erotic-ai-video-filler-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -102,5 +102,5 @@ class GameStreamAnalytics:
 
 if __name__ == "__main__":
     import json
-    agent = GameStreamAnalytics()
+    agent = EroticAiVideoFiller()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

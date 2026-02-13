@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# edge-latency-optimizer-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+エッジレイテンシオプティマイザーエージェント。レイテンシの最適化。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+サーバーレス・エッジコンピューティングエージェント - edge-latency-optimizer-agent
 
 ## Installation
 

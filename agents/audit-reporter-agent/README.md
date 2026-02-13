@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# audit-reporter-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+監査レポーターエージェント。監査レポートの作成。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+セキュリティログ・監査エージェント - audit-reporter-agent
 
 ## Installation
 

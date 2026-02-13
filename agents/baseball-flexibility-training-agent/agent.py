@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-ゲームライブ配信・実況エージェント
-game-stream-analytics-agent - ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+野球コーチング・フィジカルトレーニングエージェント
+baseball-flexibility-training-agent - 野球柔軟性トレーニングエージェント。ストレッチ・柔軟性向上トレーニング。
 """
 
 import sqlite3
@@ -9,10 +9,10 @@ import threading
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class GameStreamAnalytics:
-    """ゲームストリームアナリティクスエージェント。配信データの分析・統計。"""
+class BaseballFlexibilityTraining:
+    """野球柔軟性トレーニングエージェント。ストレッチ・柔軟性向上トレーニング。"""
 
-    def __init__(self, db_path: str = "agents/game-stream-analytics-agent/data.db"):
+    def __init__(self, db_path: str = "agents/baseball-flexibility-training-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -102,5 +102,5 @@ class GameStreamAnalytics:
 
 if __name__ == "__main__":
     import json
-    agent = GameStreamAnalytics()
+    agent = BaseballFlexibilityTraining()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

@@ -1,10 +1,10 @@
-# game-stream-analytics-agent
+# security-incident-logger-agent
 
-ゲームストリームアナリティクスエージェント。配信データの分析・統計。
+セキュリティインシデントロガーエージェント。インシデントログの記録・管理。
 
 ## Description
 
-ゲームライブ配信・実況エージェント - game-stream-analytics-agent
+セキュリティログ・監査エージェント - security-incident-logger-agent
 
 ## Installation
 
