@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-野球スカウトレポートエージェント / Baseball Scout Report Agent
-スカウトレポートの統合・管理 / Scout report integration and management
+野球ドラフト候補エージェント / Baseball Draft Candidate Agent
+ドラフト候補選手のプロフィール、統計、評価 / Draft candidate player profiles, statistics, and evaluations
 """
 
 import logging
 from datetime import datetime
 
-class BaseballScoutReportAgent:
-    """野球スカウトレポートエージェント"""
+class BaseballDraftCandidateAgent:
+    """野球ドラフト候補エージェント"""
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.logger.info("野球スカウトレポートエージェント initialized")
+        self.logger.info("野球ドラフト候補エージェント initialized")
 
     def process(self, input_data):
         """入力データを処理する"""

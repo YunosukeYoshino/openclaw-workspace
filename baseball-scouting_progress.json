@@ -1,0 +1,11 @@
+{
+  "completed": [
+    "baseball-draft-candidate-agent",
+    "baseball-minor-league-agent",
+    "baseball-international-agent",
+    "baseball-scout-report-agent",
+    "baseball-trade-simulator-agent"
+  ],
+  "failed": [],
+  "total": 5
+}

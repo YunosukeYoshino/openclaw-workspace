@@ -1,0 +1,5 @@
+# 野球トレードシミュレータエージェント Requirements
+# Baseball Trade Simulator Agent Requirements
+
+discord.py>=2.3.0
+py-cord>=2.4.0

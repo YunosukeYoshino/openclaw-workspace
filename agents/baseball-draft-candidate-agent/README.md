@@ -1,8 +1,8 @@
-# 野球スカウトレポートエージェント / Baseball Scout Report Agent
+# 野球ドラフト候補エージェント / Baseball Draft Candidate Agent
 
 ## 概要 / Overview
 
-スカウトレポートの統合・管理 / Scout report integration and management
+ドラフト候補選手のプロフィール、統計、評価 / Draft candidate player profiles, statistics, and evaluations
 
 ## 機能 / Features
 
@@ -22,17 +22,17 @@ pip install -r requirements.txt
 ### エージェントの初期化 / Initialize Agent
 
 ```python
-from agent import BaseballScoutReportAgent
+from agent import BaseballDraftCandidateAgent
 
-agent = BaseballScoutReportAgent()
+agent = BaseballDraftCandidateAgent()
 ```
 
 ### データベース操作 / Database Operations
 
 ```python
-from db import BaseballScoutReportAgentDB
+from db import BaseballDraftCandidateAgentDB
 
-db = BaseballScoutReportAgentDB()
+db = BaseballDraftCandidateAgentDB()
 
 # レコードを追加 / Add record
 db.add_record(
@@ -63,7 +63,7 @@ bot.run('YOUR_BOT_TOKEN')
 ## プロジェクト構造 / Project Structure
 
 ```
-baseball-scout-report-agent/
+baseball-draft-candidate-agent/
 ├── agent.py          # メインエージェントクラス
 ├── db.py             # データベース管理
 ├── discord.py        # Discord インテグレーション

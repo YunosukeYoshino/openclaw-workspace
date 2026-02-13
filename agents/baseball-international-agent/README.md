@@ -1,8 +1,8 @@
-# 野球スカウトレポートエージェント / Baseball Scout Report Agent
+# 野球国際選手エージェント / Baseball International Agent
 
 ## 概要 / Overview
 
-スカウトレポートの統合・管理 / Scout report integration and management
+海外選手の情報収集、ポスティングシステム分析 / Overseas player information gathering and posting system analysis
 
 ## 機能 / Features
 
@@ -22,17 +22,17 @@ pip install -r requirements.txt
 ### エージェントの初期化 / Initialize Agent
 
 ```python
-from agent import BaseballScoutReportAgent
+from agent import BaseballInternationalAgent
 
-agent = BaseballScoutReportAgent()
+agent = BaseballInternationalAgent()
 ```
 
 ### データベース操作 / Database Operations
 
 ```python
-from db import BaseballScoutReportAgentDB
+from db import BaseballInternationalAgentDB
 
-db = BaseballScoutReportAgentDB()
+db = BaseballInternationalAgentDB()
 
 # レコードを追加 / Add record
 db.add_record(
@@ -63,7 +63,7 @@ bot.run('YOUR_BOT_TOKEN')
 ## プロジェクト構造 / Project Structure
 
 ```
-baseball-scout-report-agent/
+baseball-international-agent/
 ├── agent.py          # メインエージェントクラス
 ├── db.py             # データベース管理
 ├── discord.py        # Discord インテグレーション

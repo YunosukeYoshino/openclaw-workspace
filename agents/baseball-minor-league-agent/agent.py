@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-野球スカウトレポートエージェント / Baseball Scout Report Agent
-スカウトレポートの統合・管理 / Scout report integration and management
+野球マイナーリーグエージェント / Baseball Minor League Agent
+マイナーリーグ選手のパフォーマンス追跡 / Minor league player performance tracking
 """
 
 import logging
 from datetime import datetime
 
-class BaseballScoutReportAgent:
-    """野球スカウトレポートエージェント"""
+class BaseballMinorLeagueAgent:
+    """野球マイナーリーグエージェント"""
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.logger.info("野球スカウトレポートエージェント initialized")
+        self.logger.info("野球マイナーリーグエージェント initialized")
 
     def process(self, input_data):
         """入力データを処理する"""

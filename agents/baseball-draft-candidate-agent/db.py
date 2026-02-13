@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-野球スカウトレポートエージェント データベースモジュール
+野球ドラフト候補エージェント データベースモジュール
 """
 
 import sqlite3
@@ -8,12 +8,12 @@ import json
 from pathlib import Path
 from datetime import datetime
 
-class BaseballScoutReportAgentDB:
-    """野球スカウトレポートエージェント データベース管理"""
+class BaseballDraftCandidateAgentDB:
+    """野球ドラフト候補エージェント データベース管理"""
 
     def __init__(self, db_path=None):
         if db_path is None:
-            db_path = Path("data/baseball-scout-report-agent.db")
+            db_path = Path("data/baseball-draft-candidate-agent.db")
         db_path.parent.mkdir(parents=True, exist_ok=True)
         self.db_path = db_path
         self._init_db()

@@ -1,4 +1,5 @@
+# 野球スカウトレポートエージェント Requirements
+# Baseball Scout Report Agent Requirements
+
 discord.py>=2.3.0
-aiohttp>=3.9.0
-matplotlib>=3.7.0
-pandas>=2.0.0
+py-cord>=2.4.0

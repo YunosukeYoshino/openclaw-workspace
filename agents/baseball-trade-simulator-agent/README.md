@@ -1,8 +1,8 @@
-# 野球スカウトレポートエージェント / Baseball Scout Report Agent
+# 野球トレードシミュレータエージェント / Baseball Trade Simulator Agent
 
 ## 概要 / Overview
 
-スカウトレポートの統合・管理 / Scout report integration and management
+トレード提案のシミュレーション / Trade proposal simulation
 
 ## 機能 / Features
 
@@ -22,17 +22,17 @@ pip install -r requirements.txt
 ### エージェントの初期化 / Initialize Agent
 
 ```python
-from agent import BaseballScoutReportAgent
+from agent import BaseballTradeSimulatorAgent
 
-agent = BaseballScoutReportAgent()
+agent = BaseballTradeSimulatorAgent()
 ```
 
 ### データベース操作 / Database Operations
 
 ```python
-from db import BaseballScoutReportAgentDB
+from db import BaseballTradeSimulatorAgentDB
 
-db = BaseballScoutReportAgentDB()
+db = BaseballTradeSimulatorAgentDB()
 
 # レコードを追加 / Add record
 db.add_record(
@@ -63,7 +63,7 @@ bot.run('YOUR_BOT_TOKEN')
 ## プロジェクト構造 / Project Structure
 
 ```
-baseball-scout-report-agent/
+baseball-trade-simulator-agent/
 ├── agent.py          # メインエージェントクラス
 ├── db.py             # データベース管理
 ├── discord.py        # Discord インテグレーション

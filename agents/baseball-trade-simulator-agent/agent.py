@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-野球スカウトレポートエージェント / Baseball Scout Report Agent
-スカウトレポートの統合・管理 / Scout report integration and management
+野球トレードシミュレータエージェント / Baseball Trade Simulator Agent
+トレード提案のシミュレーション / Trade proposal simulation
 """
 
 import logging
 from datetime import datetime
 
-class BaseballScoutReportAgent:
-    """野球スカウトレポートエージェント"""
+class BaseballTradeSimulatorAgent:
+    """野球トレードシミュレータエージェント"""
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.logger.info("野球スカウトレポートエージェント initialized")
+        self.logger.info("野球トレードシミュレータエージェント initialized")
 
     def process(self, input_data):
         """入力データを処理する"""
