@@ -1,0 +1,28 @@
+{
+  "project_name": "野球詳細分析エージェント",
+  "project_id": "baseball_stats_agents",
+  "started_at": "2026-02-13T00:14:23.520775",
+  "completed_at": "2026-02-13T00:14:23.526772",
+  "agents": {
+    "baseball-stats-agent": {
+      "status": "completed",
+      "created_at": "2026-02-13T00:14:23.522241"
+    },
+    "baseball-prediction-agent": {
+      "status": "completed",
+      "created_at": "2026-02-13T00:14:23.523660"
+    },
+    "baseball-history-agent": {
+      "status": "completed",
+      "created_at": "2026-02-13T00:14:23.524169"
+    },
+    "baseball-scouting-agent": {
+      "status": "completed",
+      "created_at": "2026-02-13T00:14:23.525372"
+    },
+    "baseball-fantasy-agent": {
+      "status": "completed",
+      "created_at": "2026-02-13T00:14:23.526673"
+    }
+  }
+}
