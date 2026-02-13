@@ -476,20 +476,41 @@
     - erotic-recommendation-ml-agent - えっちML推薦エージェント
     - erotic-tag-auto-agent - えっち自動タグ付けエージェント
 
-55. ✅ **野球高度分析エージェントV4** (5個)
-    - baseball-advanced-metrics-agent - 野球高度メトリクス分析エージェント
-    - baseball-machine-learning-agent - 野球機械学習予測エージェント
-    - baseball-sabermetrics-agent - セイバーメトリクス分析エージェント
-    - baseball-video-analysis-agent - 野球動画分析エージェント
-    - baseball-science-agent - 野球科学分析エージェント
+59. ✅ **ゲーム実況分析エージェント** (5個)
+    - game-commentary-analysis-agent - ゲーム実況分析エージェント
+    - game-voice-analysis-agent - ゲームボイス分析エージェント
+    - game-moment-clipping-agent - ゲームモーメントクリップエージェント
+    - game-commentary-search-agent - ゲーム実況検索エージェント
+    - game-commentary-stats-agent - ゲーム実況統計エージェント
+
+60. ✅ **野球データ可視化エージェント** (5個)
+    - baseball-chart-agent - 野球チャート生成エージェント
+    - baseball-graph-agent - 野球グラフ生成エージェント
+    - baseball-dashboard-agent - 野球ダッシュボードエージェント
+    - baseball-report-agent - 野球レポート生成エージェント
+    - baseball-presentation-agent - 野球プレゼンテーションエージェント
+
+61. ✅ **野球ファンコミュニティエージェント** (5個)
+    - baseball-fan-chat-agent - 野球ファンチャットエージェント
+    - baseball-fan-event-agent - 野球ファンイベントエージェント
+    - baseball-fan-poll-agent - 野球ファン投票エージェント
+    - baseball-fan-share-agent - 野球ファンシェアエージェント
+    - baseball-fan-ranking-agent - 野球ファンランキングエージェント
+
+62. ✅ **えっちコンテンツキュレーションエージェント** (5個)
+    - erotic-curation-collection-agent - えっちコンテンツキュレーションコレクションエージェント
+    - erotic-curation-quality-agent - えっちコンテンツ品質キュレーションエージェント
+    - erotic-curation-trending-agent - えっちコンテンツトレンドキュレーションエージェント
+    - erotic-curation-personal-agent - えっちコンテンツパーソナルキュレーションエージェント
+    - erotic-curation-discovery-agent - えっちコンテンツディスカバリーキュレーションエージェント
 
 ---
 
 ## システム稼働モード
 
 ### 現在の状態
-- ✅ 58個のプロジェクト完了
-- ✅ 267個のエージェント運用可能
+- ✅ 62個のプロジェクト完了
+- ✅ 287個のエージェント運用可能
 - ✅ テストスイート構築完了
 - ✅ モニタリング・ロギングシステム完了
 - ✅ 本番環境デプロイ準備完了
