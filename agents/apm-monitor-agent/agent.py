@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-ゲームボイスチャットエージェント。インゲームボイスチャット機能。
+APMモニターエージェント。アプリケーションパフォーマンス監視。
 
-ゲームボイスチャットエージェント。インゲームボイスチャット機能。
+APMモニターエージェント。アプリケーションパフォーマンス監視。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class GameVoiceChatAgentBot(commands.Bot):
-    """game-voice-chat-agent Bot"""
+class ApmMonitorAgentBot(commands.Bot):
+    """apm-monitor-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class GameVoiceChatAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = GameVoiceChatAgentBot()
+    bot = ApmMonitorAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

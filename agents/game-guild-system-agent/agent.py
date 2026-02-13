@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-ゲームボイスチャットエージェント。インゲームボイスチャット機能。
+ゲームギルドシステムエージェント。ギルド・クランの管理機能。
 
-ゲームボイスチャットエージェント。インゲームボイスチャット機能。
+ゲームギルドシステムエージェント。ギルド・クランの管理機能。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class GameVoiceChatAgentBot(commands.Bot):
-    """game-voice-chat-agent Bot"""
+class GameGuildSystemAgentBot(commands.Bot):
+    """game-guild-system-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class GameVoiceChatAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = GameVoiceChatAgentBot()
+    bot = GameGuildSystemAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

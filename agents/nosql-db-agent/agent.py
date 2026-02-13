@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-ゲームボイスチャットエージェント。インゲームボイスチャット機能。
+NoSQLデータベースエージェント。NoSQLデータベースの管理。
 
-ゲームボイスチャットエージェント。インゲームボイスチャット機能。
+NoSQLデータベースエージェント。NoSQLデータベースの管理。
 """
 
 import asyncio
 import discord
 from discord.ext import commands
 
-class GameVoiceChatAgentBot(commands.Bot):
-    """game-voice-chat-agent Bot"""
+class NosqlDbAgentBot(commands.Bot):
+    """nosql-db-agent Bot"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -27,7 +27,7 @@ class GameVoiceChatAgentBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = GameVoiceChatAgentBot()
+    bot = NosqlDbAgentBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":

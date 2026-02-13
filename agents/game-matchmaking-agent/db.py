@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-game-voice-chat-agent - データベースモジュール
+game-matchmaking-agent - データベースモジュール
 """
 
 import sqlite3
 from datetime import datetime
 from typing import List, Dict, Optional
 
-class GameVoiceChatAgentDB:
-    """game-voice-chat-agent データベース"""
+class GameMatchmakingAgentDB:
+    """game-matchmaking-agent データベース"""
 
-    def __init__(self, db_path: str = "game-voice-chat-agent.db"):
+    def __init__(self, db_path: str = "game-matchmaking-agent.db"):
         """初期化"""
         self.db_path = db_path
         self.conn = sqlite3.connect(db_path)
@@ -80,12 +80,12 @@ class GameVoiceChatAgentDB:
 
 def main():
     """メイン関数"""
-    db = GameVoiceChatAgentDB()
+    db = GameMatchmakingAgentDB()
 
     # サンプルエントリー追加
     entry_id = db.add_entry(
         "Sample Entry",
-        "This is a sample entry for game-voice-chat-agent"
+        "This is a sample entry for game-matchmaking-agent"
     )
     print(f"Added entry with ID: {entry_id}")
 

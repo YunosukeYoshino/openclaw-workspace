@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-game-voice-chat-agent - Discord Botモジュール
+apm-alert-agent - Discord Botモジュール
 """
 
 import discord
 from discord.ext import commands
-from db import GameVoiceChatAgentDB
+from db import ApmAlertAgentDB
 
-class GameVoiceChatAgentDiscordBot(commands.Bot):
-    """game-voice-chat-agent Discord Bot"""
+class ApmAlertAgentDiscordBot(commands.Bot):
+    """apm-alert-agent Discord Bot"""
 
-    def __init__(self, db_path: str = "game-voice-chat-agent.db"):
+    def __init__(self, db_path: str = "apm-alert-agent.db"):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix="!", intents=intents)
-        self.db = GameVoiceChatAgentDB(db_path)
+        self.db = ApmAlertAgentDB(db_path)
 
     async def setup_hook(self):
         """Bot起動時の処理"""
@@ -50,7 +50,7 @@ class GameVoiceChatAgentDiscordBot(commands.Bot):
 
 def main():
     """メイン関数"""
-    bot = GameVoiceChatAgentDiscordBot()
+    bot = ApmAlertAgentDiscordBot()
     # bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 if __name__ == "__main__":
