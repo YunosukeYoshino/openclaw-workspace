@@ -1,0 +1,23 @@
+{
+  "status": "completed",
+  "total_agents": 5,
+  "completed_agents": 5,
+  "failed_agents": 0,
+  "agents": {
+    "baseball-compare-agent": {
+      "status": "completed"
+    },
+    "baseball-history-match-agent": {
+      "status": "completed"
+    },
+    "baseball-team-analysis-agent": {
+      "status": "completed"
+    },
+    "baseball-visualization-agent": {
+      "status": "completed"
+    },
+    "baseball-scout-report-agent": {
+      "status": "completed"
+    }
+  }
+}
