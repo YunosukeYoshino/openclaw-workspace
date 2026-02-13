@@ -1,0 +1,31 @@
+{
+  "completed": [
+    "baseball-data-viz-agent",
+    "baseball-dashboard-builder-agent",
+    "baseball-chart-generator-agent",
+    "baseball-heatmap-analyst-agent",
+    "baseball-report-generator-agent",
+    "game-behavior-analyzer-agent",
+    "game-funnel-analyzer-agent",
+    "game-retention-analyst-agent",
+    "game-churn-predictor-agent",
+    "game-metrics-aggregator-agent",
+    "erotic-performance-tracker-agent",
+    "erotic-engagement-metrics-agent",
+    "erotic-conversion-analyst-agent",
+    "erotic-ab-testing-agent",
+    "erotic-roi-calculator-agent",
+    "workflow-designer-agent",
+    "task-scheduler-agent",
+    "automation-orchestrator-agent",
+    "process-optimizer-agent",
+    "workflow-monitor-agent",
+    "metrics-collector-agent",
+    "metrics-aggregator-agent",
+    "alert-rule-manager-agent",
+    "grafana-integrator-agent",
+    "prometheus-exporter-agent"
+  ],
+  "current_project": "\u30e1\u30c8\u30ea\u30af\u30b9\u53ce\u96c6\u30fb\u53ef\u8996\u5316\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8",
+  "total_agents": 25
+}
