@@ -1,0 +1,148 @@
+{
+  "project_id": "v31",
+  "project_name": "次期プロジェクト案 V31",
+  "start_time": "2026-02-13T22:25:37.348460",
+  "projects": [
+    {
+      "name": "野球コーチング・トレーニングエージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "baseball-drill-generator-agent",
+          "status": "completed"
+        },
+        {
+          "name": "baseball-skill-assessment-agent",
+          "status": "completed"
+        },
+        {
+          "name": "baseball-training-plan-agent",
+          "status": "completed"
+        },
+        {
+          "name": "baseball-video-coach-agent",
+          "status": "completed"
+        },
+        {
+          "name": "baseball-progress-tracker-agent",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "name": "ゲームストーリーテリング・シナリオエージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "game-narrative-design-agent",
+          "status": "completed"
+        },
+        {
+          "name": "game-quest-generator-agent",
+          "status": "completed"
+        },
+        {
+          "name": "game-branching-story-agent",
+          "status": "completed"
+        },
+        {
+          "name": "game-character-arc-agent",
+          "status": "completed"
+        },
+        {
+          "name": "game-world-lore-agent",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "name": "えっちコンテンツクリエイターコミュニティエージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "erotic-creator-collab-agent",
+          "status": "completed"
+        },
+        {
+          "name": "erotic-mentorship-agent",
+          "status": "completed"
+        },
+        {
+          "name": "erotic-tutorial-agent",
+          "status": "completed"
+        },
+        {
+          "name": "erotic-portfolio-agent",
+          "status": "completed"
+        },
+        {
+          "name": "erotic-community-events-agent",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "name": "API管理・ゲートウェイエージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "api-gateway-agent",
+          "status": "completed"
+        },
+        {
+          "name": "api-versioning-agent",
+          "status": "completed"
+        },
+        {
+          "name": "api-rate-limiting-agent",
+          "status": "completed"
+        },
+        {
+          "name": "api-auth-agent",
+          "status": "completed"
+        },
+        {
+          "name": "api-documentation-agent",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "name": "データバックアップ・リカバリーエージェント",
+      "total": 5,
+      "completed": 5,
+      "agents": [
+        {
+          "name": "backup-scheduler-agent",
+          "status": "completed"
+        },
+        {
+          "name": "backup-encryption-agent",
+          "status": "completed"
+        },
+        {
+          "name": "restore-orchestrator-agent",
+          "status": "completed"
+        },
+        {
+          "name": "disaster-recovery-agent",
+          "status": "completed"
+        },
+        {
+          "name": "backup-verification-agent",
+          "status": "completed"
+        }
+      ]
+    }
+  ],
+  "total_agents": 25,
+  "completed_agents": 25,
+  "status": "completed",
+  "updated_at": "2026-02-13T22:25:37.361249",
+  "end_time": "2026-02-13T22:25:37.361200",
+  "duration": 0.01274
+}
