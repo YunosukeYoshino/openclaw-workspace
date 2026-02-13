@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# baseball-ticket-optimizer-agent
 
-Erotic Content Filter Agent
+Baseball Ticket Optimizer Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Baseball Ticket OptimizerのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/baseball-ticket-optimizer-agent
 pip install -r requirements.txt
 ```
 

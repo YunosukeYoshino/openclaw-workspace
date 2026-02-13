@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# game-value-calculator-agent
 
-Erotic Content Filter Agent
+Game Value Calculator Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Game Value CalculatorのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/game-value-calculator-agent
 pip install -r requirements.txt
 ```
 

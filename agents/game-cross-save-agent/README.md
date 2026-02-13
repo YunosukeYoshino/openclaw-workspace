@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# game-cross-save-agent
 
-Erotic Content Filter Agent
+Game Cross Save Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Game Cross SaveのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/game-cross-save-agent
 pip install -r requirements.txt
 ```
 

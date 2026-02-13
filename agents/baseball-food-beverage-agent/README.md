@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# baseball-food-beverage-agent
 
-Erotic Content Filter Agent
+Baseball Food Beverage Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Baseball Food BeverageのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/baseball-food-beverage-agent
 pip install -r requirements.txt
 ```
 

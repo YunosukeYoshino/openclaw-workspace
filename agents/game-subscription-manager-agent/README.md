@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# game-subscription-manager-agent
 
-Erotic Content Filter Agent
+Game Subscription Manager Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Game Subscription ManagerのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/game-subscription-manager-agent
 pip install -r requirements.txt
 ```
 

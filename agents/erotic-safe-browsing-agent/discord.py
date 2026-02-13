@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント - Discord連携
-Erotic Content Filter Agent - Discord Integration
+えっちセーフブラウジングエージェント - Discord連携
+Erotic Safe Browsing Agent - Discord Integration
 """
 
 import re
@@ -22,16 +22,16 @@ def handle_message(message):
         return None
 
     if parsed['action'] == 'status':
-        return f"✅ えっちコンテンツフィルターエージェント is online"
+        return f"✅ えっちセーフブラウジングエージェント is online"
 
     if parsed['action'] == 'help':
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **えっちセーフブラウジングエージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• 安全なサイト判定 / Safe site detection\\n"
+        response += "• 詐欺サイト検出 / Scam site detection\\n"
+        response += "• マルウェアスキャン / Malware scanning\\n"
+        response += "• フィッシング対策 / Phishing protection\\n"
+        response += "• 安全なダウンロード / Safe downloads\\n"
         return response
 
     return None

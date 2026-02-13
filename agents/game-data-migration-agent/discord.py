@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント - Discord連携
-Erotic Content Filter Agent - Discord Integration
+ゲームデータ移行エージェント - Discord連携
+Game Data Migration Agent - Discord Integration
 """
 
 import re
@@ -22,16 +22,16 @@ def handle_message(message):
         return None
 
     if parsed['action'] == 'status':
-        return f"✅ えっちコンテンツフィルターエージェント is online"
+        return f"✅ ゲームデータ移行エージェント is online"
 
     if parsed['action'] == 'help':
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **ゲームデータ移行エージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• データ移行の自動化 / Automated data migration\\n"
+        response += "• 移行計画の作成 / Migration plan creation\\n"
+        response += "• データ整合性の検証 / Data integrity verification\\n"
+        response += "• 移行ログの記録 / Migration log recording\\n"
+        response += "• 移行失敗時のロールバック / Rollback on failure\\n"
         return response
 
     return None

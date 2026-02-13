@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# game-data-migration-agent
 
-Erotic Content Filter Agent
+Game Data Migration Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Game Data MigrationのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/game-data-migration-agent
 pip install -r requirements.txt
 ```
 

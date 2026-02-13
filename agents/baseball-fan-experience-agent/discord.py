@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント - Discord連携
-Erotic Content Filter Agent - Discord Integration
+野球ファン体験エージェント - Discord連携
+Baseball Fan Experience Agent - Discord Integration
 """
 
 import re
@@ -22,16 +22,16 @@ def handle_message(message):
         return None
 
     if parsed['action'] == 'status':
-        return f"✅ えっちコンテンツフィルターエージェント is online"
+        return f"✅ 野球ファン体験エージェント is online"
 
     if parsed['action'] == 'help':
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **野球ファン体験エージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• ファン体験イベントの案内 / Fan experience events\\n"
+        response += "• 記念品・グッズ情報の収集 / Merchandise information\\n"
+        response += "• スタジアムクイズ・ゲーム / Stadium quizzes and games\\n"
+        response += "• AR/VR体験機能 / AR/VR experience features\\n"
+        response += "• ファン参加型コンテンツ / Fan participation content\\n"
         return response
 
     return None

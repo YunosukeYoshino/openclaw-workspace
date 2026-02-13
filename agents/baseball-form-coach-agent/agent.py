@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント
-Erotic Content Filter Agent
+野球フォームコーチエージェント
+Baseball Form Coach Agent
 """
 
 import discord
 from discord.ext import commands
 from db import init_db
 
-class EroticContentFilterAgent(commands.Bot):
+class BaseballFormCoachAgent(commands.Bot):
     def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
@@ -22,22 +22,22 @@ class EroticContentFilterAgent(commands.Bot):
     @commands.command(name='status')
     async def status(self, ctx):
         """ステータスを表示 / Show status"""
-        await ctx.send(f"✅ えっちコンテンツフィルターエージェント is online")
+        await ctx.send(f"✅ 野球フォームコーチエージェント is online")
 
     @commands.command(name='help')
     async def help(self, ctx):
         """ヘルプを表示 / Show help"""
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **野球フォームコーチエージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• フォーム分析 / Form analysis\\n"
+        response += "• 改善提案 / Improvement recommendations\\n"
+        response += "• ビデオフィードバック / Video feedback\\n"
+        response += "• 進捗追跡 / Progress tracking\\n"
+        response += "• コーチングチャット / Coaching chat\\n"
         await ctx.send(response)
 
 if __name__ == '__main__':
-    bot = EroticContentFilterAgent()
+    bot = BaseballFormCoachAgent()
     import os
     token = os.getenv('DISCORD_BOT_TOKEN')
     bot.run(token)

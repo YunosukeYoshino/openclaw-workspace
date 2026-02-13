@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント
-Erotic Content Filter Agent
+野球スタジアム検索・情報エージェント
+Baseball Stadium Finder and Information Agent
 """
 
 import discord
 from discord.ext import commands
 from db import init_db
 
-class EroticContentFilterAgent(commands.Bot):
+class BaseballStadiumFinderAgent(commands.Bot):
     def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
@@ -22,22 +22,22 @@ class EroticContentFilterAgent(commands.Bot):
     @commands.command(name='status')
     async def status(self, ctx):
         """ステータスを表示 / Show status"""
-        await ctx.send(f"✅ えっちコンテンツフィルターエージェント is online")
+        await ctx.send(f"✅ 野球スタジアム検索・情報エージェント is online")
 
     @commands.command(name='help')
     async def help(self, ctx):
         """ヘルプを表示 / Show help"""
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **野球スタジアム検索・情報エージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• スタジアム検索・フィルタリング機能 / Stadium search and filtering\\n"
+        response += "• 座席エリア情報の提供 / Seat area information\\n"
+        response += "• アクセス方法・交通手段の提案 / Access and transportation\\n"
+        response += "• 周辺施設情報 / Nearby facilities\\n"
+        response += "• チケット価格帯の比較 / Ticket price comparison\\n"
         await ctx.send(response)
 
 if __name__ == '__main__':
-    bot = EroticContentFilterAgent()
+    bot = BaseballStadiumFinderAgent()
     import os
     token = os.getenv('DISCORD_BOT_TOKEN')
     bot.run(token)

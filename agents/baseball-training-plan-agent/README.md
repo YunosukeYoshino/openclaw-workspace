@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# baseball-training-plan-agent
 
-Erotic Content Filter Agent
+Baseball Training Plan Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Baseball Training PlanのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/baseball-training-plan-agent
 pip install -r requirements.txt
 ```
 

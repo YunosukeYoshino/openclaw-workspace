@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# baseball-fitness-tracker-agent
 
-Erotic Content Filter Agent
+Baseball Fitness Tracker Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Baseball Fitness TrackerのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/baseball-fitness-tracker-agent
 pip install -r requirements.txt
 ```
 

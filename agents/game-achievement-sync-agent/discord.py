@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント - Discord連携
-Erotic Content Filter Agent - Discord Integration
+ゲーム実績同期エージェント - Discord連携
+Game Achievement Sync Agent - Discord Integration
 """
 
 import re
@@ -22,16 +22,16 @@ def handle_message(message):
         return None
 
     if parsed['action'] == 'status':
-        return f"✅ えっちコンテンツフィルターエージェント is online"
+        return f"✅ ゲーム実績同期エージェント is online"
 
     if parsed['action'] == 'help':
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **ゲーム実績同期エージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• 実績・トロフィーの同期 / Achievement and trophy sync\\n"
+        response += "• プラットフォーム間の統合表示 / Cross-platform display\\n"
+        response += "• 実績進捗の追跡 / Achievement progress tracking\\n"
+        response += "• 実績比較機能 / Achievement comparison\\n"
+        response += "• 実績統計の可視化 / Achievement statistics\\n"
         return response
 
     return None

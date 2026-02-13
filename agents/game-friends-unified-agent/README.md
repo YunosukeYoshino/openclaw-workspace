@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# game-friends-unified-agent
 
-Erotic Content Filter Agent
+Game Friends Unified Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Game Friends UnifiedのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/game-friends-unified-agent
 pip install -r requirements.txt
 ```
 

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント / Erotic Content Filter Agent
+ゲーム在庫トラッカーエージェント / Game Inventory Tracker Agent
 """
 
 import sqlite3
 from pathlib import Path
 from datetime import datetime
 
-DB_PATH = Path(__file__).parent / "erotic_content_filter.db"
+DB_PATH = Path(__file__).parent / "game_inventory_tracker.db"
 
 def init_db():
     """データベース初期化"""

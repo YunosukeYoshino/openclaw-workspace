@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント / Erotic Content Filter Agent
+野球ファン体験エージェント / Baseball Fan Experience Agent
 """
 
 import sqlite3
 from pathlib import Path
 from datetime import datetime
 
-DB_PATH = Path(__file__).parent / "erotic_content_filter.db"
+DB_PATH = Path(__file__).parent / "baseball_fan_experience.db"
 
 def init_db():
     """データベース初期化"""

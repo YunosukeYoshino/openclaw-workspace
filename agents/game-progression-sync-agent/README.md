@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# game-progression-sync-agent
 
-Erotic Content Filter Agent
+Game Progression Sync Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Game Progression SyncのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/game-progression-sync-agent
 pip install -r requirements.txt
 ```
 

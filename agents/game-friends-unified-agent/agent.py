@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント
-Erotic Content Filter Agent
+ゲームフレンド統合エージェント
+Game Friends Unified Agent
 """
 
 import discord
 from discord.ext import commands
 from db import init_db
 
-class EroticContentFilterAgent(commands.Bot):
+class GameFriendsUnifiedAgent(commands.Bot):
     def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
@@ -22,22 +22,22 @@ class EroticContentFilterAgent(commands.Bot):
     @commands.command(name='status')
     async def status(self, ctx):
         """ステータスを表示 / Show status"""
-        await ctx.send(f"✅ えっちコンテンツフィルターエージェント is online")
+        await ctx.send(f"✅ ゲームフレンド統合エージェント is online")
 
     @commands.command(name='help')
     async def help(self, ctx):
         """ヘルプを表示 / Show help"""
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **ゲームフレンド統合エージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• 統合フレンドリスト / Unified friend list\\n"
+        response += "• オンライン状態の監視 / Online status monitoring\\n"
+        response += "• クロスプラットフォーム招待 / Cross-platform invitations\\n"
+        response += "• フレンド活動の追跡 / Friend activity tracking\\n"
+        response += "• ソーシャル機能の統合 / Social feature integration\\n"
         await ctx.send(response)
 
 if __name__ == '__main__':
-    bot = EroticContentFilterAgent()
+    bot = GameFriendsUnifiedAgent()
     import os
     token = os.getenv('DISCORD_BOT_TOKEN')
     bot.run(token)

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント
-Erotic Content Filter Agent
+えっちセーフブラウジングエージェント
+Erotic Safe Browsing Agent
 """
 
 import discord
 from discord.ext import commands
 from db import init_db
 
-class EroticContentFilterAgent(commands.Bot):
+class EroticSafeBrowsingAgent(commands.Bot):
     def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
@@ -22,22 +22,22 @@ class EroticContentFilterAgent(commands.Bot):
     @commands.command(name='status')
     async def status(self, ctx):
         """ステータスを表示 / Show status"""
-        await ctx.send(f"✅ えっちコンテンツフィルターエージェント is online")
+        await ctx.send(f"✅ えっちセーフブラウジングエージェント is online")
 
     @commands.command(name='help')
     async def help(self, ctx):
         """ヘルプを表示 / Show help"""
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **えっちセーフブラウジングエージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• 安全なサイト判定 / Safe site detection\\n"
+        response += "• 詐欺サイト検出 / Scam site detection\\n"
+        response += "• マルウェアスキャン / Malware scanning\\n"
+        response += "• フィッシング対策 / Phishing protection\\n"
+        response += "• 安全なダウンロード / Safe downloads\\n"
         await ctx.send(response)
 
 if __name__ == '__main__':
-    bot = EroticContentFilterAgent()
+    bot = EroticSafeBrowsingAgent()
     import os
     token = os.getenv('DISCORD_BOT_TOKEN')
     bot.run(token)

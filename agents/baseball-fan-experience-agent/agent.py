@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント
-Erotic Content Filter Agent
+野球ファン体験エージェント
+Baseball Fan Experience Agent
 """
 
 import discord
 from discord.ext import commands
 from db import init_db
 
-class EroticContentFilterAgent(commands.Bot):
+class BaseballFanExperienceAgent(commands.Bot):
     def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
@@ -22,22 +22,22 @@ class EroticContentFilterAgent(commands.Bot):
     @commands.command(name='status')
     async def status(self, ctx):
         """ステータスを表示 / Show status"""
-        await ctx.send(f"✅ えっちコンテンツフィルターエージェント is online")
+        await ctx.send(f"✅ 野球ファン体験エージェント is online")
 
     @commands.command(name='help')
     async def help(self, ctx):
         """ヘルプを表示 / Show help"""
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **野球ファン体験エージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• ファン体験イベントの案内 / Fan experience events\\n"
+        response += "• 記念品・グッズ情報の収集 / Merchandise information\\n"
+        response += "• スタジアムクイズ・ゲーム / Stadium quizzes and games\\n"
+        response += "• AR/VR体験機能 / AR/VR experience features\\n"
+        response += "• ファン参加型コンテンツ / Fan participation content\\n"
         await ctx.send(response)
 
 if __name__ == '__main__':
-    bot = EroticContentFilterAgent()
+    bot = BaseballFanExperienceAgent()
     import os
     token = os.getenv('DISCORD_BOT_TOKEN')
     bot.run(token)

@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# baseball-stadium-finder-agent
 
-Erotic Content Filter Agent
+Baseball Stadium Finder Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Baseball Stadium FinderのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/baseball-stadium-finder-agent
 pip install -r requirements.txt
 ```
 

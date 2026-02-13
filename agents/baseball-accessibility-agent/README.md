@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# baseball-accessibility-agent
 
-Erotic Content Filter Agent
+Baseball Accessibility Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Baseball AccessibilityのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/baseball-accessibility-agent
 pip install -r requirements.txt
 ```
 

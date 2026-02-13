@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント - Discord連携
-Erotic Content Filter Agent - Discord Integration
+野球スタジアムフード・ドリンクエージェント - Discord連携
+Baseball Stadium Food and Beverage Agent - Discord Integration
 """
 
 import re
@@ -22,16 +22,16 @@ def handle_message(message):
         return None
 
     if parsed['action'] == 'status':
-        return f"✅ えっちコンテンツフィルターエージェント is online"
+        return f"✅ 野球スタジアムフード・ドリンクエージェント is online"
 
     if parsed['action'] == 'help':
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **野球スタジアムフード・ドリンクエージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• スタジアムフードメニューのカタログ / Food menu catalog\\n"
+        response += "• 待ち時間の予測・監視 / Wait time prediction\\n"
+        response += "• 事前注文機能の統合 / Pre-order integration\\n"
+        response += "• 人気メニューのランキング / Popular menu rankings\\n"
+        response += "• 食事タイミングの提案 / Meal timing recommendations\\n"
         return response
 
     return None

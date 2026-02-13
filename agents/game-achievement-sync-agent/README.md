@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# game-achievement-sync-agent
 
-Erotic Content Filter Agent
+Game Achievement Sync Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Game Achievement SyncのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/game-achievement-sync-agent
 pip install -r requirements.txt
 ```
 

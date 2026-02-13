@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント - Discord連携
-Erotic Content Filter Agent - Discord Integration
+野球スタジアムアクセシビリティエージェント - Discord連携
+Baseball Stadium Accessibility Agent - Discord Integration
 """
 
 import re
@@ -22,16 +22,16 @@ def handle_message(message):
         return None
 
     if parsed['action'] == 'status':
-        return f"✅ えっちコンテンツフィルターエージェント is online"
+        return f"✅ 野球スタジアムアクセシビリティエージェント is online"
 
     if parsed['action'] == 'help':
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **野球スタジアムアクセシビリティエージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• 車いす対応席の情報 / Wheelchair accessible seating\\n"
+        response += "• バリアフリー施設の案内 / Barrier-free facility guidance\\n"
+        response += "• サポートサービスの予約 / Support service booking\\n"
+        response += "• 視覚・聴覚障害者支援 / Visual/hearing impairment support\\n"
+        response += "• 多言語対応サービス / Multi-language services\\n"
         return response
 
     return None

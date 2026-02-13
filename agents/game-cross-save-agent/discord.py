@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント - Discord連携
-Erotic Content Filter Agent - Discord Integration
+ゲームクロスセーブエージェント - Discord連携
+Game Cross-Save Agent - Discord Integration
 """
 
 import re
@@ -22,16 +22,16 @@ def handle_message(message):
         return None
 
     if parsed['action'] == 'status':
-        return f"✅ えっちコンテンツフィルターエージェント is online"
+        return f"✅ ゲームクロスセーブエージェント is online"
 
     if parsed['action'] == 'help':
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **ゲームクロスセーブエージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• クロスプラットフォームセーブ同期 / Cross-platform save sync\\n"
+        response += "• クラウドストレージ統合 / Cloud storage integration\\n"
+        response += "• 競合解決機能 / Conflict resolution\\n"
+        response += "• 同期履歴の追跡 / Sync history tracking\\n"
+        response += "• 手動/自動同期モード / Manual/automatic sync modes\\n"
         return response
 
     return None

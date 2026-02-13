@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# game-spending-tracker-agent
 
-Erotic Content Filter Agent
+Game Spending Tracker Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Game Spending TrackerのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/game-spending-tracker-agent
 pip install -r requirements.txt
 ```
 

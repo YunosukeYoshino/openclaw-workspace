@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# erotic-age-verification-agent
 
-Erotic Content Filter Agent
+Erotic Age Verification Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Erotic Age VerificationのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/erotic-age-verification-agent
 pip install -r requirements.txt
 ```
 

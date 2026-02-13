@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント - Discord連携
-Erotic Content Filter Agent - Discord Integration
+ゲーム在庫トラッカーエージェント - Discord連携
+Game Inventory Tracker Agent - Discord Integration
 """
 
 import re
@@ -22,16 +22,16 @@ def handle_message(message):
         return None
 
     if parsed['action'] == 'status':
-        return f"✅ えっちコンテンツフィルターエージェント is online"
+        return f"✅ ゲーム在庫トラッカーエージェント is online"
 
     if parsed['action'] == 'help':
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **ゲーム在庫トラッカーエージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• 在庫管理 / Inventory management\\n"
+        response += "• アイテム価値追跡 / Item value tracking\\n"
+        response += "• 通貨残高管理 / Currency balance management\\n"
+        response += "• アイテム履歴 / Item history\\n"
+        response += "• 価値変動分析 / Value fluctuation analysis\\n"
         return response
 
     return None

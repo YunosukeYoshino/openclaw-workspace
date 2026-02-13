@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント - Discord連携
-Erotic Content Filter Agent - Discord Integration
+えっちプライバシーガードエージェント - Discord連携
+Erotic Privacy Guard Agent - Discord Integration
 """
 
 import re
@@ -22,16 +22,16 @@ def handle_message(message):
         return None
 
     if parsed['action'] == 'status':
-        return f"✅ えっちコンテンツフィルターエージェント is online"
+        return f"✅ えっちプライバシーガードエージェント is online"
 
     if parsed['action'] == 'help':
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **えっちプライバシーガードエージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• 閲覧履歴の暗号化 / Encrypted browsing history\\n"
+        response += "• 検索履歴の保護 / Search history protection\\n"
+        response += "• 自動削除機能 / Auto-delete functionality\\n"
+        response += "• プライベートモード / Private mode\\n"
+        response += "• 追跡防止機能 / Tracking prevention\\n"
         return response
 
     return None

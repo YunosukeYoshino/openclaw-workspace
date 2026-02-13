@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# baseball-drill-library-agent
 
-Erotic Content Filter Agent
+Baseball Drill Library Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Baseball Drill LibraryのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/baseball-drill-library-agent
 pip install -r requirements.txt
 ```
 

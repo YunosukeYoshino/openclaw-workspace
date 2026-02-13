@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# game-inventory-tracker-agent
 
-Erotic Content Filter Agent
+Game Inventory Tracker Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Game Inventory TrackerのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/game-inventory-tracker-agent
 pip install -r requirements.txt
 ```
 

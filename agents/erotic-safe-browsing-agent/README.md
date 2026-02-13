@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# erotic-safe-browsing-agent
 
-Erotic Content Filter Agent
+Erotic Safe Browsing Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Erotic Safe BrowsingのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/erotic-safe-browsing-agent
 pip install -r requirements.txt
 ```
 

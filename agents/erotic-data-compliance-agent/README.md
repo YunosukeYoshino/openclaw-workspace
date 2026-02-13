@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# erotic-data-compliance-agent
 
-Erotic Content Filter Agent
+Erotic Data Compliance Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Erotic Data ComplianceのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/erotic-data-compliance-agent
 pip install -r requirements.txt
 ```
 

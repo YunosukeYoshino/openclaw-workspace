@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# baseball-fan-experience-agent
 
-Erotic Content Filter Agent
+Baseball Fan Experience Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Baseball Fan ExperienceのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/baseball-fan-experience-agent
 pip install -r requirements.txt
 ```
 

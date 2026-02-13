@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント - Discord連携
-Erotic Content Filter Agent - Discord Integration
+えっちデータコンプライアンスエージェント - Discord連携
+Erotic Data Compliance Agent - Discord Integration
 """
 
 import re
@@ -22,16 +22,16 @@ def handle_message(message):
         return None
 
     if parsed['action'] == 'status':
-        return f"✅ えっちコンテンツフィルターエージェント is online"
+        return f"✅ えっちデータコンプライアンスエージェント is online"
 
     if parsed['action'] == 'help':
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **えっちデータコンプライアンスエージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• 規制対応の監査 / Regulation compliance audit\\n"
+        response += "• データポリシーの管理 / Data policy management\\n"
+        response += "• 同意管理 / Consent management\\n"
+        response += "• データリクエスト処理 / Data request processing\\n"
+        response += "• コンプライアンスレポート / Compliance reporting\\n"
         return response
 
     return None

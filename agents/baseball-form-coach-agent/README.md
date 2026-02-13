@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# baseball-form-coach-agent
 
-Erotic Content Filter Agent
+Baseball Form Coach Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Baseball Form CoachのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/baseball-form-coach-agent
 pip install -r requirements.txt
 ```
 

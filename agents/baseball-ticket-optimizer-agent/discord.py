@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツフィルターエージェント - Discord連携
-Erotic Content Filter Agent - Discord Integration
+野球チケット最適化エージェント - Discord連携
+Baseball Ticket Optimizer Agent - Discord Integration
 """
 
 import re
@@ -22,16 +22,16 @@ def handle_message(message):
         return None
 
     if parsed['action'] == 'status':
-        return f"✅ えっちコンテンツフィルターエージェント is online"
+        return f"✅ 野球チケット最適化エージェント is online"
 
     if parsed['action'] == 'help':
-        response = f"📖 **えっちコンテンツフィルターエージェント**\n\n"
+        response = f"📖 **野球チケット最適化エージェント**\n\n"
         response += "**Features / 機能:**\n"
-        response += "• NSFWコンテンツ検出 / NSFW content detection\\n"
-        response += "• AIベースのフィルタリング / AI-based filtering\\n"
-        response += "• コンテンツカテゴリ分類 / Content categorization\\n"
-        response += "• ユーザー設定に基づくフィルター / User-configurable filters\\n"
-        response += "• 誤検出の報告・修正 / False positive reporting\\n"
+        response += "• チケット価格の比較・最適化 / Ticket price comparison\\n"
+        response += "• リアルタイム空席監視 / Real-time seat monitoring\\n"
+        response += "• 価格変動の予測 / Price prediction\\n"
+        response += "• 購入タイミングの提案 / Purchase timing\\n"
+        response += "• 割引情報の収集・配信 / Discount information\\n"
         return response
 
     return None

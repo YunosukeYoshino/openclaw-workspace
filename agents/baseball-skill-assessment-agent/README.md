@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# baseball-skill-assessment-agent
 
-Erotic Content Filter Agent
+Baseball Skill Assessment Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Baseball Skill AssessmentのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/baseball-skill-assessment-agent
 pip install -r requirements.txt
 ```
 

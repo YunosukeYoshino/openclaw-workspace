@@ -1,15 +1,15 @@
-# erotic-content-filter-agent
+# erotic-privacy-guard-agent
 
-Erotic Content Filter Agent
+Erotic Privacy Guard Agent
 
 ## 概要 / Overview
 
-このエージェントは、Erotic Content FilterのためのAIエージェントです。
+このエージェントは、Erotic Privacy GuardのためのAIエージェントです。
 
 ## インストール / Installation
 
 ```bash
-cd agents/erotic-content-filter-agent
+cd agents/erotic-privacy-guard-agent
 pip install -r requirements.txt
 ```
 
