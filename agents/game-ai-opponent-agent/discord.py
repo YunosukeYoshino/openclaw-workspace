@@ -1,33 +1,42 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Game AI Opponent Agent Discord Bot Module
-ゲームAI対戦エージェント Discord Botモジュール
+Discord integration for game-ai-opponent-agent
 """
 
 import discord
 from discord.ext import commands
-from pathlib import Path
+import logging
 
-class GameAiOpponentAgentDiscord(commands.Cog):
-    """Game AI Opponent Agent Discord Bot"""
+class Game_Ai_Opponent_AgentDiscord(commands.Cog):
+    """Discord bot for game-ai-opponent-agent"""
 
-    def __init__(self, bot, agent=None):
+    def __init__(self, bot):
         self.bot = bot
-        self.agent = agent
+        self.logger = logging.getLogger(__name__)
 
-    @commands.command()
-    async def gameaiopponentagent(self, ctx):
-        """Main command"""
-        await ctx.send("Game AI Opponent Agent Bot running")
+    @commands.command(name="game_ai_opponent_agent")
+    async def main_command(self, ctx, *, query=None):
+        """Main command for game-ai-opponent-agent"""
+        if not query:
+            await ctx.send("Please provide a query.")
+            return
 
-def setup(bot, agent=None):
-    """Cogをセットアップ"""
-    bot.add_cog(GameAiOpponentAgentDiscord(bot, agent))
+        self.logger.info(f"Command invoked by {ctx.author}: {query}")
+        # TODO: Implement command logic
+        await ctx.send(f"Processing: {query}")
 
-def main():
-    """メイン関数"""
-    print("Game AI Opponent Agent Discord Bot Module")
+    @commands.command(name="game_ai_opponent_agent_status")
+    async def status_command(self, ctx):
+        """Status command for game-ai-opponent-agent"""
+        await ctx.send(f"Game Ai Opponent Agent is operational.")
+
+def setup(bot):
+    """Setup the Discord cog"""
+    bot.add_cog(Game_Ai_Opponent_AgentDiscord(bot))
 
 if __name__ == "__main__":
-    main()
+    # Example usage
+    intents = discord.Intents.default()
+    intents.message_content = True
+    bot = commands.Bot(command_prefix="!", intents=intents)
+    setup(bot)

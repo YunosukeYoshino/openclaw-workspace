@@ -1,75 +1,107 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Game AI Opponent Agent Database Module
-ゲームAI対戦エージェント データベースモジュール
+Database module for game-ai-opponent-agent
 """
 
 import sqlite3
-import json
-from datetime import datetime
 from pathlib import Path
+from contextlib import contextmanager
+from typing import Optional, List, Dict, Any
 
-class GameAiOpponentAgentDB:
-    """Game AI Opponent Agent Database"""
+DB_PATH = Path(__file__).parent / "data" / "game-ai-opponent-agent.db"
 
-    def __init__(self, db_path=None):
-        if db_path is None:
-            db_path = Path(__file__).parent / "data.db"
-        self.db_path = db_path
-        self._init_database()
+@contextmanager
+def get_db():
+    """Get database connection"""
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    try:
+        yield conn
+    finally:
+        conn.close()
 
-    def _init_database(self):
-        """データベースを初期化"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS ai_profiles (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                data TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS match_history_ai (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                data TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
+def init_db():
+    """Initialize database tables"""
+    with get_db() as conn:
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS entries ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "type TEXT NOT NULL,"
+            "content TEXT NOT NULL,"
+            "metadata TEXT,"
+            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+            "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+            ")"
+        )
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS tags ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "name TEXT UNIQUE NOT NULL"
+            ")"
+        )
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS entry_tags ("
+            "entry_id INTEGER NOT NULL,"
+            "tag_id INTEGER NOT NULL,"
+            "PRIMARY KEY (entry_id, tag_id),"
+            "FOREIGN KEY (entry_id) REFERENCES entries(id),"
+            "FOREIGN KEY (tag_id) REFERENCES tags(id)"
+            ")"
+        )
         conn.commit()
-        conn.close()
 
+class Database:
+    """Database operations for game-ai-opponent-agent"""
 
-    def insert(self, table, data):
-        """データを挿入"""
-        conn = self.connect()
-        cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO {table} (data) VALUES (?)", (json.dumps(data),))
-        conn.commit()
-        conn.close()
-        return cursor.lastrowid
+    def __init__(self):
+        self.init_db()
 
-    def select(self, table, limit=10):
-        """データを選択"""
-        conn = self.connect()
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM {table} ORDER BY created_at DESC LIMIT ?", (limit,))
-        rows = cursor.fetchall()
-        conn.close()
-        return rows
+    def init_db(self):
+        """Initialize database"""
+        init_db()
 
+    def add_entry(self, entry_type: str, content: str, metadata: Optional[str] = None) -> int:
+        """Add a new entry"""
+        with get_db() as conn:
+            cursor = conn.execute(
+                'INSERT INTO entries (type, content, metadata) VALUES (?, ?, ?)',
+                (entry_type, content, metadata)
+            )
+            conn.commit()
+            return cursor.lastrowid
 
-    def connect(self):
-        """接続を取得"""
-        return sqlite3.connect(self.db_path)
+    def get_entries(self, entry_type: Optional[str] = None, limit: int = 100) -> List[Dict[str, Any]]:
+        """Get entries"""
+        with get_db() as conn:
+            if entry_type:
+                cursor = conn.execute(
+                    'SELECT * FROM entries WHERE type = ? ORDER BY created_at DESC LIMIT ?',
+                    (entry_type, limit)
+                )
+            else:
+                cursor = conn.execute(
+                    'SELECT * FROM entries ORDER BY created_at DESC LIMIT ?',
+                    (limit,)
+                )
+            return [dict(row) for row in cursor.fetchall()]
 
-def main():
-    """メイン関数"""
-    db = GameAiOpponentAgentDB()
-    print("Game AI Opponent Agent Database initialized")
+    def add_tag(self, name: str) -> int:
+        """Add a tag"""
+        with get_db() as conn:
+            cursor = conn.execute(
+                'INSERT OR IGNORE INTO tags (name) VALUES (?)',
+                (name,)
+            )
+            conn.commit()
+            return cursor.lastrowid
+
+    def get_tags(self) -> List[str]:
+        """Get all tags"""
+        with get_db() as conn:
+            cursor = conn.execute('SELECT name FROM tags ORDER BY name')
+            return [row[0] for row in cursor.fetchall()]
 
 if __name__ == "__main__":
-    main()
+    db = Database()
+    print(f"Database initialized: {DB_PATH}")
