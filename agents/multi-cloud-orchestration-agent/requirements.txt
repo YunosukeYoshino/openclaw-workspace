@@ -1,0 +1,17 @@
+# Requirements for マルチクラウドオーケストレーションエージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# boto3
+# azure-sdk
+# google-cloud-sdk
+# pyyaml
+# requests

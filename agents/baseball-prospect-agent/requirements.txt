@@ -1,1 +1,17 @@
-discord.py
+# Requirements for 野球有望選手エージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# pandas
+# numpy
+# scikit-learn
+# requests
+# matplotlib

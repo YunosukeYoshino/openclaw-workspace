@@ -1,51 +1,102 @@
 #!/usr/bin/env python3
 """
-Discord integration for baseball-scout-report-agent
+野球スカウトレポートエージェント - Discord連携
+Discordボットインターフェース
 """
 
-import discord
-from discord.ext import commands
-import sqlite3
-import json
-from typing import Optional
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
+from datetime import datetime
 
-class BaseballScoutReportBot(commands.Bot):
-    """Discord bot for baseball-scout-report-agent"""
+class BaseballScoutReportAgentDiscord:
+    """野球スカウトレポートエージェント Discord連携クラス"""
 
-    def __init__(self, command_prefix: str = "!", db_path: str = "agents/baseball-scout-report-agent/data.db"):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix=command_prefix, intents=intents)
-        self.db_path = db_path
+    def __init__(self, token: Optional[str] = None):
+        self.token = token or os.getenv("DISCORD_TOKEN")
+        self.client = None
+        self.commands: List[Dict[str, Any]] = []
 
-    async def on_ready(self):
-        print(f'Logged in as {self.user}')
+    async def start(self):
+        """Discordボット起動"""
+        if not self.token:
+            print("DISCORD_TOKEN not set, running in mock mode")
+            return
 
-    async def create_entry(self, ctx, title: str, content: str):
-        """Create entry"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
-            cursor.execute(sql, (title, content, json.dumps(dict(), ensure_ascii=False), "active"))
-            conn.commit()
-            await ctx.send(f"Created: {title} (ID: {cursor.lastrowid})")
+        try:
+            import discord
+            intents = discord.Intents.default()
+            intents.message_content = True
+            self.client = discord.Client(intents=intents)
 
-    async def list_entries(self, ctx, limit: int = 10):
-        """List entries"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            sql = "SELECT id, title FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
-            cursor.execute(sql, ("active", limit))
-            rows = cursor.fetchall()
-            if rows:
-                msg = "\n".join([f"{r[0]}: {r[1]}" for r in rows])
-                await ctx.send(f"\n{msg}")
-            else:
-                await ctx.send("No entries found.")
+            @self.client.event
+            async def on_ready():
+                print(f'{self.client.user} has connected to Discord!')
+
+            @self.client.event
+            async def on_message(message):
+                if message.author == self.client.user:
+                    return
+
+                await self._handle_message(message)
+
+            await self.client.start(self.token)
+        except ImportError:
+            print("discord.py not installed, running in mock mode")
+
+    async def _handle_message(self, message):
+        """メッセージハンドリング"""
+        content = message.content.lower()
+
+        if content.startswith('!help'):
+            help_text = await self.get_help()
+            await message.channel.send(help_text)
+
+        elif content.startswith('!status'):
+            status = await self.get_status()
+            await message.channel.send(status)
+
+    async def send_message(self, channel_id: int, content: str):
+        """メッセージ送信"""
+        if self.client:
+            channel = self.client.get_channel(channel_id)
+            if channel:
+                await channel.send(content)
+        else:
+            print(f"Mock: Send to channel {channel_id}: {content}")
+
+    async def get_help(self) -> str:
+        """ヘルプメッセージ"""
+        return f"""
+**野球スカウトレポートエージェント - Commands**
+
+!help - Show this help message
+!status - Show agent status
+!info - Show agent information
+
+baseball category agent
+"""
+
+    async def get_status(self) -> str:
+        """ステータスメッセージ"""
+        return f"""
+**野球スカウトレポートエージェント Status**
+
+Status: Ready
+Language: Japanese
+Category: baseball
+Commands: {len(self.commands)}
+"""
+
+    async def stop(self):
+        """ボット停止"""
+        if self.client:
+            await self.client.close()
+
+async def main():
+    """動作確認"""
+    bot = BaseballScoutReportAgentDiscord()
+    await bot.start()
 
 if __name__ == "__main__":
-    import os
-    bot = BaseballScoutReportBot()
-    token = os.getenv("DISCORD_TOKEN")
-    if token:
-        bot.run(token)
+    asyncio.run(main())

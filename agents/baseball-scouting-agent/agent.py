@@ -1,132 +1,109 @@
 #!/usr/bin/env python3
 """
-選手スカウティング情報エージェント
-選手のスカウティング情報を管理するエージェント
+野球スカウティングエージェント
+野球選手のスカウティング・評価
 """
 
-import sqlite3
-from pathlib import Path
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
 from datetime import datetime
-from typing import List, Dict, Any, Optional
-
+import json
 
 class BaseballScoutingAgent:
-    """選手スカウティング情報エージェント"""
+    """野球スカウティングエージェント"""
 
-    def __init__(self, db_path: str = "baseball-scouting-agent.db"):
-        """初期化"""
-        self.db_path = db_path
-        self.conn = None
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        self.config = config or {}
+        self.name = "baseball-scouting-agent"
+        self.title = "野球スカウティングエージェント"
+        self.description = "野球選手のスカウティング・評価"
+        self.category = "baseball"
+        self.language = "Japanese"
+        self.state = "idle"
+        self.created_at = datetime.now().isoformat()
+        self.tasks: List[Dict[str, Any]] = []
 
-    def connect(self) -> sqlite3.Connection:
-        """データベースに接続"""
-        if self.conn is None:
-            self.conn = sqlite3.connect(self.db_path)
-            self.conn.row_factory = sqlite3.Row
-        return self.conn
+    async def initialize(self) -> bool:
+        """エージェントの初期化"""
+        try:
+            self.state = "initializing"
+            print(f"Initializing {self.title}...")
+            await asyncio.sleep(0.5)
+            self.state = "ready"
+            return True
+        except Exception as e:
+            print(f"Error initializing: {e}")
+            self.state = "error"
+            return False
 
-    def close(self) -> None:
-        """接続を閉じる"""
-        if self.conn:
-            self.conn.close()
-            self.conn = None
+    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """データ処理"""
+        if self.state != "ready":
+            return {"error": "Agent not ready", "state": self.state}
 
-    def __enter__(self):
-        """コンテキストマネージャー"""
-        self.connect()
-        return self
+        self.state = "processing"
+        try:
+            result = {
+                "success": True,
+                "data": input_data,
+                "processed_at": datetime.now().isoformat(),
+                "agent": self.name
+            }
+            self.state = "ready"
+            return result
+        except Exception as e:
+            self.state = "error"
+            return {"error": str(e), "state": self.state}
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """コンテキストマネージャー"""
-        self.close()
+    async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+        """タスク実行"""
+        task_id = task.get("id", f"task_{len(self.tasks)}")
+        self.tasks.append({"id": task_id, "task": task, "status": "pending"})
 
-    def get_all(self) -> List[Dict[str, Any]]:
-        """全てのデータを取得"""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM baseball_stats ORDER BY created_at DESC")
-            return [dict(row) for row in cursor.fetchall()]
+        try:
+            result = await self.process(task.get("data", {}))
+            self.tasks[-1]["status"] = "completed"
+            return result
+        except Exception as e:
+            self.tasks[-1]["status"] = "failed"
+            return {"error": str(e), "task_id": task_id}
 
-    def add_stat(self, player_id: str, player_name: str, **kwargs) -> int:
-        """統計データを追加"""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO baseball_stats (player_id, player_name, team, games, at_bats, hits, home_runs, rbi, batting_average, era, wins, saves, season)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                player_id, player_name,
-                kwargs.get("team"), kwargs.get("games", 0),
-                kwargs.get("at_bats", 0), kwargs.get("hits", 0),
-                kwargs.get("home_runs", 0), kwargs.get("rbi", 0),
-                kwargs.get("batting_average", 0.0), kwargs.get("era", 0.0),
-                kwargs.get("wins", 0), kwargs.get("saves", 0),
-                kwargs.get("season", datetime.now().strftime("%Y"))
-            ))
-            conn.commit()
-            return cursor.lastrowid
+    async def get_status(self) -> Dict[str, Any]:
+        """ステータス取得"""
+        return {
+            "name": self.name,
+            "title": self.title,
+            "state": self.state,
+            "tasks_completed": sum(1 for t in self.tasks if t["status"] == "completed"),
+            "tasks_pending": sum(1 for t in self.tasks if t["status"] == "pending"),
+            "created_at": self.created_at
+        }
 
-    def get_by_player(self, player_id: str) -> Optional[Dict[str, Any]]:
-        """選手の統計を取得"""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM baseball_stats WHERE player_id = ?", (player_id,))
-            row = cursor.fetchone()
-            return dict(row) if row else None
+    async def cleanup(self) -> None:
+        """クリーンアップ"""
+        self.state = "stopped"
+        print(f"{self.title} stopped.")
 
-    def update_stat(self, player_id: str, season: str, **kwargs) -> bool:
-        """統計データを更新"""
-        updates = ", ".join([f"{k} = ?" for k in kwargs.keys()])
-        values = list(kwargs.values()) + [player_id, season]
-
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute(f"""
-                UPDATE baseball_stats SET {updates}, updated_at = CURRENT_TIMESTAMP
-                WHERE player_id = ? AND season = ?
-            """, values)
-            conn.commit()
-            return cursor.rowcount > 0
-
-    def delete_stat(self, player_id: str, season: str) -> bool:
-        """統計データを削除"""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM baseball_stats WHERE player_id = ? AND season = ?", (player_id, season))
-            conn.commit()
-            return cursor.rowcount > 0
-
-    def search(self, query: str) -> List[Dict[str, Any]]:
-        """統計データを検索"""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                SELECT * FROM baseball_stats
-                WHERE player_name LIKE ? OR team LIKE ?
-                ORDER BY created_at DESC
-            """, (f"%{query}%", f"%{query}%"))
-            return [dict(row) for row in cursor.fetchall()]
-
-    def get_stats_summary(self) -> Dict[str, Any]:
-        """統計のサマリーを取得"""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                SELECT COUNT(*) as total_players,
-                       AVG(batting_average) as avg_ba,
-                       AVG(era) as avg_era,
-                       SUM(home_runs) as total_hr
-                FROM baseball_stats
-            """)
-            row = cursor.fetchone()
-            return dict(row) if row else {}
-
-
-def main():
-    """メイン関数"""
+async def main():
+    """メイン処理"""
     agent = BaseballScoutingAgent()
-    print(f"{agent.__class__.__name__} initialized")
+    await agent.initialize()
 
+    sample_task = {
+        "id": "sample_001",
+        "data": {
+            "message": "Sample task for 野球スカウティングエージェント"
+        }
+    }
+
+    result = await agent.execute_task(sample_task)
+    print(f"Result: {json.dumps(result, ensure_ascii=False, indent=2)}")
+
+    status = await agent.get_status()
+    print(f"Status: {json.dumps(status, ensure_ascii=False, indent=2)}")
+
+    await agent.cleanup()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

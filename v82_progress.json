@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "baseball-scouting-agent",
+    "baseball-draft-analysis-agent",
+    "baseball-prospect-agent",
+    "baseball-scout-report-agent",
+    "baseball-talent-evaluation-agent",
+    "game-remaster-agent",
+    "game-remake-agent",
+    "game-modernization-agent",
+    "game-retro-gaming-agent",
+    "game-classic-agent",
+    "erotic-vr-agent",
+    "erotic-ar-agent",
+    "erotic-metaverse-agent",
+    "erotic-3d-agent",
+    "erotic-immersive-agent",
+    "multi-cloud-orchestration-agent",
+    "cloud-cost-agent",
+    "cloud-optimization-v2-agent",
+    "cloud-migration-agent-v2",
+    "cloud-compliance-agent",
+    "id-management-agent",
+    "access-control-agent",
+    "iam-agent",
+    "privilege-access-agent",
+    "identity-verification-agent"
+  ],
+  "failed": []
+}

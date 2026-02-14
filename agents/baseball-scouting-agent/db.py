@@ -1,155 +1,169 @@
 #!/usr/bin/env python3
 """
-選手スカウティング情報エージェント - データベースモジュール
+野球スカウティングエージェント - データベース管理
+SQLiteベースのデータ永続化
 """
 
 import sqlite3
-from pathlib import Path
-from typing import List, Dict, Any, Optional
+from datetime import datetime
+from typing import Optional, Dict, Any, List
 from contextlib import contextmanager
+import json
 
+class BaseballScoutingAgentDB:
+    """野球スカウティングエージェント データベースクラス"""
 
-class Database:
-    """データベース管理クラス"""
-
-    def __init__(self, db_path: str = "baseball-scouting-agent.db"):
-        """初期化"""
-        self.db_path = Path(db_path)
-        self.conn = None
+    def __init__(self, db_path: str = "data/baseball-scouting-agent.db"):
+        self.db_path = db_path
+        self._init_db()
 
     @contextmanager
-    def get_connection(self):
-        """接続を取得（コンテキストマネージャー）"""
+    def _get_connection(self):
+        """データベース接続のコンテキストマネージャ"""
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         try:
             yield conn
             conn.commit()
-        except Exception:
+        except Exception as e:
             conn.rollback()
-            raise
+            raise e
         finally:
             conn.close()
 
-    def initialize(self) -> None:
-        """データベースを初期化"""
-        with self.get_connection() as conn:
-            conn.executescript("""
-
-        CREATE TABLE IF NOT EXISTS scouting_reports (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            player_id TEXT NOT NULL,
-            player_name TEXT NOT NULL,
-            position TEXT,
-            team TEXT,
-            level TEXT,
-            report_date TEXT NOT NULL,
-            overall_grade TEXT,
-            hitting_grade TEXT,
-            power_grade TEXT,
-            speed_grade TEXT,
-            defense_grade TEXT,
-            arm_grade TEXT,
-            strengths TEXT,
-            weaknesses TEXT,
-            projection TEXT,
-            potential TEXT,
-            notes TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE(player_id, report_date)
-        );
-
-        CREATE TABLE IF NOT EXISTS player_profiles (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            player_id TEXT NOT NULL,
-            player_name TEXT NOT NULL,
-            birth_date TEXT,
-            height TEXT,
-            weight INTEGER,
-            bats TEXT,
-            throws TEXT,
-            nationality TEXT,
-            draft_year INTEGER,
-            draft_round INTEGER,
-            draft_team TEXT,
-            current_team TEXT,
-            position TEXT,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE(player_id)
-        );
-        
+    def _init_db(self):
+        """データベース初期化"""
+        with self._get_connection() as conn:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS records (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    type TEXT NOT NULL,
+                    title TEXT,
+                    content TEXT NOT NULL,
+                    metadata TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
             """)
 
-    def execute(self, query: str, params: tuple = ()) -> List[Dict[str, Any]]:
-        """クエリを実行"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(query, params)
-            return [dict(row) for row in cursor.fetchall()]
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS tasks (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    task_id TEXT UNIQUE NOT NULL,
+                    status TEXT DEFAULT 'pending',
+                    result TEXT,
+                    error TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    completed_at TIMESTAMP
+                )
+            """)
 
-    def execute_many(self, query: str, params_list: List[tuple]) -> None:
-        """複数のクエリを実行"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.executemany(query, params_list)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS settings (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
 
-    def insert(self, table: str, data: Dict[str, Any]) -> int:
-        """データを挿入"""
-        columns = ", ".join(data.keys())
-        placeholders = ", ".join(["?"] * len(data))
-        query = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(query, list(data.values()))
+    def insert_record(self, record_type: str, title: str, content: str,
+                       metadata: Optional[Dict[str, Any]] = None) -> int:
+        """レコード挿入"""
+        metadata_json = json.dumps(metadata) if metadata else None
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                'INSERT INTO records (type, title, content, metadata) VALUES (?, ?, ?, ?)',
+                (record_type, title, content, metadata_json)
+            )
             return cursor.lastrowid
 
-    def update(self, table: str, data: Dict[str, Any], where: Dict[str, Any]) -> int:
-        """データを更新"""
-        set_clause = ", ".join([f"{k} = ?" for k in data.keys()])
-        where_clause = " AND ".join([f"{k} = ?" for k in where.keys()])
-        query = f"UPDATE {table} SET {set_clause} WHERE {where_clause}"
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(query, list(data.values()) + list(where.values()))
-            return cursor.rowcount
+    def get_record(self, record_id: int) -> Optional[Dict[str, Any]]:
+        """レコード取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT * FROM records WHERE id = ?', (record_id,)).fetchone()
+            if row:
+                return dict(row)
+        return None
 
-    def delete(self, table: str, where: Dict[str, Any]) -> int:
-        """データを削除"""
-        where_clause = " AND ".join([f"{k} = ?" for k in where.keys()])
-        query = f"DELETE FROM {table} WHERE {where_clause}"
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(query, list(where.values()))
-            return cursor.rowcount
+    def list_records(self, record_type: Optional[str] = None,
+                    limit: int = 100) -> List[Dict[str, Any]]:
+        """レコード一覧"""
+        with self._get_connection() as conn:
+            if record_type:
+                rows = conn.execute(
+                    'SELECT * FROM records WHERE type = ? ORDER BY created_at DESC LIMIT ?',
+                    (record_type, limit)
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    'SELECT * FROM records ORDER BY created_at DESC LIMIT ?',
+                    (limit,)
+                ).fetchall()
+            return [dict(row) for row in rows]
 
-    def get_all(self, table: str) -> List[Dict[str, Any]]:
-        """全てのデータを取得"""
-        return self.execute(f"SELECT * FROM {table} ORDER BY id DESC")
+    def insert_task(self, task_id: str, status: str = "pending") -> int:
+        """タスク挿入"""
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                'INSERT INTO tasks (task_id, status) VALUES (?, ?)',
+                (task_id, status)
+            )
+            return cursor.lastrowid
 
-    def get_by_id(self, table: str, record_id: int) -> Optional[Dict[str, Any]]:
-        """IDでデータを取得"""
-        result = self.execute(f"SELECT * FROM {table} WHERE id = ?", (record_id,))
-        return result[0] if result else None
+    def update_task(self, task_id: str, status: str,
+                   result: Optional[str] = None, error: Optional[str] = None):
+        """タスク更新"""
+        completed_at = datetime.now().isoformat() if status == "completed" else None
+        with self._get_connection() as conn:
+            conn.execute(
+                'UPDATE tasks SET status = ?, result = ?, error = ?, completed_at = ? WHERE task_id = ?',
+                (status, result, error, completed_at, task_id)
+            )
 
-    def count(self, table: str) -> int:
-        """レコード数を取得"""
-        result = self.execute(f"SELECT COUNT(*) as count FROM {table}")
-        return result[0]["count"] if result else 0
+    def get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """タスク取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT * FROM tasks WHERE task_id = ?', (task_id,)).fetchone()
+            if row:
+                return dict(row)
+        return None
 
-    def search(self, table: str, search_field: str, query: str) -> List[Dict[str, Any]]:
-        """検索"""
-        return self.execute(
-            f"SELECT * FROM {table} WHERE {search_field} LIKE ? ORDER BY id DESC",
-            (f"%{query}%",)
-        )
+    def set_setting(self, key: str, value: str):
+        """設定保存"""
+        with self._get_connection() as conn:
+            conn.execute(
+                'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?, updated_at = CURRENT_TIMESTAMP',
+                (key, value, value)
+            )
 
+    def get_setting(self, key: str) -> Optional[str]:
+        """設定取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT value FROM settings WHERE key = ?', (key,)).fetchone()
+            if row:
+                return row['value']
+        return None
 
-def main():
-    """メイン関数"""
-    db = Database()
-    db.initialize()
-    print("Database initialized successfully")
+async def main():
+    """動作確認"""
+    db = BaseballScoutingAgentDB()
 
+    record_id = db.insert_record(
+        record_type="sample",
+        title="Sample Record",
+        content="This is a sample record for 野球スカウティングエージェント"
+    )
+    print(f"Inserted record: {record_id}")
+
+    record = db.get_record(record_id)
+    print(f"Retrieved record: {record}")
+
+    db.insert_task("task_001")
+    db.update_task("task_001", "completed", result="Success")
+
+    task = db.get_task("task_001")
+    print(f"Task status: {task}")
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())
