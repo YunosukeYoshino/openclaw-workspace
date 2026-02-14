@@ -1,61 +1,52 @@
-#!/usr/bin/env python3
-"""
-野球打順最適化エージェント / Baseball Lineup Optimizer Agent
-baseball-lineup-optimizer-agent
+"""野球打順最適化エージェント。打順の最適化・分析"""
 
-対戦先発投手に応じた最適打順提案、左右の打席、相性、状況別の最適化、代打、守備固めの入れ替え提案
-Optimal batting order suggestions based on opposing starter, left/right handedness, compatibility, situation-based optimization, pinch hitter, defensive replacement suggestions
-"""
+import discord
+from db import AgentDatabase
 
-import asyncio
-import logging
-from typing import Any, Dict, List, Optional
-from datetime import datetime
+class BaseballLineupOptimizerAgent(discord.Client):
+    """野球打順最適化エージェント。打順の最適化・分析"""
 
-from .db import Database
-from .discord import DiscordBot
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.db = AgentDatabase(f"baseball-lineup-optimizer-agent.db")
 
-logger = logging.getLogger(__name__)
+    async def on_ready(self):
+        print(f"{self.user} is ready!")
 
+    async def on_message(self, message):
+        if message.author == self.user:
+            return
 
-class BaseballLineupOptimizerAgent:
-    """野球打順最適化エージェント"""
+        if message.content.startswith("!"):
+            await self.handle_command(message)
 
-    def __init__(self, db: Database, discord: Optional[DiscordBot] = None):
-        self.db = db
-        self.discord = discord
-        self.agent_id = "baseball-lineup-optimizer-agent"
+    async def handle_command(self, message):
+        command = message.content[1:].split()[0]
 
-    async def initialize(self):
-        """初期化処理"""
-        logger.info(f"Initializing {self.agent_id}...")
-        await self.db.initialize()
+        if command == "help":
+            await self.show_help(message)
+        elif command == "status":
+            await self.show_status(message)
+        elif command == "list":
+            await self.list_items(message)
+        else:
+            await message.channel.send(f"Unknown command: {command}")
 
-    async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    async def show_help(self, message):
+        help_text = f"""
+        baseball-lineup-optimizer-agent - 野球打順最適化エージェント。打順の最適化・分析
+
+        Commands:
+        !help - Show this help
+        !status - Show status
+        !list - List items
         """
-        メイン処理
+        await message.channel.send(help_text)
 
-        Args:
-            data: 入力データ
+    async def show_status(self, message):
+        status = self.db.get_status()
+        await message.channel.send(f"Status: {status}")
 
-        Returns:
-            処理結果
-        """
-        try:
-            result = {"status": "success", "data": data}
-            return result
-        except Exception as e:
-            logger.error(f"Error in {self.agent_id}: {e}")
-            return {"status": "error", "message": str(e)}
-
-    async def get_status(self) -> Dict[str, Any]:
-        """ステータス取得"""
-        return {
-            "agent_id": self.agent_id,
-            "status": "active",
-            "timestamp": datetime.utcnow().isoformat()
-        }
-
-    async def cleanup(self):
-        """クリーンアップ"""
-        logger.info(f"Cleaning up {self.agent_id}...")
+    async def list_items(self, message):
+        items = self.db.list_items()
+        await message.channel.send(f"Items: {items}")

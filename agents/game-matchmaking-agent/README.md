@@ -1,48 +1,49 @@
 # game-matchmaking-agent
 
-ゲームマッチメイキングエージェント。対戦相手の自動マッチング。
+ゲームマッチメイキングエージェント。マッチメイキングの管理・最適化
 
-ゲームマッチメイキングエージェント。対戦相手の自動マッチング。
+## 機能
 
-## Files
+- ゲームマッチメイキングエージェント。マッチメイキングの管理・最適化
+- Discordボット連携
+- データベース管理
 
-- `agent.py` - メインエージェントコード
-- `db.py` - データベースモジュール
-- `discord.py` - Discord Botモジュール
-- `requirements.txt` - Python依存パッケージ
-
-## Installation
+## インストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
-
-### Agent
+## 使用方法
 
 ```bash
 python agent.py
 ```
 
-### Database
+## コマンド
+
+- `!help` - ヘルプを表示
+- `!status` - ステータスを表示
+
+## 設定
+
+環境変数を設定してください：
 
 ```bash
-python db.py
+export DISCORD_TOKEN="your_discord_token"
 ```
 
-### Discord Bot
+## ディレクトリ構造
 
-```bash
-python discord.py
+```
+game-matchmaking-agent/
+├── agent.py       - メインエージェントコード
+├── db.py          - データベースモジュール
+├── discord.py     - Discordボット
+├── README.md      - このファイル
+└── requirements.txt
 ```
 
-## Commands
+## ライセンス
 
-- `!status` - Show bot status
-- `!add <title> <content>` - Add an entry
-- `!list [limit]` - List entries
-
-## Project
-
-ゲームソーシャル機能・コミュニティエージェント
+MIT License

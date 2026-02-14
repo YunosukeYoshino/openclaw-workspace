@@ -1,99 +1,157 @@
-#!/usr/bin/env python3
-"""
-game-matchmaking-agent - データベースモジュール
-"""
+"""Database module for agent"""
 
 import sqlite3
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Optional, Dict, Any
 
-class GameMatchmakingAgentDB:
-    """game-matchmaking-agent データベース"""
+class AgentDatabase:
+    """Agent database management"""
 
-    def __init__(self, db_path: str = "game-matchmaking-agent.db"):
-        """初期化"""
+    def __init__(self, db_path: str = "agent.db"):
         self.db_path = db_path
-        self.conn = sqlite3.connect(db_path)
-        self.cursor = self.conn.cursor()
-        self._init_tables()
+        self.init_db()
 
-    def _init_tables(self):
-        """テーブル初期化"""
-        self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS entries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                content TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
+    def init_db(self):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            content TEXT,
+            status TEXT DEFAULT 'active',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
         """)
-        self.conn.commit()
 
-    def add_entry(self, title: str, content: str) -> int:
-        """エントリー追加"""
-        self.cursor.execute(
-            "INSERT INTO entries (title, content) VALUES (?, ?)",
-            (title, content)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS status_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            status TEXT NOT NULL,
+            message TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-        self.conn.commit()
-        return self.cursor.lastrowid
+        """)
 
-    def get_entry(self, entry_id: int) -> Optional[Dict]:
-        """エントリー取得"""
-        self.cursor.execute(
-            "SELECT * FROM entries WHERE id = ?",
-            (entry_id,)
-        )
-        row = self.cursor.fetchone()
+        conn.commit()
+        conn.close()
+
+    def add_item(self, name: str, content: str = "", status: str = "active") -> int:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+        INSERT INTO items (name, content, status)
+        VALUES (?, ?, ?)
+        """, (name, content, status))
+
+        item_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+
+        return item_id
+
+    def get_item(self, item_id: int) -> Optional[Dict[str, Any]]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM items WHERE id = ?", (item_id,))
+        row = cursor.fetchone()
+
+        conn.close()
+
         if row:
             return {
                 "id": row[0],
-                "title": row[1],
+                "name": row[1],
                 "content": row[2],
-                "created_at": row[3],
-                "updated_at": row[4]
+                "status": row[3],
+                "created_at": row[4],
+                "updated_at": row[5]
             }
         return None
 
-    def list_entries(self, limit: int = 100) -> List[Dict]:
-        """エントリー一覧"""
-        self.cursor.execute(
-            "SELECT * FROM entries ORDER BY created_at DESC LIMIT ?",
-            (limit,)
-        )
-        rows = self.cursor.fetchall()
+    def update_item(self, item_id: int, **kwargs) -> bool:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        update_fields = []
+        values = []
+
+        for key, value in kwargs.items():
+            if key in ["name", "content", "status"]:
+                update_fields.append(f"{{key}} = ?")
+                values.append(value)
+
+        if not update_fields:
+            conn.close()
+            return False
+
+        values.append(item_id)
+        query = f"UPDATE items SET {{', '.join(update_fields)}}, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+
+        cursor.execute(query, values)
+        conn.commit()
+        conn.close()
+
+        return True
+
+    def list_items(self, status: Optional[str] = None) -> List[Dict[str, Any]]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        if status:
+            cursor.execute("SELECT * FROM items WHERE status = ?", (status,))
+        else:
+            cursor.execute("SELECT * FROM items")
+
+        rows = cursor.fetchall()
+        conn.close()
+
         return [
             {
                 "id": row[0],
-                "title": row[1],
+                "name": row[1],
                 "content": row[2],
-                "created_at": row[3],
-                "updated_at": row[4]
+                "status": row[3],
+                "created_at": row[4],
+                "updated_at": row[5]
             }
             for row in rows
         ]
 
-    def close(self):
-        """接続クローズ"""
-        self.conn.close()
+    def set_status(self, status: str, message: str = ""):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
 
-def main():
-    """メイン関数"""
-    db = GameMatchmakingAgentDB()
+        cursor.execute("""
+        INSERT INTO status_log (status, message)
+        VALUES (?, ?)
+        """, (status, message))
 
-    # サンプルエントリー追加
-    entry_id = db.add_entry(
-        "Sample Entry",
-        "This is a sample entry for game-matchmaking-agent"
-    )
-    print(f"Added entry with ID: {entry_id}")
+        conn.commit()
+        conn.close()
 
-    # エントリー一覧
-    entries = db.list_entries()
-    print(f"Total entries: {len(entries)}")
+    def get_status(self) -> Dict[str, Any]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
 
-    db.close()
+        cursor.execute("""
+        SELECT * FROM status_log
+        ORDER BY created_at DESC
+        LIMIT 1
+        """)
 
-if __name__ == "__main__":
-    main()
+        row = cursor.fetchone()
+        conn.close()
+
+        if row:
+            return {
+                "id": row[0],
+                "status": row[1],
+                "message": row[2],
+                "created_at": row[3]
+            }
+        return {"status": "unknown"}

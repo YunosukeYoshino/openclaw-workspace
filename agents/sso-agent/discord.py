@@ -1,89 +1,56 @@
-#!/usr/bin/env python3
-# sso-agent Discord ボット
+"""Discord bot for sso-agent"""
 
-import logging
+import os
 import discord
-from discord.ext import commands
+from dotenv import load_dotenv
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+load_dotenv()
 
+intents = discord.Intents.default()
+intents.message_content = True
+intents.messages = True
 
-class Sso_agentDiscordBot(commands.Bot):
-    # sso-agent Discord ボット
+client = discord.Client(intents=intents)
 
-    def __init__(self, db):
-        # 初期化
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents, help_command=None)
-        self.db = db
+@client.event
+async def on_ready():
+    print(f"{client.user} is ready!")
 
-    async def setup_hook(self):
-        # ボット起動時の設定
-        await self.add_cog(Sso_agentCommands(self))
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
 
-    async def on_ready(self):
-        # 準備完了時のイベント
-        logger.info("Logged in as %s", self.user.name)
+    if message.content.startswith("!"):
+        await handle_command(message)
 
+async def handle_command(message):
+    command = message.content[1:].split()[0]
 
-class Sso_agentCommands(commands.Cog):
-    # sso-agent コマンド
+    if command == "help":
+        await show_help(message)
+    elif command == "status":
+        await show_status(message)
+    else:
+        await message.channel.send(f"Unknown command: {command}")
 
-    def __init__(self, bot: commands.Bot):
-        # 初期化
-        self.bot = bot
+async def show_help(message):
+    help_text = f"""
+    sso-agent - SSOエージェント。シングルサインオンの管理
 
-    @commands.command(name="sso_agent")
-    async def sso_agent(self, ctx: commands.Context, action: str = "list", *, args: str = ""):
-        # メインコマンド
-        if action == "list":
-            entries = self.bot.db.list_entries(limit=20)
-            if not entries:
-                await ctx.send("エントリーがありません")
-                return
-            embed = discord.Embed(title="Sso Agent 一覧", color=discord.Color.blue())
-            for entry in entries[:10]:
-                title = entry.get("title") or "タイトルなし"
-                content = entry.get("content", "")[:50]
-                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
-            await ctx.send(embed=embed)
-        elif action == "add":
-            if not args:
-                await ctx.send(f"使用方法: !sso_agent add <内容>")
-                return
-            entry_id = self.bot.db.add_entry(title=None, content=args, status="active", priority=0)
-            await ctx.send(f"エントリーを追加しました (ID: {entry_id})")
-        elif action == "search":
-            if not args:
-                await ctx.send(f"使用方法: !sso_agent search <キーワード>")
-                return
-            entries = self.bot.db.search_entries(args, limit=10)
-            if not entries:
-                await ctx.send("一致するエントリーがありません")
-                return
-            embed = discord.Embed(title=f"「{args}」の検索結果", color=discord.Color.green())
-            for entry in entries:
-                title = entry.get("title") or "タイトルなし"
-                content = entry.get("content", "")[:50]
-                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send(f"不明なアクションです: {action}\\n使用可能なアクション: list, add, search")
+    Commands:
+    !help - Show this help
+    !status - Show status
+    """
+    await message.channel.send(help_text)
 
-    @commands.command(name="sso_agent_status")
-    async def sso_agent_status(self, ctx: commands.Context):
-        # ステータス確認
-        entries = self.bot.db.list_entries(status="active")
-        embed = discord.Embed(title="Sso Agent ステータス", color=discord.Color.gold())
-        embed.add_field(name="アクティブエントリー", value=str(len(entries)))
-        await ctx.send(embed=embed)
+async def show_status(message):
+    await message.channel.send("Bot is running normally!")
 
-    @commands.command(name="sso_agent_delete")
-    async def sso_agent_delete(self, ctx: commands.Context, entry_id: int):
-        # エントリー削除
-        if self.bot.db.delete_entry(entry_id):
-            await ctx.send(f"エントリーを削除しました (ID: {entry_id})")
-        else:
-            await ctx.send(f"エントリーが見つかりません (ID: {entry_id})")
+if __name__ == "__main__":
+    token = os.getenv("DISCORD_TOKEN")
+    if not token:
+        print("DISCORD_TOKEN not found!")
+        exit(1)
+
+    client.run(token)

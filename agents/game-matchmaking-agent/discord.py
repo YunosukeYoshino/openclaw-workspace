@@ -1,57 +1,56 @@
-#!/usr/bin/env python3
-"""
-game-matchmaking-agent - Discord Botモジュール
-"""
+"""Discord bot for game-matchmaking-agent"""
 
+import os
 import discord
-from discord.ext import commands
-from db import GameMatchmakingAgentDB
+from dotenv import load_dotenv
 
-class GameMatchmakingAgentDiscordBot(commands.Bot):
-    """game-matchmaking-agent Discord Bot"""
+load_dotenv()
 
-    def __init__(self, db_path: str = "game-matchmaking-agent.db"):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
-        self.db = GameMatchmakingAgentDB(db_path)
+intents = discord.Intents.default()
+intents.message_content = True
+intents.messages = True
 
-    async def setup_hook(self):
-        """Bot起動時の処理"""
-        print(f"{self.__class__.__name__} is ready!")
+client = discord.Client(intents=intents)
 
-    async def on_ready(self):
-        """Bot準備完了時の処理"""
-        print(f"Logged in as {self.user}")
+@client.event
+async def on_ready():
+    print(f"{client.user} is ready!")
 
-    @commands.command()
-    async def status(self, ctx: commands.Context):
-        """ステータス表示"""
-        entries = self.db.list_entries(limit=1)
-        await ctx.send(f"{self.__class__.__name__} is running! Total entries: {len(entries)}")
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
 
-    @commands.command()
-    async def add(self, ctx: commands.Context, title: str, *, content: str):
-        """エントリー追加"""
-        entry_id = self.db.add_entry(title, content)
-        await ctx.send(f"Added entry with ID: {entry_id}")
+    if message.content.startswith("!"):
+        await handle_command(message)
 
-    @commands.command()
-    async def list(self, ctx: commands.Context, limit: int = 10):
-        """エントリー一覧"""
-        entries = self.db.list_entries(limit=limit)
-        if entries:
-            response = "**Entries:**\n"
-            for entry in entries:
-                response += f"- #{entry['id']}: {entry['title']}\n"
-            await ctx.send(response)
-        else:
-            await ctx.send("No entries found.")
+async def handle_command(message):
+    command = message.content[1:].split()[0]
 
-def main():
-    """メイン関数"""
-    bot = GameMatchmakingAgentDiscordBot()
-    # bot.run("YOUR_DISCORD_BOT_TOKEN")
+    if command == "help":
+        await show_help(message)
+    elif command == "status":
+        await show_status(message)
+    else:
+        await message.channel.send(f"Unknown command: {command}")
+
+async def show_help(message):
+    help_text = f"""
+    game-matchmaking-agent - ゲームマッチメイキングエージェント。マッチメイキングの管理・最適化
+
+    Commands:
+    !help - Show this help
+    !status - Show status
+    """
+    await message.channel.send(help_text)
+
+async def show_status(message):
+    await message.channel.send("Bot is running normally!")
 
 if __name__ == "__main__":
-    main()
+    token = os.getenv("DISCORD_TOKEN")
+    if not token:
+        print("DISCORD_TOKEN not found!")
+        exit(1)
+
+    client.run(token)

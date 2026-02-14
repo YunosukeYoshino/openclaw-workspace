@@ -1,1 +1,2 @@
-discord.py>=2.3.0\npython-dotenv>=1.0.0\n
+discord.py>=2.3.0
+python-dotenv>=1.0.0

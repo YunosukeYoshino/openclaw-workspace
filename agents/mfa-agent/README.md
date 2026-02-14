@@ -1,41 +1,49 @@
 # mfa-agent
 
-## 概要
-マルチファクタ認証エージェント。MFAの管理・運用。
+MFAエージェント。多要素認証の管理
 
-## カテゴリ
-セキュリティアクセス管理
+## 機能
 
-## トリガーワード
-MFA, 多要素認証, 2要素認証
+- MFAエージェント。多要素認証の管理
+- Discordボット連携
+- データベース管理
 
-## 主な機能
+## インストール
 
-### データ管理
-- mfa-agent 関連データのSQLiteデータベース管理
-- CRUD操作の実装
-- 検索・フィルタリング機能
-
-### チャットボット機能
-- Discord連携によるインタラクティブ応答
-- 自然言語によるクエリ処理
-- コマンドパターンマッチング
-
-## 使用方法
-
-### インストール
 ```bash
-cd agents/mfa-agent
 pip install -r requirements.txt
 ```
 
-### 実行
+## 使用方法
+
 ```bash
 python agent.py
 ```
 
-## ライセンス
-MIT License
+## コマンド
 
-## バージョン
-1.0.0
+- `!help` - ヘルプを表示
+- `!status` - ステータスを表示
+
+## 設定
+
+環境変数を設定してください：
+
+```bash
+export DISCORD_TOKEN="your_discord_token"
+```
+
+## ディレクトリ構造
+
+```
+mfa-agent/
+├── agent.py       - メインエージェントコード
+├── db.py          - データベースモジュール
+├── discord.py     - Discordボット
+├── README.md      - このファイル
+└── requirements.txt
+```
+
+## ライセンス
+
+MIT License

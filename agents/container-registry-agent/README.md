@@ -1,41 +1,49 @@
 # container-registry-agent
 
-コンテナレジストリエージェント。イメージの管理。
+コンテナレジストリエージェント。コンテナレジストリの管理
 
-## Description
+## 機能
 
-クラウドネイティブ・コンテナエージェント - container-registry-agent
+- コンテナレジストリエージェント。コンテナレジストリの管理
+- Discordボット連携
+- データベース管理
 
-## Installation
+## インストール
 
 ```bash
 pip install -r requirements.txt
-python3 db.py  # Initialize database
 ```
 
-## Usage
+## 使用方法
 
 ```bash
-python3 agent.py
+python agent.py
 ```
 
-## Files
+## コマンド
 
-- `agent.py` - Main agent logic
-- `db.py` - Database initialization
-- `discord.py` - Discord integration
-- `requirements.txt` - Dependencies
+- `!help` - ヘルプを表示
+- `!status` - ステータスを表示
 
-## API
+## 設定
 
-### Actions
+環境変数を設定してください：
 
-- `create` - Create new entry
-- `get` - Get entry by ID
-- `update` - Update entry
-- `delete` - Delete entry
-- `list` - List entries
+```bash
+export DISCORD_TOKEN="your_discord_token"
+```
 
-## Environment Variables
+## ディレクトリ構造
 
-- `DISCORD_TOKEN` - Discord bot token (optional)
+```
+container-registry-agent/
+├── agent.py       - メインエージェントコード
+├── db.py          - データベースモジュール
+├── discord.py     - Discordボット
+├── README.md      - このファイル
+└── requirements.txt
+```
+
+## ライセンス
+
+MIT License

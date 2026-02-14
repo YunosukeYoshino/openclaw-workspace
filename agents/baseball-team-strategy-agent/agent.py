@@ -1,44 +1,52 @@
-#!/usr/bin/env python3
-# baseball-team-strategy-agent
-# 野球チーム戦略エージェント。チーム戦略の立案・分析。
+"""野球チーム戦略エージェント。チーム全体の戦略立案・管理"""
 
-import asyncio
-import logging
-from db import Baseball_team_strategy_agentDatabase
-from discord import Baseball_team_strategy_agentDiscordBot
+import discord
+from db import AgentDatabase
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+class BaseballTeamStrategyAgent(discord.Client):
+    """野球チーム戦略エージェント。チーム全体の戦略立案・管理"""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.db = AgentDatabase(f"baseball-team-strategy-agent.db")
 
-class Baseball_team_strategy_agentAgent:
-    # baseball-team-strategy-agent メインエージェント
+    async def on_ready(self):
+        print(f"{self.user} is ready!")
 
-    def __init__(self, db_path: str = "baseball-team-strategy-agent.db"):
-        # 初期化
-        self.db = Baseball_team_strategy_agentDatabase(db_path)
-        self.discord_bot = Baseball_team_strategy_agentDiscordBot(self.db)
+    async def on_message(self, message):
+        if message.author == self.user:
+            return
 
-    async def run(self):
-        # エージェントを実行
-        logger.info("Starting baseball-team-strategy-agent...")
-        self.db.initialize()
-        await self.discord_bot.start()
+        if message.content.startswith("!"):
+            await self.handle_command(message)
 
-    async def stop(self):
-        # エージェントを停止
-        logger.info("Stopping baseball-team-strategy-agent...")
-        await self.discord_bot.stop()
+    async def handle_command(self, message):
+        command = message.content[1:].split()[0]
 
+        if command == "help":
+            await self.show_help(message)
+        elif command == "status":
+            await self.show_status(message)
+        elif command == "list":
+            await self.list_items(message)
+        else:
+            await message.channel.send(f"Unknown command: {command}")
 
-async def main():
-    # メイン関数
-    agent = Baseball_team_strategy_agentAgent()
-    try:
-        await agent.run()
-    except KeyboardInterrupt:
-        await agent.stop()
+    async def show_help(self, message):
+        help_text = f"""
+        baseball-team-strategy-agent - 野球チーム戦略エージェント。チーム全体の戦略立案・管理
 
+        Commands:
+        !help - Show this help
+        !status - Show status
+        !list - List items
+        """
+        await message.channel.send(help_text)
 
-if __name__ == "__main__":
-    asyncio.run(main())
+    async def show_status(self, message):
+        status = self.db.get_status()
+        await message.channel.send(f"Status: {status}")
+
+    async def list_items(self, message):
+        items = self.db.list_items()
+        await message.channel.send(f"Items: {items}")

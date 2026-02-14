@@ -1,41 +1,49 @@
 # sso-agent
 
-## 概要
-シングルサインオンエージェント。SSOの管理・運用。
+SSOエージェント。シングルサインオンの管理
 
-## カテゴリ
-セキュリティアクセス管理
+## 機能
 
-## トリガーワード
-SSO, シングルサインオン, SSO管理
+- SSOエージェント。シングルサインオンの管理
+- Discordボット連携
+- データベース管理
 
-## 主な機能
+## インストール
 
-### データ管理
-- sso-agent 関連データのSQLiteデータベース管理
-- CRUD操作の実装
-- 検索・フィルタリング機能
-
-### チャットボット機能
-- Discord連携によるインタラクティブ応答
-- 自然言語によるクエリ処理
-- コマンドパターンマッチング
-
-## 使用方法
-
-### インストール
 ```bash
-cd agents/sso-agent
 pip install -r requirements.txt
 ```
 
-### 実行
+## 使用方法
+
 ```bash
 python agent.py
 ```
 
-## ライセンス
-MIT License
+## コマンド
 
-## バージョン
-1.0.0
+- `!help` - ヘルプを表示
+- `!status` - ステータスを表示
+
+## 設定
+
+環境変数を設定してください：
+
+```bash
+export DISCORD_TOKEN="your_discord_token"
+```
+
+## ディレクトリ構造
+
+```
+sso-agent/
+├── agent.py       - メインエージェントコード
+├── db.py          - データベースモジュール
+├── discord.py     - Discordボット
+├── README.md      - このファイル
+└── requirements.txt
+```
+
+## ライセンス
+
+MIT License

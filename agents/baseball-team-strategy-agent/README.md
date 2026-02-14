@@ -1,41 +1,49 @@
 # baseball-team-strategy-agent
 
-## 概要
-野球チーム戦略エージェント。チーム戦略の立案・分析。
+野球チーム戦略エージェント。チーム全体の戦略立案・管理
 
-## カテゴリ
-野球チーム戦略・オペレーション
+## 機能
 
-## トリガーワード
-チーム戦略, 戦略立案, チーム戦略分析
+- 野球チーム戦略エージェント。チーム全体の戦略立案・管理
+- Discordボット連携
+- データベース管理
 
-## 主な機能
+## インストール
 
-### データ管理
-- baseball-team-strategy-agent 関連データのSQLiteデータベース管理
-- CRUD操作の実装
-- 検索・フィルタリング機能
-
-### チャットボット機能
-- Discord連携によるインタラクティブ応答
-- 自然言語によるクエリ処理
-- コマンドパターンマッチング
-
-## 使用方法
-
-### インストール
 ```bash
-cd agents/baseball-team-strategy-agent
 pip install -r requirements.txt
 ```
 
-### 実行
+## 使用方法
+
 ```bash
 python agent.py
 ```
 
-## ライセンス
-MIT License
+## コマンド
 
-## バージョン
-1.0.0
+- `!help` - ヘルプを表示
+- `!status` - ステータスを表示
+
+## 設定
+
+環境変数を設定してください：
+
+```bash
+export DISCORD_TOKEN="your_discord_token"
+```
+
+## ディレクトリ構造
+
+```
+baseball-team-strategy-agent/
+├── agent.py       - メインエージェントコード
+├── db.py          - データベースモジュール
+├── discord.py     - Discordボット
+├── README.md      - このファイル
+└── requirements.txt
+```
+
+## ライセンス
+
+MIT License

@@ -1,44 +1,52 @@
-#!/usr/bin/env python3
-# mfa-agent
-# マルチファクタ認証エージェント。MFAの管理・運用。
+"""MFAエージェント。多要素認証の管理"""
 
-import asyncio
-import logging
-from db import Mfa_agentDatabase
-from discord import Mfa_agentDiscordBot
+import discord
+from db import AgentDatabase
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+class MfaAgent(discord.Client):
+    """MFAエージェント。多要素認証の管理"""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.db = AgentDatabase(f"mfa-agent.db")
 
-class Mfa_agentAgent:
-    # mfa-agent メインエージェント
+    async def on_ready(self):
+        print(f"{self.user} is ready!")
 
-    def __init__(self, db_path: str = "mfa-agent.db"):
-        # 初期化
-        self.db = Mfa_agentDatabase(db_path)
-        self.discord_bot = Mfa_agentDiscordBot(self.db)
+    async def on_message(self, message):
+        if message.author == self.user:
+            return
 
-    async def run(self):
-        # エージェントを実行
-        logger.info("Starting mfa-agent...")
-        self.db.initialize()
-        await self.discord_bot.start()
+        if message.content.startswith("!"):
+            await self.handle_command(message)
 
-    async def stop(self):
-        # エージェントを停止
-        logger.info("Stopping mfa-agent...")
-        await self.discord_bot.stop()
+    async def handle_command(self, message):
+        command = message.content[1:].split()[0]
 
+        if command == "help":
+            await self.show_help(message)
+        elif command == "status":
+            await self.show_status(message)
+        elif command == "list":
+            await self.list_items(message)
+        else:
+            await message.channel.send(f"Unknown command: {command}")
 
-async def main():
-    # メイン関数
-    agent = Mfa_agentAgent()
-    try:
-        await agent.run()
-    except KeyboardInterrupt:
-        await agent.stop()
+    async def show_help(self, message):
+        help_text = f"""
+        mfa-agent - MFAエージェント。多要素認証の管理
 
+        Commands:
+        !help - Show this help
+        !status - Show status
+        !list - List items
+        """
+        await message.channel.send(help_text)
 
-if __name__ == "__main__":
-    asyncio.run(main())
+    async def show_status(self, message):
+        status = self.db.get_status()
+        await message.channel.send(f"Status: {status}")
+
+    async def list_items(self, message):
+        items = self.db.list_items()
+        await message.channel.send(f"Items: {items}")
