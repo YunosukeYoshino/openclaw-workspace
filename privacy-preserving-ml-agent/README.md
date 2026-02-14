@@ -1,0 +1,47 @@
+# プライバシー保護MLエージェント (privacy-preserving-ml-agent)
+
+プライバシー保護機械学習
+
+## 機能 / Features
+
+- プライバシー保護機械学習の管理・運用
+- Discordボットによる対話型インターフェース
+- SQLiteによるデータ永続化
+
+## インストール / Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+## 設定 / Configuration
+
+環境変数 `DISCORD_TOKEN` を設定してください。
+
+Set the `DISCORD_TOKEN` environment variable.
+
+```bash
+export DISCORD_TOKEN="your_bot_token"
+```
+
+## 使い方 / Usage
+
+```bash
+python agent.py
+```
+
+または / Or:
+
+```bash
+python discord.py
+```
+
+## データベース / Database
+
+データはSQLiteに保存されます。`privacy-preserving-ml-agent.db`ファイルが作成されます。
+
+Data is stored in SQLite. A `privacy-preserving-ml-agent.db` file will be created.
+
+## ライセンス / License
+
+MIT License
