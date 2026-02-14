@@ -1,41 +1,41 @@
 # baseball-drill-library-agent
 
-Baseball Drill Library Agent
+野球ドリルライブラリエージェント。ドリルの管理・整理。
 
-## 概要 / Overview
+## Description
 
-このエージェントは、Baseball Drill LibraryのためのAIエージェントです。
+野球トレーニング・ドリル作成エージェント - baseball-drill-library-agent
 
-## インストール / Installation
+## Installation
 
 ```bash
-cd agents/baseball-drill-library-agent
 pip install -r requirements.txt
+python3 db.py  # Initialize database
 ```
 
-## 使用方法 / Usage
-
-### Discord Botとして実行 / Run as Discord Bot
+## Usage
 
 ```bash
-python agent.py
+python3 agent.py
 ```
 
-### データベース初期化 / Initialize Database
+## Files
 
-```bash
-python db.py
-```
+- `agent.py` - Main agent logic
+- `db.py` - Database initialization
+- `discord.py` - Discord integration
+- `requirements.txt` - Dependencies
 
-## 設定 / Configuration
+## API
 
-Configuration is loaded from environment variables:
-- `DISCORD_BOT_TOKEN`: Discordボットトークン / Discord bot token
+### Actions
 
-## 依存パッケージ / Requirements
+- `create` - Create new entry
+- `get` - Get entry by ID
+- `update` - Update entry
+- `delete` - Delete entry
+- `list` - List entries
 
-See `requirements.txt` for dependencies.
+## Environment Variables
 
-## ライセンス / License
-
-MIT License
+- `DISCORD_TOKEN` - Discord bot token (optional)

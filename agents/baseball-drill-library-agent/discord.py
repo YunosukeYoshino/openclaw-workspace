@@ -1,46 +1,51 @@
 #!/usr/bin/env python3
 """
-野球ドリルライブラリエージェント - Discord連携
-Baseball Drill Library Agent - Discord Integration
+Discord integration for baseball-drill-library-agent
 """
 
-import re
+import discord
+from discord.ext import commands
+import sqlite3
+import json
+from typing import Optional
 
-def parse_message(message):
-    """メッセージを解析"""
-    if message.strip().lower() in ['status', 'ステータス']:
-        return {'action': 'status'}
-    if message.strip().lower() in ['help', 'ヘルプ']:
-        return {'action': 'help'}
-    return None
+class BaseballDrillLibraryBot(commands.Bot):
+    """Discord bot for baseball-drill-library-agent"""
 
-def handle_message(message):
-    """メッセージを処理"""
-    parsed = parse_message(message)
+    def __init__(self, command_prefix: str = "!", db_path: str = "agents/baseball-drill-library-agent/data.db"):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix=command_prefix, intents=intents)
+        self.db_path = db_path
 
-    if not parsed:
-        return None
+    async def on_ready(self):
+        print(f'Logged in as {self.user}')
 
-    if parsed['action'] == 'status':
-        return f"✅ 野球ドリルライブラリエージェント is online"
+    async def create_entry(self, ctx, title: str, content: str):
+        """Create entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+            cursor.execute(sql, (title, content, json.dumps(dict(), ensure_ascii=False), "active"))
+            conn.commit()
+            await ctx.send(f"Created: {title} (ID: {cursor.lastrowid})")
 
-    if parsed['action'] == 'help':
-        response = f"📖 **野球ドリルライブラリエージェント**\n\n"
-        response += "**Features / 機能:**\n"
-        response += "• ドリルライブラリ / Drill library\\n"
-        response += "• 動画チュートリアル / Video tutorials\\n"
-        response += "• 難易度別分類 / Difficulty-based classification\\n"
-        response += "• 目的別ドリル検索 / Purpose-based drill search\\n"
-        response += "• お気に入り機能 / Favorites\\n"
-        return response
+    async def list_entries(self, ctx, limit: int = 10):
+        """List entries"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "SELECT id, title FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
+            cursor.execute(sql, ("active", limit))
+            rows = cursor.fetchall()
+            if rows:
+                msg = "\n".join([f"{r[0]}: {r[1]}" for r in rows])
+                await ctx.send(f"\n{msg}")
+            else:
+                await ctx.send("No entries found.")
 
-    return None
-
-if __name__ == '__main__':
-    test_messages = ['status', 'help']
-    for msg in test_messages:
-        print(f"Input: {msg}")
-        result = handle_message(msg)
-        if result:
-            print(result)
-        print()
+if __name__ == "__main__":
+    import os
+    bot = BaseballDrillLibraryBot()
+    token = os.getenv("DISCORD_TOKEN")
+    if token:
+        bot.run(token)

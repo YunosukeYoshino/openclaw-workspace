@@ -1,31 +1,32 @@
 #!/usr/bin/env python3
 """
-野球ドリルライブラリエージェント / Baseball Drill Library Agent
+Database schema for baseball-drill-library-agent
 """
 
 import sqlite3
 from pathlib import Path
-from datetime import datetime
 
-DB_PATH = Path(__file__).parent / "baseball_drill_library.db"
+def init_db(db_path: str = "agents/baseball-drill-library-agent/data.db"):
+    """Initialize database"""
+    Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 
-def init_db():
-    """データベース初期化"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    with sqlite3.connect(db_path) as conn:
+        cursor = conn.cursor()
 
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS records (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
-        description TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-    ''')
+        # Entries table
+        sql = "CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, metadata TEXT, status TEXT DEFAULT 'active' CHECK(status IN ('active','archived','completed')), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
+        cursor.execute(sql)
 
-    conn.commit()
-    conn.close()
-    print("✅ データベース初期化完了")
+        # Tags table
+        sql = "CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL)"
+        cursor.execute(sql)
 
-if __name__ == '__main__':
+        # Entry tags junction
+        sql = "CREATE TABLE IF NOT EXISTS entry_tags (entry_id INTEGER, tag_id INTEGER, PRIMARY KEY (entry_id, tag_id), FOREIGN KEY (entry_id) REFERENCES entries(id) ON DELETE CASCADE, FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE)"
+        cursor.execute(sql)
+
+        conn.commit()
+
+if __name__ == "__main__":
     init_db()
+    print("Database initialized.")

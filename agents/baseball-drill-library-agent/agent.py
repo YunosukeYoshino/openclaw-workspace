@@ -1,43 +1,107 @@
 #!/usr/bin/env python3
 """
-野球ドリルライブラリエージェント
-Baseball Drill Library Agent
+野球トレーニング・ドリル作成エージェント
+baseball-drill-library-agent - 野球ドリルライブラリエージェント。ドリルの管理・整理。
 """
 
-import discord
-from discord.ext import commands
-from db import init_db
+import sqlite3
+import threading
+import json
+from datetime import datetime
+from typing import Optional, List, Dict, Any
 
-class BaseballDrillLibraryAgent(commands.Bot):
-    def __init__(self):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix='!', intents=intents)
-        init_db()
+class BaseballDrillLibrary:
+    """野球ドリルライブラリエージェント。ドリルの管理・整理。"""
 
-    async def setup_hook(self):
-        await self.add_command(self.status)
-        await self.add_command(self.help)
+    def __init__(self, db_path: str = "agents/baseball-drill-library-agent/data.db"):
+        self.db_path = db_path
+        self.lock = threading.Lock()
 
-    @commands.command(name='status')
-    async def status(self, ctx):
-        """ステータスを表示 / Show status"""
-        await ctx.send(f"✅ 野球ドリルライブラリエージェント is online")
+    def execute(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute agent task"""
+        action = input_data.get("action")
 
-    @commands.command(name='help')
-    async def help(self, ctx):
-        """ヘルプを表示 / Show help"""
-        response = f"📖 **野球ドリルライブラリエージェント**\n\n"
-        response += "**Features / 機能:**\n"
-        response += "• ドリルライブラリ / Drill library\\n"
-        response += "• 動画チュートリアル / Video tutorials\\n"
-        response += "• 難易度別分類 / Difficulty-based classification\\n"
-        response += "• 目的別ドリル検索 / Purpose-based drill search\\n"
-        response += "• お気に入り機能 / Favorites\\n"
-        await ctx.send(response)
+        if action == "create":
+            return self.create(input_data)
+        elif action == "get":
+            return self.get(input_data)
+        elif action == "update":
+            return self.update(input_data)
+        elif action == "delete":
+            return self.delete(input_data)
+        elif action == "list":
+            return self.list(input_data)
+        else:
+            return {"error": "Unknown action"}
 
-if __name__ == '__main__':
-    bot = BaseballDrillLibraryAgent()
-    import os
-    token = os.getenv('DISCORD_BOT_TOKEN')
-    bot.run(token)
+    def create(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Create entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, ?)"
+            metadata = data.get("metadata") or dict()
+            cursor.execute(sql, (
+                data.get("title", ""),
+                data.get("content", ""),
+                json.dumps(metadata),
+                "active",
+                datetime.utcnow().isoformat()
+            ))
+            conn.commit()
+            return {"success": True, "id": cursor.lastrowid}
+
+    def get(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Get entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "SELECT id, title, content, metadata, status, created_at, updated_at FROM entries WHERE id = ?"
+            cursor.execute(sql, (data.get("id"),))
+            row = cursor.fetchone()
+            if row:
+                return {"id": row[0], "title": row[1], "content": row[2],
+                        "metadata": json.loads(row[3]), "status": row[4],
+                        "created_at": row[5], "updated_at": row[6]}
+            return {"error": "Not found"}
+
+    def update(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Update entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "UPDATE entries SET title = ?, content = ?, metadata = ?, status = ?, updated_at = ? WHERE id = ?"
+            metadata = data.get("metadata") or dict()
+            cursor.execute(sql, (
+                data.get("title", ""),
+                data.get("content", ""),
+                json.dumps(metadata),
+                data.get("status", "active"),
+                datetime.utcnow().isoformat(),
+                data.get("id")
+            ))
+            conn.commit()
+            return {"success": True}
+
+    def delete(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Delete entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "DELETE FROM entries WHERE id = ?"
+            cursor.execute(sql, (data.get("id"),))
+            conn.commit()
+            return {"success": True}
+
+    def list(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """List entries"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "SELECT id, title, content, status, created_at FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
+            cursor.execute(sql, (data.get("status", "active"), data.get("limit", 50)))
+            rows = cursor.fetchall()
+            items = []
+            for r in rows:
+                items.append({"id": r[0], "title": r[1], "content": r[2], "status": r[3], "created_at": r[4]})
+            return {"items": items}
+
+if __name__ == "__main__":
+    import json
+    agent = BaseballDrillLibrary()
+    print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))
