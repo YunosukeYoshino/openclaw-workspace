@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# data-archive-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+データアーカイブエージェント。データのアーカイブ管理。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+セキュリティバックアップ・災害復旧エージェント - data-archive-agent
 
 ## Installation
 

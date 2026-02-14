@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Database schema for erotic-campaign-manager-agent
+Database schema for data-archive-agent
 """
 
 import sqlite3
 from pathlib import Path
 
-def init_db(db_path: str = "agents/erotic-campaign-manager-agent/data.db"):
+def init_db(db_path: str = "agents/data-archive-agent/data.db"):
     """Initialize database"""
     Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 

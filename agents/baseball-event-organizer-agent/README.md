@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# baseball-event-organizer-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+野球イベントオーガナイザーエージェント。イベント企画・運営。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+野球スタジアム・イベント運営エージェント - baseball-event-organizer-agent
 
 ## Installation
 

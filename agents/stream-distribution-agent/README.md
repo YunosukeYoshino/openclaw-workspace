@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# stream-distribution-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+ストリームディストリビューションエージェント。配信の分散・CDN。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+リアルタイムストリーミング・配信エージェント - stream-distribution-agent
 
 ## Installation
 

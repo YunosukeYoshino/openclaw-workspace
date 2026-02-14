@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# game-subscription-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+ゲームサブスクリプションエージェント。サブスクの管理。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+ゲームマネタイズ・マネジメントエージェント - game-subscription-agent
 
 ## Installation
 

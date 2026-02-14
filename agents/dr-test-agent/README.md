@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# dr-test-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+DRテストエージェント。災害復旧テストの管理。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+セキュリティバックアップ・災害復旧エージェント - dr-test-agent
 
 ## Installation
 

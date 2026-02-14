@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Discord integration for erotic-campaign-manager-agent
+Discord integration for video-streaming-agent
 """
 
 import discord
@@ -9,10 +9,10 @@ import sqlite3
 import json
 from typing import Optional
 
-class EroticCampaignManagerBot(commands.Bot):
-    """Discord bot for erotic-campaign-manager-agent"""
+class VideoStreamingBot(commands.Bot):
+    """Discord bot for video-streaming-agent"""
 
-    def __init__(self, command_prefix: str = "!", db_path: str = "agents/erotic-campaign-manager-agent/data.db"):
+    def __init__(self, command_prefix: str = "!", db_path: str = "agents/video-streaming-agent/data.db"):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix=command_prefix, intents=intents)
@@ -45,7 +45,7 @@ class EroticCampaignManagerBot(commands.Bot):
 
 if __name__ == "__main__":
     import os
-    bot = EroticCampaignManagerBot()
+    bot = VideoStreamingBot()
     token = os.getenv("DISCORD_TOKEN")
     if token:
         bot.run(token)

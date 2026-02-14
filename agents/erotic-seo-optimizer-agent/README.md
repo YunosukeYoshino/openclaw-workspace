@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# erotic-seo-optimizer-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+えっちSEOオプティマイザーエージェント。SEOの最適化。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-seo-optimizer-agent
 
 ## Installation
 

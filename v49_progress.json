@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "baseball-stadium-manager-agent",
+    "baseball-event-organizer-agent",
+    "baseball-facility-booking-agent",
+    "baseball-vip-club-agent",
+    "baseball-concession-agent",
+    "game-monetization-agent",
+    "game-microtransaction-agent",
+    "game-subscription-agent",
+    "game-ad-revenue-agent",
+    "game-dlc-manager-agent",
+    "erotic-ai-marketing-agent",
+    "erotic-ai-promo-agent",
+    "erotic-campaign-manager-agent",
+    "erotic-seo-optimizer-agent",
+    "erotic-social-media-agent",
+    "live-stream-manager-agent",
+    "video-streaming-agent",
+    "stream-quality-agent",
+    "stream-distribution-agent",
+    "stream-analytics-agent",
+    "backup-manager-agent",
+    "disaster-recovery-agent",
+    "data-archive-agent",
+    "restore-manager-agent",
+    "dr-test-agent"
+  ],
+  "total": 25
+}

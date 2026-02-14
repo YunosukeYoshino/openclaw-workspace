@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# baseball-facility-booking-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+野球施設予約エージェント。施設の予約管理。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+野球スタジアム・イベント運営エージェント - baseball-facility-booking-agent
 
 ## Installation
 

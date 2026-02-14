@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# game-monetization-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+ゲームマネタイズエージェント。マネタイズ戦略の管理。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+ゲームマネタイズ・マネジメントエージェント - game-monetization-agent
 
 ## Installation
 

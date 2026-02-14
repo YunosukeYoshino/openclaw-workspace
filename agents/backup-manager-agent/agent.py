@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツAIマーケティング・プロモーションエージェント
-erotic-campaign-manager-agent - えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+セキュリティバックアップ・災害復旧エージェント
+backup-manager-agent - バックアップマネージャーエージェント。バックアップの管理。
 """
 
 import sqlite3
@@ -10,10 +10,10 @@ import json
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class EroticCampaignManager:
-    """えっちキャンペーンマネージャーエージェント。キャンペーンの管理。"""
+class BackupManager:
+    """バックアップマネージャーエージェント。バックアップの管理。"""
 
-    def __init__(self, db_path: str = "agents/erotic-campaign-manager-agent/data.db"):
+    def __init__(self, db_path: str = "agents/backup-manager-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -103,5 +103,5 @@ class EroticCampaignManager:
 
 if __name__ == "__main__":
     import json
-    agent = EroticCampaignManager()
+    agent = BackupManager()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

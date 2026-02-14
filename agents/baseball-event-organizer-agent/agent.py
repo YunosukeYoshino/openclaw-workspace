@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツAIマーケティング・プロモーションエージェント
-erotic-campaign-manager-agent - えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+野球スタジアム・イベント運営エージェント
+baseball-event-organizer-agent - 野球イベントオーガナイザーエージェント。イベント企画・運営。
 """
 
 import sqlite3
@@ -10,10 +10,10 @@ import json
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class EroticCampaignManager:
-    """えっちキャンペーンマネージャーエージェント。キャンペーンの管理。"""
+class BaseballEventOrganizer:
+    """野球イベントオーガナイザーエージェント。イベント企画・運営。"""
 
-    def __init__(self, db_path: str = "agents/erotic-campaign-manager-agent/data.db"):
+    def __init__(self, db_path: str = "agents/baseball-event-organizer-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -103,5 +103,5 @@ class EroticCampaignManager:
 
 if __name__ == "__main__":
     import json
-    agent = EroticCampaignManager()
+    agent = BaseballEventOrganizer()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

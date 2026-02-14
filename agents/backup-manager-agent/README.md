@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# backup-manager-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+バックアップマネージャーエージェント。バックアップの管理。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+セキュリティバックアップ・災害復旧エージェント - backup-manager-agent
 
 ## Installation
 

@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# game-microtransaction-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+ゲームマイクロトランザクションエージェント。マイクロ決済の管理。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+ゲームマネタイズ・マネジメントエージェント - game-microtransaction-agent
 
 ## Installation
 

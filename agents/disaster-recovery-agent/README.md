@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# disaster-recovery-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+災害復旧エージェント。災害復旧の計画・実行。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+セキュリティバックアップ・災害復旧エージェント - disaster-recovery-agent
 
 ## Installation
 

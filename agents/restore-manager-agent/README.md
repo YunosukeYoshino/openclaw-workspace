@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# restore-manager-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+リストアマネージャーエージェント。リストアの管理。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+セキュリティバックアップ・災害復旧エージェント - restore-manager-agent
 
 ## Installation
 

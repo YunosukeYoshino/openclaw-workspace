@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# baseball-vip-club-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+野球VIPクラブエージェント。VIPサービスの管理。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+野球スタジアム・イベント運営エージェント - baseball-vip-club-agent
 
 ## Installation
 

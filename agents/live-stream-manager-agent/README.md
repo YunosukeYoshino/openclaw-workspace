@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# live-stream-manager-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+ライブストリームマネージャーエージェント。ライブ配信の管理。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+リアルタイムストリーミング・配信エージェント - live-stream-manager-agent
 
 ## Installation
 

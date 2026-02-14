@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# erotic-ai-promo-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+えっちAIプロモエージェント。プロモーションの自動化。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-ai-promo-agent
 
 ## Installation
 

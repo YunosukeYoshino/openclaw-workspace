@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# stream-analytics-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+ストリームアナリティクスエージェント。配信データの分析。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+リアルタイムストリーミング・配信エージェント - stream-analytics-agent
 
 ## Installation
 

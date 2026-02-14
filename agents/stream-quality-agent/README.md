@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# stream-quality-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+ストリーム品質エージェント。配信品質の監視・最適化。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+リアルタイムストリーミング・配信エージェント - stream-quality-agent
 
 ## Installation
 

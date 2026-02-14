@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# game-dlc-manager-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+ゲームDLCマネージャーエージェント。DLCの管理・販売。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+ゲームマネタイズ・マネジメントエージェント - game-dlc-manager-agent
 
 ## Installation
 

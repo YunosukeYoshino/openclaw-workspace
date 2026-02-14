@@ -1,10 +1,10 @@
-# erotic-campaign-manager-agent
+# baseball-concession-agent
 
-えっちキャンペーンマネージャーエージェント。キャンペーンの管理。
+野球コンセッションエージェント。飲食・物販の管理。
 
 ## Description
 
-えっちコンテンツAIマーケティング・プロモーションエージェント - erotic-campaign-manager-agent
+野球スタジアム・イベント運営エージェント - baseball-concession-agent
 
 ## Installation
 
