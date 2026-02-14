@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "baseball-data-science-agent",
+    "baseball-sabermetrics-analyst-agent",
+    "baseball-pitch-tracking-agent",
+    "baseball-hit-tracking-agent",
+    "baseball-advance-stats-agent",
+    "esports-business-manager-agent",
+    "esports-sponsorship-agent",
+    "esports-brand-manager-agent",
+    "esports-revenue-agent",
+    "esports-legal-agent",
+    "erotic-ai-audio-gen-agent",
+    "erotic-ai-audio-editor-agent",
+    "erotic-ai-audio-enhancer-agent",
+    "erotic-ai-voice-cloner-agent",
+    "erotic-ai-tts-agent",
+    "service-mesh-manager-agent",
+    "service-discovery-agent",
+    "circuit-breaker-agent",
+    "retry-policy-agent",
+    "rate-limiting-agent",
+    "threat-intel-collector-agent",
+    "threat-hunting-agent",
+    "malware-analysis-agent",
+    "vulnerability-scanner-agent",
+    "threat-response-agent"
+  ],
+  "total": 25
+}

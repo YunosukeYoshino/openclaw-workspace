@@ -1,52 +1,41 @@
 # rate-limiting-agent
 
-**Category**: マイクロサービス・サービスメッシュエージェント
-**Version**: V36 - Agent 19/25
-**Status**: Active
+レート制限エージェント。トラフィック制御。
 
-## Overview
+## Description
 
-rate-limiting-agent is an AI-powered agent for マイクロサービス・サービスメッシュエージェント.
-
-## Features
-
-- Intelligent content processing
-- Persistent storage with SQLite
-- Discord integration support
-- RESTful API ready
+マイクロサービス・サービスメッシュエージェント - rate-limiting-agent
 
 ## Installation
 
 ```bash
-cd agents/rate-limiting-agent
 pip install -r requirements.txt
+python3 db.py  # Initialize database
 ```
 
 ## Usage
 
-```python
-from agent import RateLimiting
-
-agent = RateLimiting()
-await agent.run()
+```bash
+python3 agent.py
 ```
 
-## Database
+## Files
 
-The agent uses SQLite for persistent storage. Database file: `rate-limiting-agent.db`
+- `agent.py` - Main agent logic
+- `db.py` - Database initialization
+- `discord.py` - Discord integration
+- `requirements.txt` - Dependencies
 
-### Schema
+## API
 
-- `entries`: Main content storage
-  - `id`: Primary key
-  - `content`: Text content
-  - `created_at`: Timestamp
-  - `updated_at`: Timestamp
+### Actions
 
-## Discord Integration
+- `create` - Create new entry
+- `get` - Get entry by ID
+- `update` - Update entry
+- `delete` - Delete entry
+- `list` - List entries
 
-Set `DISCORD_TOKEN` environment variable to enable Discord features.
+## Environment Variables
 
-## License
-
-MIT
+- `DISCORD_TOKEN` - Discord bot token (optional)
