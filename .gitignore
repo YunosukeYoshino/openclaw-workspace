@@ -46,3 +46,6 @@ htmlcov/
 
 venv
 agents/webhook-agent/webhook.db
+
+# Toolchain (persisted in workspace, not in git)
+.toolchain/
