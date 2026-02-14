@@ -1,57 +1,70 @@
 #!/usr/bin/env python3
 """
-erotic-payment-gateway-agent - Discord Botモジュール
+Discord integration for えっち決済ゲートウェイエージェント
 """
 
+import logging
+from typing import Optional
 import discord
 from discord.ext import commands
-from db import EroticPaymentGatewayAgentDB
 
-class EroticPaymentGatewayAgentDiscordBot(commands.Bot):
-    """erotic-payment-gateway-agent Discord Bot"""
+logger = logging.getLogger(__name__)
 
-    def __init__(self, db_path: str = "erotic-payment-gateway-agent.db"):
+
+class DiscordBot(commands.Bot):
+    """Discord bot for えっち決済ゲートウェイエージェント"""
+
+    def __init__(self, token: Optional[str] = None):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix="!", intents=intents)
-        self.db = EroticPaymentGatewayAgentDB(db_path)
+        self.token = token or ""
+        self.agent = None
 
-    async def setup_hook(self):
-        """Bot起動時の処理"""
-        print(f"{self.__class__.__name__} is ready!")
+    def set_agent(self, agent):
+        """Set agent instance"""
+        self.agent = agent
 
     async def on_ready(self):
-        """Bot準備完了時の処理"""
-        print(f"Logged in as {self.user}")
+        """Called when bot is ready"""
+        logger.info(f"{self.user} is ready")
 
-    @commands.command()
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        if message.author.bot:
+            return
+        await self.process_commands(message)
+
+    @commands.command(name="status")
     async def status(self, ctx: commands.Context):
-        """ステータス表示"""
-        entries = self.db.list_entries(limit=1)
-        await ctx.send(f"{self.__class__.__name__} is running! Total entries: {len(entries)}")
-
-    @commands.command()
-    async def add(self, ctx: commands.Context, title: str, *, content: str):
-        """エントリー追加"""
-        entry_id = self.db.add_entry(title, content)
-        await ctx.send(f"Added entry with ID: {entry_id}")
-
-    @commands.command()
-    async def list(self, ctx: commands.Context, limit: int = 10):
-        """エントリー一覧"""
-        entries = self.db.list_entries(limit=limit)
-        if entries:
-            response = "**Entries:**\n"
-            for entry in entries:
-                response += f"- #{entry['id']}: {entry['title']}\n"
-            await ctx.send(response)
+        """Show agent status"""
+        if self.agent:
+            status = self.agent.get_status()
+            await ctx.send(f"**Status:** {status.get('status')}\n**Version:** {status.get('version')}")
         else:
-            await ctx.send("No entries found.")
+            await ctx.send("Agent not configured")
+
+    @commands.command(name="info")
+    async def info(self, ctx: commands.Context):
+        """Show agent information"""
+        if self.agent:
+            await ctx.send(f"**Name:** {self.agent.name}\n**Description:** {self.agent.description}")
+        else:
+            await ctx.send("Agent not configured")
+
+    def start_bot(self):
+        """Start the bot"""
+        if self.token:
+            self.run(self.token)
+        else:
+            logger.warning("Discord token not provided")
+
 
 def main():
-    """メイン関数"""
-    bot = EroticPaymentGatewayAgentDiscordBot()
-    # bot.run("YOUR_DISCORD_BOT_TOKEN")
+    """Test discord bot"""
+    bot = DiscordBot()
+    print("Discord bot module loaded")
+
 
 if __name__ == "__main__":
     main()

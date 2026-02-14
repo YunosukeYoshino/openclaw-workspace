@@ -1,41 +1,90 @@
-# etl-pipeline-agent
+# ETLパイプラインエージェント
 
-## 概要
-ETLパイプラインエージェント。ETLパイプラインの管理・実行。
+ETLパイプラインの管理・運用エージェント
 
-## カテゴリ
-データウェアハウス・データレイク
+## Overview
 
-## トリガーワード
-ETLパイプライン, ETL, データパイプライン
+This is the etl-pipeline-agent agent.
 
-## 主な機能
+## Features
 
-### データ管理
-- etl-pipeline-agent 関連データのSQLiteデータベース管理
-- CRUD操作の実装
-- 検索・フィルタリング機能
+- Feature 1: TBD
+- Feature 2: TBD
+- Feature 3: TBD
 
-### チャットボット機能
-- Discord連携によるインタラクティブ応答
-- 自然言語によるクエリ処理
-- コマンドパターンマッチング
+## Installation
 
-## 使用方法
-
-### インストール
 ```bash
-cd agents/etl-pipeline-agent
 pip install -r requirements.txt
 ```
 
-### 実行
-```bash
-python agent.py
+## Usage
+
+### Agent
+
+```python
+from agent import EtlPipelineAgentAgent
+agent = EtlPipelineAgentAgent()
+result = await agent.process(data)
 ```
 
-## ライセンス
+### Database
+
+```python
+from db import Database
+db = Database()
+record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
+```
+
+### Discord Integration
+
+```python
+from discord import DiscordBot
+bot = DiscordBot(token="your_bot_token")
+bot.set_agent(agent)
+bot.start_bot()
+```
+
+## Commands
+
+### Discord Commands
+
+- `!status` - Show agent status
+- `!info` - Show agent information
+
+## Database Schema
+
+### Records Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| type | TEXT | Record type |
+| title | TEXT | Record title (optional) |
+| content | TEXT | Record content |
+| status | TEXT | Record status |
+| created_at | TIMESTAMP | Creation timestamp |
+| updated_at | TIMESTAMP | Last update timestamp |
+
+### Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| name | TEXT | Tag name (unique) |
+| created_at | TIMESTAMP | Creation timestamp |
+
+### Record Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| record_id | INTEGER | Foreign key to records |
+| tag_id | INTEGER | Foreign key to tags |
+
+## License
+
 MIT License
 
-## バージョン
-1.0.0
+## Author
+
+Created with OpenClaw
