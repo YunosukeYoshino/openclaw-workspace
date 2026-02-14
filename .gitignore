@@ -29,6 +29,9 @@ build/
 *.log
 npm-debug.log*
 
+# Databases
+*.db
+
 # Backups
 backups/
 health_check_result.json
@@ -36,6 +39,10 @@ maintenance_report_*.json
 
 # OS
 Thumbs.db
+
+# Test coverage
+.coverage
+htmlcov/
 
 venv
 agents/webhook-agent/webhook.db
