@@ -1,57 +1,51 @@
 #!/usr/bin/env python3
 """
-docker-manager-agent - Discord Botモジュール
+Discord integration for docker-manager-agent
 """
 
 import discord
 from discord.ext import commands
-from db import DockerManagerAgentDB
+import sqlite3
+import json
+from typing import Optional
 
-class DockerManagerAgentDiscordBot(commands.Bot):
-    """docker-manager-agent Discord Bot"""
+class DockerManagerBot(commands.Bot):
+    """Discord bot for docker-manager-agent"""
 
-    def __init__(self, db_path: str = "docker-manager-agent.db"):
+    def __init__(self, command_prefix: str = "!", db_path: str = "agents/docker-manager-agent/data.db"):
         intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
-        self.db = DockerManagerAgentDB(db_path)
-
-    async def setup_hook(self):
-        """Bot起動時の処理"""
-        print(f"{self.__class__.__name__} is ready!")
+        super().__init__(command_prefix=command_prefix, intents=intents)
+        self.db_path = db_path
 
     async def on_ready(self):
-        """Bot準備完了時の処理"""
-        print(f"Logged in as {self.user}")
+        print(f'Logged in as {self.user}')
 
-    @commands.command()
-    async def status(self, ctx: commands.Context):
-        """ステータス表示"""
-        entries = self.db.list_entries(limit=1)
-        await ctx.send(f"{self.__class__.__name__} is running! Total entries: {len(entries)}")
+    async def create_entry(self, ctx, title: str, content: str):
+        """Create entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+            cursor.execute(sql, (title, content, json.dumps(dict(), ensure_ascii=False), "active"))
+            conn.commit()
+            await ctx.send(f"Created: {title} (ID: {cursor.lastrowid})")
 
-    @commands.command()
-    async def add(self, ctx: commands.Context, title: str, *, content: str):
-        """エントリー追加"""
-        entry_id = self.db.add_entry(title, content)
-        await ctx.send(f"Added entry with ID: {entry_id}")
-
-    @commands.command()
-    async def list(self, ctx: commands.Context, limit: int = 10):
-        """エントリー一覧"""
-        entries = self.db.list_entries(limit=limit)
-        if entries:
-            response = "**Entries:**\n"
-            for entry in entries:
-                response += f"- #{entry['id']}: {entry['title']}\n"
-            await ctx.send(response)
-        else:
-            await ctx.send("No entries found.")
-
-def main():
-    """メイン関数"""
-    bot = DockerManagerAgentDiscordBot()
-    # bot.run("YOUR_DISCORD_BOT_TOKEN")
+    async def list_entries(self, ctx, limit: int = 10):
+        """List entries"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "SELECT id, title FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
+            cursor.execute(sql, ("active", limit))
+            rows = cursor.fetchall()
+            if rows:
+                msg = "\n".join([f"{r[0]}: {r[1]}" for r in rows])
+                await ctx.send(f"\n{msg}")
+            else:
+                await ctx.send("No entries found.")
 
 if __name__ == "__main__":
-    main()
+    import os
+    bot = DockerManagerBot()
+    token = os.getenv("DISCORD_TOKEN")
+    if token:
+        bot.run(token)

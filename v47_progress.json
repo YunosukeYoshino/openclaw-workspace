@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "baseball-player-profiler-agent",
+    "baseball-scout-evaluator-agent",
+    "baseball-draft-predictor-agent",
+    "baseball-trade-analyst-agent",
+    "baseball-contract-agent",
+    "game-creator-manager-agent",
+    "game-influencer-agent",
+    "game-collab-agent",
+    "game-content-creator-agent",
+    "game-creator-analytics-agent",
+    "erotic-cross-platform-agent",
+    "erotic-content-sync-agent",
+    "erotic-unified-search-agent",
+    "erotic-platform-bridge-agent",
+    "erotic-analytics-aggregator-agent",
+    "k8s-orchestrator-agent",
+    "container-registry-agent",
+    "helm-chart-agent",
+    "docker-manager-agent",
+    "cloud-native-monitor-agent",
+    "auth-provider-agent",
+    "oauth-manager-agent",
+    "jwt-handler-agent",
+    "sso-integration-agent",
+    "mfa-manager-agent"
+  ],
+  "total": 25
+}
