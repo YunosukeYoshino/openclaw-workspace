@@ -1,42 +1,102 @@
 #!/usr/bin/env python3
 """
-Discord integration for serverless-function-agent
+サーバーレス関数エージェント - Discord連携
+Discordボットインターフェース
 """
 
-import discord
-from discord.ext import commands
-import logging
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
+from datetime import datetime
 
-class Serverless_Function_AgentDiscord(commands.Cog):
-    """Discord bot for serverless-function-agent"""
+class ServerlessFunctionAgentDiscord:
+    """サーバーレス関数エージェント Discord連携クラス"""
 
-    def __init__(self, bot):
-        self.bot = bot
-        self.logger = logging.getLogger(__name__)
+    def __init__(self, token: Optional[str] = None):
+        self.token = token or os.getenv("DISCORD_TOKEN")
+        self.client = None
+        self.commands: List[Dict[str, Any]] = []
 
-    @commands.command(name="serverless_function_agent")
-    async def main_command(self, ctx, *, query=None):
-        """Main command for serverless-function-agent"""
-        if not query:
-            await ctx.send("Please provide a query.")
+    async def start(self):
+        """Discordボット起動"""
+        if not self.token:
+            print("DISCORD_TOKEN not set, running in mock mode")
             return
 
-        self.logger.info(f"Command invoked by {ctx.author}: {query}")
-        # TODO: Implement command logic
-        await ctx.send(f"Processing: {query}")
+        try:
+            import discord
+            intents = discord.Intents.default()
+            intents.message_content = True
+            self.client = discord.Client(intents=intents)
 
-    @commands.command(name="serverless_function_agent_status")
-    async def status_command(self, ctx):
-        """Status command for serverless-function-agent"""
-        await ctx.send(f"Serverless Function Agent is operational.")
+            @self.client.event
+            async def on_ready():
+                print(f'{self.client.user} has connected to Discord!')
 
-def setup(bot):
-    """Setup the Discord cog"""
-    bot.add_cog(Serverless_Function_AgentDiscord(bot))
+            @self.client.event
+            async def on_message(message):
+                if message.author == self.client.user:
+                    return
+
+                await self._handle_message(message)
+
+            await self.client.start(self.token)
+        except ImportError:
+            print("discord.py not installed, running in mock mode")
+
+    async def _handle_message(self, message):
+        """メッセージハンドリング"""
+        content = message.content.lower()
+
+        if content.startswith('!help'):
+            help_text = await self.get_help()
+            await message.channel.send(help_text)
+
+        elif content.startswith('!status'):
+            status = await self.get_status()
+            await message.channel.send(status)
+
+    async def send_message(self, channel_id: int, content: str):
+        """メッセージ送信"""
+        if self.client:
+            channel = self.client.get_channel(channel_id)
+            if channel:
+                await channel.send(content)
+        else:
+            print(f"Mock: Send to channel {channel_id}: {content}")
+
+    async def get_help(self) -> str:
+        """ヘルプメッセージ"""
+        return f"""
+**サーバーレス関数エージェント - Commands**
+
+!help - Show this help message
+!status - Show agent status
+!info - Show agent information
+
+cloud category agent
+"""
+
+    async def get_status(self) -> str:
+        """ステータスメッセージ"""
+        return f"""
+**サーバーレス関数エージェント Status**
+
+Status: Ready
+Language: Japanese
+Category: cloud
+Commands: {len(self.commands)}
+"""
+
+    async def stop(self):
+        """ボット停止"""
+        if self.client:
+            await self.client.close()
+
+async def main():
+    """動作確認"""
+    bot = ServerlessFunctionAgentDiscord()
+    await bot.start()
 
 if __name__ == "__main__":
-    # Example usage
-    intents = discord.Intents.default()
-    intents.message_content = True
-    bot = commands.Bot(command_prefix="!", intents=intents)
-    setup(bot)
+    asyncio.run(main())

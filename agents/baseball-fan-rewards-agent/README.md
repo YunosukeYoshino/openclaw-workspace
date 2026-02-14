@@ -1,48 +1,102 @@
-# baseball-fan-rewards-agent
+# 野球ファン報酬エージェント
 
-野球ファンリワードエージェント。ファンポイント、特典の管理。
+野球ファン報酬プログラムの管理
 
-野球ファンリワードエージェント。ファンポイント、特典の管理。
+## 概要
 
-## Files
+野球ファン報酬エージェントはbaseballカテゴリのエージェントです。Japanese言語に対応しています。
 
-- `agent.py` - メインエージェントコード
-- `db.py` - データベースモジュール
-- `discord.py` - Discord Botモジュール
-- `requirements.txt` - Python依存パッケージ
+## 機能
 
-## Installation
+- データ処理・分析
+- タスク管理
+- 状態監視
+- Discord連携
+
+## インストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+## 使用方法
 
-### Agent
+### エージェントとして実行
 
 ```bash
 python agent.py
 ```
 
-### Database
+### データベース操作
 
 ```bash
 python db.py
 ```
 
-### Discord Bot
+### Discordボット
 
 ```bash
+export DISCORD_TOKEN=your_token
 python discord.py
 ```
 
-## Commands
+## データベース構造
 
-- `!status` - Show bot status
-- `!add <title> <content>` - Add an entry
-- `!list [limit]` - List entries
+### records テーブル
+- `id`: 主キー
+- `type`: レコードタイプ
+- `title`: タイトル
+- `content`: コンテンツ
+- `metadata`: メタデータ（JSON）
+- `created_at`: 作成日時
+- `updated_at`: 更新日時
 
-## Project
+### tasks テーブル
+- `id`: 主キー
+- `task_id`: タスクID
+- `status`: ステータス（pending/completed/failed）
+- `result`: 結果
+- `error`: エラーメッセージ
+- `created_at`: 作成日時
+- `completed_at`: 完了日時
 
-野球ファンサービス・イベントエージェント
+### settings テーブル
+- `key`: 設定キー
+- `value`: 設定値
+- `updated_at`: 更新日時
+
+## Discordコマンド
+
+- `!help` - ヘルプ表示
+- `!status` - ステータス確認
+- `!info` - エージェント情報
+
+## API
+
+### Agent
+
+```python
+from agent import BaseballFanRewardsAgent
+
+agent = BaseballFanRewardsAgent()
+await agent.initialize()
+result = await agent.process(data)
+```
+
+### Database
+
+```python
+from db import BaseballFanRewardsAgentDB
+
+db = BaseballFanRewardsAgentDB()
+record_id = db.insert_record("type", "title", "content")
+record = db.get_record(record_id)
+```
+
+## 言語サポート
+
+- Japanese
+
+## ライセンス
+
+MIT License
