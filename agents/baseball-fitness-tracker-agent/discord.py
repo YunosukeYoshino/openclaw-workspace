@@ -1,46 +1,90 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-野球フィットネストラッカーエージェント - Discord連携
-Baseball Fitness Tracker Agent - Discord Integration
+baseball-fitness-tracker-agent - Discord Integration
+Discord bot integration for baseball-fitness-tracker-agent
 """
 
-import re
+import discord
+from discord.ext import commands
+import logging
+from typing import Optional
+import json
+from pathlib import Path
 
-def parse_message(message):
-    """メッセージを解析"""
-    if message.strip().lower() in ['status', 'ステータス']:
-        return {'action': 'status'}
-    if message.strip().lower() in ['help', 'ヘルプ']:
-        return {'action': 'help'}
-    return None
+class BaseballFitnessTrackerAgentDiscord:
+    """Discord bot integration for baseball-fitness-tracker-agent"""
 
-def handle_message(message):
-    """メッセージを処理"""
-    parsed = parse_message(message)
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.logger = logging.getLogger("baseball-fitness-tracker-agent.discord")
+        self.config_path = Path(__file__).parent / "discord_config.json"
+        self.config = self._load_config()
 
-    if not parsed:
-        return None
+    def _load_config(self) -> dict:
+        default_config = {
+            "command_prefix": "!",
+            "enabled_channels": [],
+            "admin_roles": []
+        }
+        if self.config_path.exists():
+            with open(self.config_path, "r", encoding="utf-8") as f:
+                return {**default_config, **json.load(f)}
+        return default_config
 
-    if parsed['action'] == 'status':
-        return f"✅ 野球フィットネストラッカーエージェント is online"
+    def setup_commands(self):
+        @self.bot.command(name="baseballfitnesstrackeragent_status")
+        async def agent_status(ctx):
+            embed = discord.Embed(
+                title="baseball-fitness-tracker-agent Status",
+                description="野球フィットネストラッカーエージェント。フィットネス記録の追跡・管理。",
+                color=discord.Color.blue()
+            )
+            embed.add_field(name="Active", value="Yes", inline=True)
+            embed.add_field(name="Version", value="1.0.0", inline=True)
+            await ctx.send(embed=embed)
 
-    if parsed['action'] == 'help':
-        response = f"📖 **野球フィットネストラッカーエージェント**\n\n"
-        response += "**Features / 機能:**\n"
-        response += "• フィットネスデータ追跡 / Fitness data tracking\\n"
-        response += "• ウェアラブル統合 / Wearable integration\\n"
-        response += "• トレーニングログ / Training logs\\n"
-        response += "• 目標設定 / Goal setting\\n"
-        response += "• 分析・レポート / Analysis and reporting\\n"
-        return response
+        @self.bot.command(name="baseballfitnesstrackeragent_help")
+        async def agent_help(ctx):
+            embed = discord.Embed(
+                title="baseball-fitness-tracker-agent Help",
+                description="野球フィットネストラッカーエージェント。フィットネス記録の追跡・管理。",
+                color=discord.Color.green()
+            )
+            embed.add_field(
+                name="Commands",
+                value="`!baseballfitnesstrackeragent_status` - Show agent status\n`!baseballfitnesstrackeragent_help` - Show this help message",
+                inline=False
+            )
+            await ctx.send(embed=embed)
 
-    return None
+    async def send_notification(self, channel_id: int, message: str, embed: discord.Embed = None):
+        try:
+            channel = self.bot.get_channel(channel_id)
+            if channel:
+                await channel.send(content=message, embed=embed)
+                return True
+        except Exception as e:
+            self.logger.error("Failed to send notification: " + str(e))
+        return False
 
-if __name__ == '__main__':
-    test_messages = ['status', 'help']
-    for msg in test_messages:
-        print(f"Input: {msg}")
-        result = handle_message(msg)
-        if result:
-            print(result)
-        print()
+    async def send_alert(self, channel_id: int, title: str, description: str, level: str = "info"):
+        color_map = {
+            "info": discord.Color.blue(),
+            "warning": discord.Color.orange(),
+            "error": discord.Color.red(),
+            "success": discord.Color.green()
+        }
+        embed = discord.Embed(
+            title=title,
+            description=description,
+            color=color_map.get(level, discord.Color.blue())
+        )
+        embed.set_footer(text="baseball-fitness-tracker-agent")
+        return await self.send_notification(channel_id, "", embed)
+
+def setup(bot: commands.Bot):
+    discord_integration = BaseballFitnessTrackerAgentDiscord(bot)
+    discord_integration.setup_commands()
+    bot.add_cog(discord_integration)
+    return discord_integration

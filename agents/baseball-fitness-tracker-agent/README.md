@@ -1,41 +1,115 @@
 # baseball-fitness-tracker-agent
 
-Baseball Fitness Tracker Agent
+野球フィットネストラッカーエージェント。フィットネス記録の追跡・管理。
 
-## 概要 / Overview
+## 概要
 
-このエージェントは、Baseball Fitness TrackerのためのAIエージェントです。
+このエージェントは 野球フィットネストラッカーエージェント。フィットネス記録の追跡・管理。 ためのAIアシスタントです。
 
-## インストール / Installation
+## 機能
+
+- データの収集・分析
+- 自動タスク処理
+- データベース管理
+- Discord連携
+
+## インストール
 
 ```bash
-cd agents/baseball-fitness-tracker-agent
 pip install -r requirements.txt
 ```
 
-## 使用方法 / Usage
+## 使用方法
 
-### Discord Botとして実行 / Run as Discord Bot
+### 基本的な使用
 
-```bash
-python agent.py
+```python
+from agent import BaseballFitnessTrackerAgent
+
+agent = BaseballFitnessTrackerAgent()
+task = {"id": "task_001", "type": "example"}
+result = agent.process_task(task)
+print(result)
 ```
 
-### データベース初期化 / Initialize Database
+### データベースの使用
 
-```bash
-python db.py
+```python
+from db import BaseballFitnessTrackerAgentDB
+
+db = BaseballFitnessTrackerAgentDB()
+db.insert_data("example_type", "example_content", {"key": "value"})
+data = db.query_data("example_type", limit=10)
 ```
 
-## 設定 / Configuration
+### Discordボットの使用
 
-Configuration is loaded from environment variables:
-- `DISCORD_BOT_TOKEN`: Discordボットトークン / Discord bot token
+```python
+from discord.ext import commands
+from discord import setup
 
-## 依存パッケージ / Requirements
+bot = commands.Bot(command_prefix="!")
+discord_integration = setup(bot)
+bot.run("YOUR_DISCORD_BOT_TOKEN")
+```
 
-See `requirements.txt` for dependencies.
+## API
 
-## ライセンス / License
+### BaseballFitnessTrackerAgent.process_task(task)
+
+タスクを処理して結果を返します。
+
+**Parameters:**
+- `task` (Dict[str, Any]): 処理するタスク
+
+**Returns:**
+- Dict[str, Any]: 処理結果
+
+### BaseballFitnessTrackerAgentDB.insert_data(data_type, content, metadata)
+
+データベースにデータを挿入します。
+
+**Parameters:**
+- `data_type` (str): データタイプ
+- `content` (str): コンテンツ
+- `metadata` (Dict): メタデータ（オプション）
+
+**Returns:**
+- int: 挿入されたレコードID
+
+### BaseballFitnessTrackerAgentDB.query_data(data_type, limit)
+
+データベースからデータをクエリします。
+
+**Parameters:**
+- `data_type` (str): データタイプ（オプション）
+- `limit` (int): 取得する最大件数
+
+**Returns:**
+- List[Dict]: クエリ結果
+
+## 設定
+
+### Discord設定
+
+`discord_config.json` ファイルを作成して設定します。
+
+```json
+{
+  "command_prefix": "!",
+  "enabled_channels": [],
+  "admin_roles": []
+}
+```
+
+## ライセンス
 
 MIT License
+
+## 貢献
+
+プルリクエストを歓迎します。
+
+## 連絡先
+
+問題や質問がある場合は、Issueを開いてください。

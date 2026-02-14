@@ -1,99 +1,134 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-game-lobby-manager-agent - データベースモジュール
+game-lobby-manager-agent - Database Module
+SQLite database management for game-lobby-manager-agent
 """
 
 import sqlite3
+import json
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import Optional, List, Dict, Any
+from pathlib import Path
 
 class GameLobbyManagerAgentDB:
-    """game-lobby-manager-agent データベース"""
+    """Database manager for game-lobby-manager-agent"""
 
-    def __init__(self, db_path: str = "game-lobby-manager-agent.db"):
-        """初期化"""
+    def __init__(self, db_path: str = None):
+        if db_path is None:
+            db_path = str(Path(__file__).parent / "game-lobby-manager-agent.db")
+
         self.db_path = db_path
-        self.conn = sqlite3.connect(db_path)
-        self.cursor = self.conn.cursor()
-        self._init_tables()
+        self.conn = None
+        self.connect()
+        self.init_tables()
 
-    def _init_tables(self):
-        """テーブル初期化"""
-        self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS entries (
+    def connect(self):
+        self.conn = sqlite3.connect(self.db_path)
+        self.conn.row_factory = sqlite3.Row
+
+    def init_tables(self):
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS data (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                content TEXT NOT NULL,
+                type TEXT,
+                content TEXT,
+                metadata TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tasks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                task_type TEXT,
+                status TEXT DEFAULT "pending",
+                result TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                completed_at TIMESTAMP
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                level TEXT,
+                message TEXT,
+                metadata TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
         self.conn.commit()
 
-    def add_entry(self, title: str, content: str) -> int:
-        """エントリー追加"""
-        self.cursor.execute(
-            "INSERT INTO entries (title, content) VALUES (?, ?)",
-            (title, content)
-        )
+    def insert_data(self, data_type: str, content: str, metadata: Dict = None) -> int:
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            INSERT INTO data (type, content, metadata)
+            VALUES (?, ?, ?)
+        """, (data_type, content, json.dumps(metadata or dict())))
         self.conn.commit()
-        return self.cursor.lastrowid
+        return cursor.lastrowid
 
-    def get_entry(self, entry_id: int) -> Optional[Dict]:
-        """エントリー取得"""
-        self.cursor.execute(
-            "SELECT * FROM entries WHERE id = ?",
-            (entry_id,)
-        )
-        row = self.cursor.fetchone()
-        if row:
-            return {
-                "id": row[0],
-                "title": row[1],
-                "content": row[2],
-                "created_at": row[3],
-                "updated_at": row[4]
-            }
-        return None
+    def query_data(self, data_type: str = None, limit: int = 100) -> List[Dict]:
+        cursor = self.conn.cursor()
+        if data_type:
+            cursor.execute('SELECT * FROM data WHERE type = ? ORDER BY created_at DESC LIMIT ?',
+                         (data_type, limit))
+        else:
+            cursor.execute('SELECT * FROM data ORDER BY created_at DESC LIMIT ?', (limit,))
+        return [dict(row) for row in cursor.fetchall()]
 
-    def list_entries(self, limit: int = 100) -> List[Dict]:
-        """エントリー一覧"""
-        self.cursor.execute(
-            "SELECT * FROM entries ORDER BY created_at DESC LIMIT ?",
-            (limit,)
-        )
-        rows = self.cursor.fetchall()
-        return [
-            {
-                "id": row[0],
-                "title": row[1],
-                "content": row[2],
-                "created_at": row[3],
-                "updated_at": row[4]
-            }
-            for row in rows
-        ]
+    def create_task(self, task_type: str, metadata: Dict = None) -> int:
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            INSERT INTO tasks (task_type, status)
+            VALUES (?, "pending")
+        """, (task_type,))
+        self.conn.commit()
+        return cursor.lastrowid
+
+    def update_task(self, task_id: int, status: str, result: Dict = None) -> bool:
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            UPDATE tasks
+            SET status = ?, result = ?, completed_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        """, (status, json.dumps(result or dict()), task_id))
+        self.conn.commit()
+        return cursor.rowcount > 0
+
+    def log(self, level: str, message: str, metadata: Dict = None):
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            INSERT INTO logs (level, message, metadata)
+            VALUES (?, ?, ?)
+        """, (level, message, json.dumps(metadata or dict())))
+        self.conn.commit()
+
+    def get_stats(self) -> Dict[str, Any]:
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT COUNT(*) as count FROM data')
+        data_count = cursor.fetchone()["count"]
+        cursor.execute('SELECT COUNT(*) as count FROM tasks WHERE status = "pending"')
+        pending_tasks = cursor.fetchone()["count"]
+        cursor.execute('SELECT COUNT(*) as count FROM tasks WHERE status = "completed"')
+        completed_tasks = cursor.fetchone()["count"]
+        return {
+            "data_count": data_count,
+            "pending_tasks": pending_tasks,
+            "completed_tasks": completed_tasks,
+            "total_tasks": pending_tasks + completed_tasks
+        }
 
     def close(self):
-        """接続クローズ"""
-        self.conn.close()
-
-def main():
-    """メイン関数"""
-    db = GameLobbyManagerAgentDB()
-
-    # サンプルエントリー追加
-    entry_id = db.add_entry(
-        "Sample Entry",
-        "This is a sample entry for game-lobby-manager-agent"
-    )
-    print(f"Added entry with ID: {entry_id}")
-
-    # エントリー一覧
-    entries = db.list_entries()
-    print(f"Total entries: {len(entries)}")
-
-    db.close()
+        if self.conn:
+            self.conn.close()
 
 if __name__ == "__main__":
-    main()
+    db = GameLobbyManagerAgentDB()
+    print("Database for game-lobby-manager-agent initialized at " + str(db.db_path))
+    print("Stats: " + str(db.get_stats()))
+    db.close()

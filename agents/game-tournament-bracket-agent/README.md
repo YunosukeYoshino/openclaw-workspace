@@ -1,95 +1,115 @@
-# ゲーム大会ブラケットエージェント / Game Tournament Bracket Agent
+# game-tournament-bracket-agent
 
-game-tournament-bracket-agent
+ゲームトーナメントブラケットエージェント。トーナメントブラケットの管理。
 
-## 概要 / Overview
+## 概要
 
-トーナメントブラケットの可視化、予測、勝率計算、マッチアップ分析、ライブ更新、結果通知
+このエージェントは ゲームトーナメントブラケットエージェント。トーナメントブラケットの管理。 ためのAIアシスタントです。
 
-Tournament bracket visualization, predictions, win rate calculation, matchup analysis, live updates, result notifications
+## 機能
 
-## 機能 / Features
+- データの収集・分析
+- 自動タスク処理
+- データベース管理
+- Discord連携
 
-- Bracket Viz
-- Predictions
-- Win Rates
-- Matchup Analysis
-- Live Updates
-- Result Alerts
-
-## 技術スタック / Tech Stack
-
-- pandas, numpy, requests, matplotlib, networkx
-
-## インストール / Installation
+## インストール
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd game-tournament-bracket-agent
-
-# Install dependencies
 pip install -r requirements.txt
 ```
 
-## 使い方 / Usage
+## 使用方法
 
-### エージェントとして使用 / As an Agent
+### 基本的な使用
 
 ```python
-from db import Database
 from agent import GameTournamentBracketAgent
 
-# Initialize database
-db = Database(db_path="data/game-tournament-bracket-agent.db")
-await db.initialize()
-
-# Initialize agent
-agent = GameTournamentBracketAgent(db)
-await agent.initialize()
-
-# Process data
-result = await agent.process({"key": "value"})
+agent = GameTournamentBracketAgent()
+task = {"id": "task_001", "type": "example"}
+result = agent.process_task(task)
 print(result)
 ```
 
-### Discord Botとして使用 / As a Discord Bot
+### データベースの使用
 
 ```python
-from discord import DiscordBot
+from db import GameTournamentBracketAgentDB
 
-# Create bot
-bot = create_bot(db, token="YOUR_DISCORD_TOKEN", command_prefix="!")
-
-# Run bot
-bot.run()
+db = GameTournamentBracketAgentDB()
+db.insert_data("example_type", "example_content", {"key": "value"})
+data = db.query_data("example_type", limit=10)
 ```
 
-## データベース構造 / Database Schema
+### Discordボットの使用
 
-### entries テーブル
+```python
+from discord.ext import commands
+from discord import setup
 
-| カラム | 型 | 説明 |
-|--------|------|------|
-| id | INTEGER | 主キー |
-| title | TEXT | タイトル |
-| content | TEXT | コンテンツ |
-| category | TEXT | カテゴリ |
-| tags | TEXT | タグ（カンマ区切り） |
-| created_at | TIMESTAMP | 作成日時 |
-| updated_at | TIMESTAMP | 更新日時 |
+bot = commands.Bot(command_prefix="!")
+discord_integration = setup(bot)
+bot.run("YOUR_DISCORD_BOT_TOKEN")
+```
 
-## Discordコマンド / Discord Commands
+## API
 
-| コマンド | 説明 |
-|----------|------|
-| `!status` | エージェントのステータスを確認 |
-| `!help` | ヘルプを表示 |
-| `!create <title> <content>` | 新しいエントリーを作成 |
-| `!list [category]` | エントリーを一覧表示 |
-| `!search <query>` | エントリーを検索 |
-| `!get <id>` | IDでエントリーを取得 |
+### GameTournamentBracketAgent.process_task(task)
 
-## ライセンス / License
+タスクを処理して結果を返します。
+
+**Parameters:**
+- `task` (Dict[str, Any]): 処理するタスク
+
+**Returns:**
+- Dict[str, Any]: 処理結果
+
+### GameTournamentBracketAgentDB.insert_data(data_type, content, metadata)
+
+データベースにデータを挿入します。
+
+**Parameters:**
+- `data_type` (str): データタイプ
+- `content` (str): コンテンツ
+- `metadata` (Dict): メタデータ（オプション）
+
+**Returns:**
+- int: 挿入されたレコードID
+
+### GameTournamentBracketAgentDB.query_data(data_type, limit)
+
+データベースからデータをクエリします。
+
+**Parameters:**
+- `data_type` (str): データタイプ（オプション）
+- `limit` (int): 取得する最大件数
+
+**Returns:**
+- List[Dict]: クエリ結果
+
+## 設定
+
+### Discord設定
+
+`discord_config.json` ファイルを作成して設定します。
+
+```json
+{
+  "command_prefix": "!",
+  "enabled_channels": [],
+  "admin_roles": []
+}
+```
+
+## ライセンス
 
 MIT License
+
+## 貢献
+
+プルリクエストを歓迎します。
+
+## 連絡先
+
+問題や質問がある場合は、Issueを開いてください。
