@@ -1,95 +1,44 @@
 #!/usr/bin/env python3
-"""
-game-marketplace-agent エージェント
-game-marketplace-agent - AIエージェント
-"""
+# game-marketplace-agent
+# ゲームマーケットプレイスエージェント。ゲーム内マーケットプレイスの運営・管理。
 
-import sqlite3
-from pathlib import Path
+import asyncio
+import logging
+from db import Game_marketplace_agentDatabase
+from discord import Game_marketplace_agentDiscordBot
 
-class GameMarketplaceAgent:
-    def __init__(self, db_path=None):
-        self.db_path = db_path or Path(__file__).parent / "game-marketplace-agent.db"
-        self.db_path = str(self.db_path)
-        self._init_db()
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    def _init_db(self):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS entries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT,
-                content TEXT,
-                category TEXT,
-                tags TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-        conn.commit()
-        conn.close()
 
-    def add_entry(self, title, content, category=None, tags=None):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("""
-            INSERT INTO entries (title, content, category, tags)
-            VALUES (?, ?, ?, ?)
-        """, (title, content, category, tags))
-        conn.commit()
-        conn.close()
-        return cursor.lastrowid
+class Game_marketplace_agentAgent:
+    # game-marketplace-agent メインエージェント
 
-    def get_entries(self, category=None):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        if category:
-            cursor.execute("SELECT * FROM entries WHERE category = ? ORDER BY created_at DESC", (category,))
-        else:
-            cursor.execute("SELECT * FROM entries ORDER BY created_at DESC")
-        rows = cursor.fetchall()
-        conn.close()
-        return rows
+    def __init__(self, db_path: str = "game-marketplace-agent.db"):
+        # 初期化
+        self.db = Game_marketplace_agentDatabase(db_path)
+        self.discord_bot = Game_marketplace_agentDiscordBot(self.db)
 
-    def get_entry(self, entry_id):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM entries WHERE id = ?", (entry_id,))
-        row = cursor.fetchone()
-        conn.close()
-        return row
+    async def run(self):
+        # エージェントを実行
+        logger.info("Starting game-marketplace-agent...")
+        self.db.initialize()
+        await self.discord_bot.start()
 
-    def update_entry(self, entry_id, title=None, content=None, category=None, tags=None):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        updates = []
-        values = []
-        if title:
-            updates.append("title = ?")
-            values.append(title)
-        if content:
-            updates.append("content = ?")
-            values.append(content)
-        if category:
-            updates.append("category = ?")
-            values.append(category)
-        if tags:
-            updates.append("tags = ?")
-            values.append(tags)
-        values.append(entry_id)
-        if updates:
-            cursor.execute(f"UPDATE entries SET {', '.join(updates)}, updated_at = CURRENT_TIMESTAMP WHERE id = ?", values)
-            conn.commit()
-        conn.close()
+    async def stop(self):
+        # エージェントを停止
+        logger.info("Stopping game-marketplace-agent...")
+        await self.discord_bot.stop()
 
-    def delete_entry(self, entry_id):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM entries WHERE id = ?", (entry_id,))
-        conn.commit()
-        conn.close()
+
+async def main():
+    # メイン関数
+    agent = Game_marketplace_agentAgent()
+    try:
+        await agent.run()
+    except KeyboardInterrupt:
+        await agent.stop()
+
 
 if __name__ == "__main__":
-    agent = GameMarketplaceAgent()
-    print(f"{name} エージェントが初期化されました。")
+    asyncio.run(main())

@@ -1,30 +1,44 @@
 #!/usr/bin/env python3
-"""
-threat-hunter-agent - セキュリティインシデント・脅威対応エージェント
-22/25 in V33
-"""
+# threat-hunter-agent
+# 脅威ハンターエージェント。能動的な脅威ハンティング・調査。
 
+import asyncio
 import logging
-from pathlib import Path
-from .db import Database
-from .discord import DiscordHandler
+from db import Threat_hunter_agentDatabase
+from discord import Threat_hunter_agentDiscordBot
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class ThreatHunter:
-    """threat-hunter-agent - セキュリティインシデント・脅威対応エージェント"""
 
-    def __init__(self, db_path: str = None, discord_token: str = None):
-        self.db = Database(db_path or str(Path(__file__).parent / "threat-hunter-agent.db"))
-        self.discord = DiscordHandler(discord_token)
+class Threat_hunter_agentAgent:
+    # threat-hunter-agent メインエージェント
+
+    def __init__(self, db_path: str = "threat-hunter-agent.db"):
+        # 初期化
+        self.db = Threat_hunter_agentDatabase(db_path)
+        self.discord_bot = Threat_hunter_agentDiscordBot(self.db)
 
     async def run(self):
-        """メイン実行ループ"""
+        # エージェントを実行
         logger.info("Starting threat-hunter-agent...")
-        await self.discord.start()
+        self.db.initialize()
+        await self.discord_bot.start()
+
+    async def stop(self):
+        # エージェントを停止
+        logger.info("Stopping threat-hunter-agent...")
+        await self.discord_bot.stop()
+
+
+async def main():
+    # メイン関数
+    agent = Threat_hunter_agentAgent()
+    try:
+        await agent.run()
+    except KeyboardInterrupt:
+        await agent.stop()
+
 
 if __name__ == "__main__":
-    agent = ThreatHunter()
-    import asyncio
-    asyncio.run(agent.run())
+    asyncio.run(main())

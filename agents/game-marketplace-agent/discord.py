@@ -1,159 +1,89 @@
 #!/usr/bin/env python3
-"""
-ゲームマーケットプレイスエージェント Discord Bot Module
-Game Marketplace Agent Discord Bot
+# game-marketplace-agent Discord ボット
 
-An agent for managing in-game marketplaces, item trading, and price trends
-"""
-
+import logging
 import discord
 from discord.ext import commands
-from typing import Optional, List
-import json
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
-class GameMarketplaceAgentBot(commands.Bot):
-    """ゲームマーケットプレイスエージェント Discord Bot"""
+class Game_marketplace_agentDiscordBot(commands.Bot):
+    # game-marketplace-agent Discord ボット
 
-    def __init__(self, db_path: str = "game-marketplace-agent.db", command_prefix: str = "!"):
+    def __init__(self, db):
+        # 初期化
         intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix=command_prefix, intents=intents)
+        super().__init__(command_prefix="!", intents=intents, help_command=None)
+        self.db = db
 
-        self.db_path = db_path
+    async def setup_hook(self):
+        # ボット起動時の設定
+        await self.add_cog(Game_marketplace_agentCommands(self))
 
     async def on_ready(self):
-        """Bot起動時"""
-        print(f'Logged in as {self.user}')
+        # 準備完了時のイベント
+        logger.info("Logged in as %s", self.user.name)
 
-    @commands.command(name='marketplaceagentadd')
-    async def add_entry(self, ctx, title: str, *, description: str = ""):
-        """新しいエントリーを追加"""
-        from game-marketplace-agent import GameMarketplaceAgent
-        agent = GameMarketplaceAgent(self.db_path)
-        entry_id = agent.add_entry(title, description)
-        await ctx.send(f"Added entry with ID: {entry_id}")
 
-    @commands.command(name='marketplaceagentlist')
-    async def list_entries(self, ctx, limit: int = 10):
-        """エントリー一覧を表示"""
-        from game-marketplace-agent import GameMarketplaceAgent
-        agent = GameMarketplaceAgent(self.db_path)
-        entries = agent.list_entries(limit)
+class Game_marketplace_agentCommands(commands.Cog):
+    # game-marketplace-agent コマンド
 
-        if not entries:
-            await ctx.send("No entries found.")
-            return
+    def __init__(self, bot: commands.Bot):
+        # 初期化
+        self.bot = bot
 
-        embed = discord.Embed(
-            title="ゲームマーケットプレイスエージェント Entries",
-            description=f"Showing {len(entries)} entries",
-            color=discord.Color.blue()
-        )
+    @commands.command(name="game_marketplace_agent")
+    async def game_marketplace_agent(self, ctx: commands.Context, action: str = "list", *, args: str = ""):
+        # メインコマンド
+        if action == "list":
+            entries = self.bot.db.list_entries(limit=20)
+            if not entries:
+                await ctx.send("エントリーがありません")
+                return
+            embed = discord.Embed(title="Game Marketplace Agent 一覧", color=discord.Color.blue())
+            for entry in entries[:10]:
+                title = entry.get("title") or "タイトルなし"
+                content = entry.get("content", "")[:50]
+                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
+            await ctx.send(embed=embed)
+        elif action == "add":
+            if not args:
+                await ctx.send(f"使用方法: !game_marketplace_agent add <内容>")
+                return
+            entry_id = self.bot.db.add_entry(title=None, content=args, status="active", priority=0)
+            await ctx.send(f"エントリーを追加しました (ID: {entry_id})")
+        elif action == "search":
+            if not args:
+                await ctx.send(f"使用方法: !game_marketplace_agent search <キーワード>")
+                return
+            entries = self.bot.db.search_entries(args, limit=10)
+            if not entries:
+                await ctx.send("一致するエントリーがありません")
+                return
+            embed = discord.Embed(title=f"「{args}」の検索結果", color=discord.Color.green())
+            for entry in entries:
+                title = entry.get("title") or "タイトルなし"
+                content = entry.get("content", "")[:50]
+                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send(f"不明なアクションです: {action}\\n使用可能なアクション: list, add, search")
 
-        for entry in entries:
-            embed.add_field(
-                name=f"{entry['title']} (ID: {entry['id']})",
-                value=entry['description'][:100] or "No description",
-                inline=False
-            )
-
+    @commands.command(name="game_marketplace_agent_status")
+    async def game_marketplace_agent_status(self, ctx: commands.Context):
+        # ステータス確認
+        entries = self.bot.db.list_entries(status="active")
+        embed = discord.Embed(title="Game Marketplace Agent ステータス", color=discord.Color.gold())
+        embed.add_field(name="アクティブエントリー", value=str(len(entries)))
         await ctx.send(embed=embed)
 
-    @commands.command(name='marketplaceagentget')
-    async def get_entry(self, ctx, entry_id: int):
-        """エントリーの詳細を表示"""
-        from game-marketplace-agent import GameMarketplaceAgent
-        agent = GameMarketplaceAgent(self.db_path)
-        entry = agent.get_entry(entry_id)
-
-        if not entry:
-            await ctx.send(f"Entry with ID {entry_id} not found.")
-            return
-
-        embed = discord.Embed(
-            title=entry['title'],
-            description=entry['description'] or "No description",
-            color=discord.Color.green()
-        )
-        embed.add_field(name="ID", value=entry['id'])
-        embed.add_field(name="Status", value=entry['status'])
-        embed.add_field(name="Created", value=entry['created_at'])
-
-        await ctx.send(embed=embed)
-
-    @commands.command(name='marketplaceagentsearch')
-    async def search_entries(self, ctx, *, query: str):
-        """エントリーを検索"""
-        from game-marketplace-agent import GameMarketplaceAgent
-        agent = GameMarketplaceAgent(self.db_path)
-        entries = agent.search_entries(query)
-
-        if not entries:
-            await ctx.send(f"No entries found for query: {query}")
-            return
-
-        embed = discord.Embed(
-            title=f"Search Results for: {query}",
-            description=f"Found {len(entries)} entries",
-            color=discord.Color.purple()
-        )
-
-        for entry in entries[:10]:
-            embed.add_field(
-                name=f"{entry['title']} (ID: {entry['id']})",
-                value=entry['description'][:100] or "No description",
-                inline=False
-            )
-
-        await ctx.send(embed=embed)
-
-    @commands.command(name='marketplaceagentstats')
-    async def get_stats(self, ctx):
-        """統計情報を表示"""
-        from game-marketplace-agent import GameMarketplaceAgent
-        agent = GameMarketplaceAgent(self.db_path)
-        stats = agent.get_stats()
-
-        embed = discord.Embed(
-            title="ゲームマーケットプレイスエージェント Statistics",
-            color=discord.Color.gold()
-        )
-        embed.add_field(name="Total Entries", value=stats['total_entries'])
-        embed.add_field(name="Active Entries", value=stats['active_entries'])
-        embed.add_field(name="Total Items", value=stats['total_items'])
-
-        await ctx.send(embed=embed)
-
-    @commands.command(name='marketplaceagenthelp')
-    async def show_help(self, ctx):
-        """ヘルプを表示"""
-        embed = discord.Embed(
-            title="ゲームマーケットプレイスエージェント Commands",
-            description="Available commands:",
-            color=discord.Color.blue()
-        )
-        embed.add_field(name="!marketplaceagentadd <title> [description]", value="Add a new entry", inline=False)
-        embed.add_field(name="!marketplaceagentlist [limit]", value="List entries", inline=False)
-        embed.add_field(name="!marketplaceagentget <id>", value="Get entry details", inline=False)
-        embed.add_field(name="!marketplaceagentsearch <query>", value="Search entries", inline=False)
-        embed.add_field(name="!marketplaceagentstats", value="Show statistics", inline=False)
-        embed.add_field(name="!marketplaceagenthelp", value="Show this help", inline=False)
-
-        await ctx.send(embed=embed)
-
-
-def main():
-    """メイン関数"""
-    import os
-    token = os.environ.get("DISCORD_TOKEN")
-    if not token:
-        print("DISCORD_TOKEN environment variable not set")
-        return
-
-    bot = GameMarketplaceAgentBot()
-    bot.run(token)
-
-
-if __name__ == "__main__":
-    main()
+    @commands.command(name="game_marketplace_agent_delete")
+    async def game_marketplace_agent_delete(self, ctx: commands.Context, entry_id: int):
+        # エントリー削除
+        if self.bot.db.delete_entry(entry_id):
+            await ctx.send(f"エントリーを削除しました (ID: {entry_id})")
+        else:
+            await ctx.send(f"エントリーが見つかりません (ID: {entry_id})")
