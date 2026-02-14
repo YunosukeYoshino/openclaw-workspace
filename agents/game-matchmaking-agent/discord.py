@@ -1,56 +1,70 @@
-"""Discord bot for game-matchmaking-agent"""
+#!/usr/bin/env python3
+"""
+Discord integration for ゲームマッチメイキングエージェント
+"""
 
-import os
+import logging
+from typing import Optional
 import discord
-from dotenv import load_dotenv
+from discord.ext import commands
 
-load_dotenv()
+logger = logging.getLogger(__name__)
 
-intents = discord.Intents.default()
-intents.message_content = True
-intents.messages = True
 
-client = discord.Client(intents=intents)
+class DiscordBot(commands.Bot):
+    """Discord bot for ゲームマッチメイキングエージェント"""
 
-@client.event
-async def on_ready():
-    print(f"{client.user} is ready!")
+    def __init__(self, token: Optional[str] = None):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix="!", intents=intents)
+        self.token = token or ""
+        self.agent = None
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
+    def set_agent(self, agent):
+        """Set agent instance"""
+        self.agent = agent
 
-    if message.content.startswith("!"):
-        await handle_command(message)
+    async def on_ready(self):
+        """Called when bot is ready"""
+        logger.info(f"{self.user} is ready")
 
-async def handle_command(message):
-    command = message.content[1:].split()[0]
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        if message.author.bot:
+            return
+        await self.process_commands(message)
 
-    if command == "help":
-        await show_help(message)
-    elif command == "status":
-        await show_status(message)
-    else:
-        await message.channel.send(f"Unknown command: {command}")
+    @commands.command(name="status")
+    async def status(self, ctx: commands.Context):
+        """Show agent status"""
+        if self.agent:
+            status = self.agent.get_status()
+            await ctx.send(f"**Status:** {status.get('status')}\n**Version:** {status.get('version')}")
+        else:
+            await ctx.send("Agent not configured")
 
-async def show_help(message):
-    help_text = f"""
-    game-matchmaking-agent - ゲームマッチメイキングエージェント。マッチメイキングの管理・最適化
+    @commands.command(name="info")
+    async def info(self, ctx: commands.Context):
+        """Show agent information"""
+        if self.agent:
+            await ctx.send(f"**Name:** {self.agent.name}\n**Description:** {self.agent.description}")
+        else:
+            await ctx.send("Agent not configured")
 
-    Commands:
-    !help - Show this help
-    !status - Show status
-    """
-    await message.channel.send(help_text)
+    def start_bot(self):
+        """Start the bot"""
+        if self.token:
+            self.run(self.token)
+        else:
+            logger.warning("Discord token not provided")
 
-async def show_status(message):
-    await message.channel.send("Bot is running normally!")
+
+def main():
+    """Test discord bot"""
+    bot = DiscordBot()
+    print("Discord bot module loaded")
+
 
 if __name__ == "__main__":
-    token = os.getenv("DISCORD_TOKEN")
-    if not token:
-        print("DISCORD_TOKEN not found!")
-        exit(1)
-
-    client.run(token)
+    main()

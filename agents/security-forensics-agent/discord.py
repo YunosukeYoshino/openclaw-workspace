@@ -1,30 +1,70 @@
 #!/usr/bin/env python3
-"""Discord integration for security-forensics-agent"""
+"""
+Discord integration for セキュリティフォレンジックエージェント
+"""
 
 import logging
-import os
 from typing import Optional
+import discord
+from discord.ext import commands
 
 logger = logging.getLogger(__name__)
 
-class DiscordHandler:
-    """Discord bot handler"""
+
+class DiscordBot(commands.Bot):
+    """Discord bot for セキュリティフォレンジックエージェント"""
 
     def __init__(self, token: Optional[str] = None):
-        self.token = token or os.getenv("DISCORD_TOKEN")
-        self.enabled = bool(self.token)
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix="!", intents=intents)
+        self.token = token or ""
+        self.agent = None
 
-    async def start(self):
-        """Start Discord bot"""
-        if self.enabled:
-            logger.info("Discord integration is configured")
-        else:
-            logger.info("Discord integration not configured (no token)")
+    def set_agent(self, agent):
+        """Set agent instance"""
+        self.agent = agent
 
-    async def send_message(self, channel_id: str, message: str):
-        """Send message to Discord channel"""
-        if not self.enabled:
-            logger.warning("Discord not enabled")
+    async def on_ready(self):
+        """Called when bot is ready"""
+        logger.info(f"{self.user} is ready")
+
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        if message.author.bot:
             return
-        # Implementation would use discord.py library
-        logger.info(f"Would send to {channel_id}: {message[:50]}...")
+        await self.process_commands(message)
+
+    @commands.command(name="status")
+    async def status(self, ctx: commands.Context):
+        """Show agent status"""
+        if self.agent:
+            status = self.agent.get_status()
+            await ctx.send(f"**Status:** {status.get('status')}\n**Version:** {status.get('version')}")
+        else:
+            await ctx.send("Agent not configured")
+
+    @commands.command(name="info")
+    async def info(self, ctx: commands.Context):
+        """Show agent information"""
+        if self.agent:
+            await ctx.send(f"**Name:** {self.agent.name}\n**Description:** {self.agent.description}")
+        else:
+            await ctx.send("Agent not configured")
+
+    def start_bot(self):
+        """Start the bot"""
+        if self.token:
+            self.run(self.token)
+        else:
+            logger.warning("Discord token not provided")
+
+
+def main():
+    """Test discord bot"""
+    bot = DiscordBot()
+    print("Discord bot module loaded")
+
+
+if __name__ == "__main__":
+    main()

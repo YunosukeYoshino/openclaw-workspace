@@ -1,49 +1,90 @@
-# game-matchmaking-agent
+# ゲームマッチメイキングエージェント
 
-ゲームマッチメイキングエージェント。マッチメイキングの管理・最適化
+ゲームのマッチメイキングシステム管理エージェント
 
-## 機能
+## Overview
 
-- ゲームマッチメイキングエージェント。マッチメイキングの管理・最適化
-- Discordボット連携
-- データベース管理
+This is the game-matchmaking-agent agent.
 
-## インストール
+## Features
+
+- Feature 1: TBD
+- Feature 2: TBD
+- Feature 3: TBD
+
+## Installation
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 使用方法
+## Usage
 
-```bash
-python agent.py
+### Agent
+
+```python
+from agent import GameMatchmakingAgentAgent
+agent = GameMatchmakingAgentAgent()
+result = await agent.process(data)
 ```
 
-## コマンド
+### Database
 
-- `!help` - ヘルプを表示
-- `!status` - ステータスを表示
-
-## 設定
-
-環境変数を設定してください：
-
-```bash
-export DISCORD_TOKEN="your_discord_token"
+```python
+from db import Database
+db = Database()
+record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
 ```
 
-## ディレクトリ構造
+### Discord Integration
 
-```
-game-matchmaking-agent/
-├── agent.py       - メインエージェントコード
-├── db.py          - データベースモジュール
-├── discord.py     - Discordボット
-├── README.md      - このファイル
-└── requirements.txt
+```python
+from discord import DiscordBot
+bot = DiscordBot(token="your_bot_token")
+bot.set_agent(agent)
+bot.start_bot()
 ```
 
-## ライセンス
+## Commands
+
+### Discord Commands
+
+- `!status` - Show agent status
+- `!info` - Show agent information
+
+## Database Schema
+
+### Records Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| type | TEXT | Record type |
+| title | TEXT | Record title (optional) |
+| content | TEXT | Record content |
+| status | TEXT | Record status |
+| created_at | TIMESTAMP | Creation timestamp |
+| updated_at | TIMESTAMP | Last update timestamp |
+
+### Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| name | TEXT | Tag name (unique) |
+| created_at | TIMESTAMP | Creation timestamp |
+
+### Record Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| record_id | INTEGER | Foreign key to records |
+| tag_id | INTEGER | Foreign key to tags |
+
+## License
 
 MIT License
+
+## Author
+
+Created with OpenClaw

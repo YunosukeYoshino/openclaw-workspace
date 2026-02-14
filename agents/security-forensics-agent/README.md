@@ -1,52 +1,90 @@
-# security-forensics-agent
+# セキュリティフォレンジックエージェント
 
-**Category**: セキュリティインシデント・脅威対応エージェント
-**Version**: V33 - Agent 23/25
-**Status**: Active
+セキュリティインシデントのフォレンジック分析エージェント
 
 ## Overview
 
-security-forensics-agent is an AI-powered agent for セキュリティインシデント・脅威対応エージェント.
+This is the security-forensics-agent agent.
 
 ## Features
 
-- Intelligent content processing
-- Persistent storage with SQLite
-- Discord integration support
-- RESTful API ready
+- Feature 1: TBD
+- Feature 2: TBD
+- Feature 3: TBD
 
 ## Installation
 
 ```bash
-cd agents/security-forensics-agent
 pip install -r requirements.txt
 ```
 
 ## Usage
 
-```python
-from agent import SecurityForensics
+### Agent
 
-agent = SecurityForensics()
-await agent.run()
+```python
+from agent import SecurityForensicsAgentAgent
+agent = SecurityForensicsAgentAgent()
+result = await agent.process(data)
 ```
 
-## Database
+### Database
 
-The agent uses SQLite for persistent storage. Database file: `security-forensics-agent.db`
+```python
+from db import Database
+db = Database()
+record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
+```
 
-### Schema
+### Discord Integration
 
-- `entries`: Main content storage
-  - `id`: Primary key
-  - `content`: Text content
-  - `created_at`: Timestamp
-  - `updated_at`: Timestamp
+```python
+from discord import DiscordBot
+bot = DiscordBot(token="your_bot_token")
+bot.set_agent(agent)
+bot.start_bot()
+```
 
-## Discord Integration
+## Commands
 
-Set `DISCORD_TOKEN` environment variable to enable Discord features.
+### Discord Commands
+
+- `!status` - Show agent status
+- `!info` - Show agent information
+
+## Database Schema
+
+### Records Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| type | TEXT | Record type |
+| title | TEXT | Record title (optional) |
+| content | TEXT | Record content |
+| status | TEXT | Record status |
+| created_at | TIMESTAMP | Creation timestamp |
+| updated_at | TIMESTAMP | Last update timestamp |
+
+### Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| name | TEXT | Tag name (unique) |
+| created_at | TIMESTAMP | Creation timestamp |
+
+### Record Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| record_id | INTEGER | Foreign key to records |
+| tag_id | INTEGER | Foreign key to tags |
 
 ## License
 
-MIT
+MIT License
+
+## Author
+
+Created with OpenClaw
