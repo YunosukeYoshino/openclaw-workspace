@@ -1,158 +1,44 @@
 #!/usr/bin/env python3
-"""
-えっちコンテンツパーソナライゼーションエージェント
-Erotic Content Personalization Agent
+# erotic-personalization-agent
+# えっちコンテンツパーソナライズエージェント。パーソナライズ機能の実装・管理。
 
-えっちコンテンツのパーソナライズされたおすすめ、ユーザー設定を管理するエージェント
-"""
+import asyncio
+import logging
+from db import Erotic_personalization_agentDatabase
+from discord import Erotic_personalization_agentDiscordBot
 
-import sqlite3
-from datetime import datetime
-from typing import Optional, List, Dict
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-class EroticPersonalizationAgent:
-    """えっちコンテンツパーソナライゼーションエージェント"""
 
-    def __init__(self, db_path: str = "erotic_personalization_agent.db"):
-        self.db_path = db_path
-        self.init_database()
+class Erotic_personalization_agentAgent:
+    # erotic-personalization-agent メインエージェント
 
-    def init_database(self):
-        """データベースを初期化"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        # 設定テーブル
-        cursor.execute(
-            """CREATE TABLE IF NOT EXISTS preferences (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT,
-                data TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            """
-        )
-        # おすすめテーブル
-        cursor.execute(
-            """CREATE TABLE IF NOT EXISTS recommendations (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT,
-                data TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            """
-        )
-        conn.commit()
-        conn.close()
+    def __init__(self, db_path: str = "erotic-personalization-agent.db"):
+        # 初期化
+        self.db = Erotic_personalization_agentDatabase(db_path)
+        self.discord_bot = Erotic_personalization_agentDiscordBot(self.db)
 
-    def add_preference(self, name: str, data: str):
-        """Preferenceを追加"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO preferences (name, data) VALUES (?, ?)", (name, data))
-        conn.commit()
-        conn.close()
-        return cursor.lastrowid
+    async def run(self):
+        # エージェントを実行
+        logger.info("Starting erotic-personalization-agent...")
+        self.db.initialize()
+        await self.discord_bot.start()
 
-    def get_preference(self, preference_id: int):
-        """Preferenceを取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM preferences WHERE id = ?", (preference_id,))
-        result = cursor.fetchone()
-        conn.close()
-        return result
+    async def stop(self):
+        # エージェントを停止
+        logger.info("Stopping erotic-personalization-agent...")
+        await self.discord_bot.stop()
 
-    def list_preferencess(self, limit: int = 100):
-        """全Preferencesを取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM preferences LIMIT ?", (limit,))
-        results = cursor.fetchall()
-        conn.close()
-        return results
 
-    def update_preference(self, preference_id: int, name: str = None, data: str = None):
-        """Preferenceを更新"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        updates = []
-        values = []
-        if name is not None:
-            updates.append("name = ?")
-            values.append(name)
-        if data is not None:
-            updates.append("data = ?")
-            values.append(data)
-        if updates:
-            values.append(preference_id)
-            cursor.execute(f"UPDATE preferences SET {', '.join(updates)} WHERE id = ?", values)
-            conn.commit()
-        conn.close()
-        return cursor.rowcount if updates else 0
+async def main():
+    # メイン関数
+    agent = Erotic_personalization_agentAgent()
+    try:
+        await agent.run()
+    except KeyboardInterrupt:
+        await agent.stop()
 
-    def delete_preference(self, preference_id: int):
-        """Preferenceを削除"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"DELETE FROM preferences WHERE id = ?", (preference_id,))
-        conn.commit()
-        conn.close()
-        return cursor.rowcount
 
-    def add_recommendation(self, name: str, data: str):
-        """Recommendationを追加"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO recommendations (name, data) VALUES (?, ?)", (name, data))
-        conn.commit()
-        conn.close()
-        return cursor.lastrowid
-
-    def get_recommendation(self, recommendation_id: int):
-        """Recommendationを取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM recommendations WHERE id = ?", (recommendation_id,))
-        result = cursor.fetchone()
-        conn.close()
-        return result
-
-    def list_recommendationss(self, limit: int = 100):
-        """全Recommendationsを取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM recommendations LIMIT ?", (limit,))
-        results = cursor.fetchall()
-        conn.close()
-        return results
-
-    def update_recommendation(self, recommendation_id: int, name: str = None, data: str = None):
-        """Recommendationを更新"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        updates = []
-        values = []
-        if name is not None:
-            updates.append("name = ?")
-            values.append(name)
-        if data is not None:
-            updates.append("data = ?")
-            values.append(data)
-        if updates:
-            values.append(recommendation_id)
-            cursor.execute(f"UPDATE recommendations SET {', '.join(updates)} WHERE id = ?", values)
-            conn.commit()
-        conn.close()
-        return cursor.rowcount if updates else 0
-
-    def delete_recommendation(self, recommendation_id: int):
-        """Recommendationを削除"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"DELETE FROM recommendations WHERE id = ?", (recommendation_id,))
-        conn.commit()
-        conn.close()
-        return cursor.rowcount
-
+if __name__ == "__main__":
+    asyncio.run(main())

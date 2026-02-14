@@ -1,52 +1,41 @@
 # game-prediction-model-agent
 
-**Category**: ゲームモデリング・シミュレーションエージェント
-**Version**: V35 - Agent 10/25
-**Status**: Active
+## 概要
+ゲーム予測モデルエージェント。予測モデルの構築・運用。
 
-## Overview
+## カテゴリ
+ゲームAI・MLモデルトレーニング
 
-game-prediction-model-agent is an AI-powered agent for ゲームモデリング・シミュレーションエージェント.
+## トリガーワード
+予測モデル, 予測, ML予測
 
-## Features
+## 主な機能
 
-- Intelligent content processing
-- Persistent storage with SQLite
-- Discord integration support
-- RESTful API ready
+### データ管理
+- game-prediction-model-agent 関連データのSQLiteデータベース管理
+- CRUD操作の実装
+- 検索・フィルタリング機能
 
-## Installation
+### チャットボット機能
+- Discord連携によるインタラクティブ応答
+- 自然言語によるクエリ処理
+- コマンドパターンマッチング
 
+## 使用方法
+
+### インストール
 ```bash
 cd agents/game-prediction-model-agent
 pip install -r requirements.txt
 ```
 
-## Usage
-
-```python
-from agent import GamePredictionModel
-
-agent = GamePredictionModel()
-await agent.run()
+### 実行
+```bash
+python agent.py
 ```
 
-## Database
+## ライセンス
+MIT License
 
-The agent uses SQLite for persistent storage. Database file: `game-prediction-model-agent.db`
-
-### Schema
-
-- `entries`: Main content storage
-  - `id`: Primary key
-  - `content`: Text content
-  - `created_at`: Timestamp
-  - `updated_at`: Timestamp
-
-## Discord Integration
-
-Set `DISCORD_TOKEN` environment variable to enable Discord features.
-
-## License
-
-MIT
+## バージョン
+1.0.0

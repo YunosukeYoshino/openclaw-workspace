@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+# erotic-ltv-analysis-agent
+# えっちコンテンツLTV分析エージェント。LTV分析・向上策。
+
+import asyncio
+import logging
+from db import Erotic_ltv_analysis_agentDatabase
+from discord import Erotic_ltv_analysis_agentDiscordBot
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+class Erotic_ltv_analysis_agentAgent:
+    # erotic-ltv-analysis-agent メインエージェント
+
+    def __init__(self, db_path: str = "erotic-ltv-analysis-agent.db"):
+        # 初期化
+        self.db = Erotic_ltv_analysis_agentDatabase(db_path)
+        self.discord_bot = Erotic_ltv_analysis_agentDiscordBot(self.db)
+
+    async def run(self):
+        # エージェントを実行
+        logger.info("Starting erotic-ltv-analysis-agent...")
+        self.db.initialize()
+        await self.discord_bot.start()
+
+    async def stop(self):
+        # エージェントを停止
+        logger.info("Stopping erotic-ltv-analysis-agent...")
+        await self.discord_bot.stop()
+
+
+async def main():
+    # メイン関数
+    agent = Erotic_ltv_analysis_agentAgent()
+    try:
+        await agent.run()
+    except KeyboardInterrupt:
+        await agent.stop()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

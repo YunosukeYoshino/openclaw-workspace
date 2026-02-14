@@ -1,55 +1,41 @@
-# えっちコンテンツパーソナライゼーションエージェント
+# erotic-personalization-agent
 
-Erotic Content Personalization Agent
+## 概要
+えっちコンテンツパーソナライズエージェント。パーソナライズ機能の実装・管理。
 
-## 概要 (Overview)
+## カテゴリ
+えっちコンテンツリコメンデーション
 
-えっちコンテンツのパーソナライズされたおすすめ、ユーザー設定を管理するエージェント
+## トリガーワード
+パーソナライズ, 個別化, パーソナライゼーション
 
-## 機能 (Features)
+## 主な機能
 
-- パーソナライズ
-- ユーザー設定
-- 学習機能
-- おすすめ調整
+### データ管理
+- erotic-personalization-agent 関連データのSQLiteデータベース管理
+- CRUD操作の実装
+- 検索・フィルタリング機能
 
-## インストール (Installation)
+### チャットボット機能
+- Discord連携によるインタラクティブ応答
+- 自然言語によるクエリ処理
+- コマンドパターンマッチング
 
+## 使用方法
+
+### インストール
 ```bash
+cd agents/erotic-personalization-agent
 pip install -r requirements.txt
 ```
 
-## 使用方法 (Usage)
-
-### 基本的な使用 (Basic Usage)
-
-```python
-from agent import EroticPersonalizationAgent
-
-agent = EroticPersonalizationAgent()
-```
-
-### Discord Botとして使用 (Using as Discord Bot)
-
+### 実行
 ```bash
-python discord.py
+python agent.py
 ```
 
-## データベース構造 (Database Schema)
-
-### preferences
-設定テーブル
-
-### recommendations
-おすすめテーブル
-
-## コマンド (Commands)
-
-- `!add_preference <name> <data>` - Add Preference
-- `!list_preferencess [limit]` - List All Preferences
-- `!add_recommendation <name> <data>` - Add Recommendation
-- `!list_recommendationss [limit]` - List All Recommendations
-
-## ライセンス (License)
-
+## ライセンス
 MIT License
+
+## バージョン
+1.0.0

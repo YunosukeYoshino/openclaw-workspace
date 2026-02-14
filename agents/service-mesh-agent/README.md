@@ -1,52 +1,41 @@
 # service-mesh-agent
 
-**Category**: マイクロサービス・サービスメッシュエージェント
-**Version**: V36 - Agent 17/25
-**Status**: Active
+## 概要
+サービスメッシュエージェント。サービスメッシュの管理・運用。
 
-## Overview
+## カテゴリ
+APIゲートウェイ・マイクロサービス
 
-service-mesh-agent is an AI-powered agent for マイクロサービス・サービスメッシュエージェント.
+## トリガーワード
+サービスメッシュ, メッシュ, マイクロサービス通信
 
-## Features
+## 主な機能
 
-- Intelligent content processing
-- Persistent storage with SQLite
-- Discord integration support
-- RESTful API ready
+### データ管理
+- service-mesh-agent 関連データのSQLiteデータベース管理
+- CRUD操作の実装
+- 検索・フィルタリング機能
 
-## Installation
+### チャットボット機能
+- Discord連携によるインタラクティブ応答
+- 自然言語によるクエリ処理
+- コマンドパターンマッチング
 
+## 使用方法
+
+### インストール
 ```bash
 cd agents/service-mesh-agent
 pip install -r requirements.txt
 ```
 
-## Usage
-
-```python
-from agent import ServiceMesh
-
-agent = ServiceMesh()
-await agent.run()
+### 実行
+```bash
+python agent.py
 ```
 
-## Database
+## ライセンス
+MIT License
 
-The agent uses SQLite for persistent storage. Database file: `service-mesh-agent.db`
-
-### Schema
-
-- `entries`: Main content storage
-  - `id`: Primary key
-  - `content`: Text content
-  - `created_at`: Timestamp
-  - `updated_at`: Timestamp
-
-## Discord Integration
-
-Set `DISCORD_TOKEN` environment variable to enable Discord features.
-
-## License
-
-MIT
+## バージョン
+1.0.0

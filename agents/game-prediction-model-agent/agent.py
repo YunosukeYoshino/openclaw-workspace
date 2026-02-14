@@ -1,30 +1,44 @@
 #!/usr/bin/env python3
-"""
-game-prediction-model-agent - ゲームモデリング・シミュレーションエージェント
-10/25 in V35
-"""
+# game-prediction-model-agent
+# ゲーム予測モデルエージェント。予測モデルの構築・運用。
 
+import asyncio
 import logging
-from pathlib import Path
-from .db import Database
-from .discord import DiscordHandler
+from db import Game_prediction_model_agentDatabase
+from discord import Game_prediction_model_agentDiscordBot
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class GamePredictionModel:
-    """game-prediction-model-agent - ゲームモデリング・シミュレーションエージェント"""
 
-    def __init__(self, db_path: str = None, discord_token: str = None):
-        self.db = Database(db_path or str(Path(__file__).parent / "game-prediction-model-agent.db"))
-        self.discord = DiscordHandler(discord_token)
+class Game_prediction_model_agentAgent:
+    # game-prediction-model-agent メインエージェント
+
+    def __init__(self, db_path: str = "game-prediction-model-agent.db"):
+        # 初期化
+        self.db = Game_prediction_model_agentDatabase(db_path)
+        self.discord_bot = Game_prediction_model_agentDiscordBot(self.db)
 
     async def run(self):
-        """メイン実行ループ"""
+        # エージェントを実行
         logger.info("Starting game-prediction-model-agent...")
-        await self.discord.start()
+        self.db.initialize()
+        await self.discord_bot.start()
+
+    async def stop(self):
+        # エージェントを停止
+        logger.info("Stopping game-prediction-model-agent...")
+        await self.discord_bot.stop()
+
+
+async def main():
+    # メイン関数
+    agent = Game_prediction_model_agentAgent()
+    try:
+        await agent.run()
+    except KeyboardInterrupt:
+        await agent.stop()
+
 
 if __name__ == "__main__":
-    agent = GamePredictionModel()
-    import asyncio
-    asyncio.run(agent.run())
+    asyncio.run(main())

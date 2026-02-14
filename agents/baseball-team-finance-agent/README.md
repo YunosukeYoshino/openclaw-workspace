@@ -1,48 +1,41 @@
 # baseball-team-finance-agent
 
-野球チーム財務エージェント。チーム財務の管理。
+## 概要
+野球チーム財務エージェント。チーム財務の管理・分析。
 
-野球チーム財務エージェント。チーム財務の管理。
+## カテゴリ
+野球チーム戦略・オペレーション
 
-## Files
+## トリガーワード
+チーム財務, 財務管理, 予算管理
 
-- `agent.py` - メインエージェントコード
-- `db.py` - データベースモジュール
-- `discord.py` - Discord Botモジュール
-- `requirements.txt` - Python依存パッケージ
+## 主な機能
 
-## Installation
+### データ管理
+- baseball-team-finance-agent 関連データのSQLiteデータベース管理
+- CRUD操作の実装
+- 検索・フィルタリング機能
 
+### チャットボット機能
+- Discord連携によるインタラクティブ応答
+- 自然言語によるクエリ処理
+- コマンドパターンマッチング
+
+## 使用方法
+
+### インストール
 ```bash
+cd agents/baseball-team-finance-agent
 pip install -r requirements.txt
 ```
 
-## Usage
-
-### Agent
-
+### 実行
 ```bash
 python agent.py
 ```
 
-### Database
+## ライセンス
+MIT License
 
-```bash
-python db.py
-```
-
-### Discord Bot
-
-```bash
-python discord.py
-```
-
-## Commands
-
-- `!status` - Show bot status
-- `!add <title> <content>` - Add an entry
-- `!list [limit]` - List entries
-
-## Project
-
-野球ビジネス・マネジメントエージェント
+## バージョン
+1.0.0

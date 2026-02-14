@@ -1,34 +1,44 @@
 #!/usr/bin/env python3
-"""
-野球チーム財務エージェント。チーム財務の管理。
-
-野球チーム財務エージェント。チーム財務の管理。
-"""
+# baseball-team-finance-agent
+# 野球チーム財務エージェント。チーム財務の管理・分析。
 
 import asyncio
-import discord
-from discord.ext import commands
+import logging
+from db import Baseball_team_finance_agentDatabase
+from discord import Baseball_team_finance_agentDiscordBot
 
-class BaseballTeamFinanceAgentBot(commands.Bot):
-    """baseball-team-finance-agent Bot"""
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    def __init__(self):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
 
-    async def setup_hook(self):
-        """Bot起動時の処理"""
-        print(f"{self.__class__.__name__} is ready!")
+class Baseball_team_finance_agentAgent:
+    # baseball-team-finance-agent メインエージェント
 
-    async def on_ready(self):
-        """Bot準備完了時の処理"""
-        print(f"Logged in as {self.user}")
+    def __init__(self, db_path: str = "baseball-team-finance-agent.db"):
+        # 初期化
+        self.db = Baseball_team_finance_agentDatabase(db_path)
+        self.discord_bot = Baseball_team_finance_agentDiscordBot(self.db)
 
-def main():
-    """メイン関数"""
-    bot = BaseballTeamFinanceAgentBot()
-    # bot.run("YOUR_DISCORD_BOT_TOKEN")
+    async def run(self):
+        # エージェントを実行
+        logger.info("Starting baseball-team-finance-agent...")
+        self.db.initialize()
+        await self.discord_bot.start()
+
+    async def stop(self):
+        # エージェントを停止
+        logger.info("Stopping baseball-team-finance-agent...")
+        await self.discord_bot.stop()
+
+
+async def main():
+    # メイン関数
+    agent = Baseball_team_finance_agentAgent()
+    try:
+        await agent.run()
+    except KeyboardInterrupt:
+        await agent.stop()
+
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
