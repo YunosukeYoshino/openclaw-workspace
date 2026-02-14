@@ -1,0 +1,302 @@
+[
+  {
+    "id": "47014449",
+    "name": "Ooh.directory: a place to find good blogs that interest you",
+    "description": "Posted by hisamafahri",
+    "url": "https://ooh.directory/",
+    "votes": 328,
+    "comments": 104,
+    "tagline": "Ooh.directory: a place to find good blogs that interest you",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47012717",
+    "name": "Zig – io_uring and Grand Central Dispatch std.Io implementations landed",
+    "description": "Posted by Retro_Dev",
+    "url": "https://ziglang.org/devlog/2026/#2026-02-13",
+    "votes": 326,
+    "comments": 233,
+    "tagline": "Zig – io_uring and Grand Central Dispatch std.Io implementations landed",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47015330",
+    "name": "Vim 9.2",
+    "description": "Posted by tapanjk",
+    "url": "https://www.vim.org/vim-9.2-released.php",
+    "votes": 247,
+    "comments": 117,
+    "tagline": "Vim 9.2",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47015294",
+    "name": "My smart sleep mask broadcasts users' brainwaves to an open MQTT broker",
+    "description": "Posted by minimalthinker",
+    "url": "https://aimilios.bearblog.dev/reverse-engineering-sleep-mask/",
+    "votes": 243,
+    "comments": 111,
+    "tagline": "My smart sleep mask broadcasts users' brainwaves to an open MQTT broker",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47017138",
+    "name": "News publishers limit Internet Archive access due to AI scraping concerns",
+    "description": "Posted by ninjagoo",
+    "url": "https://www.niemanlab.org/2026/01/news-publishers-limit-internet-archive-access-due-to-ai-scraping-concerns/",
+    "votes": 200,
+    "comments": 110,
+    "tagline": "News publishers limit Internet Archive access due to AI scraping concerns",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47016443",
+    "name": "uBlock filter list to hide all YouTube Shorts",
+    "description": "Posted by i5heu",
+    "url": "https://github.com/i5heu/ublock-hide-yt-shorts/",
+    "votes": 180,
+    "comments": 64,
+    "tagline": "uBlock filter list to hide all YouTube Shorts",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47014500",
+    "name": "Show HN: Sameshi – a ~1200 Elo chess engine that fits within 2KB",
+    "description": "Posted by datavorous_",
+    "url": "https://github.com/datavorous/sameshi",
+    "votes": 156,
+    "comments": 46,
+    "tagline": "Show HN: Sameshi – a ~1200 Elo chess engine that fits within 2KB",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "46934622",
+    "name": "Ask HN: How to get started with robotics as a hobbyist?",
+    "description": "Posted by StefanBatory",
+    "url": "https://news.ycombinator.com/item?id=46934622",
+    "votes": 100,
+    "comments": 46,
+    "tagline": "Ask HN: How to get started with robotics as a hobbyist?",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-08",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47017727",
+    "name": "You can't trust the internet anymore",
+    "description": "Posted by panic",
+    "url": "https://nicole.express/2026/not-my-casual-hobby.html",
+    "votes": 67,
+    "comments": 35,
+    "tagline": "You can't trust the internet anymore",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47016008",
+    "name": "Amsterdam Compiler Kit",
+    "description": "Posted by andsoitis",
+    "url": "https://github.com/davidgiven/ack",
+    "votes": 56,
+    "comments": 13,
+    "tagline": "Amsterdam Compiler Kit",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47017545",
+    "name": "Descent, Ported to the Web",
+    "description": "Posted by memalign",
+    "url": "https://mrdoob.github.io/three-descent/",
+    "votes": 50,
+    "comments": 10,
+    "tagline": "Descent, Ported to the Web",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47016058",
+    "name": "Show HN: Arcmark – macOS bookmark manager that attaches to browser as sidebar",
+    "description": "Posted by ahmed_sulajman",
+    "url": "https://github.com/Geek-1001/arcmark",
+    "votes": 48,
+    "comments": 10,
+    "tagline": "Show HN: Arcmark – macOS bookmark manager that attaches to browser as sidebar",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "46949870",
+    "name": "A method and calculator for building foamcore drawer organisers",
+    "description": "Posted by evakhoury",
+    "url": "https://capnfabs.net/posts/foamcore-would-be-a-sick-name-for-a-music-genre/",
+    "votes": 47,
+    "comments": 11,
+    "tagline": "A method and calculator for building foamcore drawer organisers",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-09",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "46965462",
+    "name": "Fun with Algebraic Effects – From Toy Examples to Hardcaml Simulations",
+    "description": "Posted by weinzierl",
+    "url": "https://blog.janestreet.com/fun-with-algebraic-effects-hardcaml/",
+    "votes": 40,
+    "comments": 0,
+    "tagline": "Fun with Algebraic Effects – From Toy Examples to Hardcaml Simulations",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-10",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "46968641",
+    "name": "Windows NT/OS2 Design Workbook",
+    "description": "Posted by markus_zhang",
+    "url": "https://computernewb.com/~lily/files/Documents/NTDesignWorkbook/",
+    "votes": 31,
+    "comments": 9,
+    "tagline": "Windows NT/OS2 Design Workbook",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-10",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47009327",
+    "name": "IBM tripling entry-level jobs after finding the limits of AI adoption",
+    "description": "Posted by WhatsTheBigIdea",
+    "url": "https://fortune.com/2026/02/13/tech-giant-ibm-tripling-gen-z-entry-level-hiring-according-to-chro-rewriting-jobs-ai-era/",
+    "votes": 31,
+    "comments": 12,
+    "tagline": "IBM tripling entry-level jobs after finding the limits of AI adoption",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47016530",
+    "name": "A header-only C vector database library",
+    "description": "Posted by abdimoalim",
+    "url": "https://github.com/abdimoallim/vdb",
+    "votes": 27,
+    "comments": 4,
+    "tagline": "A header-only C vector database library",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47018026",
+    "name": "Dune II written in HTML5/JS",
+    "description": "Posted by reconnecting",
+    "url": "https://github.com/oklemenz/Dune2JS",
+    "votes": 12,
+    "comments": 0,
+    "tagline": "Dune II written in HTML5/JS",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47012553",
+    "name": "OpenAI should build Slack",
+    "description": "Posted by swyx",
+    "url": "https://www.latent.space/p/ainews-why-openai-should-build-slack",
+    "votes": 6,
+    "comments": 0,
+    "tagline": "OpenAI should build Slack",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  },
+  {
+    "id": "47008821",
+    "name": "Launching Interop 2026",
+    "description": "Posted by linolevan",
+    "url": "https://hacks.mozilla.org/2026/02/launching-interop-2026/",
+    "votes": 4,
+    "comments": 1,
+    "tagline": "Launching Interop 2026",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:57:54.443383"
+  }
+]

@@ -49,3 +49,8 @@ agents/webhook-agent/webhook.db
 
 # Toolchain (persisted in workspace, not in git)
 .toolchain/
+
+# Progress tracking (orchestrators)
+*_progress.json
+*_log.json
+orchestrator_state.json
