@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 セキュリティパッチ・アップデート管理エージェント
-vulnerability-patch-agent - 脆弱性パッチエージェント。脆弱性パッチの管理。
+security-update-agent - セキュリティアップデートエージェント。セキュリティアップデートの管理。
 """
 
 import sqlite3
@@ -10,10 +10,10 @@ import json
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class VulnerabilityPatch:
-    """脆弱性パッチエージェント。脆弱性パッチの管理。"""
+class SecurityUpdate:
+    """セキュリティアップデートエージェント。セキュリティアップデートの管理。"""
 
-    def __init__(self, db_path: str = "agents/vulnerability-patch-agent/data.db"):
+    def __init__(self, db_path: str = "agents/security-update-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -103,5 +103,5 @@ class VulnerabilityPatch:
 
 if __name__ == "__main__":
     import json
-    agent = VulnerabilityPatch()
+    agent = SecurityUpdate()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# elasticsearch-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+Elasticsearchエージェント。Elasticsearchの管理。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+データストア・NoSQLエージェント - elasticsearch-agent
 
 ## Installation
 

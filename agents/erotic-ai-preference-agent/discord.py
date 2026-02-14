@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Discord integration for vulnerability-patch-agent
+Discord integration for erotic-ai-preference-agent
 """
 
 import discord
@@ -9,10 +9,10 @@ import sqlite3
 import json
 from typing import Optional
 
-class VulnerabilityPatchBot(commands.Bot):
-    """Discord bot for vulnerability-patch-agent"""
+class EroticAiPreferenceBot(commands.Bot):
+    """Discord bot for erotic-ai-preference-agent"""
 
-    def __init__(self, command_prefix: str = "!", db_path: str = "agents/vulnerability-patch-agent/data.db"):
+    def __init__(self, command_prefix: str = "!", db_path: str = "agents/erotic-ai-preference-agent/data.db"):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix=command_prefix, intents=intents)
@@ -45,7 +45,7 @@ class VulnerabilityPatchBot(commands.Bot):
 
 if __name__ == "__main__":
     import os
-    bot = VulnerabilityPatchBot()
+    bot = EroticAiPreferenceBot()
     token = os.getenv("DISCORD_TOKEN")
     if token:
         bot.run(token)

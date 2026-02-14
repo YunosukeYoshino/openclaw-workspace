@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# rollback-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+ロールバックエージェント。ロールバックの管理。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+セキュリティパッチ・アップデート管理エージェント - rollback-agent
 
 ## Installation
 

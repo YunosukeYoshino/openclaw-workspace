@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# game-performance-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+ゲームパフォーマンスエージェント。ゲームパフォーマンスの監視・改善。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+ゲームUI・UXエージェント - game-performance-agent
 
 ## Installation
 

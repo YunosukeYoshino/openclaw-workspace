@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# game-ux-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+ゲームUXエージェント。UXの分析・改善。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+ゲームUI・UXエージェント - game-ux-agent
 
 ## Installation
 

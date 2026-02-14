@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# baseball-playoff-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+野球プレーオフエージェント。プレーオフの管理。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+野球リーグ・シーズン管理エージェント - baseball-playoff-agent
 
 ## Installation
 

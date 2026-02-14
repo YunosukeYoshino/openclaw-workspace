@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# erotic-ai-preference-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+えっちAIプレファレンスエージェント。好みの学習・推論。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+えっちコンテンツAIパーソナライズエージェント - erotic-ai-preference-agent
 
 ## Installation
 

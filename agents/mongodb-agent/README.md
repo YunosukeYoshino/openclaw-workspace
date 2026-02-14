@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# mongodb-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+MongoDBエージェント。MongoDBの管理。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+データストア・NoSQLエージェント - mongodb-agent
 
 ## Installation
 

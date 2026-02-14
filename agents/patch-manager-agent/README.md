@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# patch-manager-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+パッチマネージャーエージェント。パッチの管理・適用。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+セキュリティパッチ・アップデート管理エージェント - patch-manager-agent
 
 ## Installation
 

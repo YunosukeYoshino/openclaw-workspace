@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-セキュリティパッチ・アップデート管理エージェント
-vulnerability-patch-agent - 脆弱性パッチエージェント。脆弱性パッチの管理。
+ゲームUI・UXエージェント
+game-asset-optimizer-agent - ゲームアセットオプティマイザーエージェント。アセットの最適化。
 """
 
 import sqlite3
@@ -10,10 +10,10 @@ import json
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class VulnerabilityPatch:
-    """脆弱性パッチエージェント。脆弱性パッチの管理。"""
+class GameAssetOptimizer:
+    """ゲームアセットオプティマイザーエージェント。アセットの最適化。"""
 
-    def __init__(self, db_path: str = "agents/vulnerability-patch-agent/data.db"):
+    def __init__(self, db_path: str = "agents/game-asset-optimizer-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -103,5 +103,5 @@ class VulnerabilityPatch:
 
 if __name__ == "__main__":
     import json
-    agent = VulnerabilityPatch()
+    agent = GameAssetOptimizer()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

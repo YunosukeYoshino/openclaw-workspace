@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# update-orchestrator-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+アップデートオーケストレーターエージェント。アップデートのオーケストレーション。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+セキュリティパッチ・アップデート管理エージェント - update-orchestrator-agent
 
 ## Installation
 

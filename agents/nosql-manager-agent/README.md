@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# nosql-manager-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+NoSQLマネージャーエージェント。NoSQLデータベースの管理。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+データストア・NoSQLエージェント - nosql-manager-agent
 
 ## Installation
 

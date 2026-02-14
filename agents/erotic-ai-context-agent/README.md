@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# erotic-ai-context-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+えっちAIコンテキストエージェント。コンテキストの認識・適応。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+えっちコンテンツAIパーソナライズエージェント - erotic-ai-context-agent
 
 ## Installation
 

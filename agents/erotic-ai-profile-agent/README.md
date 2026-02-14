@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# erotic-ai-profile-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+えっちAIプロファイルエージェント。ユーザープロファイルの分析。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+えっちコンテンツAIパーソナライズエージェント - erotic-ai-profile-agent
 
 ## Installation
 

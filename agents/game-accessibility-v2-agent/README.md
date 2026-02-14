@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# game-accessibility-v2-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+ゲームアクセシビリティV2エージェント。アクセシビリティの強化。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+ゲームUI・UXエージェント - game-accessibility-v2-agent
 
 ## Installation
 

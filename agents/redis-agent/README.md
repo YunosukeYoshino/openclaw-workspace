@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# redis-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+Redisエージェント。Redisの管理。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+データストア・NoSQLエージェント - redis-agent
 
 ## Installation
 

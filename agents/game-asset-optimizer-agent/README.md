@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# game-asset-optimizer-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+ゲームアセットオプティマイザーエージェント。アセットの最適化。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+ゲームUI・UXエージェント - game-asset-optimizer-agent
 
 ## Installation
 

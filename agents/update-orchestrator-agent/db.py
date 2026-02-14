@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Database schema for vulnerability-patch-agent
+Database schema for update-orchestrator-agent
 """
 
 import sqlite3
 from pathlib import Path
 
-def init_db(db_path: str = "agents/vulnerability-patch-agent/data.db"):
+def init_db(db_path: str = "agents/update-orchestrator-agent/data.db"):
     """Initialize database"""
     Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 

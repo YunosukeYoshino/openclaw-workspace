@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# baseball-allstar-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+野球オールスターエージェント。オールスターの管理。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+野球リーグ・シーズン管理エージェント - baseball-allstar-agent
 
 ## Installation
 

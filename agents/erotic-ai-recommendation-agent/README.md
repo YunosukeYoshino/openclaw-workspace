@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# erotic-ai-recommendation-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+えっちAIレコメンデーションエージェント。レコメンデーションの提供。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+えっちコンテンツAIパーソナライズエージェント - erotic-ai-recommendation-agent
 
 ## Installation
 

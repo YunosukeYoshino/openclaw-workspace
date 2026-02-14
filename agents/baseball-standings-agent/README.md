@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# baseball-standings-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+野球順位表エージェント。順位表の作成・管理。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+野球リーグ・シーズン管理エージェント - baseball-standings-agent
 
 ## Installation
 

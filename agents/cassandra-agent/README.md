@@ -1,10 +1,10 @@
-# vulnerability-patch-agent
+# cassandra-agent
 
-脆弱性パッチエージェント。脆弱性パッチの管理。
+Cassandraエージェント。Cassandraの管理。
 
 ## Description
 
-セキュリティパッチ・アップデート管理エージェント - vulnerability-patch-agent
+データストア・NoSQLエージェント - cassandra-agent
 
 ## Installation
 
