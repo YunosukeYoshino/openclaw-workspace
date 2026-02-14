@@ -1,60 +1,102 @@
-"""Discord bot for game-rl-agent"""
+#!/usr/bin/env python3
+"""
+ゲーム強化学習エージェント - Discord連携
+Discordボットインターフェース
+"""
 
+import asyncio
 import os
-import discord
-from dotenv import load_dotenv
+from typing import Optional, Dict, Any, List
+from datetime import datetime
 
-load_dotenv()
+class GameRlAgentDiscord:
+    """ゲーム強化学習エージェント Discord連携クラス"""
 
-intents = discord.Intents.default()
-intents.message_content = True
-intents.messages = True
+    def __init__(self, token: Optional[str] = None):
+        self.token = token or os.getenv("DISCORD_TOKEN")
+        self.client = None
+        self.commands: List[Dict[str, Any]] = []
 
-client = discord.Client(intents=intents)
+    async def start(self):
+        """Discordボット起動"""
+        if not self.token:
+            print("DISCORD_TOKEN not set, running in mock mode")
+            return
 
-@client.event
-async def on_ready():
-    print(f"{client.user} is ready!")
+        try:
+            import discord
+            intents = discord.Intents.default()
+            intents.message_content = True
+            self.client = discord.Client(intents=intents)
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
+            @self.client.event
+            async def on_ready():
+                print(f'{self.client.user} has connected to Discord!')
 
-    # コマンド処理
-    if message.content.startswith("!"):
-        await handle_command(message)
+            @self.client.event
+            async def on_message(message):
+                if message.author == self.client.user:
+                    return
 
-async def handle_command(message):
-    """コマンドを処理する"""
-    command = message.content[1:].split()[0]
+                await self._handle_message(message)
 
-    if command == "help":
-        await show_help(message)
-    elif command == "status":
-        await show_status(message)
-    else:
-        await message.channel.send(f"Unknown command: {command}")
+            await self.client.start(self.token)
+        except ImportError:
+            print("discord.py not installed, running in mock mode")
 
-async def show_help(message):
-    """ヘルプを表示"""
-    help_text = f"""
-    game-rl-agent - ゲーム強化学習エージェント。強化学習モデルの管理
+    async def _handle_message(self, message):
+        """メッセージハンドリング"""
+        content = message.content.lower()
 
-    Commands:
-    !help - Show this help
-    !status - Show status
-    """
-    await message.channel.send(help_text)
+        if content.startswith('!help'):
+            help_text = await self.get_help()
+            await message.channel.send(help_text)
 
-async def show_status(message):
-    """ステータスを表示"""
-    await message.channel.send("Bot is running normally!")
+        elif content.startswith('!status'):
+            status = await self.get_status()
+            await message.channel.send(status)
+
+    async def send_message(self, channel_id: int, content: str):
+        """メッセージ送信"""
+        if self.client:
+            channel = self.client.get_channel(channel_id)
+            if channel:
+                await channel.send(content)
+        else:
+            print(f"Mock: Send to channel {channel_id}: {content}")
+
+    async def get_help(self) -> str:
+        """ヘルプメッセージ"""
+        return f"""
+**ゲーム強化学習エージェント - Commands**
+
+!help - Show this help message
+!status - Show agent status
+!info - Show agent information
+
+gaming category agent
+"""
+
+    async def get_status(self) -> str:
+        """ステータスメッセージ"""
+        return f"""
+**ゲーム強化学習エージェント Status**
+
+Status: Ready
+Language: Japanese
+Category: gaming
+Commands: {len(self.commands)}
+"""
+
+    async def stop(self):
+        """ボット停止"""
+        if self.client:
+            await self.client.close()
+
+async def main():
+    """動作確認"""
+    bot = GameRlAgentDiscord()
+    await bot.start()
 
 if __name__ == "__main__":
-    token = os.getenv("DISCORD_TOKEN")
-    if not token:
-        print("DISCORD_TOKEN not found!")
-        exit(1)
-
-    client.run(token)
+    asyncio.run(main())

@@ -1,0 +1,17 @@
+# Requirements for K8sサービスエージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# kubernetes
+# pyyaml
+# requests
+# rich
+# typer

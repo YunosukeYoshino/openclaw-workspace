@@ -1,90 +1,102 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-baseball-advanced-stats-agent - Discord Integration
-Discord bot integration for baseball-advanced-stats-agent
+野球高度統計エージェント - Discord連携
+Discordボットインターフェース
 """
 
-import discord
-from discord.ext import commands
-import logging
-from typing import Optional
-import json
-from pathlib import Path
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
+from datetime import datetime
 
 class BaseballAdvancedStatsAgentDiscord:
-    """Discord bot integration for baseball-advanced-stats-agent"""
+    """野球高度統計エージェント Discord連携クラス"""
 
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-        self.logger = logging.getLogger("baseball-advanced-stats-agent.discord")
-        self.config_path = Path(__file__).parent / "discord_config.json"
-        self.config = self._load_config()
+    def __init__(self, token: Optional[str] = None):
+        self.token = token or os.getenv("DISCORD_TOKEN")
+        self.client = None
+        self.commands: List[Dict[str, Any]] = []
 
-    def _load_config(self) -> dict:
-        default_config = {
-            "command_prefix": "!",
-            "enabled_channels": [],
-            "admin_roles": []
-        }
-        if self.config_path.exists():
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                return {**default_config, **json.load(f)}
-        return default_config
+    async def start(self):
+        """Discordボット起動"""
+        if not self.token:
+            print("DISCORD_TOKEN not set, running in mock mode")
+            return
 
-    def setup_commands(self):
-        @self.bot.command(name="baseballadvancedstatsagent_status")
-        async def agent_status(ctx):
-            embed = discord.Embed(
-                title="baseball-advanced-stats-agent Status",
-                description="野球高度統計エージェント。高度な統計指標の計算・分析。",
-                color=discord.Color.blue()
-            )
-            embed.add_field(name="Active", value="Yes", inline=True)
-            embed.add_field(name="Version", value="1.0.0", inline=True)
-            await ctx.send(embed=embed)
-
-        @self.bot.command(name="baseballadvancedstatsagent_help")
-        async def agent_help(ctx):
-            embed = discord.Embed(
-                title="baseball-advanced-stats-agent Help",
-                description="野球高度統計エージェント。高度な統計指標の計算・分析。",
-                color=discord.Color.green()
-            )
-            embed.add_field(
-                name="Commands",
-                value="`!baseballadvancedstatsagent_status` - Show agent status\n`!baseballadvancedstatsagent_help` - Show this help message",
-                inline=False
-            )
-            await ctx.send(embed=embed)
-
-    async def send_notification(self, channel_id: int, message: str, embed: discord.Embed = None):
         try:
-            channel = self.bot.get_channel(channel_id)
+            import discord
+            intents = discord.Intents.default()
+            intents.message_content = True
+            self.client = discord.Client(intents=intents)
+
+            @self.client.event
+            async def on_ready():
+                print(f'{self.client.user} has connected to Discord!')
+
+            @self.client.event
+            async def on_message(message):
+                if message.author == self.client.user:
+                    return
+
+                await self._handle_message(message)
+
+            await self.client.start(self.token)
+        except ImportError:
+            print("discord.py not installed, running in mock mode")
+
+    async def _handle_message(self, message):
+        """メッセージハンドリング"""
+        content = message.content.lower()
+
+        if content.startswith('!help'):
+            help_text = await self.get_help()
+            await message.channel.send(help_text)
+
+        elif content.startswith('!status'):
+            status = await self.get_status()
+            await message.channel.send(status)
+
+    async def send_message(self, channel_id: int, content: str):
+        """メッセージ送信"""
+        if self.client:
+            channel = self.client.get_channel(channel_id)
             if channel:
-                await channel.send(content=message, embed=embed)
-                return True
-        except Exception as e:
-            self.logger.error("Failed to send notification: " + str(e))
-        return False
+                await channel.send(content)
+        else:
+            print(f"Mock: Send to channel {channel_id}: {content}")
 
-    async def send_alert(self, channel_id: int, title: str, description: str, level: str = "info"):
-        color_map = {
-            "info": discord.Color.blue(),
-            "warning": discord.Color.orange(),
-            "error": discord.Color.red(),
-            "success": discord.Color.green()
-        }
-        embed = discord.Embed(
-            title=title,
-            description=description,
-            color=color_map.get(level, discord.Color.blue())
-        )
-        embed.set_footer(text="baseball-advanced-stats-agent")
-        return await self.send_notification(channel_id, "", embed)
+    async def get_help(self) -> str:
+        """ヘルプメッセージ"""
+        return f"""
+**野球高度統計エージェント - Commands**
 
-def setup(bot: commands.Bot):
-    discord_integration = BaseballAdvancedStatsAgentDiscord(bot)
-    discord_integration.setup_commands()
-    bot.add_cog(discord_integration)
-    return discord_integration
+!help - Show this help message
+!status - Show agent status
+!info - Show agent information
+
+baseball category agent
+"""
+
+    async def get_status(self) -> str:
+        """ステータスメッセージ"""
+        return f"""
+**野球高度統計エージェント Status**
+
+Status: Ready
+Language: Japanese
+Category: baseball
+Commands: {len(self.commands)}
+"""
+
+    async def stop(self):
+        """ボット停止"""
+        if self.client:
+            await self.client.close()
+
+async def main():
+    """動作確認"""
+    bot = BaseballAdvancedStatsAgentDiscord()
+    await bot.start()
+
+if __name__ == "__main__":
+    asyncio.run(main())

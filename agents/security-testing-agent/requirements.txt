@@ -1,0 +1,17 @@
+# Requirements for セキュリティテストエージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# owasp-zap
+# selenium
+# requests
+# pytest
+# beautifulsoup4

@@ -1,0 +1,17 @@
+# Requirements for えっち推薦V2エージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# implicit
+# lightfm
+# pandas
+# numpy
+# fastapi

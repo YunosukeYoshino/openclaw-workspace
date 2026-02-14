@@ -1,0 +1,17 @@
+# Requirements for 野球予測分析エージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# pandas
+# numpy
+# scipy
+# scikit-learn
+# matplotlib

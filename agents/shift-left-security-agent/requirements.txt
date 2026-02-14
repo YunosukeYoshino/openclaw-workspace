@@ -1,0 +1,17 @@
+# Requirements for シフトレフトセキュリティエージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# pre-commit
+# bandit
+# safety
+# pytest
+# rich

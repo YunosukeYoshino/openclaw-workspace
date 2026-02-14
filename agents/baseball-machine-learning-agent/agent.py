@@ -1,48 +1,109 @@
 #!/usr/bin/env python3
-import sqlite3
+"""
+野球機械学習エージェント
+野球データの機械学習モデル構築
+"""
+
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
 from datetime import datetime
-from typing import List, Dict
+import json
 
-class BaseballAdvancedAgent:
-    def __init__(self, db_path=None):
-        self.db_path = db_path or "baseball.db"
-        self.init_database()
+class BaseballMachineLearningAgent:
+    """野球機械学習エージェント"""
 
-    def init_database(self):
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute("CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, category TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
-        c.execute("CREATE TABLE IF NOT EXISTS metrics (id INTEGER PRIMARY KEY AUTOINCREMENT, player_id TEXT, season INTEGER, metrics_json TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
-        conn.commit()
-        conn.close()
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        self.config = config or {}
+        self.name = "baseball-machine-learning-agent"
+        self.title = "野球機械学習エージェント"
+        self.description = "野球データの機械学習モデル構築"
+        self.category = "baseball"
+        self.language = "Japanese"
+        self.state = "idle"
+        self.created_at = datetime.now().isoformat()
+        self.tasks: List[Dict[str, Any]] = []
 
-    def add_entry(self, title, content, category=None):
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute("INSERT INTO entries (title, content, category) VALUES (?, ?, ?)", (title, content, category))
-        eid = c.lastrowid
-        conn.commit()
-        conn.close()
-        return eid
+    async def initialize(self) -> bool:
+        """エージェントの初期化"""
+        try:
+            self.state = "initializing"
+            print(f"Initializing {self.title}...")
+            await asyncio.sleep(0.5)
+            self.state = "ready"
+            return True
+        except Exception as e:
+            print(f"Error initializing: {e}")
+            self.state = "error"
+            return False
 
-    def get_entries(self, category=None):
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        if category:
-            c.execute("SELECT * FROM entries WHERE category = ?", (category,))
-        else:
-            c.execute("SELECT * FROM entries")
-        cols = [d[0] for d in c.description]
-        entries = [dict(zip(cols, r)) for r in c.fetchall()]
-        conn.close()
-        return entries
+    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """データ処理"""
+        if self.state != "ready":
+            return {"error": "Agent not ready", "state": self.state}
 
-def main():
-    import sys
-    agent = BaseballAdvancedAgent()
-    if len(sys.argv) > 1 and sys.argv[1] == "list":
-        for e in agent.get_entries():
-            print(f"ID: {e['id']} | Title: {e['title']}")
+        self.state = "processing"
+        try:
+            result = {
+                "success": True,
+                "data": input_data,
+                "processed_at": datetime.now().isoformat(),
+                "agent": self.name
+            }
+            self.state = "ready"
+            return result
+        except Exception as e:
+            self.state = "error"
+            return {"error": str(e), "state": self.state}
+
+    async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+        """タスク実行"""
+        task_id = task.get("id", f"task_{len(self.tasks)}")
+        self.tasks.append({"id": task_id, "task": task, "status": "pending"})
+
+        try:
+            result = await self.process(task.get("data", {}))
+            self.tasks[-1]["status"] = "completed"
+            return result
+        except Exception as e:
+            self.tasks[-1]["status"] = "failed"
+            return {"error": str(e), "task_id": task_id}
+
+    async def get_status(self) -> Dict[str, Any]:
+        """ステータス取得"""
+        return {
+            "name": self.name,
+            "title": self.title,
+            "state": self.state,
+            "tasks_completed": sum(1 for t in self.tasks if t["status"] == "completed"),
+            "tasks_pending": sum(1 for t in self.tasks if t["status"] == "pending"),
+            "created_at": self.created_at
+        }
+
+    async def cleanup(self) -> None:
+        """クリーンアップ"""
+        self.state = "stopped"
+        print(f"{self.title} stopped.")
+
+async def main():
+    """メイン処理"""
+    agent = BaseballMachineLearningAgent()
+    await agent.initialize()
+
+    sample_task = {
+        "id": "sample_001",
+        "data": {
+            "message": "Sample task for 野球機械学習エージェント"
+        }
+    }
+
+    result = await agent.execute_task(sample_task)
+    print(f"Result: {json.dumps(result, ensure_ascii=False, indent=2)}")
+
+    status = await agent.get_status()
+    print(f"Status: {json.dumps(status, ensure_ascii=False, indent=2)}")
+
+    await agent.cleanup()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

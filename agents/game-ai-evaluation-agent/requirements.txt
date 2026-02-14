@@ -1,0 +1,17 @@
+# Requirements for ゲームAI評価エージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# gym
+# numpy
+# matplotlib
+# seaborn
+# scikit-learn

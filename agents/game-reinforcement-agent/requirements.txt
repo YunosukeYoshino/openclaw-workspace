@@ -1,0 +1,17 @@
+# Requirements for ゲーム強化エージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# stable-baselines3
+# gym
+# numpy
+# torch
+# ray
