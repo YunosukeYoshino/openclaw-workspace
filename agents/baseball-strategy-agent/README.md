@@ -1,41 +1,80 @@
 # baseball-strategy-agent
 
-野球ストラテジーエージェント。球団戦略の策定。
+野球戦略エージェント。チーム戦略の立案・分析・最適化。
 
-## Description
+## 概要 / Overview
 
-野球フロントオフィス・経営エージェント - baseball-strategy-agent
+**日本語:**
+野球戦略エージェント。チーム戦略の立案・分析・最適化。を提供するエージェント。
 
-## Installation
+**English:**
+An agent providing 野球戦略エージェント。チーム戦略の立案・分析・最適化。.
+
+## カテゴリ / Category
+
+- `baseball`
+
+## 機能 / Features
+
+- Discord Bot 連携による対話型インターフェース
+- SQLite データベースによるデータ管理
+- コマンドラインからの操作
+
+## コマンド / Commands
+
+| コマンド | 説明 | 説明 (EN) |
+|----------|------|-----------|
+| `!create_strategy` | create_strategy コマンド | create_strategy command |
+| `!lineup` | lineup コマンド | lineup command |
+| `!gameplan` | gameplan コマンド | gameplan command |
+| `!analyze_strategy` | analyze_strategy コマンド | analyze_strategy command |
+
+## インストール / Installation
 
 ```bash
+cd agents/baseball-strategy-agent
 pip install -r requirements.txt
-python3 db.py  # Initialize database
 ```
 
-## Usage
+## 使用方法 / Usage
+
+### エージェントの実行 / Run Agent
 
 ```bash
-python3 agent.py
+python agent.py
 ```
 
-## Files
+### Discord Bot の起動 / Start Discord Bot
 
-- `agent.py` - Main agent logic
-- `db.py` - Database initialization
-- `discord.py` - Discord integration
-- `requirements.txt` - Dependencies
+```bash
+export DISCORD_TOKEN="your_bot_token"
+python discord.py
+```
 
-## API
+## データベース / Database
 
-### Actions
+データベースファイル: `data.db`
 
-- `create` - Create new entry
-- `get` - Get entry by ID
-- `update` - Update entry
-- `delete` - Delete entry
-- `list` - List entries
+### テーブル / Tables
 
-## Environment Variables
+- **strategies**: id INTEGER PRIMARY KEY, team_id INTEGER, type TEXT, description TEXT, effectiveness REAL, FOREIGN KEY (team_id) REFERENCES teams(id
+- **lineups**: id INTEGER PRIMARY KEY, team_id INTEGER, date TEXT, formation JSON, FOREIGN KEY (team_id) REFERENCES teams(id
+- **gameplans**: id INTEGER PRIMARY KEY, opponent_id TEXT, strategy TEXT, tactics TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
-- `DISCORD_TOKEN` - Discord bot token (optional)
+## 開発 / Development
+
+```bash
+# テスト
+python -m pytest
+
+# フォーマット
+black agent.py db.py discord.py
+```
+
+## ライセンス / License
+
+MIT License
+
+---
+
+_This agent is part of the OpenClaw Agents ecosystem._

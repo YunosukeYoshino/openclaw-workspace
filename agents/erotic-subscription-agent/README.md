@@ -1,115 +1,80 @@
 # erotic-subscription-agent
 
-えっちサブスクリプションエージェント。サブスクリプションの管理。
+えっちサブスクリプションエージェント。サブスクリプション・会員プランの管理。
 
-## 概要
+## 概要 / Overview
 
-このエージェントは えっちサブスクリプションエージェント。サブスクリプションの管理。 ためのAIアシスタントです。
+**日本語:**
+えっちサブスクリプションエージェント。サブスクリプション・会員プランの管理。を提供するエージェント。
 
-## 機能
+**English:**
+An agent providing えっちサブスクリプションエージェント。サブスクリプション・会員プランの管理。.
 
-- データの収集・分析
-- 自動タスク処理
-- データベース管理
-- Discord連携
+## カテゴリ / Category
 
-## インストール
+- `erotic`
+
+## 機能 / Features
+
+- Discord Bot 連携による対話型インターフェース
+- SQLite データベースによるデータ管理
+- コマンドラインからの操作
+
+## コマンド / Commands
+
+| コマンド | 説明 | 説明 (EN) |
+|----------|------|-----------|
+| `!plans` | plans コマンド | plans command |
+| `!subscribe` | subscribe コマンド | subscribe command |
+| `!subscription_status` | subscription_status コマンド | subscription_status command |
+| `!cancel_subscription` | cancel_subscription コマンド | cancel_subscription command |
+
+## インストール / Installation
 
 ```bash
+cd agents/erotic-subscription-agent
 pip install -r requirements.txt
 ```
 
-## 使用方法
+## 使用方法 / Usage
 
-### 基本的な使用
+### エージェントの実行 / Run Agent
 
-```python
-from agent import EroticSubscriptionAgent
-
-agent = EroticSubscriptionAgent()
-task = {"id": "task_001", "type": "example"}
-result = agent.process_task(task)
-print(result)
+```bash
+python agent.py
 ```
 
-### データベースの使用
+### Discord Bot の起動 / Start Discord Bot
 
-```python
-from db import EroticSubscriptionAgentDB
-
-db = EroticSubscriptionAgentDB()
-db.insert_data("example_type", "example_content", {"key": "value"})
-data = db.query_data("example_type", limit=10)
+```bash
+export DISCORD_TOKEN="your_bot_token"
+python discord.py
 ```
 
-### Discordボットの使用
+## データベース / Database
 
-```python
-from discord.ext import commands
-from discord import setup
+データベースファイル: `data.db`
 
-bot = commands.Bot(command_prefix="!")
-discord_integration = setup(bot)
-bot.run("YOUR_DISCORD_BOT_TOKEN")
+### テーブル / Tables
+
+- **plans**: id INTEGER PRIMARY KEY, name TEXT, price INTEGER, currency TEXT, duration_days INTEGER, features JSON
+- **subscriptions**: id INTEGER PRIMARY KEY, user_id INTEGER, plan_id INTEGER, start_date TIMESTAMP, end_date TIMESTAMP, status TEXT, FOREIGN KEY (plan_id) REFERENCES plans(id
+- **payments**: id INTEGER PRIMARY KEY, subscription_id INTEGER, amount INTEGER, status TEXT, method TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (subscription_id) REFERENCES subscriptions(id
+
+## 開発 / Development
+
+```bash
+# テスト
+python -m pytest
+
+# フォーマット
+black agent.py db.py discord.py
 ```
 
-## API
-
-### EroticSubscriptionAgent.process_task(task)
-
-タスクを処理して結果を返します。
-
-**Parameters:**
-- `task` (Dict[str, Any]): 処理するタスク
-
-**Returns:**
-- Dict[str, Any]: 処理結果
-
-### EroticSubscriptionAgentDB.insert_data(data_type, content, metadata)
-
-データベースにデータを挿入します。
-
-**Parameters:**
-- `data_type` (str): データタイプ
-- `content` (str): コンテンツ
-- `metadata` (Dict): メタデータ（オプション）
-
-**Returns:**
-- int: 挿入されたレコードID
-
-### EroticSubscriptionAgentDB.query_data(data_type, limit)
-
-データベースからデータをクエリします。
-
-**Parameters:**
-- `data_type` (str): データタイプ（オプション）
-- `limit` (int): 取得する最大件数
-
-**Returns:**
-- List[Dict]: クエリ結果
-
-## 設定
-
-### Discord設定
-
-`discord_config.json` ファイルを作成して設定します。
-
-```json
-{
-  "command_prefix": "!",
-  "enabled_channels": [],
-  "admin_roles": []
-}
-```
-
-## ライセンス
+## ライセンス / License
 
 MIT License
 
-## 貢献
+---
 
-プルリクエストを歓迎します。
-
-## 連絡先
-
-問題や質問がある場合は、Issueを開いてください。
+_This agent is part of the OpenClaw Agents ecosystem._

@@ -1,90 +1,80 @@
-# ETLパイプラインエージェント
+# etl-pipeline-agent
 
-ETLパイプラインの管理・運用エージェント
+ETLパイプラインエージェント。ETLパイプラインの設計・実行・管理。
 
-## Overview
+## 概要 / Overview
 
-This is the etl-pipeline-agent agent.
+**日本語:**
+ETLパイプラインエージェント。ETLパイプラインの設計・実行・管理。を提供するエージェント。
 
-## Features
+**English:**
+An agent providing ETLパイプラインエージェント。ETLパイプラインの設計・実行・管理。.
 
-- Feature 1: TBD
-- Feature 2: TBD
-- Feature 3: TBD
+## カテゴリ / Category
 
-## Installation
+- `data`
+
+## 機能 / Features
+
+- Discord Bot 連携による対話型インターフェース
+- SQLite データベースによるデータ管理
+- コマンドラインからの操作
+
+## コマンド / Commands
+
+| コマンド | 説明 | 説明 (EN) |
+|----------|------|-----------|
+| `!create_pipeline` | create_pipeline コマンド | create_pipeline command |
+| `!run_pipeline` | run_pipeline コマンド | run_pipeline command |
+| `!pipeline_history` | pipeline_history コマンド | pipeline_history command |
+| `!stage_logs` | stage_logs コマンド | stage_logs command |
+
+## インストール / Installation
 
 ```bash
+cd agents/etl-pipeline-agent
 pip install -r requirements.txt
 ```
 
-## Usage
+## 使用方法 / Usage
 
-### Agent
+### エージェントの実行 / Run Agent
 
-```python
-from agent import EtlPipelineAgentAgent
-agent = EtlPipelineAgentAgent()
-result = await agent.process(data)
+```bash
+python agent.py
 ```
 
-### Database
+### Discord Bot の起動 / Start Discord Bot
 
-```python
-from db import Database
-db = Database()
-record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
+```bash
+export DISCORD_TOKEN="your_bot_token"
+python discord.py
 ```
 
-### Discord Integration
+## データベース / Database
 
-```python
-from discord import DiscordBot
-bot = DiscordBot(token="your_bot_token")
-bot.set_agent(agent)
-bot.start_bot()
+データベースファイル: `data.db`
+
+### テーブル / Tables
+
+- **pipelines**: id INTEGER PRIMARY KEY, name TEXT, description TEXT, stages JSON, config JSON
+- **pipeline_runs**: id INTEGER PRIMARY KEY, pipeline_id INTEGER, start_time TIMESTAMP, end_time TIMESTAMP, status TEXT, rows_processed INTEGER, FOREIGN KEY (pipeline_id) REFERENCES pipelines(id
+- **stage_runs**: id INTEGER PRIMARY KEY, run_id INTEGER, stage_name TEXT, start_time TIMESTAMP, end_time TIMESTAMP, status TEXT, error_message TEXT, FOREIGN KEY (run_id) REFERENCES pipeline_runs(id
+
+## 開発 / Development
+
+```bash
+# テスト
+python -m pytest
+
+# フォーマット
+black agent.py db.py discord.py
 ```
 
-## Commands
-
-### Discord Commands
-
-- `!status` - Show agent status
-- `!info` - Show agent information
-
-## Database Schema
-
-### Records Table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary key |
-| type | TEXT | Record type |
-| title | TEXT | Record title (optional) |
-| content | TEXT | Record content |
-| status | TEXT | Record status |
-| created_at | TIMESTAMP | Creation timestamp |
-| updated_at | TIMESTAMP | Last update timestamp |
-
-### Tags Table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary key |
-| name | TEXT | Tag name (unique) |
-| created_at | TIMESTAMP | Creation timestamp |
-
-### Record Tags Table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| record_id | INTEGER | Foreign key to records |
-| tag_id | INTEGER | Foreign key to tags |
-
-## License
+## ライセンス / License
 
 MIT License
 
-## Author
+---
 
-Created with OpenClaw
+_This agent is part of the OpenClaw Agents ecosystem._

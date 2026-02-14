@@ -1,84 +1,89 @@
 #!/usr/bin/env python3
-"""Database module for game-asset-manager-agent"""
+"""
+Database module for game-asset-manager-agent
+"""
 
 import sqlite3
-import logging
+import json
 from pathlib import Path
+from typing import List, Dict, Any, Optional
 from datetime import datetime
-from typing import List, Dict, Optional
 
-logger = logging.getLogger(__name__)
 
-class Database:
-    """SQLite database handler"""
+class game_asset_manager_agentDatabase:
+    """Database handler for game-asset-manager-agent"""
 
-    def __init__(self, db_path: str):
-        self.db_path = db_path
-        self.init_db()
+    def __init__(self, db_path: str = None):
+        """Initialize database connection"""
+        self.db_path = db_path or Path(f"/workspace/agents/game-asset-manager-agent/data.db")
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.connection = sqlite3.connect(str(self.db_path), check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
+        self.cursor = self.connection.cursor()
+        self._init_tables()
 
-    def init_db(self):
+    def _init_tables(self):
         """Initialize database tables"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        logger.info("Initializing database tables...")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS assets(id INTEGER PRIMARY KEY, name TEXT, type TEXT, path TEXT, version INTEGER, project_id INTEGER)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS tags(id INTEGER PRIMARY KEY, asset_id INTEGER, tag TEXT, FOREIGN KEY (asset_id) REFERENCES assets(id))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS dependencies(id INTEGER PRIMARY KEY, asset_id INTEGER, depends_on INTEGER, FOREIGN KEY (asset_id) REFERENCES assets(id), FOREIGN KEY (depends_on) REFERENCES assets(id))""")
+        self.connection.commit()
 
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS entries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                content TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
+    def execute(self, query: str, params: tuple = None) -> sqlite3.Cursor:
+        """Execute a SQL query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        self.connection.commit()
+        return self.cursor
 
-        conn.commit()
-        conn.close()
+    def fetchall(self, query: str, params: tuple = None) -> List[Dict[str, Any]]:
+        """Fetch all results from a query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        return [dict(row) for row in self.cursor.fetchall()]
 
-    def add_entry(self, content: str) -> int:
-        """Add a new entry"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO entries (content) VALUES (?)", (content,))
-        entry_id = cursor.lastrowid
-        conn.commit()
-        conn.close()
-        return entry_id
+    def fetchone(self, query: str, params: tuple = None) -> Optional[Dict[str, Any]]:
+        """Fetch one result from a query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        row = self.cursor.fetchone()
+        return dict(row) if row else None
 
-    def get_entry(self, entry_id: int) -> Optional[Dict]:
-        """Get an entry by ID"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM entries WHERE id = ?", (entry_id,))
-        row = cursor.fetchone()
-        conn.close()
-        if row:
-            return {"id": row[0], "content": row[1], "created_at": row[2], "updated_at": row[3]}
-        return None
+    def insert(self, table: str, data: Dict[str, Any]) -> int:
+        """Insert a row into a table"""
+        columns = ', '.join(data.keys())
+        placeholders = ', '.join(['?' for _ in data])
+        query = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+        self.cursor.execute(query, tuple(data.values()))
+        self.connection.commit()
+        return self.cursor.lastrowid
 
-    def list_entries(self, limit: int = 100) -> List[Dict]:
-        """List all entries"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM entries ORDER BY created_at DESC LIMIT ?", (limit,))
-        rows = cursor.fetchall()
-        conn.close()
-        return [{"id": r[0], "content": r[1], "created_at": r[2], "updated_at": r[3]} for r in rows]
+    def update(self, table: str, data: Dict[str, Any], where: Dict[str, Any]) -> int:
+        """Update rows in a table"""
+        set_clause = ', '.join([f"{k} = ?" for k in data.keys()])
+        where_clause = ' AND '.join([f"{k} = ?" for k in where.keys()])
+        query = f"UPDATE {table} SET {set_clause} WHERE {where_clause}"
+        self.cursor.execute(query, tuple(data.values()) + tuple(where.values()))
+        self.connection.commit()
+        return self.cursor.rowcount
 
-    def update_entry(self, entry_id: int, content: str) -> bool:
-        """Update an entry"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("UPDATE entries SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", (content, entry_id))
-        success = cursor.rowcount > 0
-        conn.commit()
-        conn.close()
-        return success
+    def delete(self, table: str, where: Dict[str, Any]) -> int:
+        """Delete rows from a table"""
+        where_clause = ' AND '.join([f"{k} = ?" for k in where.keys()])
+        query = f"DELETE FROM {table} WHERE {where_clause}"
+        self.cursor.execute(query, tuple(where.values()))
+        self.connection.commit()
+        return self.cursor.rowcount
 
-    def delete_entry(self, entry_id: int) -> bool:
-        """Delete an entry"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM entries WHERE id = ?", (entry_id,))
-        success = cursor.rowcount > 0
-        conn.commit()
-        conn.close()
-        return success
+    def close(self):
+        """Close database connection"""
+        self.connection.close()
+
+
+# For logging in _init_tables
+import logging
+logger = logging.getLogger(__name__)

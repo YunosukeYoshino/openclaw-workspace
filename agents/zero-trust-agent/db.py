@@ -1,169 +1,89 @@
 #!/usr/bin/env python3
 """
-Database module for ゼロトラストエージェント
+Database module for zero-trust-agent
 """
 
 import sqlite3
-import logging
+import json
+from pathlib import Path
+from typing import List, Dict, Any, Optional
 from datetime import datetime
-from typing import Optional, Dict, Any
 
 
-class ZeroTrustAgentDB:
-    """
-    Database handler for ゼロトラストエージェント
-    """
+class zero_trust_agentDatabase:
+    """Database handler for zero-trust-agent"""
 
-    def __init__(self, db_path: Optional[str] = None):
-        """
-        Initialize database
-
-        Args:
-            db_path: Path to database file
-        """
-        self.db_path = db_path or "zero-trust-agent.db"
-        self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
-        self.conn.row_factory = sqlite3.Row
-
-        # Setup logging
-        self.logger = logging.getLogger(f"{self.db_path}.db")
-        self.logger.setLevel(logging.INFO)
-        handler = logging.StreamHandler()
-        handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-        self.logger.addHandler(handler)
-
-        # Initialize tables
+    def __init__(self, db_path: str = None):
+        """Initialize database connection"""
+        self.db_path = db_path or Path(f"/workspace/agents/zero-trust-agent/data.db")
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.connection = sqlite3.connect(str(self.db_path), check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
+        self.cursor = self.connection.cursor()
         self._init_tables()
 
-        self.logger.info(f"Database initialized: {self.db_path}")
+    def _init_tables(self):
+        """Initialize database tables"""
+        logger.info("Initializing database tables...")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS trust_levels(id INTEGER PRIMARY KEY, name TEXT, description TEXT, requirements JSON)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS policies(id INTEGER PRIMARY KEY, name TEXT, resource TEXT, conditions JSON, action TEXT)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS trust_scores(id INTEGER PRIMARY KEY, entity_id INTEGER, entity_type TEXT, score REAL, factors JSON, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)""")
+        self.connection.commit()
 
-    def _init_tables(self) -> None:
-        """Initialize database tables."""
-        cursor = self.conn.cursor()
+    def execute(self, query: str, params: tuple = None) -> sqlite3.Cursor:
+        """Execute a SQL query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        self.connection.commit()
+        return self.cursor
 
-        table_name = "zero-trust-agent"
+    def fetchall(self, query: str, params: tuple = None) -> List[Dict[str, Any]]:
+        """Fetch all results from a query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        return [dict(row) for row in self.cursor.fetchall()]
 
-        # Main entries table
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS " + table_name + " (" +
-            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "title TEXT, " +
-            "content TEXT NOT NULL, " +
-            "category TEXT, " +
-            "tags TEXT, " +
-            "status TEXT DEFAULT 'active', " +
-            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
-            "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
-            ")"
-        )
+    def fetchone(self, query: str, params: tuple = None) -> Optional[Dict[str, Any]]:
+        """Fetch one result from a query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        row = self.cursor.fetchone()
+        return dict(row) if row else None
 
-        # Metadata table
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS " + table_name + "_metadata (" +
-            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "key TEXT UNIQUE NOT NULL, " +
-            "value TEXT, " +
-            "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
-            ")"
-        )
+    def insert(self, table: str, data: Dict[str, Any]) -> int:
+        """Insert a row into a table"""
+        columns = ', '.join(data.keys())
+        placeholders = ', '.join(['?' for _ in data])
+        query = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+        self.cursor.execute(query, tuple(data.values()))
+        self.connection.commit()
+        return self.cursor.lastrowid
 
-        # Activity log table
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS " + table_name + "_activity (" +
-            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "action TEXT NOT NULL, " +
-            "details TEXT, " +
-            "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
-            ")"
-        )
+    def update(self, table: str, data: Dict[str, Any], where: Dict[str, Any]) -> int:
+        """Update rows in a table"""
+        set_clause = ', '.join([f"{k} = ?" for k in data.keys()])
+        where_clause = ' AND '.join([f"{k} = ?" for k in where.keys()])
+        query = f"UPDATE {table} SET {set_clause} WHERE {where_clause}"
+        self.cursor.execute(query, tuple(data.values()) + tuple(where.values()))
+        self.connection.commit()
+        return self.cursor.rowcount
 
-        # Tags table
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS " + table_name + "_tags (" +
-            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "name TEXT UNIQUE NOT NULL, " +
-            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
-            ")"
-        )
+    def delete(self, table: str, where: Dict[str, Any]) -> int:
+        """Delete rows from a table"""
+        where_clause = ' AND '.join([f"{k} = ?" for k in where.keys()])
+        query = f"DELETE FROM {table} WHERE {where_clause}"
+        self.cursor.execute(query, tuple(where.values()))
+        self.connection.commit()
+        return self.cursor.rowcount
 
-        # Entry tags junction table
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS " + table_name + "_entry_tags (" +
-            "entry_id INTEGER, " +
-            "tag_id INTEGER, " +
-            "PRIMARY KEY (entry_id, tag_id), " +
-            "FOREIGN KEY (entry_id) REFERENCES " + table_name + "(id) ON DELETE CASCADE, " +
-            "FOREIGN KEY (tag_id) REFERENCES " + table_name + "_tags(id) ON DELETE CASCADE" +
-            ")"
-        )
-
-        self.conn.commit()
-
-    def execute(self, query: str, params: Optional[tuple] = None) -> sqlite3.Cursor:
-        """Execute a query."""
-        cursor = self.conn.cursor()
-        cursor.execute(query, params or ())
-        return cursor
-
-    def fetchall(self, query: str, params: Optional[tuple] = None):
-        """Fetch all rows."""
-        cursor = self.conn.execute(query, params or ())
-        return cursor.fetchall()
-
-    def fetchone(self, query: str, params: Optional[tuple] = None):
-        """Fetch one row."""
-        cursor = self.conn.execute(query, params or ())
-        return cursor.fetchone()
-
-    def commit(self) -> None:
-        """Commit transactions."""
-        self.conn.commit()
-
-    def close(self) -> None:
-        """Close database connection."""
-        self.conn.close()
-
-    def get_stats(self) -> Dict[str, Any]:
-        """Get database statistics."""
-        cursor = self.conn.cursor()
-
-        table_name = "zero-trust-agent"
-
-        # Total entries
-        cursor.execute("SELECT COUNT(*) as total FROM " + table_name)
-        total_entries = cursor.fetchone()['total']
-
-        # Tag count
-        cursor.execute("SELECT COUNT(*) as total FROM " + table_name + "_tags")
-        total_tags = cursor.fetchone()['total']
-
-        # Activity count
-        cursor.execute("SELECT COUNT(*) as total FROM " + table_name + "_activity")
-        total_activity = cursor.fetchone()['total']
-
-        return {
-            'total_entries': total_entries,
-            'total_tags': total_tags,
-            'total_activity': total_activity
-        }
-
-    def backup(self, backup_path: str) -> bool:
-        """Backup database."""
-        try:
-            backup = sqlite3.connect(backup_path)
-            self.conn.backup(backup)
-            backup.close()
-            self.logger.info(f"Database backed up to: {backup_path}")
-            return True
-        except Exception as e:
-            self.logger.error(f"Backup failed: {e}")
-            return False
+    def close(self):
+        """Close database connection"""
+        self.connection.close()
 
 
-def main():
-    db = ZeroTrustAgentDB()
-    print(f"Database initialized for zero-trust-agent")
-
-
-if __name__ == "__main__":
-    main()
+# For logging in _init_tables
+import logging
+logger = logging.getLogger(__name__)

@@ -1,31 +1,114 @@
 {
-  "completed": [
-    "baseball-schedule-optimizer-agent",
-    "baseball-lineup-optimizer-agent",
-    "baseball-strategy-ai-agent",
-    "baseball-playbook-agent",
-    "baseball-scouting-network-agent",
-    "game-matchmaking-agent",
-    "game-leaderboard-agent",
-    "game-seed-agent",
-    "game-bracket-automation-agent",
-    "game-season-agent",
-    "erotic-content-scheduler-agent",
-    "erotic-release-manager-agent",
-    "erotic-campaign-manager-agent",
-    "erotic-marketing-automation-agent",
-    "erotic-promotion-manager-agent",
-    "microservice-gateway-agent",
-    "service-discovery-agent",
-    "config-management-agent",
-    "feature-flag-agent",
-    "rate-limiting-agent",
-    "security-incident-response-agent",
-    "security-forensics-agent",
-    "security-playbook-agent",
-    "security-drill-agent",
-    "security-breach-simulation-agent"
-  ],
-  "failed": [],
-  "total": 25
+  "version": "V91",
+  "started_at": "2026-02-14T08:48:49.924200",
+  "agents": {
+    "baseball-team-management-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.924228"
+    },
+    "baseball-strategy-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.925218"
+    },
+    "baseball-scouting-v2-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.926257"
+    },
+    "baseball-farm-system-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.927064"
+    },
+    "baseball-schedule-optimizer-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.927631"
+    },
+    "game-design-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.928561"
+    },
+    "game-art-director-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.929354"
+    },
+    "game-audio-engineer-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.930091"
+    },
+    "game-level-designer-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.930848"
+    },
+    "game-asset-manager-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.931802"
+    },
+    "erotic-platform-core-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.932391"
+    },
+    "erotic-content-pipeline-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.933064"
+    },
+    "erotic-distribution-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.933568"
+    },
+    "erotic-subscription-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.934246"
+    },
+    "erotic-analytics-platform-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.935169"
+    },
+    "data-lake-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.936348"
+    },
+    "data-warehouse-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.936958"
+    },
+    "etl-pipeline-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.937564"
+    },
+    "data-quality-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.938671"
+    },
+    "data-lakehouse-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.939403"
+    },
+    "zero-trust-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.941061"
+    },
+    "continuous-auth-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.941731"
+    },
+    "device-trust-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.942401"
+    },
+    "identity-protection-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.943286"
+    },
+    "privilege-access-agent": {
+      "status": "created",
+      "updated_at": "2026-02-14T08:48:49.943730"
+    },
+    "__summary__": {
+      "status": "completed",
+      "updated_at": "2026-02-14T08:48:49.943937"
+    }
+  },
+  "total": 25,
+  "created": 25,
+  "failed": 0,
+  "completed_at": "2026-02-14T08:48:49.944303"
 }

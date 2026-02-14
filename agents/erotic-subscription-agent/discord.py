@@ -1,90 +1,99 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-erotic-subscription-agent - Discord Integration
 Discord bot integration for erotic-subscription-agent
 """
 
 import discord
 from discord.ext import commands
+from discord import app_commands
 import logging
-from typing import Optional
-import json
 from pathlib import Path
+import sys
 
-class EroticSubscriptionAgentDiscord:
-    """Discord bot integration for erotic-subscription-agent"""
+# Add parent directory to path to import agent
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from agent import EroticSubscriptionAgent
 
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-        self.logger = logging.getLogger("erotic-subscription-agent.discord")
-        self.config_path = Path(__file__).parent / "discord_config.json"
-        self.config = self._load_config()
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    def _load_config(self) -> dict:
-        default_config = {
-            "command_prefix": "!",
-            "enabled_channels": [],
-            "admin_roles": []
-        }
-        if self.config_path.exists():
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                return {**default_config, **json.load(f)}
-        return default_config
 
-    def setup_commands(self):
-        @self.bot.command(name="eroticsubscriptionagent_status")
-        async def agent_status(ctx):
-            embed = discord.Embed(
-                title="erotic-subscription-agent Status",
-                description="えっちサブスクリプションエージェント。サブスクリプションの管理。",
-                color=discord.Color.blue()
-            )
-            embed.add_field(name="Active", value="Yes", inline=True)
-            embed.add_field(name="Version", value="1.0.0", inline=True)
-            await ctx.send(embed=embed)
+class DiscordBot(commands.Bot):
+    """Discord bot for erotic-subscription-agent"""
 
-        @self.bot.command(name="eroticsubscriptionagent_help")
-        async def agent_help(ctx):
-            embed = discord.Embed(
-                title="erotic-subscription-agent Help",
-                description="えっちサブスクリプションエージェント。サブスクリプションの管理。",
-                color=discord.Color.green()
-            )
-            embed.add_field(
-                name="Commands",
-                value="`!eroticsubscriptionagent_status` - Show agent status\n`!eroticsubscriptionagent_help` - Show this help message",
-                inline=False
-            )
-            await ctx.send(embed=embed)
+    def __init__(self):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        intents.guilds = True
 
-    async def send_notification(self, channel_id: int, message: str, embed: discord.Embed = None):
-        try:
-            channel = self.bot.get_channel(channel_id)
-            if channel:
-                await channel.send(content=message, embed=embed)
-                return True
-        except Exception as e:
-            self.logger.error("Failed to send notification: " + str(e))
-        return False
-
-    async def send_alert(self, channel_id: int, title: str, description: str, level: str = "info"):
-        color_map = {
-            "info": discord.Color.blue(),
-            "warning": discord.Color.orange(),
-            "error": discord.Color.red(),
-            "success": discord.Color.green()
-        }
-        embed = discord.Embed(
-            title=title,
-            description=description,
-            color=color_map.get(level, discord.Color.blue())
+        super().__init__(
+            command_prefix="!",
+            intents=intents,
+            activity=discord.Activity(type=discord.ActivityType.watching, name="for commands")
         )
-        embed.set_footer(text="erotic-subscription-agent")
-        return await self.send_notification(channel_id, "", embed)
 
-def setup(bot: commands.Bot):
-    discord_integration = EroticSubscriptionAgentDiscord(bot)
-    discord_integration.setup_commands()
-    bot.add_cog(discord_integration)
-    return discord_integration
+        self.agent = EroticSubscriptionAgent()
+
+    async def setup_hook(self):
+        """Setup hook for bot"""
+        await self.tree.sync()
+        logger.info("Commands synced")
+
+            bot.tree.command(name="plans")(self.plans)
+            bot.tree.command(name="subscribe")(self.subscribe)
+            bot.tree.command(name="subscription_status")(self.subscription_status)
+            bot.tree.command(name="cancel_subscription")(self.cancel_subscription)
+
+    async def plans(self, interaction):
+        """Handle plans command"""
+        await interaction.response.send_message(f"{agent_name}: plans command received!")
+
+    async def subscribe(self, interaction):
+        """Handle subscribe command"""
+        await interaction.response.send_message(f"{agent_name}: subscribe command received!")
+
+    async def subscription_status(self, interaction):
+        """Handle subscription_status command"""
+        await interaction.response.send_message(f"{agent_name}: subscription_status command received!")
+
+    async def cancel_subscription(self, interaction):
+        """Handle cancel_subscription command"""
+        await interaction.response.send_message(f"{agent_name}: cancel_subscription command received!")
+
+    async def on_ready(self):
+        """Called when bot is ready"""
+        logger.info(f"{self.user} is ready!")
+        logger.info(f"Connected to {len(self.guilds)} guilds")
+
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        # Ignore messages from the bot itself
+        if message.author == self.user:
+            return
+
+        # Process message through agent
+        response = await self.agent.process_message(message.content, str(message.author.id))
+
+        # Send response if not empty
+        if response and "error" not in response:
+            await message.channel.send(f"Processed: {response.get('status', 'done')}")
+
+
+async def main():
+    """Main entry point"""
+    # Get Discord token from environment or config
+    import os
+    token = os.getenv("DISCORD_TOKEN")
+
+    if not token:
+        logger.error("DISCORD_TOKEN environment variable not set")
+        return
+
+    bot = DiscordBot()
+    await bot.start(token)
+
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())

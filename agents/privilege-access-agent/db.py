@@ -1,169 +1,89 @@
 #!/usr/bin/env python3
 """
-特権アクセスエージェント - データベース管理
-SQLiteベースのデータ永続化
+Database module for privilege-access-agent
 """
 
 import sqlite3
-from datetime import datetime
-from typing import Optional, Dict, Any, List
-from contextlib import contextmanager
 import json
+from pathlib import Path
+from typing import List, Dict, Any, Optional
+from datetime import datetime
 
-class PrivilegeAccessAgentDB:
-    """特権アクセスエージェント データベースクラス"""
 
-    def __init__(self, db_path: str = "data/privilege-access-agent.db"):
-        self.db_path = db_path
-        self._init_db()
+class privilege_access_agentDatabase:
+    """Database handler for privilege-access-agent"""
 
-    @contextmanager
-    def _get_connection(self):
-        """データベース接続のコンテキストマネージャ"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        try:
-            yield conn
-            conn.commit()
-        except Exception as e:
-            conn.rollback()
-            raise e
-        finally:
-            conn.close()
+    def __init__(self, db_path: str = None):
+        """Initialize database connection"""
+        self.db_path = db_path or Path(f"/workspace/agents/privilege-access-agent/data.db")
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.connection = sqlite3.connect(str(self.db_path), check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
+        self.cursor = self.connection.cursor()
+        self._init_tables()
 
-    def _init_db(self):
-        """データベース初期化"""
-        with self._get_connection() as conn:
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS records (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    type TEXT NOT NULL,
-                    title TEXT,
-                    content TEXT NOT NULL,
-                    metadata TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
+    def _init_tables(self):
+        """Initialize database tables"""
+        logger.info("Initializing database tables...")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS privileges(id INTEGER PRIMARY KEY, name TEXT, description TEXT, level INTEGER, approval_required INTEGER)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS assignments(id INTEGER PRIMARY KEY, user_id INTEGER, privilege_id INTEGER, granted_by INTEGER, granted_at TIMESTAMP, expires_at TIMESTAMP, FOREIGN KEY (privilege_id) REFERENCES privileges(id))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS requests(id INTEGER PRIMARY KEY, user_id INTEGER, privilege_id INTEGER, reason TEXT, status TEXT, requested_at TIMESTAMP, approved_by INTEGER, FOREIGN KEY (privilege_id) REFERENCES privileges(id))""")
+        self.connection.commit()
 
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS tasks (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    task_id TEXT UNIQUE NOT NULL,
-                    status TEXT DEFAULT 'pending',
-                    result TEXT,
-                    error TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    completed_at TIMESTAMP
-                )
-            """)
+    def execute(self, query: str, params: tuple = None) -> sqlite3.Cursor:
+        """Execute a SQL query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        self.connection.commit()
+        return self.cursor
 
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS settings (
-                    key TEXT PRIMARY KEY,
-                    value TEXT NOT NULL,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
+    def fetchall(self, query: str, params: tuple = None) -> List[Dict[str, Any]]:
+        """Fetch all results from a query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        return [dict(row) for row in self.cursor.fetchall()]
 
-    def insert_record(self, record_type: str, title: str, content: str,
-                       metadata: Optional[Dict[str, Any]] = None) -> int:
-        """レコード挿入"""
-        metadata_json = json.dumps(metadata) if metadata else None
-        with self._get_connection() as conn:
-            cursor = conn.execute(
-                'INSERT INTO records (type, title, content, metadata) VALUES (?, ?, ?, ?)',
-                (record_type, title, content, metadata_json)
-            )
-            return cursor.lastrowid
+    def fetchone(self, query: str, params: tuple = None) -> Optional[Dict[str, Any]]:
+        """Fetch one result from a query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        row = self.cursor.fetchone()
+        return dict(row) if row else None
 
-    def get_record(self, record_id: int) -> Optional[Dict[str, Any]]:
-        """レコード取得"""
-        with self._get_connection() as conn:
-            row = conn.execute('SELECT * FROM records WHERE id = ?', (record_id,)).fetchone()
-            if row:
-                return dict(row)
-        return None
+    def insert(self, table: str, data: Dict[str, Any]) -> int:
+        """Insert a row into a table"""
+        columns = ', '.join(data.keys())
+        placeholders = ', '.join(['?' for _ in data])
+        query = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+        self.cursor.execute(query, tuple(data.values()))
+        self.connection.commit()
+        return self.cursor.lastrowid
 
-    def list_records(self, record_type: Optional[str] = None,
-                    limit: int = 100) -> List[Dict[str, Any]]:
-        """レコード一覧"""
-        with self._get_connection() as conn:
-            if record_type:
-                rows = conn.execute(
-                    'SELECT * FROM records WHERE type = ? ORDER BY created_at DESC LIMIT ?',
-                    (record_type, limit)
-                ).fetchall()
-            else:
-                rows = conn.execute(
-                    'SELECT * FROM records ORDER BY created_at DESC LIMIT ?',
-                    (limit,)
-                ).fetchall()
-            return [dict(row) for row in rows]
+    def update(self, table: str, data: Dict[str, Any], where: Dict[str, Any]) -> int:
+        """Update rows in a table"""
+        set_clause = ', '.join([f"{k} = ?" for k in data.keys()])
+        where_clause = ' AND '.join([f"{k} = ?" for k in where.keys()])
+        query = f"UPDATE {table} SET {set_clause} WHERE {where_clause}"
+        self.cursor.execute(query, tuple(data.values()) + tuple(where.values()))
+        self.connection.commit()
+        return self.cursor.rowcount
 
-    def insert_task(self, task_id: str, status: str = "pending") -> int:
-        """タスク挿入"""
-        with self._get_connection() as conn:
-            cursor = conn.execute(
-                'INSERT INTO tasks (task_id, status) VALUES (?, ?)',
-                (task_id, status)
-            )
-            return cursor.lastrowid
+    def delete(self, table: str, where: Dict[str, Any]) -> int:
+        """Delete rows from a table"""
+        where_clause = ' AND '.join([f"{k} = ?" for k in where.keys()])
+        query = f"DELETE FROM {table} WHERE {where_clause}"
+        self.cursor.execute(query, tuple(where.values()))
+        self.connection.commit()
+        return self.cursor.rowcount
 
-    def update_task(self, task_id: str, status: str,
-                   result: Optional[str] = None, error: Optional[str] = None):
-        """タスク更新"""
-        completed_at = datetime.now().isoformat() if status == "completed" else None
-        with self._get_connection() as conn:
-            conn.execute(
-                'UPDATE tasks SET status = ?, result = ?, error = ?, completed_at = ? WHERE task_id = ?',
-                (status, result, error, completed_at, task_id)
-            )
+    def close(self):
+        """Close database connection"""
+        self.connection.close()
 
-    def get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
-        """タスク取得"""
-        with self._get_connection() as conn:
-            row = conn.execute('SELECT * FROM tasks WHERE task_id = ?', (task_id,)).fetchone()
-            if row:
-                return dict(row)
-        return None
 
-    def set_setting(self, key: str, value: str):
-        """設定保存"""
-        with self._get_connection() as conn:
-            conn.execute(
-                'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?, updated_at = CURRENT_TIMESTAMP',
-                (key, value, value)
-            )
-
-    def get_setting(self, key: str) -> Optional[str]:
-        """設定取得"""
-        with self._get_connection() as conn:
-            row = conn.execute('SELECT value FROM settings WHERE key = ?', (key,)).fetchone()
-            if row:
-                return row['value']
-        return None
-
-async def main():
-    """動作確認"""
-    db = PrivilegeAccessAgentDB()
-
-    record_id = db.insert_record(
-        record_type="sample",
-        title="Sample Record",
-        content="This is a sample record for 特権アクセスエージェント"
-    )
-    print(f"Inserted record: {record_id}")
-
-    record = db.get_record(record_id)
-    print(f"Retrieved record: {record}")
-
-    db.insert_task("task_001")
-    db.update_task("task_001", "completed", result="Success")
-
-    task = db.get_task("task_001")
-    print(f"Task status: {task}")
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+# For logging in _init_tables
+import logging
+logger = logging.getLogger(__name__)

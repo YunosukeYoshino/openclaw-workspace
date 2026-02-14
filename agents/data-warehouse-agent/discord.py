@@ -1,89 +1,99 @@
 #!/usr/bin/env python3
-# data-warehouse-agent Discord ボット
+"""
+Discord bot integration for data-warehouse-agent
+"""
 
-import logging
 import discord
 from discord.ext import commands
+from discord import app_commands
+import logging
+from pathlib import Path
+import sys
 
+# Add parent directory to path to import agent
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from agent import DataWarehouseAgent
+
+# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class Data_warehouse_agentDiscordBot(commands.Bot):
-    # data-warehouse-agent Discord ボット
+class DiscordBot(commands.Bot):
+    """Discord bot for data-warehouse-agent"""
 
-    def __init__(self, db):
-        # 初期化
+    def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents, help_command=None)
-        self.db = db
+        intents.guilds = True
+
+        super().__init__(
+            command_prefix="!",
+            intents=intents,
+            activity=discord.Activity(type=discord.ActivityType.watching, name="for commands")
+        )
+
+        self.agent = DataWarehouseAgent()
 
     async def setup_hook(self):
-        # ボット起動時の設定
-        await self.add_cog(Data_warehouse_agentCommands(self))
+        """Setup hook for bot"""
+        await self.tree.sync()
+        logger.info("Commands synced")
+
+            bot.tree.command(name="create_fact")(self.create_fact)
+            bot.tree.command(name="add_dimension")(self.add_dimension)
+            bot.tree.command(name="run_etl")(self.run_etl)
+            bot.tree.command(name="warehouse_status")(self.warehouse_status)
+
+    async def create_fact(self, interaction):
+        """Handle create_fact command"""
+        await interaction.response.send_message(f"{agent_name}: create_fact command received!")
+
+    async def add_dimension(self, interaction):
+        """Handle add_dimension command"""
+        await interaction.response.send_message(f"{agent_name}: add_dimension command received!")
+
+    async def run_etl(self, interaction):
+        """Handle run_etl command"""
+        await interaction.response.send_message(f"{agent_name}: run_etl command received!")
+
+    async def warehouse_status(self, interaction):
+        """Handle warehouse_status command"""
+        await interaction.response.send_message(f"{agent_name}: warehouse_status command received!")
 
     async def on_ready(self):
-        # 準備完了時のイベント
-        logger.info("Logged in as %s", self.user.name)
+        """Called when bot is ready"""
+        logger.info(f"{self.user} is ready!")
+        logger.info(f"Connected to {len(self.guilds)} guilds")
+
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        # Ignore messages from the bot itself
+        if message.author == self.user:
+            return
+
+        # Process message through agent
+        response = await self.agent.process_message(message.content, str(message.author.id))
+
+        # Send response if not empty
+        if response and "error" not in response:
+            await message.channel.send(f"Processed: {response.get('status', 'done')}")
 
 
-class Data_warehouse_agentCommands(commands.Cog):
-    # data-warehouse-agent コマンド
+async def main():
+    """Main entry point"""
+    # Get Discord token from environment or config
+    import os
+    token = os.getenv("DISCORD_TOKEN")
 
-    def __init__(self, bot: commands.Bot):
-        # 初期化
-        self.bot = bot
+    if not token:
+        logger.error("DISCORD_TOKEN environment variable not set")
+        return
 
-    @commands.command(name="data_warehouse_agent")
-    async def data_warehouse_agent(self, ctx: commands.Context, action: str = "list", *, args: str = ""):
-        # メインコマンド
-        if action == "list":
-            entries = self.bot.db.list_entries(limit=20)
-            if not entries:
-                await ctx.send("エントリーがありません")
-                return
-            embed = discord.Embed(title="Data Warehouse Agent 一覧", color=discord.Color.blue())
-            for entry in entries[:10]:
-                title = entry.get("title") or "タイトルなし"
-                content = entry.get("content", "")[:50]
-                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
-            await ctx.send(embed=embed)
-        elif action == "add":
-            if not args:
-                await ctx.send(f"使用方法: !data_warehouse_agent add <内容>")
-                return
-            entry_id = self.bot.db.add_entry(title=None, content=args, status="active", priority=0)
-            await ctx.send(f"エントリーを追加しました (ID: {entry_id})")
-        elif action == "search":
-            if not args:
-                await ctx.send(f"使用方法: !data_warehouse_agent search <キーワード>")
-                return
-            entries = self.bot.db.search_entries(args, limit=10)
-            if not entries:
-                await ctx.send("一致するエントリーがありません")
-                return
-            embed = discord.Embed(title=f"「{args}」の検索結果", color=discord.Color.green())
-            for entry in entries:
-                title = entry.get("title") or "タイトルなし"
-                content = entry.get("content", "")[:50]
-                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send(f"不明なアクションです: {action}\\n使用可能なアクション: list, add, search")
+    bot = DiscordBot()
+    await bot.start(token)
 
-    @commands.command(name="data_warehouse_agent_status")
-    async def data_warehouse_agent_status(self, ctx: commands.Context):
-        # ステータス確認
-        entries = self.bot.db.list_entries(status="active")
-        embed = discord.Embed(title="Data Warehouse Agent ステータス", color=discord.Color.gold())
-        embed.add_field(name="アクティブエントリー", value=str(len(entries)))
-        await ctx.send(embed=embed)
 
-    @commands.command(name="data_warehouse_agent_delete")
-    async def data_warehouse_agent_delete(self, ctx: commands.Context, entry_id: int):
-        # エントリー削除
-        if self.bot.db.delete_entry(entry_id):
-            await ctx.send(f"エントリーを削除しました (ID: {entry_id})")
-        else:
-            await ctx.send(f"エントリーが見つかりません (ID: {entry_id})")
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())

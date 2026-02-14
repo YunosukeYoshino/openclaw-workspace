@@ -1,46 +1,98 @@
 #!/usr/bin/env python3
 """
-Discord Bot for data-quality-agent
-データ品質エージェント / Data Quality Agent
+Discord bot integration for data-quality-agent
 """
 
 import discord
 from discord.ext import commands
-from agent import DataQualityAgent
+from discord import app_commands
 import logging
 from pathlib import Path
-import os
+import sys
 
+# Add parent directory to path to import agent
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from agent import DataQualityAgent
+
+# Configure logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("data-quality-agent")
+logger = logging.getLogger(__name__)
 
-TOKEN = os.getenv("DISCORD_TOKEN", "YOUR_DISCORD_BOT_TOKEN")
-INTENTS = discord.Intents.default()
-INTENTS.message_content = True
 
-bot = commands.Bot(command_prefix="!", intents=INTENTS, help_command=commands.DefaultHelpCommand())
+class DiscordBot(commands.Bot):
+    """Discord bot for data-quality-agent"""
 
-@bot.event
-async def on_ready():
-    logger.info(str(bot.user.name) + " is ready!")
-    logger.info("Bot ID: " + str(bot.user.id))
-    logger.info("Connected to " + str(len(bot.guilds)) + " guilds")
+    def __init__(self):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        intents.guilds = True
 
-@bot.event
-async def on_command_error(ctx: commands.Context, error):
-    if isinstance(error, commands.CommandNotFound):
-        return
-    elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("Missing required argument: " + str(error.param.name))
-    else:
-        logger.error("Command error: " + str(error))
-        await ctx.send("An error occurred: " + str(error))
+        super().__init__(
+            command_prefix="!",
+            intents=intents,
+            activity=discord.Activity(type=discord.ActivityType.watching, name="for commands")
+        )
+
+        self.agent = DataQualityAgent()
+
+    async def setup_hook(self):
+        """Setup hook for bot"""
+        await self.tree.sync()
+        logger.info("Commands synced")
+
+            bot.tree.command(name="add_rule")(self.add_rule)
+            bot.tree.command(name="run_checks")(self.run_checks)
+            bot.tree.command(name="quality_report")(self.quality_report)
+            bot.tree.command(name="fix_issues")(self.fix_issues)
+
+    async def add_rule(self, interaction):
+        """Handle add_rule command"""
+        await interaction.response.send_message(f"{agent_name}: add_rule command received!")
+
+    async def run_checks(self, interaction):
+        """Handle run_checks command"""
+        await interaction.response.send_message(f"{agent_name}: run_checks command received!")
+
+    async def quality_report(self, interaction):
+        """Handle quality_report command"""
+        await interaction.response.send_message(f"{agent_name}: quality_report command received!")
+
+    async def fix_issues(self, interaction):
+        """Handle fix_issues command"""
+        await interaction.response.send_message(f"{agent_name}: fix_issues command received!")
+
+    async def on_ready(self):
+        """Called when bot is ready"""
+        logger.info(f"{self.user} is ready!")
+        logger.info(f"Connected to {len(self.guilds)} guilds")
+
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        # Ignore messages from the bot itself
+        if message.author == self.user:
+            return
+
+        # Process message through agent
+        response = await self.agent.process_message(message.content, str(message.author.id))
+
+        # Send response if not empty
+        if response and "error" not in response:
+            await message.channel.send(f"Processed: {response.get('status', 'done')}")
+
 
 async def main():
-    Path("data").mkdir(exist_ok=True)
-    await bot.add_cog(DataQualityAgent(bot))
-    logger.info("Starting bot...")
-    await bot.start(TOKEN)
+    """Main entry point"""
+    # Get Discord token from environment or config
+    import os
+    token = os.getenv("DISCORD_TOKEN")
+
+    if not token:
+        logger.error("DISCORD_TOKEN environment variable not set")
+        return
+
+    bot = DiscordBot()
+    await bot.start(token)
+
 
 if __name__ == "__main__":
     import asyncio

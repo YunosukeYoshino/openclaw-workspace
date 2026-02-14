@@ -1,61 +1,94 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-erotic-subscription-agent
-えっちサブスクリプションエージェント。サブスクリプションの管理。
+erotic-subscription-agent - えっちサブスクリプションエージェント。サブスクリプション・会員プランの管理。
 """
 
+import json
 import logging
 from datetime import datetime
-from typing import Optional, List, Dict, Any
+from pathlib import Path
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 class EroticSubscriptionAgent:
-    """えっちサブスクリプションエージェント。サブスクリプションの管理。"""
+    """えっちサブスクリプションエージェント。サブスクリプション・会員プランの管理。"""
 
-    def __init__(self):
-        self.name = "erotic-subscription-agent"
-        self.logger = logging.getLogger(self.name)
-        self.logger.setLevel(logging.INFO)
+    def __init__(self, db_path=None):
+        """Initialize the agent"""
+        from .db import erotic_subscription_agentDatabase
 
-        self.state = {
-            "active": True,
-            "last_activity": datetime.utcnow().isoformat(),
-            "tasks_processed": 0,
-            "errors": []
+        self.db_path = db_path or Path(f"/workspace/agents/erotic-subscription-agent/data.db")
+        self.db = erotic_subscription_agentDatabase(self.db_path)
+        self.commands = ["plans", "subscribe", "subscription_status", "cancel_subscription"]
+
+    async def process_message(self, message: str, user_id: str = None):
+        """Process incoming message"""
+        logger.info(f"Processing message: {message[:50]}...")
+
+        # Parse command
+        parts = message.strip().split()
+        if not parts:
+            return {"error": "No command provided"}
+
+        cmd = parts[0].lower()
+        args = parts[1:]
+
+        try:
+            if cmd in self.commands:
+                return await self.handle_command(cmd, args, user_id)
+            else:
+                return {"error": f"Unknown command: {cmd}", "available_commands": self.commands}
+        except Exception as e:
+            logger.error(f"Error processing message: {e}")
+            return {"error": str(e)}
+
+    async def handle_command(self, cmd: str, args: list, user_id: str = None):
+        """Handle specific command"""
+        logger.info(f"Handling command: {cmd} with args: {args}")
+
+        if cmd == "plans" and len(commands) > 0:
+            return await self.plans(args, user_id)
+
+        # Generic handler for other commands
+        return {
+            "command": cmd,
+            "args": args,
+            "user_id": user_id,
+            "status": "processed"
         }
 
-    def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        try:
-            self.state["tasks_processed"] += 1
-            self.state["last_activity"] = datetime.utcnow().isoformat()
+    async def plans(self, args: list, user_id: str = None):
+        """Handle plans command"""
+        logger.info(f"plans: {args}")
 
-            result = {
-                "success": True,
-                "agent": self.name,
-                "task_id": task.get("id"),
-                "message": "Task processed by " + self.name,
-                "timestamp": datetime.utcnow().isoformat()
-            }
+        # Implement command logic here
+        return {
+            "command": "plans",
+            "args": args,
+            "result": "success",
+            "timestamp": datetime.now().isoformat()
+        }
 
-            self.logger.info(result["message"])
-            return result
+    def get_status(self):
+        """Get agent status"""
+        return {
+            "agent": "erotic-subscription-agent",
+            "category": "erotic",
+            "status": "active",
+            "commands": self.commands,
+            "timestamp": datetime.now().isoformat()
+        }
 
-        except Exception as e:
-            self.logger.error("Error processing task: " + str(e))
-            self.state["errors"].append(str(e))
-            return {
-                "success": False,
-                "agent": self.name,
-                "error": str(e),
-                "timestamp": datetime.utcnow().isoformat()
-            }
 
-    def get_status(self) -> Dict[str, Any]:
-        return self.state
+async def main():
+    """Main entry point"""
+    agent = EroticSubscriptionAgent()
+    print(agent.get_status())
 
-    def query(self, params: Dict[str, Any]) -> List[Dict[str, Any]]:
-        return []
 
 if __name__ == "__main__":
-    agent = EroticSubscriptionAgent()
-    print("Agent " + agent.name + " initialized")
+    import asyncio
+    asyncio.run(main())

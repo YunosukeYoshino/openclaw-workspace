@@ -1,56 +1,80 @@
 # data-quality-agent
 
-データ品質エージェント / Data Quality Agent
+データ品質エージェント。データ品質のチェック・監視・改善。
 
-データ品質チェック、異常検知、自動修正を行うエージェント
+## 概要 / Overview
 
-Checks data quality, detects anomalies, and performs automatic fixes
+**日本語:**
+データ品質エージェント。データ品質のチェック・監視・改善。を提供するエージェント。
 
-## Features / 機能
+**English:**
+An agent providing データ品質エージェント。データ品質のチェック・監視・改善。.
 
-- 追加: 新しいアイテムをデータベースに追加
-- 表示: アイテム一覧の表示
-- 検索: キーワードでアイテムを検索
-- 削除: アイテムを削除
-- ステータス: データベースの統計情報を表示
+## カテゴリ / Category
 
-## Installation / インストール
+- `data`
 
-\`\`\`bash
+## 機能 / Features
+
+- Discord Bot 連携による対話型インターフェース
+- SQLite データベースによるデータ管理
+- コマンドラインからの操作
+
+## コマンド / Commands
+
+| コマンド | 説明 | 説明 (EN) |
+|----------|------|-----------|
+| `!add_rule` | add_rule コマンド | add_rule command |
+| `!run_checks` | run_checks コマンド | run_checks command |
+| `!quality_report` | quality_report コマンド | quality_report command |
+| `!fix_issues` | fix_issues コマンド | fix_issues command |
+
+## インストール / Installation
+
+```bash
+cd agents/data-quality-agent
 pip install -r requirements.txt
-export DISCORD_TOKEN="your_discord_bot_token"
+```
+
+## 使用方法 / Usage
+
+### エージェントの実行 / Run Agent
+
+```bash
+python agent.py
+```
+
+### Discord Bot の起動 / Start Discord Bot
+
+```bash
+export DISCORD_TOKEN="your_bot_token"
 python discord.py
-\`\`\`
+```
 
-## Requirements / 要件
+## データベース / Database
 
-- Python 3.8+
-- discord.py 2.0+
+データベースファイル: `data.db`
 
-## Commands / コマンド
+### テーブル / Tables
 
-| Command | Description | 説明 |
-|---------|-------------|------|
-| `!dataqualityagent` | Main menu | メインメニュー |
-| `!dataqualityagent status` | Show status | ステータス表示 |
-| `!dataqualityagent add <content>` | Add item | アイテム追加 |
-| `!dataqualityagent list [limit]` | List items | アイテム一覧 |
-| `!dataqualityagent search <query>` | Search items | アイテム検索 |
-| `!dataqualityagent remove <id>` | Remove item | アイテム削除 |
+- **rules**: id INTEGER PRIMARY KEY, name TEXT, type TEXT, config JSON, enabled INTEGER
+- **checks**: id INTEGER PRIMARY KEY, rule_id INTEGER, dataset_id INTEGER, passed INTEGER, failed INTEGER, checked_at TIMESTAMP, FOREIGN KEY (rule_id) REFERENCES rules(id
+- **issues**: id INTEGER PRIMARY KEY, check_id INTEGER, row_id INTEGER, column TEXT, description TEXT, FOREIGN KEY (check_id) REFERENCES checks(id
 
-## Usage / 使用方法
+## 開発 / Development
 
-\`\`\`
-!dataqualityagent add Example content
-!dataqualityagent list 10
-!dataqualityagent search keyword
-!dataqualityagent remove 1
-\`\`\`
+```bash
+# テスト
+python -m pytest
 
-## Database / データベース
+# フォーマット
+black agent.py db.py discord.py
+```
 
-SQLite database. Data stored in `data/data-quality-agent.db`.
-
-## License / ライセンス
+## ライセンス / License
 
 MIT License
+
+---
+
+_This agent is part of the OpenClaw Agents ecosystem._

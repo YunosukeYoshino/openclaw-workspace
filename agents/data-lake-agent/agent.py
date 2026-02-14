@@ -1,44 +1,94 @@
 #!/usr/bin/env python3
-# data-lake-agent
-# データレイクエージェント。データレイクの管理・運用。
+"""
+data-lake-agent - データレイクエージェント。データレイクの管理・運用。
+"""
 
-import asyncio
+import json
 import logging
-from db import Data_lake_agentDatabase
-from discord import Data_lake_agentDiscordBot
+from datetime import datetime
+from pathlib import Path
 
+# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class Data_lake_agentAgent:
-    # data-lake-agent メインエージェント
+class DataLakeAgent:
+    """データレイクエージェント。データレイクの管理・運用。"""
 
-    def __init__(self, db_path: str = "data-lake-agent.db"):
-        # 初期化
-        self.db = Data_lake_agentDatabase(db_path)
-        self.discord_bot = Data_lake_agentDiscordBot(self.db)
+    def __init__(self, db_path=None):
+        """Initialize the agent"""
+        from .db import data_lake_agentDatabase
 
-    async def run(self):
-        # エージェントを実行
-        logger.info("Starting data-lake-agent...")
-        self.db.initialize()
-        await self.discord_bot.start()
+        self.db_path = db_path or Path(f"/workspace/agents/data-lake-agent/data.db")
+        self.db = data_lake_agentDatabase(self.db_path)
+        self.commands = ["ingest", "list_datasets", "dataset_info", "query_lake"]
 
-    async def stop(self):
-        # エージェントを停止
-        logger.info("Stopping data-lake-agent...")
-        await self.discord_bot.stop()
+    async def process_message(self, message: str, user_id: str = None):
+        """Process incoming message"""
+        logger.info(f"Processing message: {message[:50]}...")
+
+        # Parse command
+        parts = message.strip().split()
+        if not parts:
+            return {"error": "No command provided"}
+
+        cmd = parts[0].lower()
+        args = parts[1:]
+
+        try:
+            if cmd in self.commands:
+                return await self.handle_command(cmd, args, user_id)
+            else:
+                return {"error": f"Unknown command: {cmd}", "available_commands": self.commands}
+        except Exception as e:
+            logger.error(f"Error processing message: {e}")
+            return {"error": str(e)}
+
+    async def handle_command(self, cmd: str, args: list, user_id: str = None):
+        """Handle specific command"""
+        logger.info(f"Handling command: {cmd} with args: {args}")
+
+        if cmd == "ingest" and len(commands) > 0:
+            return await self.ingest(args, user_id)
+
+        # Generic handler for other commands
+        return {
+            "command": cmd,
+            "args": args,
+            "user_id": user_id,
+            "status": "processed"
+        }
+
+    async def ingest(self, args: list, user_id: str = None):
+        """Handle ingest command"""
+        logger.info(f"ingest: {args}")
+
+        # Implement command logic here
+        return {
+            "command": "ingest",
+            "args": args,
+            "result": "success",
+            "timestamp": datetime.now().isoformat()
+        }
+
+    def get_status(self):
+        """Get agent status"""
+        return {
+            "agent": "data-lake-agent",
+            "category": "data",
+            "status": "active",
+            "commands": self.commands,
+            "timestamp": datetime.now().isoformat()
+        }
 
 
 async def main():
-    # メイン関数
-    agent = Data_lake_agentAgent()
-    try:
-        await agent.run()
-    except KeyboardInterrupt:
-        await agent.stop()
+    """Main entry point"""
+    agent = DataLakeAgent()
+    print(agent.get_status())
 
 
 if __name__ == "__main__":
+    import asyncio
     asyncio.run(main())

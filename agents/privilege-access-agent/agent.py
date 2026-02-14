@@ -1,109 +1,94 @@
 #!/usr/bin/env python3
 """
-特権アクセスエージェント
-特権アクセスの管理・監査
+privilege-access-agent - 特権アクセスエージェント。特権アクセスの管理・監査・承認。
 """
 
-import asyncio
-import os
-from typing import Optional, Dict, Any, List
-from datetime import datetime
 import json
+import logging
+from datetime import datetime
+from pathlib import Path
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 class PrivilegeAccessAgent:
-    """特権アクセスエージェント"""
+    """特権アクセスエージェント。特権アクセスの管理・監査・承認。"""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
-        self.config = config or {}
-        self.name = "privilege-access-agent"
-        self.title = "特権アクセスエージェント"
-        self.description = "特権アクセスの管理・監査"
-        self.category = "security"
-        self.language = "Japanese"
-        self.state = "idle"
-        self.created_at = datetime.now().isoformat()
-        self.tasks: List[Dict[str, Any]] = []
+    def __init__(self, db_path=None):
+        """Initialize the agent"""
+        from .db import privilege_access_agentDatabase
 
-    async def initialize(self) -> bool:
-        """エージェントの初期化"""
-        try:
-            self.state = "initializing"
-            print(f"Initializing {self.title}...")
-            await asyncio.sleep(0.5)
-            self.state = "ready"
-            return True
-        except Exception as e:
-            print(f"Error initializing: {e}")
-            self.state = "error"
-            return False
+        self.db_path = db_path or Path(f"/workspace/agents/privilege-access-agent/data.db")
+        self.db = privilege_access_agentDatabase(self.db_path)
+        self.commands = ["privileges", "request_access", "approve_request", "audit_log"]
 
-    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        """データ処理"""
-        if self.state != "ready":
-            return {"error": "Agent not ready", "state": self.state}
+    async def process_message(self, message: str, user_id: str = None):
+        """Process incoming message"""
+        logger.info(f"Processing message: {message[:50]}...")
 
-        self.state = "processing"
-        try:
-            result = {
-                "success": True,
-                "data": input_data,
-                "processed_at": datetime.now().isoformat(),
-                "agent": self.name
-            }
-            self.state = "ready"
-            return result
-        except Exception as e:
-            self.state = "error"
-            return {"error": str(e), "state": self.state}
+        # Parse command
+        parts = message.strip().split()
+        if not parts:
+            return {"error": "No command provided"}
 
-    async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """タスク実行"""
-        task_id = task.get("id", f"task_{len(self.tasks)}")
-        self.tasks.append({"id": task_id, "task": task, "status": "pending"})
+        cmd = parts[0].lower()
+        args = parts[1:]
 
         try:
-            result = await self.process(task.get("data", {}))
-            self.tasks[-1]["status"] = "completed"
-            return result
+            if cmd in self.commands:
+                return await self.handle_command(cmd, args, user_id)
+            else:
+                return {"error": f"Unknown command: {cmd}", "available_commands": self.commands}
         except Exception as e:
-            self.tasks[-1]["status"] = "failed"
-            return {"error": str(e), "task_id": task_id}
+            logger.error(f"Error processing message: {e}")
+            return {"error": str(e)}
 
-    async def get_status(self) -> Dict[str, Any]:
-        """ステータス取得"""
+    async def handle_command(self, cmd: str, args: list, user_id: str = None):
+        """Handle specific command"""
+        logger.info(f"Handling command: {cmd} with args: {args}")
+
+        if cmd == "privileges" and len(commands) > 0:
+            return await self.privileges(args, user_id)
+
+        # Generic handler for other commands
         return {
-            "name": self.name,
-            "title": self.title,
-            "state": self.state,
-            "tasks_completed": sum(1 for t in self.tasks if t["status"] == "completed"),
-            "tasks_pending": sum(1 for t in self.tasks if t["status"] == "pending"),
-            "created_at": self.created_at
+            "command": cmd,
+            "args": args,
+            "user_id": user_id,
+            "status": "processed"
         }
 
-    async def cleanup(self) -> None:
-        """クリーンアップ"""
-        self.state = "stopped"
-        print(f"{self.title} stopped.")
+    async def privileges(self, args: list, user_id: str = None):
+        """Handle privileges command"""
+        logger.info(f"privileges: {args}")
+
+        # Implement command logic here
+        return {
+            "command": "privileges",
+            "args": args,
+            "result": "success",
+            "timestamp": datetime.now().isoformat()
+        }
+
+    def get_status(self):
+        """Get agent status"""
+        return {
+            "agent": "privilege-access-agent",
+            "category": "security",
+            "status": "active",
+            "commands": self.commands,
+            "timestamp": datetime.now().isoformat()
+        }
+
 
 async def main():
-    """メイン処理"""
+    """Main entry point"""
     agent = PrivilegeAccessAgent()
-    await agent.initialize()
+    print(agent.get_status())
 
-    sample_task = {
-        "id": "sample_001",
-        "data": {
-            "message": "Sample task for 特権アクセスエージェント"
-        }
-    }
-
-    result = await agent.execute_task(sample_task)
-    print(f"Result: {json.dumps(result, ensure_ascii=False, indent=2)}")
-
-    status = await agent.get_status()
-    print(f"Status: {json.dumps(status, ensure_ascii=False, indent=2)}")
-
-    await agent.cleanup()
 
 if __name__ == "__main__":
+    import asyncio
     asyncio.run(main())

@@ -1,70 +1,99 @@
 #!/usr/bin/env python3
 """
-Discord integration for 野球スケジュール最適化エージェント
+Discord bot integration for baseball-schedule-optimizer-agent
 """
 
-import logging
-from typing import Optional
 import discord
 from discord.ext import commands
+from discord import app_commands
+import logging
+from pathlib import Path
+import sys
 
+# Add parent directory to path to import agent
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from agent import BaseballScheduleOptimizerAgent
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class DiscordBot(commands.Bot):
-    """Discord bot for 野球スケジュール最適化エージェント"""
+    """Discord bot for baseball-schedule-optimizer-agent"""
 
-    def __init__(self, token: Optional[str] = None):
+    def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
-        self.token = token or ""
-        self.agent = None
+        intents.guilds = True
 
-    def set_agent(self, agent):
-        """Set agent instance"""
-        self.agent = agent
+        super().__init__(
+            command_prefix="!",
+            intents=intents,
+            activity=discord.Activity(type=discord.ActivityType.watching, name="for commands")
+        )
+
+        self.agent = BaseballScheduleOptimizerAgent()
+
+    async def setup_hook(self):
+        """Setup hook for bot"""
+        await self.tree.sync()
+        logger.info("Commands synced")
+
+            bot.tree.command(name="schedule")(self.schedule)
+            bot.tree.command(name="travel_plan")(self.travel_plan)
+            bot.tree.command(name="rest_days")(self.rest_days)
+            bot.tree.command(name="optimize_schedule")(self.optimize_schedule)
+
+    async def schedule(self, interaction):
+        """Handle schedule command"""
+        await interaction.response.send_message(f"{agent_name}: schedule command received!")
+
+    async def travel_plan(self, interaction):
+        """Handle travel_plan command"""
+        await interaction.response.send_message(f"{agent_name}: travel_plan command received!")
+
+    async def rest_days(self, interaction):
+        """Handle rest_days command"""
+        await interaction.response.send_message(f"{agent_name}: rest_days command received!")
+
+    async def optimize_schedule(self, interaction):
+        """Handle optimize_schedule command"""
+        await interaction.response.send_message(f"{agent_name}: optimize_schedule command received!")
 
     async def on_ready(self):
         """Called when bot is ready"""
-        logger.info(f"{self.user} is ready")
+        logger.info(f"{self.user} is ready!")
+        logger.info(f"Connected to {len(self.guilds)} guilds")
 
     async def on_message(self, message: discord.Message):
         """Handle incoming messages"""
-        if message.author.bot:
+        # Ignore messages from the bot itself
+        if message.author == self.user:
             return
-        await self.process_commands(message)
 
-    @commands.command(name="status")
-    async def status(self, ctx: commands.Context):
-        """Show agent status"""
-        if self.agent:
-            status = self.agent.get_status()
-            await ctx.send(f"**Status:** {status.get('status')}\n**Version:** {status.get('version')}")
-        else:
-            await ctx.send("Agent not configured")
+        # Process message through agent
+        response = await self.agent.process_message(message.content, str(message.author.id))
 
-    @commands.command(name="info")
-    async def info(self, ctx: commands.Context):
-        """Show agent information"""
-        if self.agent:
-            await ctx.send(f"**Name:** {self.agent.name}\n**Description:** {self.agent.description}")
-        else:
-            await ctx.send("Agent not configured")
-
-    def start_bot(self):
-        """Start the bot"""
-        if self.token:
-            self.run(self.token)
-        else:
-            logger.warning("Discord token not provided")
+        # Send response if not empty
+        if response and "error" not in response:
+            await message.channel.send(f"Processed: {response.get('status', 'done')}")
 
 
-def main():
-    """Test discord bot"""
+async def main():
+    """Main entry point"""
+    # Get Discord token from environment or config
+    import os
+    token = os.getenv("DISCORD_TOKEN")
+
+    if not token:
+        logger.error("DISCORD_TOKEN environment variable not set")
+        return
+
     bot = DiscordBot()
-    print("Discord bot module loaded")
+    await bot.start(token)
 
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())

@@ -1,134 +1,89 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-erotic-subscription-agent - Database Module
-SQLite database management for erotic-subscription-agent
+Database module for erotic-subscription-agent
 """
 
 import sqlite3
 import json
-from datetime import datetime
-from typing import Optional, List, Dict, Any
 from pathlib import Path
+from typing import List, Dict, Any, Optional
+from datetime import datetime
 
-class EroticSubscriptionAgentDB:
-    """Database manager for erotic-subscription-agent"""
+
+class erotic_subscription_agentDatabase:
+    """Database handler for erotic-subscription-agent"""
 
     def __init__(self, db_path: str = None):
-        if db_path is None:
-            db_path = str(Path(__file__).parent / "erotic-subscription-agent.db")
+        """Initialize database connection"""
+        self.db_path = db_path or Path(f"/workspace/agents/erotic-subscription-agent/data.db")
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.connection = sqlite3.connect(str(self.db_path), check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
+        self.cursor = self.connection.cursor()
+        self._init_tables()
 
-        self.db_path = db_path
-        self.conn = None
-        self.connect()
-        self.init_tables()
+    def _init_tables(self):
+        """Initialize database tables"""
+        logger.info("Initializing database tables...")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS plans(id INTEGER PRIMARY KEY, name TEXT, price INTEGER, currency TEXT, duration_days INTEGER, features JSON)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS subscriptions(id INTEGER PRIMARY KEY, user_id INTEGER, plan_id INTEGER, start_date TIMESTAMP, end_date TIMESTAMP, status TEXT, FOREIGN KEY (plan_id) REFERENCES plans(id))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS payments(id INTEGER PRIMARY KEY, subscription_id INTEGER, amount INTEGER, status TEXT, method TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (subscription_id) REFERENCES subscriptions(id))""")
+        self.connection.commit()
 
-    def connect(self):
-        self.conn = sqlite3.connect(self.db_path)
-        self.conn.row_factory = sqlite3.Row
+    def execute(self, query: str, params: tuple = None) -> sqlite3.Cursor:
+        """Execute a SQL query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        self.connection.commit()
+        return self.cursor
 
-    def init_tables(self):
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS data (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                type TEXT,
-                content TEXT,
-                metadata TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
+    def fetchall(self, query: str, params: tuple = None) -> List[Dict[str, Any]]:
+        """Fetch all results from a query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        return [dict(row) for row in self.cursor.fetchall()]
 
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS tasks (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                task_type TEXT,
-                status TEXT DEFAULT "pending",
-                result TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                completed_at TIMESTAMP
-            )
-        """)
+    def fetchone(self, query: str, params: tuple = None) -> Optional[Dict[str, Any]]:
+        """Fetch one result from a query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        row = self.cursor.fetchone()
+        return dict(row) if row else None
 
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS logs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                level TEXT,
-                message TEXT,
-                metadata TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
+    def insert(self, table: str, data: Dict[str, Any]) -> int:
+        """Insert a row into a table"""
+        columns = ', '.join(data.keys())
+        placeholders = ', '.join(['?' for _ in data])
+        query = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+        self.cursor.execute(query, tuple(data.values()))
+        self.connection.commit()
+        return self.cursor.lastrowid
 
-        self.conn.commit()
+    def update(self, table: str, data: Dict[str, Any], where: Dict[str, Any]) -> int:
+        """Update rows in a table"""
+        set_clause = ', '.join([f"{k} = ?" for k in data.keys()])
+        where_clause = ' AND '.join([f"{k} = ?" for k in where.keys()])
+        query = f"UPDATE {table} SET {set_clause} WHERE {where_clause}"
+        self.cursor.execute(query, tuple(data.values()) + tuple(where.values()))
+        self.connection.commit()
+        return self.cursor.rowcount
 
-    def insert_data(self, data_type: str, content: str, metadata: Dict = None) -> int:
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            INSERT INTO data (type, content, metadata)
-            VALUES (?, ?, ?)
-        """, (data_type, content, json.dumps(metadata or dict())))
-        self.conn.commit()
-        return cursor.lastrowid
-
-    def query_data(self, data_type: str = None, limit: int = 100) -> List[Dict]:
-        cursor = self.conn.cursor()
-        if data_type:
-            cursor.execute('SELECT * FROM data WHERE type = ? ORDER BY created_at DESC LIMIT ?',
-                         (data_type, limit))
-        else:
-            cursor.execute('SELECT * FROM data ORDER BY created_at DESC LIMIT ?', (limit,))
-        return [dict(row) for row in cursor.fetchall()]
-
-    def create_task(self, task_type: str, metadata: Dict = None) -> int:
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            INSERT INTO tasks (task_type, status)
-            VALUES (?, "pending")
-        """, (task_type,))
-        self.conn.commit()
-        return cursor.lastrowid
-
-    def update_task(self, task_id: int, status: str, result: Dict = None) -> bool:
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            UPDATE tasks
-            SET status = ?, result = ?, completed_at = CURRENT_TIMESTAMP
-            WHERE id = ?
-        """, (status, json.dumps(result or dict()), task_id))
-        self.conn.commit()
-        return cursor.rowcount > 0
-
-    def log(self, level: str, message: str, metadata: Dict = None):
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            INSERT INTO logs (level, message, metadata)
-            VALUES (?, ?, ?)
-        """, (level, message, json.dumps(metadata or dict())))
-        self.conn.commit()
-
-    def get_stats(self) -> Dict[str, Any]:
-        cursor = self.conn.cursor()
-        cursor.execute('SELECT COUNT(*) as count FROM data')
-        data_count = cursor.fetchone()["count"]
-        cursor.execute('SELECT COUNT(*) as count FROM tasks WHERE status = "pending"')
-        pending_tasks = cursor.fetchone()["count"]
-        cursor.execute('SELECT COUNT(*) as count FROM tasks WHERE status = "completed"')
-        completed_tasks = cursor.fetchone()["count"]
-        return {
-            "data_count": data_count,
-            "pending_tasks": pending_tasks,
-            "completed_tasks": completed_tasks,
-            "total_tasks": pending_tasks + completed_tasks
-        }
+    def delete(self, table: str, where: Dict[str, Any]) -> int:
+        """Delete rows from a table"""
+        where_clause = ' AND '.join([f"{k} = ?" for k in where.keys()])
+        query = f"DELETE FROM {table} WHERE {where_clause}"
+        self.cursor.execute(query, tuple(where.values()))
+        self.connection.commit()
+        return self.cursor.rowcount
 
     def close(self):
-        if self.conn:
-            self.conn.close()
+        """Close database connection"""
+        self.connection.close()
 
-if __name__ == "__main__":
-    db = EroticSubscriptionAgentDB()
-    print("Database for erotic-subscription-agent initialized at " + str(db.db_path))
-    print("Stats: " + str(db.get_stats()))
-    db.close()
+
+# For logging in _init_tables
+import logging
+logger = logging.getLogger(__name__)
