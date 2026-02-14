@@ -39,9 +39,13 @@ class HackerNewsScraper:
         self.db_path = db_path
         self._init_db()
 
+    def _connect(self):
+        """データベース接続"""
+        return sqlite3.connect(self.db_path)
+
     def _init_db(self):
         """データベース初期化"""
-        conn = sqlite3.connect(self.db_path)
+        conn = self._connect()
         cursor = conn.cursor()
 
         cursor.execute('''
@@ -76,16 +80,12 @@ class HackerNewsScraper:
     def get_top_stories(self, limit: int = 30) -> List[HackerNewsProduct]:
         """トップストーリーを取得"""
         try:
-            # トップストーリーのID一覧を取得
-            print("  トップストーリーID取得中...")
             top_ids_url = f"{self.HN_API_BASE}/topstories.json"
             with urllib.request.urlopen(top_ids_url, timeout=30) as response:
                 top_ids = json.loads(response.read().decode('utf-8'))
 
-            # 上位N件のストーリーを取得
             stories = []
             for story_id in top_ids[:limit]:
-                print(f"  ストーリー取得中: {story_id}")
                 story = self._get_story(story_id)
                 if story:
                     stories.append(story)
@@ -103,7 +103,6 @@ class HackerNewsScraper:
             with urllib.request.urlopen(story_url, timeout=10) as response:
                 story_data = json.loads(response.read().decode('utf-8'))
 
-            # ジョブやポルは除外
             if story_data.get('type') != 'story':
                 return None
 
@@ -118,12 +117,11 @@ class HackerNewsScraper:
             )
 
         except Exception as e:
-            print(f"    エラー (ID:{story_id}): {e}")
             return None
 
     def save_products(self, products: List[HackerNewsProduct]) -> int:
         """プロダクトを保存"""
-        conn = sqlite3.connect(self.db_path)
+        conn = self._connect()
         cursor = conn.cursor()
 
         scraped_at = datetime.now().isoformat()
@@ -157,15 +155,37 @@ class HackerNewsScraper:
 
         return len(products)
 
-    def print_stories(self, stories: List[HackerNewsProduct]):
-        """ストーリーを表示"""
-        print(f"\n📋 Hacker News トップストーリー ({len(stories)}件)")
-        print("=" * 100)
+    def clear_db(self):
+        """データベースをクリア"""
+        conn = self._connect()
+        cursor = conn.cursor()
 
-        for i, story in enumerate(stories, 1):
-            print(f"\n{i}. {story.name}")
-            print(f"   👍 {story.votes}  |  💬 {story.comments}")
-            print(f"   {story.url}")
+        cursor.execute('DELETE FROM products')
+        cursor.execute('DELETE FROM scrape_logs')
+
+        conn.commit()
+        conn.close()
+
+    def get_recent_products(self, days: int = 3) -> List[Dict]:
+        """最近N日のプロダクトを取得"""
+        conn = self._connect()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT * FROM products
+            WHERE scraped_at >= date('now', ?)
+            ORDER BY votes DESC
+        ''', (f"-{days} days",))
+
+        columns = [desc[0] for desc in cursor.description]
+        products = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+        for p in products:
+            if p['topics']:
+                p['topics'] = json.loads(p['topics'])
+
+        conn.close()
+        return products
 
 def main():
     """メイン処理"""
@@ -189,7 +209,7 @@ def main():
         )
 
         export_data = []
-        conn = sqlite3.connect(scraper.db_path)
+        conn = scraper._connect()
         cursor = conn.cursor()
         cursor.execute('''
             SELECT * FROM products

@@ -1,0 +1,8 @@
+# Hacker News アイデア収集・まとめcron設定
+# サーバーに追加する場合: crontab -e で以下を追加
+
+# 毎日15時にHacker Newsトレンドを収集
+0 15 * * * cd /home/node/.openclaw/workspace && python3 cron-hackernews-scraper.py >> cron-hackernews.log 2>&1
+
+# 3日ごと（3の倍数日）の18時にDBをクリアしてまとめ・提案
+# 0 18 */3 * * cd /home/node/.openclaw/workspace && python3 ideas-summarizer.py >> cron-summarizer.log 2>&1

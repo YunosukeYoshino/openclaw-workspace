@@ -1,0 +1,27 @@
+{
+  "scraper": {
+    "db_path": "producthunt_ideas.db",
+    "limit_per_day": 30,
+    "scrape_hour": 15,
+    "scrape_minute": 0
+  },
+  "summarizer": {
+    "days_interval": 3,
+    "summarize_hour": 18,
+    "summarize_minute": 0,
+    "clear_db": true,
+    "limit_per_summary": 50
+  },
+  "categories": {
+    "AI/ML": ["ai", "machine learning", "ml", "llm", "gpt", "openai", "chatbot"],
+    "開発ツール": ["api", "sdk", "library", "framework", "tool", "cli"],
+    "Web/ブラウザ": ["browser", "chrome", "firefox", "safari", "web", "html"],
+    "セキュリティ/プライバシー": ["security", "privacy", "encryption", "hack", "vulnerability"],
+    "DevOps/インフラ": ["devops", "kubernetes", "docker", "aws", "cloud", "ci/cd"],
+    "ブロックチェーン/Web3": ["blockchain", "crypto", "web3", "nft", "bitcoin"],
+    "ゲーム": ["game", "gaming", "vr", "ar", "metaverse"],
+    "データベース": ["database", "sql", "nosql", "mongo", "postgres"],
+    "スタートアップ/SaaS": ["startup", "saas", "platform", "service"],
+    "オープンソース": ["open source", "oss", "github", "repo"]
+  }
+}
