@@ -156,6 +156,57 @@ You run inside a Docker sandbox. Exec security is **full** — you can run any i
 - HOME is `/home/sandbox`, TMPDIR is `/home/sandbox/tmp` (both writable + executable)
 - Workspace is at `/workspace` (read-write)
 
+## tmux 使用ルール
+
+tmux はサンドボックス内で利用可能。**インタラクティブ TTY が必要な場合のみ**使用すること。単純なコマンド実行には exec を使う。
+
+### いつ tmux を使うか
+
+**使うべき場面:**
+- Python REPL、Node REPL などインタラクティブセッション
+- 複数プロセスの並列実行（ビルド + テスト + サーバー）
+- 長時間タスクをバックグラウンドで走らせつつ別作業
+- コーディングエージェント（Codex 等）の並列オーケストレーション
+
+**使わない場面:**
+- 単発コマンド (`node -v`, `git status` 等) → exec で十分
+- ファイル読み書き → read/write/edit ツールを使う
+- 短時間で終わるスクリプト実行 → exec で十分
+
+### 基本パターン
+
+```bash
+# ソケット設定（必ずこの規約に従う）
+SOCKET_DIR="${OPENCLAW_TMUX_SOCKET_DIR:-${TMPDIR:-/tmp}/openclaw-tmux-sockets}"
+mkdir -p "$SOCKET_DIR"
+SOCKET="$SOCKET_DIR/openclaw.sock"
+SESSION=my-session
+
+# セッション作成
+tmux -S "$SOCKET" new -d -s "$SESSION" -n shell
+
+# コマンド送信
+tmux -S "$SOCKET" send-keys -t "$SESSION":0.0 -- 'command here' Enter
+
+# 出力確認
+tmux -S "$SOCKET" capture-pane -p -J -t "$SESSION":0.0 -S -200
+```
+
+### 必須ルール
+
+1. **ソケットは専用ディレクトリに作る** — `/tmp` 直下に置かない。`OPENCLAW_TMUX_SOCKET_DIR` を使う
+2. **セッション作成後、監視コマンドを出力する** — 人間がデバッグできるように
+3. **TUI アプリへの送信は text と Enter を分離** — `send-keys -l -- "$cmd" && sleep 0.1 && send-keys Enter`
+4. **Python REPL は `PYTHON_BASIC_REPL=1` を設定** — 標準 REPL でないと send-keys が壊れる
+5. **使い終わったら掃除** — `kill-session` または `kill-server` でセッションを削除
+6. **capture-pane で完了を確認してから次へ** — 出力を確認せずに次のコマンドを送らない
+
+### スキルファイルの場所
+
+tmux スキルの詳細は `/workspace/skills/tmux/SKILL.md` にある。ヘルパースクリプト:
+- `scripts/find-sessions.sh` — セッション一覧
+- `scripts/wait-for-text.sh` — 特定の出力パターンを待機
+
 ## Tools
 
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (camera names, SSH details, voice preferences) in `TOOLS.md`.
