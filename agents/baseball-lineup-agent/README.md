@@ -1,10 +1,10 @@
-# user-behavior-agent
+# baseball-lineup-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+野球ラインアップエージェント。オーダー構成の分析。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+野球試合分析・戦術エージェント - baseball-lineup-agent
 
 ## Installation
 

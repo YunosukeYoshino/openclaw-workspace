@@ -1,10 +1,10 @@
-# user-behavior-agent
+# erotic-ai-summary-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+えっちAIサマリーエージェント。要約の自動生成。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+えっちコンテンツAIテキスト生成・編集エージェント - erotic-ai-summary-agent
 
 ## Installation
 

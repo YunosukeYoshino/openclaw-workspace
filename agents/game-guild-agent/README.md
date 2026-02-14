@@ -1,10 +1,10 @@
-# user-behavior-agent
+# game-guild-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+ゲームギルドエージェント。ギルドの管理。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+ゲームチーム・ギルド管理エージェント - game-guild-agent
 
 ## Installation
 

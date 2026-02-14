@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Database schema for user-behavior-agent
+Database schema for queue-manager-agent
 """
 
 import sqlite3
 from pathlib import Path
 
-def init_db(db_path: str = "agents/user-behavior-agent/data.db"):
+def init_db(db_path: str = "agents/queue-manager-agent/data.db"):
     """Initialize database"""
     Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 

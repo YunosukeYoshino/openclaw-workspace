@@ -1,10 +1,10 @@
-# user-behavior-agent
+# erotic-ai-translation-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+えっちAI翻訳エージェント。多言語翻訳。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+えっちコンテンツAIテキスト生成・編集エージェント - erotic-ai-translation-agent
 
 ## Installation
 

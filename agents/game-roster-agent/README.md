@@ -1,10 +1,10 @@
-# user-behavior-agent
+# game-roster-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+ゲームロスターエージェント。ロスターの管理。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+ゲームチーム・ギルド管理エージェント - game-roster-agent
 
 ## Installation
 

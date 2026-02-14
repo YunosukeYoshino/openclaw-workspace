@@ -1,10 +1,10 @@
-# user-behavior-agent
+# event-bus-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+イベントバスエージェント。イベントバスの管理。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+メッセージング・イベントバスエージェント - event-bus-agent
 
 ## Installation
 

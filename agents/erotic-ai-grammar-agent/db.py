@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Database schema for user-behavior-agent
+Database schema for erotic-ai-grammar-agent
 """
 
 import sqlite3
 from pathlib import Path
 
-def init_db(db_path: str = "agents/user-behavior-agent/data.db"):
+def init_db(db_path: str = "agents/erotic-ai-grammar-agent/data.db"):
     """Initialize database"""
     Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 

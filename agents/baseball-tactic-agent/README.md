@@ -1,10 +1,10 @@
-# user-behavior-agent
+# baseball-tactic-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+野球戦術エージェント。戦術の分析・提案。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+野球試合分析・戦術エージェント - baseball-tactic-agent
 
 ## Installation
 

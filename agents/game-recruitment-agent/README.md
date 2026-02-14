@@ -1,10 +1,10 @@
-# user-behavior-agent
+# game-recruitment-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+ゲームリクルートエージェント。メンバー募集の管理。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+ゲームチーム・ギルド管理エージェント - game-recruitment-agent
 
 ## Installation
 

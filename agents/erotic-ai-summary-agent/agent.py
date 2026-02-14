@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-セキュリティアクセスログ・監視エージェント
-user-behavior-agent - ユーザービヘイビアエージェント。ユーザー行動の分析。
+えっちコンテンツAIテキスト生成・編集エージェント
+erotic-ai-summary-agent - えっちAIサマリーエージェント。要約の自動生成。
 """
 
 import sqlite3
@@ -10,10 +10,10 @@ import json
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class UserBehavior:
-    """ユーザービヘイビアエージェント。ユーザー行動の分析。"""
+class EroticAiSummary:
+    """えっちAIサマリーエージェント。要約の自動生成。"""
 
-    def __init__(self, db_path: str = "agents/user-behavior-agent/data.db"):
+    def __init__(self, db_path: str = "agents/erotic-ai-summary-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -103,5 +103,5 @@ class UserBehavior:
 
 if __name__ == "__main__":
     import json
-    agent = UserBehavior()
+    agent = EroticAiSummary()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

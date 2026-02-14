@@ -1,10 +1,10 @@
-# user-behavior-agent
+# queue-manager-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+キューマネージャーエージェント。メッセージキューの管理。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+メッセージング・イベントバスエージェント - queue-manager-agent
 
 ## Installation
 

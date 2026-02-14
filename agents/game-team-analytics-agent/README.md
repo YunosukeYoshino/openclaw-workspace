@@ -1,10 +1,10 @@
-# user-behavior-agent
+# game-team-analytics-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+ゲームチームアナリティクスエージェント。チームの分析。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+ゲームチーム・ギルド管理エージェント - game-team-analytics-agent
 
 ## Installation
 

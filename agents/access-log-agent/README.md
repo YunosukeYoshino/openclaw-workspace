@@ -1,10 +1,10 @@
-# user-behavior-agent
+# access-log-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+アクセスログエージェント。アクセスログの収集・分析。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+セキュリティアクセスログ・監視エージェント - access-log-agent
 
 ## Installation
 

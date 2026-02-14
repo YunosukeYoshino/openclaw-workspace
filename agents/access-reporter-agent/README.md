@@ -1,10 +1,10 @@
-# user-behavior-agent
+# access-reporter-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+アクセスレポーターエージェント。アクセスレポートの作成。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+セキュリティアクセスログ・監視エージェント - access-reporter-agent
 
 ## Installation
 

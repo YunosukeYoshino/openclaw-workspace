@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Discord integration for user-behavior-agent
+Discord integration for queue-manager-agent
 """
 
 import discord
@@ -9,10 +9,10 @@ import sqlite3
 import json
 from typing import Optional
 
-class UserBehaviorBot(commands.Bot):
-    """Discord bot for user-behavior-agent"""
+class QueueManagerBot(commands.Bot):
+    """Discord bot for queue-manager-agent"""
 
-    def __init__(self, command_prefix: str = "!", db_path: str = "agents/user-behavior-agent/data.db"):
+    def __init__(self, command_prefix: str = "!", db_path: str = "agents/queue-manager-agent/data.db"):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix=command_prefix, intents=intents)
@@ -45,7 +45,7 @@ class UserBehaviorBot(commands.Bot):
 
 if __name__ == "__main__":
     import os
-    bot = UserBehaviorBot()
+    bot = QueueManagerBot()
     token = os.getenv("DISCORD_TOKEN")
     if token:
         bot.run(token)

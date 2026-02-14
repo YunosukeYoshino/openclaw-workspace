@@ -1,10 +1,10 @@
-# user-behavior-agent
+# anomaly-detection-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+異常検知エージェント。異常行動の検知。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+セキュリティアクセスログ・監視エージェント - anomaly-detection-agent
 
 ## Installation
 

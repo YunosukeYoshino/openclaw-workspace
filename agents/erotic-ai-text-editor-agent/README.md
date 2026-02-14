@@ -1,10 +1,10 @@
-# user-behavior-agent
+# erotic-ai-text-editor-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+えっちAIテキスト編集エージェント。AIによるテキストの編集。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+えっちコンテンツAIテキスト生成・編集エージェント - erotic-ai-text-editor-agent
 
 ## Installation
 

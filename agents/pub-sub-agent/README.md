@@ -1,10 +1,10 @@
-# user-behavior-agent
+# pub-sub-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+パブサブエージェント。パブリッシュ・サブスクライブの管理。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+メッセージング・イベントバスエージェント - pub-sub-agent
 
 ## Installation
 

@@ -1,10 +1,10 @@
-# user-behavior-agent
+# session-monitor-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+セッションモニターエージェント。セッションの監視。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+セキュリティアクセスログ・監視エージェント - session-monitor-agent
 
 ## Installation
 

@@ -1,10 +1,10 @@
-# user-behavior-agent
+# baseball-scout-match-agent
 
-ユーザービヘイビアエージェント。ユーザー行動の分析。
+野球スカウト試合エージェント。選手評価のための試合分析。
 
 ## Description
 
-セキュリティアクセスログ・監視エージェント - user-behavior-agent
+野球試合分析・戦術エージェント - baseball-scout-match-agent
 
 ## Installation
 
