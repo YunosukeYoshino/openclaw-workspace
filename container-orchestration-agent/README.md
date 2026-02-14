@@ -1,13 +1,10 @@
-# container-orchestration-agent
+# コンテナオーケストレーションエージェント
 
-コンテナオーケストレーションエージェント。コンテナのオーケストレーション。
+Docker/Kubernetesのオーケストレーションを管理するエージェント
 
-## 機能
+## 概要
 
-- エントリーの追加・取得・更新・削除
-- タグ付け・検索機能
-- Discord Bot連携
-- SQLiteデータベースによる永続化
+クラウドデプロイカテゴリのエージェントです。Docker/Kubernetesのオーケストレーションを管理するエージェントを自動化・効率化します。
 
 ## インストール
 
@@ -15,60 +12,43 @@
 pip install -r requirements.txt
 ```
 
-## 使用方法
+## 使い方
 
-### 基本使用
+### 基本的な使用方法
 
 ```python
 from agent import ContainerOrchestrationAgent
 
-agent = ContainerOrchestrationAgent()
-
-# エントリー追加
-entry_id = agent.add_entry(
-    title="タイトル",
-    content="コンテンツ",
-    metadata={"key": "value"}
-)
-
-# エントリー取得
-entry = agent.get_entry(entry_id)
-print(entry)
+async def main():
+    agent = ContainerOrchestrationAgent()
+    result = await agent.process({"key": "value"})
+    print(result)
 ```
 
-### Discord Bot
+### Discordボットとして使用
 
 ```bash
-export DISCORD_TOKEN="your_bot_token"
+export DISCORD_TOKEN=your_bot_token
 python discord.py
 ```
 
-コマンド:
-- `!status` - ステータス確認
-- `!add <content>` - エントリー追加
-- `!list` - エントリー一覧
-- `!search <query>` - エントリー検索
-- `!help` - ヘルプ表示
+## 機能
 
-## データベーススキーマ
+- データの記録・管理
+- SQLiteデータベースによる永続化
+- Discordボットとの連携
+- 統計情報の取得
 
-### entriesテーブル
-- `id` - エントリーID (主キー)
-- `title` - タイトル
-- `content` - コンテンツ
-- `metadata` - メタデータ (JSON)
-- `status` - ステータス
-- `created_at` - 作成日時
-- `updated_at` - 更新日時
+## ファイル構成
 
-### tagsテーブル
-- `id` - タグID (主キー)
-- `name` - タグ名 (ユニーク)
-- `created_at` - 作成日時
-
-### entry_tagsテーブル
-- `entry_id` - エントリーID (外部キー)
-- `tag_id` - タグID (外部キー)
+```
+container-orchestration-agent/
+├── agent.py       # メインエージェント
+├── db.py          # データベースモジュール
+├── discord.py     # Discordボット
+├── README.md      # このファイル
+└── requirements.txt
+```
 
 ## ライセンス
 
