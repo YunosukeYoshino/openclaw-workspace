@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# クラウドKubernetesクラスタエージェント
 
-セキュリティ情報イベント管理の管理エージェント
+Kubernetesクラスタの管理エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the cloud-kubernetes-cluster-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import CloudKubernetesClusterAgentAgent
+agent = CloudKubernetesClusterAgentAgent()
 result = await agent.process(data)
 ```
 

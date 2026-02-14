@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# えっち予測V2エージェント
 
-セキュリティ情報イベント管理の管理エージェント
+えっちコンテンツの高度予測エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the erotic-predictions-v2-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import EroticPredictionsV2AgentAgent
+agent = EroticPredictionsV2AgentAgent()
 result = await agent.process(data)
 ```
 

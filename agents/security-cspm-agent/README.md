@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# セキュリティCSPMエージェント
 
-セキュリティ情報イベント管理の管理エージェント
+クラウドセキュリティポスチャ管理エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the security-cspm-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import SecurityCspmAgentAgent
+agent = SecurityCspmAgentAgent()
 result = await agent.process(data)
 ```
 

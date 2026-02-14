@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# 野球メディア展開エージェント
 
-セキュリティ情報イベント管理の管理エージェント
+野球メディアの展開・配信エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the baseball-media-eployment-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import BaseballMediaEploymentAgentAgent
+agent = BaseballMediaEploymentAgentAgent()
 result = await agent.process(data)
 ```
 

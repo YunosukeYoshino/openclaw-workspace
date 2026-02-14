@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# えっちセグメンテーションV2エージェント
 
-セキュリティ情報イベント管理の管理エージェント
+えっちユーザーの高度セグメンテーションエージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the erotic-segmentation-v2-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import EroticSegmentationV2AgentAgent
+agent = EroticSegmentationV2AgentAgent()
 result = await agent.process(data)
 ```
 

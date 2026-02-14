@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# えっち推薦V2エージェント
 
-セキュリティ情報イベント管理の管理エージェント
+えっちコンテンツの高度推薦エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the erotic-recommendations-v2-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import EroticRecommendationsV2AgentAgent
+agent = EroticRecommendationsV2AgentAgent()
 result = await agent.process(data)
 ```
 

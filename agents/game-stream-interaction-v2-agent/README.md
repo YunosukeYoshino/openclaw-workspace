@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# ゲームストリーム交流V2エージェント
 
-セキュリティ情報イベント管理の管理エージェント
+ゲームストリームの高度交流エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the game-stream-interaction-v2-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import GameStreamInteractionV2AgentAgent
+agent = GameStreamInteractionV2AgentAgent()
 result = await agent.process(data)
 ```
 

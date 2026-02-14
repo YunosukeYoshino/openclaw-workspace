@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Database module for セキュリティSIEMエージェント
+Database module for クラウドPrometheusエージェント
 """
 
 import sqlite3
@@ -13,11 +13,11 @@ logger = logging.getLogger(__name__)
 
 
 class Database:
-    """Database handler for セキュリティSIEMエージェント"""
+    """Database handler for クラウドPrometheusエージェント"""
 
     def __init__(self, db_path: Optional[str] = None):
         if db_path is None:
-            db_path = Path(__file__).parent / "security-siem-agent.db"
+            db_path = Path(__file__).parent / "cloud-prometheus-agent.db"
         self.db_path = db_path
         self.conn = None
         self.init_db()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-セキュリティSIEMエージェント - セキュリティ情報イベント管理の管理エージェント
+ゲームストリーム収益化V2エージェント - ゲームストリームの高度収益化エージェント
 """
 
 import logging
@@ -11,13 +11,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class SecuritySiemAgentAgent:
-    """セキュリティSIEMエージェント"""
+class GameStreamMonetizationV2AgentAgent:
+    """ゲームストリーム収益化V2エージェント"""
 
     def __init__(self):
-        self.name = "security-siem-agent"
+        self.name = "game-stream-monetization-v2-agent"
         self.version = "1.0.0"
-        self.description = "セキュリティ情報イベント管理の管理エージェント"
+        self.description = "ゲームストリームの高度収益化エージェント"
 
     async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """Process input data"""
@@ -49,7 +49,7 @@ class SecuritySiemAgentAgent:
 
 async def main():
     """Main function"""
-    agent = SecuritySiemAgentAgent()
+    agent = GameStreamMonetizationV2AgentAgent()
     logger.info(f"{agent.name} v{agent.version} initialized")
 
 

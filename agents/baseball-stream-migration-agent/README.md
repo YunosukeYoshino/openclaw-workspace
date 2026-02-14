@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# 野球ストリーム移行エージェント
 
-セキュリティ情報イベント管理の管理エージェント
+野球ストリームの移行・統合エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the baseball-stream-migration-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import BaseballStreamMigrationAgentAgent
+agent = BaseballStreamMigrationAgentAgent()
 result = await agent.process(data)
 ```
 

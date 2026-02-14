@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# えっち分析V2エージェント
 
-セキュリティ情報イベント管理の管理エージェント
+えっちコンテンツの高度分析エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the erotic-analytics-v2-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import EroticAnalyticsV2AgentAgent
+agent = EroticAnalyticsV2AgentAgent()
 result = await agent.process(data)
 ```
 

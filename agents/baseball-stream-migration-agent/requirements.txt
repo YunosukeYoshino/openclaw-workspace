@@ -1,4 +1,4 @@
-# Requirements for セキュリティSIEMエージェント
+# Requirements for 野球ストリーム移行エージェント
 
 # Discord.py
 discord.py>=2.3.2

@@ -1,4 +1,4 @@
-# Requirements for セキュリティSIEMエージェント
+# Requirements for セキュリティXDRエージェント
 
 # Discord.py
 discord.py>=2.3.2

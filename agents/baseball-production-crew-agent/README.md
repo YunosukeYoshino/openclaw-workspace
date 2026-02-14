@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# 野球制作クルーエージェント
 
-セキュリティ情報イベント管理の管理エージェント
+野球放送制作クルーの管理エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the baseball-production-crew-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import BaseballProductionCrewAgentAgent
+agent = BaseballProductionCrewAgentAgent()
 result = await agent.process(data)
 ```
 

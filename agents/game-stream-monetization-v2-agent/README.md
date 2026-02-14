@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# ゲームストリーム収益化V2エージェント
 
-セキュリティ情報イベント管理の管理エージェント
+ゲームストリームの高度収益化エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the game-stream-monetization-v2-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import GameStreamMonetizationV2AgentAgent
+agent = GameStreamMonetizationV2AgentAgent()
 result = await agent.process(data)
 ```
 

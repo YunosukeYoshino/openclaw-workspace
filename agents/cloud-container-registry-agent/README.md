@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# クラウドコンテナレジストリエージェント
 
-セキュリティ情報イベント管理の管理エージェント
+コンテナレジストリの管理エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the cloud-container-registry-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import CloudContainerRegistryAgentAgent
+agent = CloudContainerRegistryAgentAgent()
 result = await agent.process(data)
 ```
 

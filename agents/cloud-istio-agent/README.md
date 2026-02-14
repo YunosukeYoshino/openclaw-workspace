@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# クラウドIstioエージェント
 
-セキュリティ情報イベント管理の管理エージェント
+Istioサービスメッシュの管理エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the cloud-istio-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import CloudIstioAgentAgent
+agent = CloudIstioAgentAgent()
 result = await agent.process(data)
 ```
 

@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# クラウドHelmチャートエージェント
 
-セキュリティ情報イベント管理の管理エージェント
+Helmチャートの管理・デプロイエージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the cloud-helm-charts-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import CloudHelmChartsAgentAgent
+agent = CloudHelmChartsAgentAgent()
 result = await agent.process(data)
 ```
 

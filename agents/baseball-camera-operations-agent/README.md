@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# 野球カメラ運用エージェント
 
-セキュリティ情報イベント管理の管理エージェント
+野球試合カメラの運用管理エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the baseball-camera-operations-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import BaseballCameraOperationsAgentAgent
+agent = BaseballCameraOperationsAgentAgent()
 result = await agent.process(data)
 ```
 

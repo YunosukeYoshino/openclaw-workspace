@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# ゲームストリームプラットフォームエージェント
 
-セキュリティ情報イベント管理の管理エージェント
+ゲームストリームプラットフォームの運営エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the game-stream-platform-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import GameStreamPlatformAgentAgent
+agent = GameStreamPlatformAgentAgent()
 result = await agent.process(data)
 ```
 

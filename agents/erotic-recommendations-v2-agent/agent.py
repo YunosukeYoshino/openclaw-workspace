@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-セキュリティSIEMエージェント - セキュリティ情報イベント管理の管理エージェント
+えっち推薦V2エージェント - えっちコンテンツの高度推薦エージェント
 """
 
 import logging
@@ -11,13 +11,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class SecuritySiemAgentAgent:
-    """セキュリティSIEMエージェント"""
+class EroticRecommendationsV2AgentAgent:
+    """えっち推薦V2エージェント"""
 
     def __init__(self):
-        self.name = "security-siem-agent"
+        self.name = "erotic-recommendations-v2-agent"
         self.version = "1.0.0"
-        self.description = "セキュリティ情報イベント管理の管理エージェント"
+        self.description = "えっちコンテンツの高度推薦エージェント"
 
     async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """Process input data"""
@@ -49,7 +49,7 @@ class SecuritySiemAgentAgent:
 
 async def main():
     """Main function"""
-    agent = SecuritySiemAgentAgent()
+    agent = EroticRecommendationsV2AgentAgent()
     logger.info(f"{agent.name} v{agent.version} initialized")
 
 

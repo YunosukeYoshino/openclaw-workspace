@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# 野球放送インフラエージェント
 
-セキュリティ情報イベント管理の管理エージェント
+野球放送インフラの管理エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the baseball-broadcasting-infrastructure-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import BaseballBroadcastingInfrastructureAgentAgent
+agent = BaseballBroadcastingInfrastructureAgentAgent()
 result = await agent.process(data)
 ```
 

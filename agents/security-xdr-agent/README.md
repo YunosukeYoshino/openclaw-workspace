@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# セキュリティXDRエージェント
 
-セキュリティ情報イベント管理の管理エージェント
+拡張検知・レスポンスの管理エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the security-xdr-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import SecurityXdrAgentAgent
+agent = SecurityXdrAgentAgent()
 result = await agent.process(data)
 ```
 

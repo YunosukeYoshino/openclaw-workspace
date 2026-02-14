@@ -1,0 +1,31 @@
+{
+  "completed": [
+    "baseball-media-eployment-agent",
+    "baseball-broadcasting-infrastructure-agent",
+    "baseball-camera-operations-agent",
+    "baseball-production-crew-agent",
+    "baseball-stream-migration-agent",
+    "game-stream-platform-agent",
+    "game-stream-analytics-v2-agent",
+    "game-stream-monetization-v2-agent",
+    "game-stream-interaction-v2-agent",
+    "game-stream-creator-tools-agent",
+    "erotic-analytics-v2-agent",
+    "erotic-predictions-v2-agent",
+    "erotic-recommendations-v2-agent",
+    "erotic-segmentation-v2-agent",
+    "erotic-lifetime-value-agent",
+    "cloud-kubernetes-cluster-agent",
+    "cloud-container-registry-agent",
+    "cloud-helm-charts-agent",
+    "cloud-istio-agent",
+    "cloud-prometheus-agent",
+    "security-siem-agent",
+    "security-soar-agent",
+    "security-xdr-agent",
+    "security-cspm-agent",
+    "security-vul-management-agent"
+  ],
+  "failed": [],
+  "total": 25
+}

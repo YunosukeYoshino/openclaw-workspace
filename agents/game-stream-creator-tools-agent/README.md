@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# ゲームストリームクリエイターツールエージェント
 
-セキュリティ情報イベント管理の管理エージェント
+ゲームストリーム用クリエイターツールエージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the game-stream-creator-tools-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import GameStreamCreatorToolsAgentAgent
+agent = GameStreamCreatorToolsAgentAgent()
 result = await agent.process(data)
 ```
 

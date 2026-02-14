@@ -1,4 +1,4 @@
-# Requirements for セキュリティSIEMエージェント
+# Requirements for 野球放送インフラエージェント
 
 # Discord.py
 discord.py>=2.3.2

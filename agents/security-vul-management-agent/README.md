@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# セキュリティ脆弱性管理エージェント
 
-セキュリティ情報イベント管理の管理エージェント
+脆弱性の管理・修正追跡エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the security-vul-management-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import SecurityVulManagementAgentAgent
+agent = SecurityVulManagementAgentAgent()
 result = await agent.process(data)
 ```
 

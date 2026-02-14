@@ -1,10 +1,10 @@
-# セキュリティSIEMエージェント
+# ゲームストリーム分析V2エージェント
 
-セキュリティ情報イベント管理の管理エージェント
+ゲームストリームの高度分析エージェント
 
 ## Overview
 
-This is the security-siem-agent agent.
+This is the game-stream-analytics-v2-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import SecuritySiemAgentAgent
-agent = SecuritySiemAgentAgent()
+from agent import GameStreamAnalyticsV2AgentAgent
+agent = GameStreamAnalyticsV2AgentAgent()
 result = await agent.process(data)
 ```
 
