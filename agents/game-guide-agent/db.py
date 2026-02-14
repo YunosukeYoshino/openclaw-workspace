@@ -1,98 +1,32 @@
 #!/usr/bin/env python3
 """
-ゲーム攻略ガイドエージェント Database Module
-Game Guide Agent データベースモジュール
+Database schema for game-guide-agent
 """
 
 import sqlite3
 from pathlib import Path
-from typing import List, Dict, Optional
-from datetime import datetime
 
-class GameGuideAgentDB:
-    "Game Guide Agent Database"
+def init_db(db_path: str = "agents/game-guide-agent/data.db"):
+    """Initialize database"""
+    Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 
-    def __init__(self, db_path: str = "data/game-guide-agent.db"):
-        self.db_path = Path(db_path)
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        self.conn = sqlite3.connect(str(self.db_path))
-        self.create_tables()
+    with sqlite3.connect(db_path) as conn:
+        cursor = conn.cursor()
 
-    def create_tables(self):
-        """テーブルを作成する"""
-        cursor = self.conn.cursor()
+        # Entries table
+        sql = "CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, metadata TEXT, status TEXT DEFAULT 'active' CHECK(status IN ('active','archived','completed')), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
+        cursor.execute(sql)
 
-        # reviews/dlc/tournaments/guides/news テーブル
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS items (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                description TEXT,
-                category TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
+        # Tags table
+        sql = "CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL)"
+        cursor.execute(sql)
 
-        # entries テーブル
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS entries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT,
-                content TEXT NOT NULL,
-                type TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
+        # Entry tags junction
+        sql = "CREATE TABLE IF NOT EXISTS entry_tags (entry_id INTEGER, tag_id INTEGER, PRIMARY KEY (entry_id, tag_id), FOREIGN KEY (entry_id) REFERENCES entries(id) ON DELETE CASCADE, FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE)"
+        cursor.execute(sql)
 
-        self.conn.commit()
-
-    def get_all_reviews(self) -> List[Dict]:
-        """すべてのレビューを取得する"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM items WHERE category = 'review' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
-
-    def get_all_dlc(self) -> List[Dict]:
-        """すべてのDLCを取得する"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM items WHERE category = 'dlc' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
-
-    def get_all_tournaments(self) -> List[Dict]:
-        """すべてのトーナメントを取得する"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM items WHERE category = 'tournament' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
-
-    def get_all_guides(self) -> List[Dict]:
-        """すべてのガイドを取得する"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM items WHERE category = 'guide' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
-
-    def get_all_news(self) -> List[Dict]:
-        """すべてのニュースを取得する"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM items WHERE category = 'news' ORDER BY name DESC")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
-
-    def add_item(self, name: str, description: str, category: str = "general") -> int:
-        """アイテムを追加する"""
-        cursor = self.conn.cursor()
-        cursor.execute(
-            "INSERT INTO items (name, description, category) VALUES (?, ?, ?)",
-            (name, description, category)
-        )
-        self.conn.commit()
-        return cursor.lastrowid
-
-    def close(self):
-        """接続を閉じる"""
-        self.conn.close()
-
-def main():
-    db = GameGuideAgentDB()
-    print("Database initialized")
+        conn.commit()
 
 if __name__ == "__main__":
-    main()
+    init_db()
+    print("Database initialized.")

@@ -1,45 +1,41 @@
-# ゲーム攻略ガイドエージェント / Game Guide Agent
+# game-guide-agent
 
-ゲーム攻略ガイド・チュートリアルを管理するエージェント
-Agent for managing game guides and tutorials
+ゲームガイドエージェント。攻略ガイドの提供。
 
-## Features / 機能
+## Description
 
-- レビュー管理 (Review Management)
-- DLC管理 (DLC Management)
-- eスポーツ情報 (Esports Information)
-- 攻略ガイド (Game Guides)
-- ニュース・アップデート (News & Updates)
+ゲームストラテジー・分析エージェント - game-guide-agent
 
-## Installation / インストール
+## Installation
 
 ```bash
 pip install -r requirements.txt
+python3 db.py  # Initialize database
 ```
 
-## Usage / 使用方法
+## Usage
 
-```python
-from agents.game-guide-agent.agent import GameGuideAgentAgent
-
-agent = GameGuideAgentAgent()
-result = await agent.process_command("review", ["elden-ring"])
-print(result)
+```bash
+python3 agent.py
 ```
 
-## Database / データベース
+## Files
 
-- `items` - アイテムデータ（レビュー、DLC、トーナメント、ガイド、ニュース）
-- `entries` - 一般エントリーデータ
+- `agent.py` - Main agent logic
+- `db.py` - Database initialization
+- `discord.py` - Discord integration
+- `requirements.txt` - Dependencies
 
-## Commands / コマンド
+## API
 
-- `review <name>` - レビューを表示
-- `dlc <name>` - DLCを表示
-- `esports <name>` - eスポーツ情報を表示
-- `guide <name>` - ガイドを表示
-- `news <name>` - ニュースを表示
+### Actions
 
-## License / ライセンス
+- `create` - Create new entry
+- `get` - Get entry by ID
+- `update` - Update entry
+- `delete` - Delete entry
+- `list` - List entries
 
-MIT
+## Environment Variables
+
+- `DISCORD_TOKEN` - Discord bot token (optional)

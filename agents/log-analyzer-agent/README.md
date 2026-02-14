@@ -1,48 +1,41 @@
 # log-analyzer-agent
 
-ログアナライザーエージェント。ログの分析。
+ログアナライザーエージェント。ログデータの分析・監視。
 
-ログアナライザーエージェント。ログの分析。
+## Description
 
-## Files
-
-- `agent.py` - メインエージェントコード
-- `db.py` - データベースモジュール
-- `discord.py` - Discord Botモジュール
-- `requirements.txt` - Python依存パッケージ
+分散トレーシング・オブザーバビリティエージェント - log-analyzer-agent
 
 ## Installation
 
 ```bash
 pip install -r requirements.txt
+python3 db.py  # Initialize database
 ```
 
 ## Usage
 
-### Agent
-
 ```bash
-python agent.py
+python3 agent.py
 ```
 
-### Database
+## Files
 
-```bash
-python db.py
-```
+- `agent.py` - Main agent logic
+- `db.py` - Database initialization
+- `discord.py` - Discord integration
+- `requirements.txt` - Dependencies
 
-### Discord Bot
+## API
 
-```bash
-python discord.py
-```
+### Actions
 
-## Commands
+- `create` - Create new entry
+- `get` - Get entry by ID
+- `update` - Update entry
+- `delete` - Delete entry
+- `list` - List entries
 
-- `!status` - Show bot status
-- `!add <title> <content>` - Add an entry
-- `!list [limit]` - List entries
+## Environment Variables
 
-## Project
-
-ログ管理・分析エージェント
+- `DISCORD_TOKEN` - Discord bot token (optional)

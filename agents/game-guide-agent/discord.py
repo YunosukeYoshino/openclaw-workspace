@@ -1,37 +1,51 @@
 #!/usr/bin/env python3
 """
-ゲーム攻略ガイドエージェント Discord Bot
-Game Guide Agent Discord Bot
+Discord integration for game-guide-agent
 """
 
 import discord
 from discord.ext import commands
+import sqlite3
+import json
 from typing import Optional
-from .agent import GameGuideAgentAgent
-from .db import GameGuideAgentDB
 
-class GameGuideAgentDiscordBot(commands.Bot):
-    "Game Guide Agent Discord Bot"
+class GameGuideBot(commands.Bot):
+    """Discord bot for game-guide-agent"""
 
-    def __init__(self, command_prefix: str = "!", db_path: str = "data/game-guide-agent.db"):
+    def __init__(self, command_prefix: str = "!", db_path: str = "agents/game-guide-agent/data.db"):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix=command_prefix, intents=intents)
-        self.agent = GameGuideAgentAgent(db_path)
-
-    async def setup_hook(self):
-        """起動時の処理"""
-        print(f"{{self.agent.name}} Bot が起動しました")
+        self.db_path = db_path
 
     async def on_ready(self):
-        """準備完了時の処理"""
-        print(f"Logged in as {{self.user}}")
+        print(f'Logged in as {self.user}')
 
-async def main():
-    import asyncio
-    bot = GameGuideAgentDiscordBot()
-    # bot.run("YOUR_TOKEN_HERE")
+    async def create_entry(self, ctx, title: str, content: str):
+        """Create entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+            cursor.execute(sql, (title, content, json.dumps(dict(), ensure_ascii=False), "active"))
+            conn.commit()
+            await ctx.send(f"Created: {title} (ID: {cursor.lastrowid})")
+
+    async def list_entries(self, ctx, limit: int = 10):
+        """List entries"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "SELECT id, title FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
+            cursor.execute(sql, ("active", limit))
+            rows = cursor.fetchall()
+            if rows:
+                msg = "\n".join([f"{r[0]}: {r[1]}" for r in rows])
+                await ctx.send(f"\n{msg}")
+            else:
+                await ctx.send("No entries found.")
 
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    import os
+    bot = GameGuideBot()
+    token = os.getenv("DISCORD_TOKEN")
+    if token:
+        bot.run(token)

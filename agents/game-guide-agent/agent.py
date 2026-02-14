@@ -1,77 +1,107 @@
 #!/usr/bin/env python3
 """
-ゲーム攻略ガイドエージェント
-Game Guide Agent
-
-ゲーム攻略ガイド・チュートリアルを管理するエージェント
-Agent for managing game guides and tutorials
+ゲームストラテジー・分析エージェント
+game-guide-agent - ゲームガイドエージェント。攻略ガイドの提供。
 """
 
-import asyncio
-from typing import Optional
-from .db import GameGuideAgentDB
+import sqlite3
+import threading
+import json
+from datetime import datetime
+from typing import Optional, List, Dict, Any
 
-class GameGuideAgentAgent:
-    "Game Guide Agent""
+class GameGuide:
+    """ゲームガイドエージェント。攻略ガイドの提供。"""
 
-    def __init__(self, db_path: str = "data/game-guide-agent.db"):
-        self.db = GameGuideAgentDB(db_path)
-        self.name = "ゲーム攻略ガイドエージェント"
+    def __init__(self, db_path: str = "agents/game-guide-agent/data.db"):
+        self.db_path = db_path
+        self.lock = threading.Lock()
 
-    async def process_command(self, command: str, args: list) -> str:
-        """コマンドを処理する"""
-        if command in ["review", "rating", "critic"]:
-            return await self.show_review(args)
-        elif command in ["dlc", "expansion", "season"]:
-            return await self.show_dlc(args)
-        elif command in ["esports", "tournament", "team"]:
-            return await self.show_esports(args)
-        elif command in ["guide", "tutorial", "tip"]:
-            return await self.show_guide(args)
-        elif command in ["news", "update", "patch"]:
-            return await self.show_news(args)
+    def execute(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute agent task"""
+        action = input_data.get("action")
+
+        if action == "create":
+            return self.create(input_data)
+        elif action == "get":
+            return self.get(input_data)
+        elif action == "update":
+            return self.update(input_data)
+        elif action == "delete":
+            return self.delete(input_data)
+        elif action == "list":
+            return self.list(input_data)
         else:
-            return "不明なコマンドです。"
+            return {"error": "Unknown action"}
 
-    async def show_review(self, args: list) -> str:
-        """レビューを表示する"""
-        reviews = self.db.get_all_reviews()
-        if not reviews:
-            return "レビューが登録されていません。"
-        return "\\n".join([f"- {{r['name']}}: {{r['score']}}/10" for r in reviews[:5]])
+    def create(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Create entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, ?)"
+            metadata = data.get("metadata") or dict()
+            cursor.execute(sql, (
+                data.get("title", ""),
+                data.get("content", ""),
+                json.dumps(metadata),
+                "active",
+                datetime.utcnow().isoformat()
+            ))
+            conn.commit()
+            return {"success": True, "id": cursor.lastrowid}
 
-    async def show_dlc(self, args: list) -> str:
-        """DLCを表示する"""
-        dlc_list = self.db.get_all_dlc()
-        if not dlc_list:
-            return "DLCが登録されていません。"
-        return "\\n".join([f"- {{d['name']}} ({{d['price']}})" for d in dlc_list[:5]])
+    def get(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Get entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "SELECT id, title, content, metadata, status, created_at, updated_at FROM entries WHERE id = ?"
+            cursor.execute(sql, (data.get("id"),))
+            row = cursor.fetchone()
+            if row:
+                return {"id": row[0], "title": row[1], "content": row[2],
+                        "metadata": json.loads(row[3]), "status": row[4],
+                        "created_at": row[5], "updated_at": row[6]}
+            return {"error": "Not found"}
 
-    async def show_esports(self, args: list) -> str:
-        """eスポーツを表示する"""
-        tournaments = self.db.get_all_tournaments()
-        if not tournaments:
-            return "トーナメントが登録されていません。"
-        return "\\n".join([f"- {{t['name']}} ({{t['prize']}})" for t in tournaments[:5]])
+    def update(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Update entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "UPDATE entries SET title = ?, content = ?, metadata = ?, status = ?, updated_at = ? WHERE id = ?"
+            metadata = data.get("metadata") or dict()
+            cursor.execute(sql, (
+                data.get("title", ""),
+                data.get("content", ""),
+                json.dumps(metadata),
+                data.get("status", "active"),
+                datetime.utcnow().isoformat(),
+                data.get("id")
+            ))
+            conn.commit()
+            return {"success": True}
 
-    async def show_guide(self, args: list) -> str:
-        """ガイドを表示する"""
-        guides = self.db.get_all_guides()
-        if not guides:
-            return "ガイドが登録されていません。"
-        return "\\n".join([f"- {{g['name']}}: {{g['difficulty']}}" for g in guides[:5]])
+    def delete(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Delete entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "DELETE FROM entries WHERE id = ?"
+            cursor.execute(sql, (data.get("id"),))
+            conn.commit()
+            return {"success": True}
 
-    async def show_news(self, args: list) -> str:
-        """ニュースを表示する"""
-        news = self.db.get_all_news()
-        if not news:
-            return "ニュースが登録されていません。"
-        return "\\n".join([f"- {{n['title']}} ({{n['date']}})" for n in news[:5]])
-
-def main():
-    import sys
-    agent = GameGuideAgentAgent()
-    print(f"{{agent.name}} エージェントが準備完了")
+    def list(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """List entries"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "SELECT id, title, content, status, created_at FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
+            cursor.execute(sql, (data.get("status", "active"), data.get("limit", 50)))
+            rows = cursor.fetchall()
+            items = []
+            for r in rows:
+                items.append({"id": r[0], "title": r[1], "content": r[2], "status": r[3], "created_at": r[4]})
+            return {"items": items}
 
 if __name__ == "__main__":
-    main()
+    import json
+    agent = GameGuide()
+    print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))
