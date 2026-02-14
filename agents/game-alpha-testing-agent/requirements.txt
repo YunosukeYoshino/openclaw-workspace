@@ -1,0 +1,9 @@
+# Requirements for ゲームアルファテストエージェント
+
+# Discord.py
+discord.py>=2.3.2
+
+# Database (sqlite3 is built-in)
+
+# Utilities
+python-dateutil>=2.8.2
