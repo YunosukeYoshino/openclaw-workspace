@@ -1,69 +1,51 @@
 #!/usr/bin/env python3
 """
-proxy-agent - Database Module
+Database Manager for proxy-agent
 """
 
 import sqlite3
-from pathlib import Path
-from contextlib import contextmanager
-from typing import Optional, List, Dict, Any
-import json
+from datetime import datetime
+from typing import List, Optional
 
-class Database:
-    def __init__(self, db_path: str = None):
-        self.db_path = db_path or str(Path(__file__).parent / "proxy-agent.db")
-
-    @contextmanager
-    def get_connection(self):
-        """コンテキストマネージャで接続を管理"""
+class DatabaseManager:
+    def __init__(self, db_path: str = "proxy-agent.db"):
+        self.db_path = db_path
+        self.init_db()
+    
+    def init_db(self):
         conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        try:
-            yield conn
-            conn.commit()
-        except Exception:
-            conn.rollback()
-            raise
-        finally:
-            conn.close()
+        c = conn.cursor()
+        c.execute("CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
+        conn.commit()
+        conn.close()
+    
+    def add_record(self, content: str) -> int:
+        conn = sqlite3.connect(self.db_path)
+        c = conn.cursor()
+        c.execute("INSERT INTO records (content) VALUES (?)", (content,))
+        conn.commit()
+        record_id = c.lastrowid
+        conn.close()
+        return record_id
+    
+    def get_record(self, record_id: int) -> Optional[dict]:
+        conn = sqlite3.connect(self.db_path)
+        c = conn.cursor()
+        c.execute("SELECT * FROM records WHERE id = ?", (record_id,))
+        row = c.fetchone()
+        conn.close()
+        if row:
+            return {"id": row[0], "content": row[1], "created_at": row[2]}
+        return None
+    
+    def list_records(self, limit: int = 100) -> List[dict]:
+        conn = sqlite3.connect(self.db_path)
+        c = conn.cursor()
+        c.execute("SELECT * FROM records ORDER BY created_at DESC LIMIT ?", (limit,))
+        rows = c.fetchall()
+        conn.close()
+        return [{"id": r[0], "content": r[1], "created_at": r[2]} for r in rows]
 
-    def init_database(self):
-        """データベース初期化"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS tasks (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    title TEXT NOT NULL,
-                    description TEXT,
-                    status TEXT DEFAULT 'pending',
-                    priority INTEGER DEFAULT 0,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS events (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    event_type TEXT NOT NULL,
-                    data TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-    def execute_query(self, query: str, params: tuple = ()) -> List[Dict[str, Any]]:
-        """クエリを実行"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(query, params)
-            rows = cursor.fetchall()
-            return [dict(row) for row in rows]
-
-    def execute_update(self, query: str, params: tuple = ()) -> int:
-        """更新クエリを実行"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(query, params)
-            return cursor.rowcount
+if __name__ == "__main__":
+    db = DatabaseManager()
+    print("Database initialized")

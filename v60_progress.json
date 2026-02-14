@@ -26,7 +26,23 @@
     "key-manager-agent",
     "certificate-manager-agent",
     "secret-manager-agent",
-    "crypto-operations-agent"
+    "crypto-operations-agent",
+    "baseball-stadium-operations-agent",
+    "baseball-event-operations-agent",
+    "baseball-in-game-entertainment-agent",
+    "game-gameplay-recorder-agent",
+    "erotic-voice-synthesis-agent",
+    "erotic-asmr-agent",
+    "cloud-formation-agent",
+    "cloud-resource-agent",
+    "terraform-manager-agent",
+    "cdn-agent",
+    "load-balancer-agent",
+    "network-manager-agent",
+    "dns-manager-agent",
+    "proxy-agent",
+    "firewall-agent",
+    "vpn-agent"
   ],
   "failed": []
 }
