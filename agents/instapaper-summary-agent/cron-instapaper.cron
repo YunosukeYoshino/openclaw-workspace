@@ -1,0 +1,4 @@
+# Instapaper Summary Agent - Cron Schedule
+# 毎日9:00 JSTに実行（UTCだと0:00）
+
+0 0 * * * cd /workspace/agents/instapaper-summary-agent && /usr/bin/python3 agent.py >> logs/instapaper.log 2>&1
