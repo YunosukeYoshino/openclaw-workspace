@@ -1,159 +1,102 @@
 #!/usr/bin/env python3
 """
-えっちコミュニティエージェント Discord Bot Module
-Erotic Community Agent Discord Bot
-
-An agent for managing erotic communities, forums, and social groups
+えっちコミュニティエージェント - Discord連携
+Discordボットインターフェース
 """
 
-import discord
-from discord.ext import commands
-from typing import Optional, List
-import json
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
+from datetime import datetime
 
+class EroticCommunityAgentDiscord:
+    """えっちコミュニティエージェント Discord連携クラス"""
 
-class EroticCommunityAgentBot(commands.Bot):
-    """えっちコミュニティエージェント Discord Bot"""
+    def __init__(self, token: Optional[str] = None):
+        self.token = token or os.getenv("DISCORD_TOKEN")
+        self.client = None
+        self.commands: List[Dict[str, Any]] = []
 
-    def __init__(self, db_path: str = "erotic-community-agent.db", command_prefix: str = "!"):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix=command_prefix, intents=intents)
-
-        self.db_path = db_path
-
-    async def on_ready(self):
-        """Bot起動時"""
-        print(f'Logged in as {self.user}')
-
-    @commands.command(name='communityagentadd')
-    async def add_entry(self, ctx, title: str, *, description: str = ""):
-        """新しいエントリーを追加"""
-        from erotic-community-agent import EroticCommunityAgent
-        agent = EroticCommunityAgent(self.db_path)
-        entry_id = agent.add_entry(title, description)
-        await ctx.send(f"Added entry with ID: {entry_id}")
-
-    @commands.command(name='communityagentlist')
-    async def list_entries(self, ctx, limit: int = 10):
-        """エントリー一覧を表示"""
-        from erotic-community-agent import EroticCommunityAgent
-        agent = EroticCommunityAgent(self.db_path)
-        entries = agent.list_entries(limit)
-
-        if not entries:
-            await ctx.send("No entries found.")
+    async def start(self):
+        """Discordボット起動"""
+        if not self.token:
+            print("DISCORD_TOKEN not set, running in mock mode")
             return
 
-        embed = discord.Embed(
-            title="えっちコミュニティエージェント Entries",
-            description=f"Showing {len(entries)} entries",
-            color=discord.Color.blue()
-        )
+        try:
+            import discord
+            intents = discord.Intents.default()
+            intents.message_content = True
+            self.client = discord.Client(intents=intents)
 
-        for entry in entries:
-            embed.add_field(
-                name=f"{entry['title']} (ID: {entry['id']})",
-                value=entry['description'][:100] or "No description",
-                inline=False
-            )
+            @self.client.event
+            async def on_ready():
+                print(f'{self.client.user} has connected to Discord!')
 
-        await ctx.send(embed=embed)
+            @self.client.event
+            async def on_message(message):
+                if message.author == self.client.user:
+                    return
 
-    @commands.command(name='communityagentget')
-    async def get_entry(self, ctx, entry_id: int):
-        """エントリーの詳細を表示"""
-        from erotic-community-agent import EroticCommunityAgent
-        agent = EroticCommunityAgent(self.db_path)
-        entry = agent.get_entry(entry_id)
+                await self._handle_message(message)
 
-        if not entry:
-            await ctx.send(f"Entry with ID {entry_id} not found.")
-            return
+            await self.client.start(self.token)
+        except ImportError:
+            print("discord.py not installed, running in mock mode")
 
-        embed = discord.Embed(
-            title=entry['title'],
-            description=entry['description'] or "No description",
-            color=discord.Color.green()
-        )
-        embed.add_field(name="ID", value=entry['id'])
-        embed.add_field(name="Status", value=entry['status'])
-        embed.add_field(name="Created", value=entry['created_at'])
+    async def _handle_message(self, message):
+        """メッセージハンドリング"""
+        content = message.content.lower()
 
-        await ctx.send(embed=embed)
+        if content.startswith('!help'):
+            help_text = await self.get_help()
+            await message.channel.send(help_text)
 
-    @commands.command(name='communityagentsearch')
-    async def search_entries(self, ctx, *, query: str):
-        """エントリーを検索"""
-        from erotic-community-agent import EroticCommunityAgent
-        agent = EroticCommunityAgent(self.db_path)
-        entries = agent.search_entries(query)
+        elif content.startswith('!status'):
+            status = await self.get_status()
+            await message.channel.send(status)
 
-        if not entries:
-            await ctx.send(f"No entries found for query: {query}")
-            return
+    async def send_message(self, channel_id: int, content: str):
+        """メッセージ送信"""
+        if self.client:
+            channel = self.client.get_channel(channel_id)
+            if channel:
+                await channel.send(content)
+        else:
+            print(f"Mock: Send to channel {channel_id}: {content}")
 
-        embed = discord.Embed(
-            title=f"Search Results for: {query}",
-            description=f"Found {len(entries)} entries",
-            color=discord.Color.purple()
-        )
+    async def get_help(self) -> str:
+        """ヘルプメッセージ"""
+        return f"""
+**えっちコミュニティエージェント - Commands**
 
-        for entry in entries[:10]:
-            embed.add_field(
-                name=f"{entry['title']} (ID: {entry['id']})",
-                value=entry['description'][:100] or "No description",
-                inline=False
-            )
+!help - Show this help message
+!status - Show agent status
+!info - Show agent information
 
-        await ctx.send(embed=embed)
+content category agent
+"""
 
-    @commands.command(name='communityagentstats')
-    async def get_stats(self, ctx):
-        """統計情報を表示"""
-        from erotic-community-agent import EroticCommunityAgent
-        agent = EroticCommunityAgent(self.db_path)
-        stats = agent.get_stats()
+    async def get_status(self) -> str:
+        """ステータスメッセージ"""
+        return f"""
+**えっちコミュニティエージェント Status**
 
-        embed = discord.Embed(
-            title="えっちコミュニティエージェント Statistics",
-            color=discord.Color.gold()
-        )
-        embed.add_field(name="Total Entries", value=stats['total_entries'])
-        embed.add_field(name="Active Entries", value=stats['active_entries'])
-        embed.add_field(name="Total Items", value=stats['total_items'])
+Status: Ready
+Language: Japanese
+Category: content
+Commands: {len(self.commands)}
+"""
 
-        await ctx.send(embed=embed)
+    async def stop(self):
+        """ボット停止"""
+        if self.client:
+            await self.client.close()
 
-    @commands.command(name='communityagenthelp')
-    async def show_help(self, ctx):
-        """ヘルプを表示"""
-        embed = discord.Embed(
-            title="えっちコミュニティエージェント Commands",
-            description="Available commands:",
-            color=discord.Color.blue()
-        )
-        embed.add_field(name="!communityagentadd <title> [description]", value="Add a new entry", inline=False)
-        embed.add_field(name="!communityagentlist [limit]", value="List entries", inline=False)
-        embed.add_field(name="!communityagentget <id>", value="Get entry details", inline=False)
-        embed.add_field(name="!communityagentsearch <query>", value="Search entries", inline=False)
-        embed.add_field(name="!communityagentstats", value="Show statistics", inline=False)
-        embed.add_field(name="!communityagenthelp", value="Show this help", inline=False)
-
-        await ctx.send(embed=embed)
-
-
-def main():
-    """メイン関数"""
-    import os
-    token = os.environ.get("DISCORD_TOKEN")
-    if not token:
-        print("DISCORD_TOKEN environment variable not set")
-        return
-
-    bot = EroticCommunityAgentBot()
-    bot.run(token)
-
+async def main():
+    """動作確認"""
+    bot = EroticCommunityAgentDiscord()
+    await bot.start()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

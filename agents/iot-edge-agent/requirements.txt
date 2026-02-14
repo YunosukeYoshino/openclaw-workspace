@@ -1,0 +1,17 @@
+# Requirements for IoTエッジエージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# paho-mqtt
+# numpy
+# requests
+# pyyaml
+# schedule

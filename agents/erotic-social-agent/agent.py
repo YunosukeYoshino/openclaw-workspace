@@ -1,158 +1,109 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツソーシャルエージェント
-Erotic Content Social Agent
-
-えっちコンテンツのソーシャルシェア、いいね、コメントを管理するエージェント
+えっちソーシャルエージェント
+えっちコンテンツのソーシャル機能
 """
 
-import sqlite3
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
 from datetime import datetime
-from typing import Optional, List, Dict
+import json
 
 class EroticSocialAgent:
-    """えっちコンテンツソーシャルエージェント"""
+    """えっちソーシャルエージェント"""
 
-    def __init__(self, db_path: str = "erotic_social_agent.db"):
-        self.db_path = db_path
-        self.init_database()
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        self.config = config or {}
+        self.name = "erotic-social-agent"
+        self.title = "えっちソーシャルエージェント"
+        self.description = "えっちコンテンツのソーシャル機能"
+        self.category = "content"
+        self.language = "Japanese"
+        self.state = "idle"
+        self.created_at = datetime.now().isoformat()
+        self.tasks: List[Dict[str, Any]] = []
 
-    def init_database(self):
-        """データベースを初期化"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        # 投稿テーブル
-        cursor.execute(
-            """CREATE TABLE IF NOT EXISTS posts (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT,
-                data TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            """
-        )
-        # インタラクションテーブル
-        cursor.execute(
-            """CREATE TABLE IF NOT EXISTS interactions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT,
-                data TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            """
-        )
-        conn.commit()
-        conn.close()
+    async def initialize(self) -> bool:
+        """エージェントの初期化"""
+        try:
+            self.state = "initializing"
+            print(f"Initializing {self.title}...")
+            await asyncio.sleep(0.5)
+            self.state = "ready"
+            return True
+        except Exception as e:
+            print(f"Error initializing: {e}")
+            self.state = "error"
+            return False
 
-    def add_post(self, name: str, data: str):
-        """Postを追加"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO posts (name, data) VALUES (?, ?)", (name, data))
-        conn.commit()
-        conn.close()
-        return cursor.lastrowid
+    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """データ処理"""
+        if self.state != "ready":
+            return {"error": "Agent not ready", "state": self.state}
 
-    def get_post(self, post_id: int):
-        """Postを取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM posts WHERE id = ?", (post_id,))
-        result = cursor.fetchone()
-        conn.close()
-        return result
+        self.state = "processing"
+        try:
+            result = {
+                "success": True,
+                "data": input_data,
+                "processed_at": datetime.now().isoformat(),
+                "agent": self.name
+            }
+            self.state = "ready"
+            return result
+        except Exception as e:
+            self.state = "error"
+            return {"error": str(e), "state": self.state}
 
-    def list_postss(self, limit: int = 100):
-        """全Postsを取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM posts LIMIT ?", (limit,))
-        results = cursor.fetchall()
-        conn.close()
-        return results
+    async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+        """タスク実行"""
+        task_id = task.get("id", f"task_{len(self.tasks)}")
+        self.tasks.append({"id": task_id, "task": task, "status": "pending"})
 
-    def update_post(self, post_id: int, name: str = None, data: str = None):
-        """Postを更新"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        updates = []
-        values = []
-        if name is not None:
-            updates.append("name = ?")
-            values.append(name)
-        if data is not None:
-            updates.append("data = ?")
-            values.append(data)
-        if updates:
-            values.append(post_id)
-            cursor.execute(f"UPDATE posts SET {', '.join(updates)} WHERE id = ?", values)
-            conn.commit()
-        conn.close()
-        return cursor.rowcount if updates else 0
+        try:
+            result = await self.process(task.get("data", {}))
+            self.tasks[-1]["status"] = "completed"
+            return result
+        except Exception as e:
+            self.tasks[-1]["status"] = "failed"
+            return {"error": str(e), "task_id": task_id}
 
-    def delete_post(self, post_id: int):
-        """Postを削除"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"DELETE FROM posts WHERE id = ?", (post_id,))
-        conn.commit()
-        conn.close()
-        return cursor.rowcount
+    async def get_status(self) -> Dict[str, Any]:
+        """ステータス取得"""
+        return {
+            "name": self.name,
+            "title": self.title,
+            "state": self.state,
+            "tasks_completed": sum(1 for t in self.tasks if t["status"] == "completed"),
+            "tasks_pending": sum(1 for t in self.tasks if t["status"] == "pending"),
+            "created_at": self.created_at
+        }
 
-    def add_interaction(self, name: str, data: str):
-        """Interactionを追加"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO interactions (name, data) VALUES (?, ?)", (name, data))
-        conn.commit()
-        conn.close()
-        return cursor.lastrowid
+    async def cleanup(self) -> None:
+        """クリーンアップ"""
+        self.state = "stopped"
+        print(f"{self.title} stopped.")
 
-    def get_interaction(self, interaction_id: int):
-        """Interactionを取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM interactions WHERE id = ?", (interaction_id,))
-        result = cursor.fetchone()
-        conn.close()
-        return result
+async def main():
+    """メイン処理"""
+    agent = EroticSocialAgent()
+    await agent.initialize()
 
-    def list_interactionss(self, limit: int = 100):
-        """全Interactionsを取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM interactions LIMIT ?", (limit,))
-        results = cursor.fetchall()
-        conn.close()
-        return results
+    sample_task = {
+        "id": "sample_001",
+        "data": {
+            "message": "Sample task for えっちソーシャルエージェント"
+        }
+    }
 
-    def update_interaction(self, interaction_id: int, name: str = None, data: str = None):
-        """Interactionを更新"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        updates = []
-        values = []
-        if name is not None:
-            updates.append("name = ?")
-            values.append(name)
-        if data is not None:
-            updates.append("data = ?")
-            values.append(data)
-        if updates:
-            values.append(interaction_id)
-            cursor.execute(f"UPDATE interactions SET {', '.join(updates)} WHERE id = ?", values)
-            conn.commit()
-        conn.close()
-        return cursor.rowcount if updates else 0
+    result = await agent.execute_task(sample_task)
+    print(f"Result: {json.dumps(result, ensure_ascii=False, indent=2)}")
 
-    def delete_interaction(self, interaction_id: int):
-        """Interactionを削除"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"DELETE FROM interactions WHERE id = ?", (interaction_id,))
-        conn.commit()
-        conn.close()
-        return cursor.rowcount
+    status = await agent.get_status()
+    print(f"Status: {json.dumps(status, ensure_ascii=False, indent=2)}")
 
+    await agent.cleanup()
+
+if __name__ == "__main__":
+    asyncio.run(main())

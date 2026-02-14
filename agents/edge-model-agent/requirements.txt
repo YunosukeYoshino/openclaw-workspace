@@ -1,0 +1,17 @@
+# Requirements for エッジモデルエージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# onnx
+# numpy
+# huggingface_hub
+# requests
+# fastapi

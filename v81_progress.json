@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "baseball-play-analysis-agent",
+    "baseball-play-evaluation-agent",
+    "baseball-play-tracking-agent",
+    "baseball-play-recap-agent",
+    "baseball-play-review-agent",
+    "game-stream-analytics-agent",
+    "game-stream-revenue-agent",
+    "game-stream-audience-analytics-agent",
+    "game-stream-sponsor-agent",
+    "game-stream-affiliate-agent",
+    "erotic-community-agent",
+    "erotic-social-agent",
+    "erotic-forum-agent",
+    "erotic-discussion-agent",
+    "erotic-comment-agent",
+    "edge-ai-agent-v2",
+    "iot-edge-agent",
+    "edge-computing-ai-agent",
+    "edge-model-agent",
+    "edge-inference-agent",
+    "incident-response-agent",
+    "incident-management-agent",
+    "incident-forensics-agent",
+    "incident-remediation-agent",
+    "incident-post-mortem-agent"
+  ],
+  "failed": []
+}

@@ -1,163 +1,109 @@
 #!/usr/bin/env python3
 """
-ゲームストリームアナリティクスエージェント - ゲームライブ配信の分析を管理するエージェント
-An agent that manages game live stream analytics. Provides analysis of viewer counts, engagement, revenue, and peak times.
+ゲーム配信分析エージェント
+ゲーム配信のアナリティクス分析
 """
 
-import sqlite3
-from pathlib import Path
-from typing import Optional, List, Dict, Any
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
+from datetime import datetime
 import json
 
-class GameStreamAnalyticsAgentAgent:
-    """ゲームストリームアナリティクスエージェント"""
+class GameStreamAnalyticsAgent:
+    """ゲーム配信分析エージェント"""
 
-    def __init__(self, db_path: str = "game-stream-analytics-agent.db"):
-        self.db_path = db_path
-        self.conn: Optional[sqlite3.Connection] = None
-        self._init_db()
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        self.config = config or {}
+        self.name = "game-stream-analytics-agent"
+        self.title = "ゲーム配信分析エージェント"
+        self.description = "ゲーム配信のアナリティクス分析"
+        self.category = "gaming"
+        self.language = "Japanese"
+        self.state = "idle"
+        self.created_at = datetime.now().isoformat()
+        self.tasks: List[Dict[str, Any]] = []
 
-    def _init_db(self):
-        self.conn = sqlite3.connect(self.db_path)
-        self._create_tables()
+    async def initialize(self) -> bool:
+        """エージェントの初期化"""
+        try:
+            self.state = "initializing"
+            print(f"Initializing {self.title}...")
+            await asyncio.sleep(0.5)
+            self.state = "ready"
+            return True
+        except Exception as e:
+            print(f"Error initializing: {e}")
+            self.state = "error"
+            return False
 
-    def _create_tables(self):
-        cursor = self.conn.cursor()
+    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """データ処理"""
+        if self.state != "ready":
+            return {"error": "Agent not ready", "state": self.state}
 
-        cursor.execute("CREATE TABLE IF NOT EXISTS game_stream_analytics_agent (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, metadata TEXT, status TEXT DEFAULT 'active', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
-        cursor.execute("CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE)")
-        cursor.execute("CREATE TABLE IF NOT EXISTS game_stream_analytics_agent_tags (game_stream_analytics_agent_id INTEGER, tag_id INTEGER, PRIMARY KEY (game_stream_analytics_agent_id, tag_id), FOREIGN KEY (game_stream_analytics_agent_id) REFERENCES game_stream_analytics_agent(id), FOREIGN KEY (tag_id) REFERENCES tags(id))")
-
-        self.conn.commit()
-
-    def add_entry(self, title: str, content: str, metadata: Optional[Dict[str, Any]] = None, tags: Optional[List[str]] = None) -> int:
-        cursor = self.conn.cursor()
-        metadata_json = json.dumps(metadata) if metadata else None
-
-        cursor.execute("INSERT INTO game_stream_analytics_agent (title, content, metadata) VALUES (?, ?, ?)", (title, content, metadata_json))
-
-        entry_id = cursor.lastrowid
-
-        if tags:
-            for tag_name in tags:
-                cursor.execute("INSERT OR IGNORE INTO tags (name) VALUES (?)", (tag_name,))
-                cursor.execute("SELECT id FROM tags WHERE name = ?", (tag_name,))
-                tag_id = cursor.fetchone()[0]
-                cursor.execute("INSERT INTO game_stream_analytics_agent_tags (game_stream_analytics_agent_id, tag_id) VALUES (?, ?)", (entry_id, tag_id))
-
-        self.conn.commit()
-        return entry_id
-
-    def get_entry(self, entry_id: int) -> Optional[Dict[str, Any]]:
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT id, title, content, metadata, status, created_at, updated_at FROM game_stream_analytics_agent WHERE id = ?", (entry_id,))
-        row = cursor.fetchone()
-        if row:
-            return {
-                "id": row[0],
-                "title": row[1],
-                "content": row[2],
-                "metadata": json.loads(row[3]) if row[3] else None,
-                "status": row[4],
-                "created_at": row[5],
-                "updated_at": row[6],
+        self.state = "processing"
+        try:
+            result = {
+                "success": True,
+                "data": input_data,
+                "processed_at": datetime.now().isoformat(),
+                "agent": self.name
             }
-        return None
+            self.state = "ready"
+            return result
+        except Exception as e:
+            self.state = "error"
+            return {"error": str(e), "state": self.state}
 
-    def list_entries(self, status: Optional[str] = None, limit: int = 100) -> List[Dict[str, Any]]:
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT id, title, content, metadata, status, created_at, updated_at FROM game_stream_analytics_agent ORDER BY created_at DESC LIMIT ?", (limit,))
+    async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+        """タスク実行"""
+        task_id = task.get("id", f"task_{len(self.tasks)}")
+        self.tasks.append({"id": task_id, "task": task, "status": "pending"})
 
-        results = []
-        for row in cursor.fetchall():
-            results.append({
-                "id": row[0],
-                "title": row[1],
-                "content": row[2],
-                "metadata": json.loads(row[3]) if row[3] else None,
-                "status": row[4],
-                "created_at": row[5],
-                "updated_at": row[6],
-            })
+        try:
+            result = await self.process(task.get("data", {}))
+            self.tasks[-1]["status"] = "completed"
+            return result
+        except Exception as e:
+            self.tasks[-1]["status"] = "failed"
+            return {"error": str(e), "task_id": task_id}
 
-        return results
-
-    def search_entries(self, query: str) -> List[Dict[str, Any]]:
-        cursor = self.conn.cursor()
-        search_pattern = "%" + query + "%"
-        cursor.execute("SELECT id, title, content, metadata, status, created_at, updated_at FROM game_stream_analytics_agent WHERE title LIKE ? OR content LIKE ? ORDER BY created_at DESC", (search_pattern, search_pattern))
-
-        results = []
-        for row in cursor.fetchall():
-            results.append({
-                "id": row[0],
-                "title": row[1],
-                "content": row[2],
-                "metadata": json.loads(row[3]) if row[3] else None,
-                "status": row[4],
-                "created_at": row[5],
-                "updated_at": row[6],
-            })
-
-        return results
-
-    def delete_entry(self, entry_id: int) -> bool:
-        cursor = self.conn.cursor()
-        cursor.execute("DELETE FROM game_stream_analytics_agent_tags WHERE game_stream_analytics_agent_id = ?", (entry_id,))
-        cursor.execute("DELETE FROM game_stream_analytics_agent WHERE id = ?", (entry_id,))
-
-        self.conn.commit()
-        return cursor.rowcount > 0
-
-    def get_entries_by_tag(self, tag_name: str) -> List[Dict[str, Any]]:
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT e.id, e.title, e.content, e.metadata, e.status, e.created_at, e.updated_at FROM game_stream_analytics_agent e INNER JOIN game_stream_analytics_agent_tags et ON e.id = et.game_stream_analytics_agent_id INNER JOIN tags t ON et.tag_id = t.id WHERE t.name = ? ORDER BY e.created_at DESC", (tag_name,))
-
-        results = []
-        for row in cursor.fetchall():
-            results.append({
-                "id": row[0],
-                "title": row[1],
-                "content": row[2],
-                "metadata": json.loads(row[3]) if row[3] else None,
-                "status": row[4],
-                "created_at": row[5],
-                "updated_at": row[6],
-            })
-
-        return results
-
-    def get_stats(self) -> Dict[str, Any]:
-        cursor = self.conn.cursor()
-
-        cursor.execute("SELECT COUNT(*) FROM game_stream_analytics_agent")
-        total_entries = cursor.fetchone()[0]
-
-        cursor.execute("SELECT COUNT(*) FROM game_stream_analytics_agent WHERE status = 'active'")
-        active_entries = cursor.fetchone()[0]
-
-        cursor.execute("SELECT COUNT(*) FROM tags")
-        total_tags = cursor.fetchone()[0]
-
+    async def get_status(self) -> Dict[str, Any]:
+        """ステータス取得"""
         return {
-            "total_entries": total_entries,
-            "active_entries": active_entries,
-            "total_tags": total_tags,
+            "name": self.name,
+            "title": self.title,
+            "state": self.state,
+            "tasks_completed": sum(1 for t in self.tasks if t["status"] == "completed"),
+            "tasks_pending": sum(1 for t in self.tasks if t["status"] == "pending"),
+            "created_at": self.created_at
         }
 
-    def close(self):
-        if self.conn:
-            self.conn.close()
+    async def cleanup(self) -> None:
+        """クリーンアップ"""
+        self.state = "stopped"
+        print(f"{self.title} stopped.")
 
-    def __enter__(self):
-        return self
+async def main():
+    """メイン処理"""
+    agent = GameStreamAnalyticsAgent()
+    await agent.initialize()
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
+    sample_task = {
+        "id": "sample_001",
+        "data": {
+            "message": "Sample task for ゲーム配信分析エージェント"
+        }
+    }
 
+    result = await agent.execute_task(sample_task)
+    print(f"Result: {json.dumps(result, ensure_ascii=False, indent=2)}")
+
+    status = await agent.get_status()
+    print(f"Status: {json.dumps(status, ensure_ascii=False, indent=2)}")
+
+    await agent.cleanup()
 
 if __name__ == "__main__":
-    with GameStreamAnalyticsAgentAgent() as agent:
-        print(f"game-stream-analytics-agent エージェント初期化完了")
-        stats = agent.get_stats()
-        print(f"統計情報: {stats}")
+    asyncio.run(main())

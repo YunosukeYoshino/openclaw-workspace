@@ -1,55 +1,102 @@
-# えっちコンテンツソーシャルエージェント
+# えっちソーシャルエージェント
 
-Erotic Content Social Agent
+えっちコンテンツのソーシャル機能
 
-## 概要 (Overview)
+## 概要
 
-えっちコンテンツのソーシャルシェア、いいね、コメントを管理するエージェント
+えっちソーシャルエージェントはcontentカテゴリのエージェントです。Japanese言語に対応しています。
 
-## 機能 (Features)
+## 機能
 
-- ソーシャル投稿
-- いいね管理
-- コメント管理
-- シェア分析
+- データ処理・分析
+- タスク管理
+- 状態監視
+- Discord連携
 
-## インストール (Installation)
+## インストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 使用方法 (Usage)
+## 使用方法
 
-### 基本的な使用 (Basic Usage)
+### エージェントとして実行
+
+```bash
+python agent.py
+```
+
+### データベース操作
+
+```bash
+python db.py
+```
+
+### Discordボット
+
+```bash
+export DISCORD_TOKEN=your_token
+python discord.py
+```
+
+## データベース構造
+
+### records テーブル
+- `id`: 主キー
+- `type`: レコードタイプ
+- `title`: タイトル
+- `content`: コンテンツ
+- `metadata`: メタデータ（JSON）
+- `created_at`: 作成日時
+- `updated_at`: 更新日時
+
+### tasks テーブル
+- `id`: 主キー
+- `task_id`: タスクID
+- `status`: ステータス（pending/completed/failed）
+- `result`: 結果
+- `error`: エラーメッセージ
+- `created_at`: 作成日時
+- `completed_at`: 完了日時
+
+### settings テーブル
+- `key`: 設定キー
+- `value`: 設定値
+- `updated_at`: 更新日時
+
+## Discordコマンド
+
+- `!help` - ヘルプ表示
+- `!status` - ステータス確認
+- `!info` - エージェント情報
+
+## API
+
+### Agent
 
 ```python
 from agent import EroticSocialAgent
 
 agent = EroticSocialAgent()
+await agent.initialize()
+result = await agent.process(data)
 ```
 
-### Discord Botとして使用 (Using as Discord Bot)
+### Database
 
-```bash
-python discord.py
+```python
+from db import EroticSocialAgentDB
+
+db = EroticSocialAgentDB()
+record_id = db.insert_record("type", "title", "content")
+record = db.get_record(record_id)
 ```
 
-## データベース構造 (Database Schema)
+## 言語サポート
 
-### posts
-投稿テーブル
+- Japanese
 
-### interactions
-インタラクションテーブル
-
-## コマンド (Commands)
-
-- `!add_post <name> <data>` - Add Post
-- `!list_postss [limit]` - List All Posts
-- `!add_interaction <name> <data>` - Add Interaction
-- `!list_interactionss [limit]` - List All Interactions
-
-## ライセンス (License)
+## ライセンス
 
 MIT License

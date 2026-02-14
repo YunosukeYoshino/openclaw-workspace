@@ -1,124 +1,102 @@
 # えっちコミュニティエージェント
 
-Erotic Community Agent
+えっちコミュニティの管理・運営
 
-## Description / 説明
+## 概要
 
-えっちコミュニティ、フォーラム、SNSグループ情報を管理するエージェント
+えっちコミュニティエージェントはcontentカテゴリのエージェントです。Japanese言語に対応しています。
 
-An agent for managing erotic communities, forums, and social groups
+## 機能
 
-## Features / 機能
+- データ処理・分析
+- タスク管理
+- 状態監視
+- Discord連携
 
-- コミュニティ管理
-- メンバー追跡
-- 議論管理
-- 通知機能
-
-## Installation / インストール
+## インストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage / 使用方法
+## 使用方法
 
-### Python API / Python API
+### エージェントとして実行
+
+```bash
+python agent.py
+```
+
+### データベース操作
+
+```bash
+python db.py
+```
+
+### Discordボット
+
+```bash
+export DISCORD_TOKEN=your_token
+python discord.py
+```
+
+## データベース構造
+
+### records テーブル
+- `id`: 主キー
+- `type`: レコードタイプ
+- `title`: タイトル
+- `content`: コンテンツ
+- `metadata`: メタデータ（JSON）
+- `created_at`: 作成日時
+- `updated_at`: 更新日時
+
+### tasks テーブル
+- `id`: 主キー
+- `task_id`: タスクID
+- `status`: ステータス（pending/completed/failed）
+- `result`: 結果
+- `error`: エラーメッセージ
+- `created_at`: 作成日時
+- `completed_at`: 完了日時
+
+### settings テーブル
+- `key`: 設定キー
+- `value`: 設定値
+- `updated_at`: 更新日時
+
+## Discordコマンド
+
+- `!help` - ヘルプ表示
+- `!status` - ステータス確認
+- `!info` - エージェント情報
+
+## API
+
+### Agent
 
 ```python
-from erotic-community-agent import EroticCommunityAgent
+from agent import EroticCommunityAgent
 
-# エージェント初期化 / Initialize agent
 agent = EroticCommunityAgent()
-
-# エントリー追加 / Add entry
-entry_id = agent.add_entry("タイトル", "説明")
-
-# エントリー取得 / Get entry
-entry = agent.get_entry(entry_id)
-
-# エントリー一覧 / List entries
-entries = agent.list_entries(limit=10)
-
-# 検索 / Search
-results = agent.search_entries("検索クエリ")
-
-# 統計情報 / Statistics
-stats = agent.get_stats()
+await agent.initialize()
+result = await agent.process(data)
 ```
 
-### Database / データベース
+### Database
 
 ```python
-from erotic-community-agent.db import EroticCommunityAgentDB
+from db import EroticCommunityAgentDB
 
-# データベース初期化 / Initialize database
 db = EroticCommunityAgentDB()
-db.init_database()
-
-# エントリー挿入 / Insert entry
-entry_id = db.insert_entry("タイトル", "説明")
-
-# エントリー取得 / Get entry
-entry = db.get_entry(entry_id)
+record_id = db.insert_record("type", "title", "content")
+record = db.get_record(record_id)
 ```
 
-### Discord Bot / Discordボット
+## 言語サポート
 
-```python
-from erotic-community-agent.discord import EroticCommunityAgentBot
+- Japanese
 
-# Bot起動 / Start bot
-bot = EroticCommunityAgentBot(command_prefix="!")
-bot.run("YOUR_DISCORD_TOKEN")
-```
-
-## Commands / コマンド
-
-| Command / コマンド | Description / 説明 |
-|---------------------|---------------------|
-| `!communityagentadd <title> [description]` | 新しいエントリーを追加 / Add new entry |
-| `!communityagentlist [limit]` | エントリー一覧を表示 / List entries |
-| `!communityagentget <id>` | エントリーの詳細を表示 / Get entry details |
-| `!communityagentsearch <query>` | エントリーを検索 / Search entries |
-| `!communityagentstats` | 統計情報を表示 / Show statistics |
-| `!communityagenthelp` | ヘルプを表示 / Show help |
-
-## Database Schema / データベース構造
-
-### communities / コミュニティテーブル
-
-| Column / カラム | Type / 型 | Description / 説明 |
-|------------------|-----------|---------------------|
-| id | INTEGER | Primary Key / 主キー |
-| title | TEXT | Title / タイトル |
-| description | TEXT | Description / 説明 |
-| data_json | TEXT | JSON Data / JSONデータ |
-| status | TEXT | Status / ステータス |
-| created_at | TIMESTAMP | Created Time / 作成日時 |
-| updated_at | TIMESTAMP | Updated Time / 更新日時 |
-
-### members / メンバーテーブル
-
-| Column / カラム | Type / 型 | Description / 説明 |
-|------------------|-----------|---------------------|
-| id | INTEGER | Primary Key / 主キー |
-| name | TEXT | Name / 名前 |
-| data_json | TEXT | JSON Data / JSONデータ |
-| created_at | TIMESTAMP | Created Time / 作成日時 |
-| updated_at | TIMESTAMP | Updated Time / 更新日時 |
-
-## Project Structure / プロジェクト構造
-
-```
-erotic-community-agent/
-├── agent.py          # エージェント本体 / Main agent
-├── db.py            # データベースモジュール / Database module
-├── discord.py       # Discord Bot / Discord Bot
-├── README.md        # このファイル / This file
-└── requirements.txt # 依存パッケージ / Dependencies
-```
-
-## License / ライセンス
+## ライセンス
 
 MIT License

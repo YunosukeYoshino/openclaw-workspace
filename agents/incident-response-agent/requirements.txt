@@ -1,1 +1,17 @@
-discord.py
+# Requirements for インシデントレスポンスエージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# requests
+# pyyaml
+# schedule
+# rich
+# typer

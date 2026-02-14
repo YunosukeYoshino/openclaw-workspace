@@ -1,208 +1,169 @@
 #!/usr/bin/env python3
 """
-えっちコミュニティエージェント データベースモジュール
-Erotic Community Agent Database Module
-
-An agent for managing erotic communities, forums, and social groups
+えっちコミュニティエージェント - データベース管理
+SQLiteベースのデータ永続化
 """
 
 import sqlite3
-from contextlib import contextmanager
-from typing import Optional, List, Dict, Any
 from datetime import datetime
-
+from typing import Optional, Dict, Any, List
+from contextlib import contextmanager
+import json
 
 class EroticCommunityAgentDB:
     """えっちコミュニティエージェント データベースクラス"""
 
-    def __init__(self, db_path: str = "erotic-community-agent.db"):
+    def __init__(self, db_path: str = "data/erotic-community-agent.db"):
         self.db_path = db_path
+        self._init_db()
 
     @contextmanager
-    def get_connection(self):
-        """データベース接続のコンテキストマネージャー"""
+    def _get_connection(self):
+        """データベース接続のコンテキストマネージャ"""
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         try:
             yield conn
+            conn.commit()
+        except Exception as e:
+            conn.rollback()
+            raise e
         finally:
             conn.close()
 
-    def init_database(self):
-        """データベースを初期化"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-
-            # communitiesテーブル
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS communities (
+    def _init_db(self):
+        """データベース初期化"""
+        with self._get_connection() as conn:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS records (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    title TEXT NOT NULL,
-                    description TEXT,
-                    data_json TEXT,
-                    status TEXT DEFAULT 'active',
+                    type TEXT NOT NULL,
+                    title TEXT,
+                    content TEXT NOT NULL,
+                    metadata TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
 
-            # membersテーブル
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS members (
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS tasks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    data_json TEXT,
+                    task_id TEXT UNIQUE NOT NULL,
+                    status TEXT DEFAULT 'pending',
+                    result TEXT,
+                    error TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    completed_at TIMESTAMP
+                )
+            """)
+
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS settings (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
 
-            # インデックス作成
-            cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_communities_status ON communities(status)")
-            cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_communities_created ON communities(created_at)")
-
-            conn.commit()
-
-    def insert_entry(self, title: str, description: str = "", data_json: str = "{}", status: str = "active") -> int:
-        """エントリーを挿入"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                f"""
-                INSERT INTO communities (title, description, data_json, status)
-                VALUES (?, ?, ?, ?)
-                """,
-                (title, description, data_json, status)
+    def insert_record(self, record_type: str, title: str, content: str,
+                       metadata: Optional[Dict[str, Any]] = None) -> int:
+        """レコード挿入"""
+        metadata_json = json.dumps(metadata) if metadata else None
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                'INSERT INTO records (type, title, content, metadata) VALUES (?, ?, ?, ?)',
+                (record_type, title, content, metadata_json)
             )
-            conn.commit()
             return cursor.lastrowid
 
-    def get_entry(self, entry_id: int) -> Optional[Dict[str, Any]]:
-        """エントリーを取得"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                f"SELECT * FROM communities WHERE id = ?",
-                (entry_id,)
-            )
-            row = cursor.fetchone()
-            return dict(row) if row else None
+    def get_record(self, record_id: int) -> Optional[Dict[str, Any]]:
+        """レコード取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT * FROM records WHERE id = ?', (record_id,)).fetchone()
+            if row:
+                return dict(row)
+        return None
 
-    def list_entries(self, limit: int = 100, offset: int = 0, status: str = None) -> List[Dict[str, Any]]:
-        """エントリー一覧を取得"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-
-            query = f"SELECT * FROM communities"
-            params = []
-
-            if status:
-                query += " WHERE status = ?"
-                params.append(status)
-
-            query += " ORDER BY created_at DESC LIMIT ? OFFSET ?"
-            params.extend([limit, offset])
-
-            cursor.execute(query, params)
-            rows = cursor.fetchall()
+    def list_records(self, record_type: Optional[str] = None,
+                    limit: int = 100) -> List[Dict[str, Any]]:
+        """レコード一覧"""
+        with self._get_connection() as conn:
+            if record_type:
+                rows = conn.execute(
+                    'SELECT * FROM records WHERE type = ? ORDER BY created_at DESC LIMIT ?',
+                    (record_type, limit)
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    'SELECT * FROM records ORDER BY created_at DESC LIMIT ?',
+                    (limit,)
+                ).fetchall()
             return [dict(row) for row in rows]
 
-    def update_entry(self, entry_id: int, **kwargs) -> bool:
-        """エントリーを更新"""
-        if not kwargs:
-            return False
-
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-
-            update_fields = []
-            params = []
-
-            for key, value in kwargs.items():
-                if key in ["title", "description", "data_json", "status"]:
-                    update_fields.append(f"{key} = ?")
-                    params.append(value)
-
-            if not update_fields:
-                return False
-
-            update_fields.append("updated_at = CURRENT_TIMESTAMP")
-            params.append(entry_id)
-
-            cursor.execute(
-                f"UPDATE communities SET {', '.join(update_fields)} WHERE id = ?",
-                params
+    def insert_task(self, task_id: str, status: str = "pending") -> int:
+        """タスク挿入"""
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                'INSERT INTO tasks (task_id, status) VALUES (?, ?)',
+                (task_id, status)
             )
-            conn.commit()
-            return cursor.rowcount > 0
-
-    def delete_entry(self, entry_id: int) -> bool:
-        """エントリーを削除"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                f"DELETE FROM communities WHERE id = ?",
-                (entry_id,)
-            )
-            conn.commit()
-            return cursor.rowcount > 0
-
-    def search_entries(self, query: str, limit: int = 50) -> List[Dict[str, Any]]:
-        """エントリーを検索"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                f"""
-                SELECT * FROM communities
-                WHERE title LIKE ? OR description LIKE ?
-                ORDER BY created_at DESC LIMIT ?
-                """,
-                (f"%{query}%", f"%{query}%", limit)
-            )
-            rows = cursor.fetchall()
-            return [dict(row) for row in rows]
-
-    def get_stats(self) -> Dict[str, Any]:
-        """統計情報を取得"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-
-            cursor.execute(f"SELECT COUNT(*) FROM communities")
-            total_entries = cursor.fetchone()[0]
-
-            cursor.execute(f"SELECT COUNT(*) FROM communities WHERE status = 'active'")
-            active_entries = cursor.fetchone()[0]
-
-            cursor.execute(f"SELECT COUNT(*) FROM members")
-            total_items = cursor.fetchone()[0]
-
-            return {
-                "total_entries": total_entries,
-                "active_entries": active_entries,
-                "total_items": total_items
-            }
-
-    def insert_item(self, name: str, data_json: str = "{}") -> int:
-        """アイテムを挿入"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                f"""
-                INSERT INTO members (name, data_json)
-                VALUES (?, ?)
-                """,
-                (name, data_json)
-            )
-            conn.commit()
             return cursor.lastrowid
 
-    def get_items(self, limit: int = 100) -> List[Dict[str, Any]]:
-        """アイテム一覧を取得"""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                f"SELECT * FROM members ORDER BY created_at DESC LIMIT ?",
-                (limit,)
+    def update_task(self, task_id: str, status: str,
+                   result: Optional[str] = None, error: Optional[str] = None):
+        """タスク更新"""
+        completed_at = datetime.now().isoformat() if status == "completed" else None
+        with self._get_connection() as conn:
+            conn.execute(
+                'UPDATE tasks SET status = ?, result = ?, error = ?, completed_at = ? WHERE task_id = ?',
+                (status, result, error, completed_at, task_id)
             )
-            rows = cursor.fetchall()
-            return [dict(row) for row in rows]
+
+    def get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """タスク取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT * FROM tasks WHERE task_id = ?', (task_id,)).fetchone()
+            if row:
+                return dict(row)
+        return None
+
+    def set_setting(self, key: str, value: str):
+        """設定保存"""
+        with self._get_connection() as conn:
+            conn.execute(
+                'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?, updated_at = CURRENT_TIMESTAMP',
+                (key, value, value)
+            )
+
+    def get_setting(self, key: str) -> Optional[str]:
+        """設定取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT value FROM settings WHERE key = ?', (key,)).fetchone()
+            if row:
+                return row['value']
+        return None
+
+async def main():
+    """動作確認"""
+    db = EroticCommunityAgentDB()
+
+    record_id = db.insert_record(
+        record_type="sample",
+        title="Sample Record",
+        content="This is a sample record for えっちコミュニティエージェント"
+    )
+    print(f"Inserted record: {record_id}")
+
+    record = db.get_record(record_id)
+    print(f"Retrieved record: {record}")
+
+    db.insert_task("task_001")
+    db.update_task("task_001", "completed", result="Success")
+
+    task = db.get_task("task_001")
+    print(f"Task status: {task}")
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())

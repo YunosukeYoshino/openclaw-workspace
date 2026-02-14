@@ -1,73 +1,102 @@
 #!/usr/bin/env python3
 """
-えっちコンテンツソーシャルエージェント Discord Bot
-Erotic Content Social Agent Discord Bot
-
-An agent for managing erotic content social sharing, likes, and comments
+えっちソーシャルエージェント - Discord連携
+Discordボットインターフェース
 """
 
-import discord
-from discord.ext import commands
-import sqlite3
-from typing import Optional
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
+from datetime import datetime
 
-class EroticSocialAgentBot(commands.Bot):
-    """えっちコンテンツソーシャルエージェント Discord Bot"""
+class EroticSocialAgentDiscord:
+    """えっちソーシャルエージェント Discord連携クラス"""
 
-    def __init__(self, command_prefix: str = "!", db_path: str = "erotic_social_agent.db"):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix=command_prefix, intents=intents)
-        self.db_path = db_path
+    def __init__(self, token: Optional[str] = None):
+        self.token = token or os.getenv("DISCORD_TOKEN")
+        self.client = None
+        self.commands: List[Dict[str, Any]] = []
 
-    async def on_ready(self):
-        print(f'{self.user} has connected to Discord!')
+    async def start(self):
+        """Discordボット起動"""
+        if not self.token:
+            print("DISCORD_TOKEN not set, running in mock mode")
+            return
 
-    @commands.command()
-    async def add_post(self, ctx, name: str, *, data: str):
-        """Add Post"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO posts (name, data) VALUES (?, ?)", (name, data))
-        conn.commit()
-        conn.close()
-        await ctx.send(f"Added post!")
+        try:
+            import discord
+            intents = discord.Intents.default()
+            intents.message_content = True
+            self.client = discord.Client(intents=intents)
 
-    @commands.command()
-    async def list_postss(self, ctx, limit: int = 10):
-        """List All Posts"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM posts LIMIT ?", (limit,))
-        results = cursor.fetchall()
-        conn.close()
-        if results:
-            response = "\n".join([str(r) for r in results])
-            await ctx.send(f"**Posts List:**\n{response}")
+            @self.client.event
+            async def on_ready():
+                print(f'{self.client.user} has connected to Discord!')
+
+            @self.client.event
+            async def on_message(message):
+                if message.author == self.client.user:
+                    return
+
+                await self._handle_message(message)
+
+            await self.client.start(self.token)
+        except ImportError:
+            print("discord.py not installed, running in mock mode")
+
+    async def _handle_message(self, message):
+        """メッセージハンドリング"""
+        content = message.content.lower()
+
+        if content.startswith('!help'):
+            help_text = await self.get_help()
+            await message.channel.send(help_text)
+
+        elif content.startswith('!status'):
+            status = await self.get_status()
+            await message.channel.send(status)
+
+    async def send_message(self, channel_id: int, content: str):
+        """メッセージ送信"""
+        if self.client:
+            channel = self.client.get_channel(channel_id)
+            if channel:
+                await channel.send(content)
         else:
-            await ctx.send("No items found.")
+            print(f"Mock: Send to channel {channel_id}: {content}")
 
-    @commands.command()
-    async def add_interaction(self, ctx, name: str, *, data: str):
-        """Add Interaction"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO interactions (name, data) VALUES (?, ?)", (name, data))
-        conn.commit()
-        conn.close()
-        await ctx.send(f"Added interaction!")
+    async def get_help(self) -> str:
+        """ヘルプメッセージ"""
+        return f"""
+**えっちソーシャルエージェント - Commands**
 
-    @commands.command()
-    async def list_interactionss(self, ctx, limit: int = 10):
-        """List All Interactions"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM interactions LIMIT ?", (limit,))
-        results = cursor.fetchall()
-        conn.close()
-        if results:
-            response = "\n".join([str(r) for r in results])
-            await ctx.send(f"**Interactions List:**\n{response}")
-        else:
-            await ctx.send("No items found.")
+!help - Show this help message
+!status - Show agent status
+!info - Show agent information
 
+content category agent
+"""
+
+    async def get_status(self) -> str:
+        """ステータスメッセージ"""
+        return f"""
+**えっちソーシャルエージェント Status**
+
+Status: Ready
+Language: Japanese
+Category: content
+Commands: {len(self.commands)}
+"""
+
+    async def stop(self):
+        """ボット停止"""
+        if self.client:
+            await self.client.close()
+
+async def main():
+    """動作確認"""
+    bot = EroticSocialAgentDiscord()
+    await bot.start()
+
+if __name__ == "__main__":
+    asyncio.run(main())

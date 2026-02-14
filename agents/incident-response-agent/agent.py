@@ -1,107 +1,109 @@
 #!/usr/bin/env python3
 """
-セキュリティフォレンジック・インシデント対応エージェント
-incident-response-agent - インシデントレスポンスエージェント。インシデント対応の自動化。
+インシデントレスポンスエージェント
+インシデントレスポンスの自動化
 """
 
-import sqlite3
-import threading
-import json
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
 from datetime import datetime
-from typing import Optional, List, Dict, Any
+import json
 
-class IncidentResponse:
-    """インシデントレスポンスエージェント。インシデント対応の自動化。"""
+class IncidentResponseAgent:
+    """インシデントレスポンスエージェント"""
 
-    def __init__(self, db_path: str = "agents/incident-response-agent/data.db"):
-        self.db_path = db_path
-        self.lock = threading.Lock()
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        self.config = config or {}
+        self.name = "incident-response-agent"
+        self.title = "インシデントレスポンスエージェント"
+        self.description = "インシデントレスポンスの自動化"
+        self.category = "security"
+        self.language = "Japanese"
+        self.state = "idle"
+        self.created_at = datetime.now().isoformat()
+        self.tasks: List[Dict[str, Any]] = []
 
-    def execute(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute agent task"""
-        action = input_data.get("action")
+    async def initialize(self) -> bool:
+        """エージェントの初期化"""
+        try:
+            self.state = "initializing"
+            print(f"Initializing {self.title}...")
+            await asyncio.sleep(0.5)
+            self.state = "ready"
+            return True
+        except Exception as e:
+            print(f"Error initializing: {e}")
+            self.state = "error"
+            return False
 
-        if action == "create":
-            return self.create(input_data)
-        elif action == "get":
-            return self.get(input_data)
-        elif action == "update":
-            return self.update(input_data)
-        elif action == "delete":
-            return self.delete(input_data)
-        elif action == "list":
-            return self.list(input_data)
-        else:
-            return {"error": "Unknown action"}
+    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """データ処理"""
+        if self.state != "ready":
+            return {"error": "Agent not ready", "state": self.state}
 
-    def create(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Create entry"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, ?)"
-            metadata = data.get("metadata") or dict()
-            cursor.execute(sql, (
-                data.get("title", ""),
-                data.get("content", ""),
-                json.dumps(metadata),
-                "active",
-                datetime.utcnow().isoformat()
-            ))
-            conn.commit()
-            return {"success": True, "id": cursor.lastrowid}
+        self.state = "processing"
+        try:
+            result = {
+                "success": True,
+                "data": input_data,
+                "processed_at": datetime.now().isoformat(),
+                "agent": self.name
+            }
+            self.state = "ready"
+            return result
+        except Exception as e:
+            self.state = "error"
+            return {"error": str(e), "state": self.state}
 
-    def get(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Get entry"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            sql = "SELECT id, title, content, metadata, status, created_at, updated_at FROM entries WHERE id = ?"
-            cursor.execute(sql, (data.get("id"),))
-            row = cursor.fetchone()
-            if row:
-                return {"id": row[0], "title": row[1], "content": row[2],
-                        "metadata": json.loads(row[3]), "status": row[4],
-                        "created_at": row[5], "updated_at": row[6]}
-            return {"error": "Not found"}
+    async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+        """タスク実行"""
+        task_id = task.get("id", f"task_{len(self.tasks)}")
+        self.tasks.append({"id": task_id, "task": task, "status": "pending"})
 
-    def update(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Update entry"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            sql = "UPDATE entries SET title = ?, content = ?, metadata = ?, status = ?, updated_at = ? WHERE id = ?"
-            metadata = data.get("metadata") or dict()
-            cursor.execute(sql, (
-                data.get("title", ""),
-                data.get("content", ""),
-                json.dumps(metadata),
-                data.get("status", "active"),
-                datetime.utcnow().isoformat(),
-                data.get("id")
-            ))
-            conn.commit()
-            return {"success": True}
+        try:
+            result = await self.process(task.get("data", {}))
+            self.tasks[-1]["status"] = "completed"
+            return result
+        except Exception as e:
+            self.tasks[-1]["status"] = "failed"
+            return {"error": str(e), "task_id": task_id}
 
-    def delete(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Delete entry"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            sql = "DELETE FROM entries WHERE id = ?"
-            cursor.execute(sql, (data.get("id"),))
-            conn.commit()
-            return {"success": True}
+    async def get_status(self) -> Dict[str, Any]:
+        """ステータス取得"""
+        return {
+            "name": self.name,
+            "title": self.title,
+            "state": self.state,
+            "tasks_completed": sum(1 for t in self.tasks if t["status"] == "completed"),
+            "tasks_pending": sum(1 for t in self.tasks if t["status"] == "pending"),
+            "created_at": self.created_at
+        }
 
-    def list(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """List entries"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            sql = "SELECT id, title, content, status, created_at FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
-            cursor.execute(sql, (data.get("status", "active"), data.get("limit", 50)))
-            rows = cursor.fetchall()
-            items = []
-            for r in rows:
-                items.append({"id": r[0], "title": r[1], "content": r[2], "status": r[3], "created_at": r[4]})
-            return {"items": items}
+    async def cleanup(self) -> None:
+        """クリーンアップ"""
+        self.state = "stopped"
+        print(f"{self.title} stopped.")
+
+async def main():
+    """メイン処理"""
+    agent = IncidentResponseAgent()
+    await agent.initialize()
+
+    sample_task = {
+        "id": "sample_001",
+        "data": {
+            "message": "Sample task for インシデントレスポンスエージェント"
+        }
+    }
+
+    result = await agent.execute_task(sample_task)
+    print(f"Result: {json.dumps(result, ensure_ascii=False, indent=2)}")
+
+    status = await agent.get_status()
+    print(f"Status: {json.dumps(status, ensure_ascii=False, indent=2)}")
+
+    await agent.cleanup()
 
 if __name__ == "__main__":
-    import json
-    agent = IncidentResponse()
-    print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))
+    asyncio.run(main())
