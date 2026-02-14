@@ -1,44 +1,94 @@
 #!/usr/bin/env python3
-# game-metaverse-agent
-# ゲームメタバースエージェント。ゲームメタバースの運営・管理。
+"""
+game-metaverse-agent - ゲームメタバースエージェント。メタバース空間の作成・管理・運営。
+"""
 
-import asyncio
+import json
 import logging
-from db import Game_metaverse_agentDatabase
-from discord import Game_metaverse_agentDiscordBot
+from datetime import datetime
+from pathlib import Path
 
+# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class Game_metaverse_agentAgent:
-    # game-metaverse-agent メインエージェント
+class GameMetaverseAgent:
+    """ゲームメタバースエージェント。メタバース空間の作成・管理・運営。"""
 
-    def __init__(self, db_path: str = "game-metaverse-agent.db"):
-        # 初期化
-        self.db = Game_metaverse_agentDatabase(db_path)
-        self.discord_bot = Game_metaverse_agentDiscordBot(self.db)
+    def __init__(self, db_path=None):
+        """Initialize agent"""
+        from .db import game_metaverse_agentDatabase
 
-    async def run(self):
-        # エージェントを実行
-        logger.info("Starting game-metaverse-agent...")
-        self.db.initialize()
-        await self.discord_bot.start()
+        self.db_path = db_path or Path(f"/workspace/agents/game-metaverse-agent/data.db")
+        self.db = game_metaverse_agentDatabase(self.db_path)
+        self.commands = ["create_world", "manage_avatar", "world_events", "metaverse_stats"]
 
-    async def stop(self):
-        # エージェントを停止
-        logger.info("Stopping game-metaverse-agent...")
-        await self.discord_bot.stop()
+    async def process_message(self, message: str, user_id: str = None):
+        """Process incoming message"""
+        logger.info(f"Processing message: {message[:50]}...")
+
+        # Parse command
+        parts = message.strip().split()
+        if not parts:
+            return {"error": "No command provided"}
+
+        cmd = parts[0].lower()
+        args = parts[1:]
+
+        try:
+            if cmd in self.commands:
+                return await self.handle_command(cmd, args, user_id)
+            else:
+                return {"error": f"Unknown command: {cmd}", "available_commands": self.commands}
+        except Exception as e:
+            logger.error(f"Error processing message: {e}")
+            return {"error": str(e)}
+
+    async def handle_command(self, cmd: str, args: list, user_id: str = None):
+        """Handle specific command"""
+        logger.info(f"Handling command: {cmd} with args: {args}")
+
+        if cmd == "create_world" and len(commands) > 0:
+            return await self.create_world(args, user_id)
+
+        # Generic handler for other commands
+        return {
+            "command": cmd,
+            "args": args,
+            "user_id": user_id,
+            "status": "processed"
+        }
+
+    async def create_world(self, args: list, user_id: str = None):
+        """Handle create_world command"""
+        logger.info(f"create_world: {args}")
+
+        # Implement command logic here
+        return {
+            "command": "create_world",
+            "args": args,
+            "result": "success",
+            "timestamp": datetime.now().isoformat()
+        }
+
+    def get_status(self):
+        """Get agent status"""
+        return {
+            "agent": "game-metaverse-agent",
+            "category": "game",
+            "status": "active",
+            "commands": self.commands,
+            "timestamp": datetime.now().isoformat()
+        }
 
 
 async def main():
-    # メイン関数
-    agent = Game_metaverse_agentAgent()
-    try:
-        await agent.run()
-    except KeyboardInterrupt:
-        await agent.stop()
+    """Main entry point"""
+    agent = GameMetaverseAgent()
+    print(agent.get_status())
 
 
 if __name__ == "__main__":
+    import asyncio
     asyncio.run(main())

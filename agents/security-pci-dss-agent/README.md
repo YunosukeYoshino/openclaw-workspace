@@ -1,90 +1,80 @@
-# セキュリティPCI DSSエージェント
+# security-pci-dss-agent
 
-PCI DSSコンプライアンスの管理エージェント
+セキュリティPCI DSSエージェント。PCI DSSコンプライアンスの管理・対応。
 
-## Overview
+## 概要 / Overview
 
-This is the security-pci-dss-agent agent.
+**日本語:**
+セキュリティPCI DSSエージェント。PCI DSSコンプライアンスの管理・対応。を提供するエージェント。
 
-## Features
+**English:**
+An agent providing セキュリティPCI DSSエージェント。PCI DSSコンプライアンスの管理・対応。.
 
-- Feature 1: TBD
-- Feature 2: TBD
-- Feature 3: TBD
+## カテゴリ / Category
 
-## Installation
+- `security`
+
+## 機能 / Features
+
+- Discord Bot 連携による対話型インターフェース
+- SQLite データベースによるデータ管理
+- コマンドラインからの操作
+
+## コマンド / Commands
+
+| コマンド | 説明 | 説明 (EN) |
+|----------|------|-----------|
+| `!requirements` | requirements コマンド | requirements command |
+| `!run_scan` | run_scan コマンド | run_scan command |
+| `!remediation_plan` | remediation_plan コマンド | remediation_plan command |
+| `!compliance_status` | compliance_status コマンド | compliance_status command |
+
+## インストール / Installation
 
 ```bash
+cd agents/security-pci-dss-agent
 pip install -r requirements.txt
 ```
 
-## Usage
+## 使用方法 / Usage
 
-### Agent
+### エージェントの実行 / Run Agent
 
-```python
-from agent import SecurityPciDssAgentAgent
-agent = SecurityPciDssAgentAgent()
-result = await agent.process(data)
+```bash
+python agent.py
 ```
 
-### Database
+### Discord Bot の起動 / Start Discord Bot
 
-```python
-from db import Database
-db = Database()
-record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
+```bash
+export DISCORD_TOKEN="your_bot_token"
+python discord.py
 ```
 
-### Discord Integration
+## データベース / Database
 
-```python
-from discord import DiscordBot
-bot = DiscordBot(token="your_bot_token")
-bot.set_agent(agent)
-bot.start_bot()
+データベースファイル: `data.db`
+
+### テーブル / Tables
+
+- **requirements**: id INTEGER PRIMARY KEY, requirement_id TEXT, description TEXT, control_procedures TEXT, status TEXT
+- **scans**: id INTEGER PRIMARY KEY, scan_type TEXT, start_time TIMESTAMP, end_time TIMESTAMP, vulnerabilities JSON, status TEXT
+- **remediations**: id INTEGER PRIMARY KEY, requirement_id INTEGER, vulnerability_id TEXT, plan TEXT, status TEXT, completed_at TIMESTAMP, FOREIGN KEY (requirement_id) REFERENCES requirements(id
+
+## 開発 / Development
+
+```bash
+# テスト
+python -m pytest
+
+# フォーマット
+black agent.py db.py discord.py
 ```
 
-## Commands
-
-### Discord Commands
-
-- `!status` - Show agent status
-- `!info` - Show agent information
-
-## Database Schema
-
-### Records Table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary key |
-| type | TEXT | Record type |
-| title | TEXT | Record title (optional) |
-| content | TEXT | Record content |
-| status | TEXT | Record status |
-| created_at | TIMESTAMP | Creation timestamp |
-| updated_at | TIMESTAMP | Last update timestamp |
-
-### Tags Table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary key |
-| name | TEXT | Tag name (unique) |
-| created_at | TIMESTAMP | Creation timestamp |
-
-### Record Tags Table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| record_id | INTEGER | Foreign key to records |
-| tag_id | INTEGER | Foreign key to tags |
-
-## License
+## ライセンス / License
 
 MIT License
 
-## Author
+---
 
-Created with OpenClaw
+_This agent is part of OpenClaw Agents ecosystem._

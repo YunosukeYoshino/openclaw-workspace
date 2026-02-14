@@ -1,90 +1,80 @@
-# セキュリティHIPAAエージェント
+# security-hipaa-agent
 
-HIPAAコンプライアンスの管理エージェント
+セキュリティHIPAAエージェント。HIPAAコンプライアンスの管理・対応。
 
-## Overview
+## 概要 / Overview
 
-This is the security-hipaa-agent agent.
+**日本語:**
+セキュリティHIPAAエージェント。HIPAAコンプライアンスの管理・対応。を提供するエージェント。
 
-## Features
+**English:**
+An agent providing セキュリティHIPAAエージェント。HIPAAコンプライアンスの管理・対応。.
 
-- Feature 1: TBD
-- Feature 2: TBD
-- Feature 3: TBD
+## カテゴリ / Category
 
-## Installation
+- `security`
+
+## 機能 / Features
+
+- Discord Bot 連携による対話型インターフェース
+- SQLite データベースによるデータ管理
+- コマンドラインからの操作
+
+## コマンド / Commands
+
+| コマンド | 説明 | 説明 (EN) |
+|----------|------|-----------|
+| `!phi_inventory` | phi_inventory コマンド | phi_inventory command |
+| `!access_audit` | access_audit コマンド | access_audit command |
+| `!risk_assessment` | risk_assessment コマンド | risk_assessment command |
+| `!compliance_check` | compliance_check コマンド | compliance_check command |
+
+## インストール / Installation
 
 ```bash
+cd agents/security-hipaa-agent
 pip install -r requirements.txt
 ```
 
-## Usage
+## 使用方法 / Usage
 
-### Agent
+### エージェントの実行 / Run Agent
 
-```python
-from agent import SecurityHipaaAgentAgent
-agent = SecurityHipaaAgentAgent()
-result = await agent.process(data)
+```bash
+python agent.py
 ```
 
-### Database
+### Discord Bot の起動 / Start Discord Bot
 
-```python
-from db import Database
-db = Database()
-record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
+```bash
+export DISCORD_TOKEN="your_bot_token"
+python discord.py
 ```
 
-### Discord Integration
+## データベース / Database
 
-```python
-from discord import DiscordBot
-bot = DiscordBot(token="your_bot_token")
-bot.set_agent(agent)
-bot.start_bot()
+データベースファイル: `data.db`
+
+### テーブル / Tables
+
+- **phi_records**: id INTEGER PRIMARY KEY, record_id TEXT, phi_type TEXT, access_controls TEXT, encryption_status TEXT
+- **audit_logs**: id INTEGER PRIMARY KEY, phi_id INTEGER, action_type TEXT, user_id INTEGER, timestamp TIMESTAMP, details TEXT, FOREIGN KEY (phi_id) REFERENCES phi_records(id
+- **risk_assessments**: id INTEGER PRIMARY KEY, phi_id INTEGER, risk_level TEXT, mitigation_plan TEXT, assessed_at TIMESTAMP, FOREIGN KEY (phi_id) REFERENCES phi_records(id
+
+## 開発 / Development
+
+```bash
+# テスト
+python -m pytest
+
+# フォーマット
+black agent.py db.py discord.py
 ```
 
-## Commands
-
-### Discord Commands
-
-- `!status` - Show agent status
-- `!info` - Show agent information
-
-## Database Schema
-
-### Records Table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary key |
-| type | TEXT | Record type |
-| title | TEXT | Record title (optional) |
-| content | TEXT | Record content |
-| status | TEXT | Record status |
-| created_at | TIMESTAMP | Creation timestamp |
-| updated_at | TIMESTAMP | Last update timestamp |
-
-### Tags Table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary key |
-| name | TEXT | Tag name (unique) |
-| created_at | TIMESTAMP | Creation timestamp |
-
-### Record Tags Table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| record_id | INTEGER | Foreign key to records |
-| tag_id | INTEGER | Foreign key to tags |
-
-## License
+## ライセンス / License
 
 MIT License
 
-## Author
+---
 
-Created with OpenClaw
+_This agent is part of OpenClaw Agents ecosystem._

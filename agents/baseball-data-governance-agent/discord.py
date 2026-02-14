@@ -1,101 +1,99 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Discord Integration for Baseball Data Governance Agent
-野球データガバナンスエージェント
+Discord bot integration for baseball-data-governance-agent
 """
 
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
+from discord import app_commands
 import logging
-from typing import Optional
 from pathlib import Path
+import sys
 
+# Add parent directory to path to import agent
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from agent import BaseballDataGovernanceAgent
+
+# Configure logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("baseball-data-governance-agent")
+logger = logging.getLogger(__name__)
 
 
-class BaseballDataGovernanceAgentDiscord(commands.Bot):
-    """Discord bot for Baseball Data Governance Agent"""
+class DiscordBot(commands.Bot):
+    """Discord bot for baseball-data-governance-agent"""
 
-    def __init__(self, command_prefix: str = "!", intents: Optional[discord.Intents] = None):
-        intents = intents or discord.Intents.default()
+    def __init__(self):
+        intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix=command_prefix, intents=intents)
-        self.started = False
+        intents.guilds = True
+
+        super().__init__(
+            command_prefix="!",
+            intents=intents,
+            activity=discord.Activity(type=discord.ActivityType.watching, name="for commands")
+        )
+
+        self.agent = BaseballDataGovernanceAgent()
 
     async def setup_hook(self):
-        """Called when the bot is starting."""
-        await self.add_commands()
-        logger.info(f""野球データガバナンスエージェント" Discord bot ready")
+        """Setup hook for bot"""
+        await self.tree.sync()
+        logger.info("Commands synced")
 
-    async def add_commands(self):
-        """Add bot commands."""
+            bot.tree.command(name="add_rule")(self.add_rule)
+            bot.tree.command(name="run_checks")(self.run_checks)
+            bot.tree.command(name="lineage")(self.lineage)
+            bot.tree.command(name="governance_status")(self.governance_status)
 
-        @self.command(name="status")
-        async def status(ctx):
-            """Show bot status."""
-            embed = discord.Embed(
-                title="Baseball Data Governance Agent Status",
-                color=discord.Color.blue()
-            )
-            embed.add_field(name="Status", value="✅ Online", inline=True)
-            embed.add_field(name="Version", value="1.0.0", inline=True)
-            await ctx.send(embed=embed)
+    async def add_rule(self, interaction):
+        """Handle add_rule command"""
+        await interaction.response.send_message(f"{agent_name}: add_rule command received!")
 
-        @self.command(name="help")
-        async def help_cmd(ctx):
-            """Show help message."""
-            embed = discord.Embed(
-                title="Baseball Data Governance Agent - Help",
-                description="野球データガバナンスエージェント",
-                color=discord.Color.green()
-            )
-            embed.add_field(name="Commands", value="`!status` - Show status\n`!help` - Show this help", inline=False)
-            await ctx.send(embed=embed)
+    async def run_checks(self, interaction):
+        """Handle run_checks command"""
+        await interaction.response.send_message(f"{agent_name}: run_checks command received!")
+
+    async def lineage(self, interaction):
+        """Handle lineage command"""
+        await interaction.response.send_message(f"{agent_name}: lineage command received!")
+
+    async def governance_status(self, interaction):
+        """Handle governance_status command"""
+        await interaction.response.send_message(f"{agent_name}: governance_status command received!")
 
     async def on_ready(self):
-        """Called when the bot is ready."""
-        logger.info(f""野球データガバナンスエージェント" bot logged in as {self.user}")
-        self.started = True
+        """Called when bot is ready"""
+        logger.info(f"{self.user} is ready!")
+        logger.info(f"Connected to {len(self.guilds)} guilds")
 
-    async def on_message(self, message):
-        """Called when a message is received."""
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        # Ignore messages from bot itself
         if message.author == self.user:
             return
-        await self.process_commands(message)
 
-    async def send_notification(self, channel_id: int, content: str, **kwargs):
-        """Send notification to a channel."""
-        try:
-            channel = self.get_channel(channel_id)
-            if channel:
-                await channel.send(content, **kwargs)
-        except Exception as e:
-            logger.error(f"Failed to send notification: {e}")
+        # Process message through agent
+        response = await self.agent.process_message(message.content, str(message.author.id))
 
-    async def send_embed(self, channel_id: int, title: str, description: str, **kwargs):
-        """Send an embed to a channel."""
-        try:
-            channel = self.get_channel(channel_id)
-            if channel:
-                embed = discord.Embed(title=title, description=description, **kwargs)
-                await channel.send(embed=embed)
-        except Exception as e:
-            logger.error(f"Failed to send embed: {e}")
+        # Send response if not empty
+        if response and "error" not in response:
+            await message.channel.send(f"Processed: {response.get('status', 'done')}")
 
 
-async def run_bot(token: str):
-    """Run the Discord bot."""
-    bot = BaseballDataGovernanceAgentDiscord()
+async def main():
+    """Main entry point"""
+    # Get Discord token from environment or config
+    import os
+    token = os.getenv("DISCORD_TOKEN")
+
+    if not token:
+        logger.error("DISCORD_TOKEN environment variable not set")
+        return
+
+    bot = DiscordBot()
     await bot.start(token)
 
 
 if __name__ == "__main__":
-    import os
-    token = os.getenv("DISCORD_TOKEN", "")
-    if not token:
-        logger.warning("DISCORD_TOKEN not set, running without Discord")
-    else:
-        import asyncio
-        asyncio.run(run_bot(token))
+    import asyncio
+    asyncio.run(main())

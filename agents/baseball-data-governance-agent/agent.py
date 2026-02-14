@@ -1,51 +1,94 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Baseball Data Governance Agent
-野球データガバナンスエージェント
+baseball-data-governance-agent - 野球データガバナンスエージェント。野球データの品質管理・ガバナンス。
 """
 
-import asyncio
+import json
 import logging
-from typing import Optional, Dict, Any
+from datetime import datetime
+from pathlib import Path
 
+# Configure logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("baseball-data-governance-agent")
+logger = logging.getLogger(__name__)
 
 
 class BaseballDataGovernanceAgent:
-    """Baseball Data Governance Agent"""
+    """野球データガバナンスエージェント。野球データの品質管理・ガバナンス。"""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
-        self.config = config or {}
-        self.state = {}
-        logger.info(f""野球データガバナンスエージェント" initialized")
+    def __init__(self, db_path=None):
+        """Initialize agent"""
+        from .db import baseball_data_governance_agentDatabase
 
-    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Process input and return result."""
-        logger.info(f"Processing: "野球データガバナンスエージェント"")
-        result = {"status": "success", "data": input_data}
-        return result
+        self.db_path = db_path or Path(f"/workspace/agents/baseball-data-governance-agent/data.db")
+        self.db = baseball_data_governance_agentDatabase(self.db_path)
+        self.commands = ["add_rule", "run_checks", "lineage", "governance_status"]
 
-    async def analyze(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze data and return insights."""
-        logger.info(f"Analyzing: "野球データガバナンスエージェント"")
-        insights = {"insights": []}
-        return insights
+    async def process_message(self, message: str, user_id: str = None):
+        """Process incoming message"""
+        logger.info(f"Processing message: {message[:50]}...")
 
-    async def recommend(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        """Provide recommendations based on context."""
-        logger.info(f"Recommending: "野球データガバナンスエージェント"")
-        recommendations = {"recommendations": []}
-        return recommendations
+        # Parse command
+        parts = message.strip().split()
+        if not parts:
+            return {"error": "No command provided"}
+
+        cmd = parts[0].lower()
+        args = parts[1:]
+
+        try:
+            if cmd in self.commands:
+                return await self.handle_command(cmd, args, user_id)
+            else:
+                return {"error": f"Unknown command: {cmd}", "available_commands": self.commands}
+        except Exception as e:
+            logger.error(f"Error processing message: {e}")
+            return {"error": str(e)}
+
+    async def handle_command(self, cmd: str, args: list, user_id: str = None):
+        """Handle specific command"""
+        logger.info(f"Handling command: {cmd} with args: {args}")
+
+        if cmd == "add_rule" and len(commands) > 0:
+            return await self.add_rule(args, user_id)
+
+        # Generic handler for other commands
+        return {
+            "command": cmd,
+            "args": args,
+            "user_id": user_id,
+            "status": "processed"
+        }
+
+    async def add_rule(self, args: list, user_id: str = None):
+        """Handle add_rule command"""
+        logger.info(f"add_rule: {args}")
+
+        # Implement command logic here
+        return {
+            "command": "add_rule",
+            "args": args,
+            "result": "success",
+            "timestamp": datetime.now().isoformat()
+        }
+
+    def get_status(self):
+        """Get agent status"""
+        return {
+            "agent": "baseball-data-governance-agent",
+            "category": "baseball",
+            "status": "active",
+            "commands": self.commands,
+            "timestamp": datetime.now().isoformat()
+        }
 
 
 async def main():
-    """Main entry point."""
+    """Main entry point"""
     agent = BaseballDataGovernanceAgent()
-    result = await agent.process({{"test": "data"}})
-    print(result)
+    print(agent.get_status())
 
 
 if __name__ == "__main__":
+    import asyncio
     asyncio.run(main())

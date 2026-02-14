@@ -1,41 +1,80 @@
 # game-metaverse-agent
 
-## 概要
-ゲームメタバースエージェント。ゲームメタバースの運営・管理。
+ゲームメタバースエージェント。メタバース空間の作成・管理・運営。
 
-## カテゴリ
-ゲームVR・AR・メタバース
+## 概要 / Overview
 
-## トリガーワード
-メタバース, バーチャル空間, メタバース運営
+**日本語:**
+ゲームメタバースエージェント。メタバース空間の作成・管理・運営。を提供するエージェント。
 
-## 主な機能
+**English:**
+An agent providing ゲームメタバースエージェント。メタバース空間の作成・管理・運営。.
 
-### データ管理
-- game-metaverse-agent 関連データのSQLiteデータベース管理
-- CRUD操作の実装
-- 検索・フィルタリング機能
+## カテゴリ / Category
 
-### チャットボット機能
-- Discord連携によるインタラクティブ応答
-- 自然言語によるクエリ処理
-- コマンドパターンマッチング
+- `game`
 
-## 使用方法
+## 機能 / Features
 
-### インストール
+- Discord Bot 連携による対話型インターフェース
+- SQLite データベースによるデータ管理
+- コマンドラインからの操作
+
+## コマンド / Commands
+
+| コマンド | 説明 | 説明 (EN) |
+|----------|------|-----------|
+| `!create_world` | create_world コマンド | create_world command |
+| `!manage_avatar` | manage_avatar コマンド | manage_avatar command |
+| `!world_events` | world_events コマンド | world_events command |
+| `!metaverse_stats` | metaverse_stats コマンド | metaverse_stats command |
+
+## インストール / Installation
+
 ```bash
 cd agents/game-metaverse-agent
 pip install -r requirements.txt
 ```
 
-### 実行
+## 使用方法 / Usage
+
+### エージェントの実行 / Run Agent
+
 ```bash
 python agent.py
 ```
 
-## ライセンス
+### Discord Bot の起動 / Start Discord Bot
+
+```bash
+export DISCORD_TOKEN="your_bot_token"
+python discord.py
+```
+
+## データベース / Database
+
+データベースファイル: `data.db`
+
+### テーブル / Tables
+
+- **worlds**: id INTEGER PRIMARY KEY, name TEXT, description TEXT, capacity INTEGER, settings JSON
+- **avatars**: id INTEGER PRIMARY KEY, user_id INTEGER, world_id INTEGER, appearance JSON, position JSON, FOREIGN KEY (world_id) REFERENCES worlds(id
+- **metaverse_events**: id INTEGER PRIMARY KEY, world_id INTEGER, event_type TEXT, data JSON, timestamp TIMESTAMP, FOREIGN KEY (world_id) REFERENCES worlds(id
+
+## 開発 / Development
+
+```bash
+# テスト
+python -m pytest
+
+# フォーマット
+black agent.py db.py discord.py
+```
+
+## ライセンス / License
+
 MIT License
 
-## バージョン
-1.0.0
+---
+
+_This agent is part of OpenClaw Agents ecosystem._

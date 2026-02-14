@@ -1,67 +1,80 @@
-# Baseball Data Governance Agent
+# baseball-data-governance-agent
 
-野球データガバナンスエージェント
+野球データガバナンスエージェント。野球データの品質管理・ガバナンス。
 
 ## 概要 / Overview
 
-野球データの品質管理、ポリシー、コンプライアンスを管理するエージェント
+**日本語:**
+野球データガバナンスエージェント。野球データの品質管理・ガバナンス。を提供するエージェント。
+
+**English:**
+An agent providing 野球データガバナンスエージェント。野球データの品質管理・ガバナンス。.
+
+## カテゴリ / Category
+
+- `baseball`
 
 ## 機能 / Features
 
-- データ収集 / Data collection
-- 分析・解析 / Analysis
-- レポート生成 / Report generation
-- 通知機能 / Notification system
+- Discord Bot 連携による対話型インターフェース
+- SQLite データベースによるデータ管理
+- コマンドラインからの操作
+
+## コマンド / Commands
+
+| コマンド | 説明 | 説明 (EN) |
+|----------|------|-----------|
+| `!add_rule` | add_rule コマンド | add_rule command |
+| `!run_checks` | run_checks コマンド | run_checks command |
+| `!lineage` | lineage コマンド | lineage command |
+| `!governance_status` | governance_status コマンド | governance_status command |
 
 ## インストール / Installation
 
 ```bash
+cd agents/baseball-data-governance-agent
 pip install -r requirements.txt
 ```
 
 ## 使用方法 / Usage
 
-### エージェントの実行 / Running the Agent
+### エージェントの実行 / Run Agent
 
 ```bash
 python agent.py
 ```
 
-### データベースの初期化 / Database Initialization
+### Discord Bot の起動 / Start Discord Bot
 
 ```bash
-python db.py
+export DISCORD_TOKEN="your_bot_token"
+python discord.py
 ```
 
-### Discordボットの起動 / Starting Discord Bot
+## データベース / Database
+
+データベースファイル: `data.db`
+
+### テーブル / Tables
+
+- **data_quality_rules**: id INTEGER PRIMARY KEY, name TEXT, table TEXT, column TEXT, condition TEXT, severity TEXT
+- **quality_checks**: id INTEGER PRIMARY KEY, rule_id INTEGER, checked_at TIMESTAMP, passed INTEGER, failed_count INTEGER, details TEXT, FOREIGN KEY (rule_id) REFERENCES data_quality_rules(id
+- **data_lineage**: id INTEGER PRIMARY KEY, source_table TEXT, target_table TEXT, transformation TEXT, created_at TIMESTAMP
+
+## 開発 / Development
 
 ```bash
-DISCORD_TOKEN=your_token_here python discord.py
+# テスト
+python -m pytest
+
+# フォーマット
+black agent.py db.py discord.py
 ```
-
-## 設定 / Configuration
-
-環境変数を使用して設定をカスタマイズできます。
-
-```bash
-export DISCORD_TOKEN=your_bot_token
-export LOG_LEVEL=INFO
-```
-
-## API / API Reference
-
-### add_entry(title, content, **kwargs)
-
-新しいエントリを追加します。
-
-### get_entry(entry_id)
-
-エントリIDでエントリを取得します。
-
-### list_entries(status=None, limit=100)
-
-エントリの一覧を取得します。
 
 ## ライセンス / License
 
 MIT License
+
+---
+
+_This agent is part of OpenClaw Agents ecosystem._

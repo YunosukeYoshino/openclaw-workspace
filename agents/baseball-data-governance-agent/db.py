@@ -1,180 +1,89 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Database for Baseball Data Governance Agent
-野球データガバナンスエージェント
+Database module for baseball-data-governance-agent
 """
 
 import sqlite3
+import json
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import List, Dict, Any, Optional
 from datetime import datetime
 
-DB_PATH = Path(__file__).parent / "baseball-data-governance-agent.db"
+
+class baseball_data_governance_agentDatabase:
+    """Database handler for baseball-data-governance-agent"""
+
+    def __init__(self, db_path: str = None):
+        """Initialize database connection"""
+        self.db_path = db_path or Path(f"/workspace/agents/baseball-data-governance-agent/data.db")
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.connection = sqlite3.connect(str(self.db_path), check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
+        self.cursor = self.connection.cursor()
+        self._init_tables()
+
+    def _init_tables(self):
+        """Initialize database tables"""
+        logger.info("Initializing database tables...")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS data_quality_rules(id INTEGER PRIMARY KEY, name TEXT, table TEXT, column TEXT, condition TEXT, severity TEXT)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS quality_checks(id INTEGER PRIMARY KEY, rule_id INTEGER, checked_at TIMESTAMP, passed INTEGER, failed_count INTEGER, details TEXT, FOREIGN KEY (rule_id) REFERENCES data_quality_rules(id))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS data_lineage(id INTEGER PRIMARY KEY, source_table TEXT, target_table TEXT, transformation TEXT, created_at TIMESTAMP)""")
+        self.connection.commit()
+
+    def execute(self, query: str, params: tuple = None) -> sqlite3.Cursor:
+        """Execute a SQL query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        self.connection.commit()
+        return self.cursor
+
+    def fetchall(self, query: str, params: tuple = None) -> List[Dict[str, Any]]:
+        """Fetch all results from a query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        return [dict(row) for row in self.cursor.fetchall()]
+
+    def fetchone(self, query: str, params: tuple = None) -> Optional[Dict[str, Any]]:
+        """Fetch one result from a query"""
+        if params is None:
+            params = ()
+        self.cursor.execute(query, params)
+        row = self.cursor.fetchone()
+        return dict(row) if row else None
+
+    def insert(self, table: str, data: Dict[str, Any]) -> int:
+        """Insert a row into a table"""
+        columns = ', '.join(data.keys())
+        placeholders = ', '.join(['?' for _ in data])
+        query = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+        self.cursor.execute(query, tuple(data.values()))
+        self.connection.commit()
+        return self.cursor.lastrowid
+
+    def update(self, table: str, data: Dict[str, Any], where: Dict[str, Any]) -> int:
+        """Update rows in a table"""
+        set_clause = ', '.join([f"{k} = ?" for k in data.keys()])
+        where_clause = ' AND '.join([f"{k} = ?" for k in where.keys()])
+        query = f"UPDATE {table} SET {set_clause} WHERE {where_clause}"
+        self.cursor.execute(query, tuple(data.values()) + tuple(where.values()))
+        self.connection.commit()
+        return self.cursor.rowcount
+
+    def delete(self, table: str, where: Dict[str, Any]) -> int:
+        """Delete rows from a table"""
+        where_clause = ' AND '.join([f"{k} = ?" for k in where.keys()])
+        query = f"DELETE FROM {table} WHERE {where_clause}"
+        self.cursor.execute(query, tuple(where.values()))
+        self.connection.commit()
+        return self.cursor.rowcount
+
+    def close(self):
+        """Close database connection"""
+        self.connection.close()
 
 
-class BaseballDataGovernanceAgentDB:
-    """Database handler for Baseball Data Governance Agent"""
-
-    def __init__(self, db_path: Optional[Path] = None):
-        self.db_path = db_path or DB_PATH
-        self._init_db()
-
-    def _init_db(self):
-        """Initialize database tables."""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-
-            # Main entries table
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS entries (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    title TEXT NOT NULL,
-                    content TEXT NOT NULL,
-                    type TEXT DEFAULT 'default',
-                    status TEXT DEFAULT 'active',
-                    priority INTEGER DEFAULT 0,
-                    tags TEXT,
-                    metadata TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-            # Tags table
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS tags (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT UNIQUE NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-            # Entry-tags mapping table
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS entry_tags (
-                    entry_id INTEGER NOT NULL,
-                    tag_id INTEGER NOT NULL,
-                    PRIMARY KEY (entry_id, tag_id),
-                    FOREIGN KEY (entry_id) REFERENCES entries(id) ON DELETE CASCADE,
-                    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
-                )
-            """)
-
-            # Activity log table
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS activity_log (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    action TEXT NOT NULL,
-                    details TEXT,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-            conn.commit()
-
-    def add_entry(self, title: str, content: str, **kwargs) -> int:
-        """Add a new entry."""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO entries (title, content, type, status, priority, tags, metadata)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (
-                title, content,
-                kwargs.get('type', 'default'),
-                kwargs.get('status', 'active'),
-                kwargs.get('priority', 0),
-                kwargs.get('tags', ''),
-                kwargs.get('metadata', '')
-            ))
-            conn.commit()
-            self._log_activity('add_entry', f"Added entry: {title}")
-            return cursor.lastrowid
-
-    def get_entry(self, entry_id: int) -> Optional[Dict[str, Any]]:
-        """Get entry by ID."""
-        with sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM entries WHERE id = ?", (entry_id,))
-            row = cursor.fetchone()
-            return dict(row) if row else None
-
-    def list_entries(self, status: Optional[str] = None, limit: int = 100) -> List[Dict[str, Any]]:
-        """List entries with optional status filter."""
-        with sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
-            if status:
-                cursor.execute(
-                    "SELECT * FROM entries WHERE status = ? ORDER BY updated_at DESC LIMIT ?",
-                    (status, limit)
-                )
-            else:
-                cursor.execute(
-                    "SELECT * FROM entries ORDER BY updated_at DESC LIMIT ?",
-                    (limit,)
-                )
-            return [dict(row) for row in cursor.fetchall()]
-
-    def update_entry(self, entry_id: int, **kwargs) -> bool:
-        """Update entry."""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            fields = []
-            values = []
-            for key, value in kwargs.items():
-                if key in ['title', 'content', 'type', 'status', 'priority', 'tags', 'metadata']:
-                    fields.append(f"{key} = ?")
-                    values.append(value)
-            if not fields:
-                return False
-            values.append(entry_id)
-            cursor.execute(f"""
-                UPDATE entries SET {', '.join(fields)}, updated_at = CURRENT_TIMESTAMP
-                WHERE id = ?
-            """, values)
-            conn.commit()
-            self._log_activity('update_entry', f"Updated entry: {entry_id}")
-            return cursor.rowcount > 0
-
-    def delete_entry(self, entry_id: int) -> bool:
-        """Delete entry."""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM entries WHERE id = ?", (entry_id,))
-            conn.commit()
-            self._log_activity('delete_entry', f"Deleted entry: {entry_id}")
-            return cursor.rowcount > 0
-
-    def get_stats(self) -> Dict[str, Any]:
-        """Get database statistics."""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-
-            total_entries = cursor.execute("SELECT COUNT(*) FROM entries").fetchone()[0]
-            active_entries = cursor.execute("SELECT COUNT(*) FROM entries WHERE status = 'active'").fetchone()[0]
-            total_tags = cursor.execute("SELECT COUNT(*) FROM tags").fetchone()[0]
-
-            return {
-                "total_entries": total_entries,
-                "active_entries": active_entries,
-                "total_tags": total_tags
-            }
-
-    def _log_activity(self, action: str, details: str = ""):
-        """Log activity to database."""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "INSERT INTO activity_log (action, details) VALUES (?, ?)",
-                (action, details)
-            )
-            conn.commit()
-
-
-if __name__ == "__main__":
-    db = BaseballDataGovernanceAgentDB()
-    print(f"Database initialized: "野球データガバナンスエージェント"")
-    print(f"Stats: {db.get_stats()}")
+# For logging in _init_tables
+import logging
+logger = logging.getLogger(__name__)

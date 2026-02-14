@@ -1,70 +1,99 @@
 #!/usr/bin/env python3
 """
-Discord integration for セキュリティHIPAAエージェント
+Discord bot integration for security-hipaa-agent
 """
 
-import logging
-from typing import Optional
 import discord
 from discord.ext import commands
+from discord import app_commands
+import logging
+from pathlib import Path
+import sys
 
+# Add parent directory to path to import agent
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from agent import SecurityHipaaAgent
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class DiscordBot(commands.Bot):
-    """Discord bot for セキュリティHIPAAエージェント"""
+    """Discord bot for security-hipaa-agent"""
 
-    def __init__(self, token: Optional[str] = None):
+    def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
-        self.token = token or ""
-        self.agent = None
+        intents.guilds = True
 
-    def set_agent(self, agent):
-        """Set agent instance"""
-        self.agent = agent
+        super().__init__(
+            command_prefix="!",
+            intents=intents,
+            activity=discord.Activity(type=discord.ActivityType.watching, name="for commands")
+        )
+
+        self.agent = SecurityHipaaAgent()
+
+    async def setup_hook(self):
+        """Setup hook for bot"""
+        await self.tree.sync()
+        logger.info("Commands synced")
+
+            bot.tree.command(name="phi_inventory")(self.phi_inventory)
+            bot.tree.command(name="access_audit")(self.access_audit)
+            bot.tree.command(name="risk_assessment")(self.risk_assessment)
+            bot.tree.command(name="compliance_check")(self.compliance_check)
+
+    async def phi_inventory(self, interaction):
+        """Handle phi_inventory command"""
+        await interaction.response.send_message(f"{agent_name}: phi_inventory command received!")
+
+    async def access_audit(self, interaction):
+        """Handle access_audit command"""
+        await interaction.response.send_message(f"{agent_name}: access_audit command received!")
+
+    async def risk_assessment(self, interaction):
+        """Handle risk_assessment command"""
+        await interaction.response.send_message(f"{agent_name}: risk_assessment command received!")
+
+    async def compliance_check(self, interaction):
+        """Handle compliance_check command"""
+        await interaction.response.send_message(f"{agent_name}: compliance_check command received!")
 
     async def on_ready(self):
         """Called when bot is ready"""
-        logger.info(f"{self.user} is ready")
+        logger.info(f"{self.user} is ready!")
+        logger.info(f"Connected to {len(self.guilds)} guilds")
 
     async def on_message(self, message: discord.Message):
         """Handle incoming messages"""
-        if message.author.bot:
+        # Ignore messages from bot itself
+        if message.author == self.user:
             return
-        await self.process_commands(message)
 
-    @commands.command(name="status")
-    async def status(self, ctx: commands.Context):
-        """Show agent status"""
-        if self.agent:
-            status = self.agent.get_status()
-            await ctx.send(f"**Status:** {status.get('status')}\n**Version:** {status.get('version')}")
-        else:
-            await ctx.send("Agent not configured")
+        # Process message through agent
+        response = await self.agent.process_message(message.content, str(message.author.id))
 
-    @commands.command(name="info")
-    async def info(self, ctx: commands.Context):
-        """Show agent information"""
-        if self.agent:
-            await ctx.send(f"**Name:** {self.agent.name}\n**Description:** {self.agent.description}")
-        else:
-            await ctx.send("Agent not configured")
-
-    def start_bot(self):
-        """Start the bot"""
-        if self.token:
-            self.run(self.token)
-        else:
-            logger.warning("Discord token not provided")
+        # Send response if not empty
+        if response and "error" not in response:
+            await message.channel.send(f"Processed: {response.get('status', 'done')}")
 
 
-def main():
-    """Test discord bot"""
+async def main():
+    """Main entry point"""
+    # Get Discord token from environment or config
+    import os
+    token = os.getenv("DISCORD_TOKEN")
+
+    if not token:
+        logger.error("DISCORD_TOKEN environment variable not set")
+        return
+
     bot = DiscordBot()
-    print("Discord bot module loaded")
+    await bot.start(token)
 
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())
