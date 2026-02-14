@@ -1,51 +1,70 @@
 #!/usr/bin/env python3
 """
-Discord integration for disaster-recovery-agent
+Discord integration for 災害復旧エージェント
 """
 
+import logging
+from typing import Optional
 import discord
 from discord.ext import commands
-import sqlite3
-import json
-from typing import Optional
 
-class DisasterRecoveryBot(commands.Bot):
-    """Discord bot for disaster-recovery-agent"""
+logger = logging.getLogger(__name__)
 
-    def __init__(self, command_prefix: str = "!", db_path: str = "agents/disaster-recovery-agent/data.db"):
+
+class DiscordBot(commands.Bot):
+    """Discord bot for 災害復旧エージェント"""
+
+    def __init__(self, token: Optional[str] = None):
         intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix=command_prefix, intents=intents)
-        self.db_path = db_path
+        super().__init__(command_prefix="!", intents=intents)
+        self.token = token or ""
+        self.agent = None
+
+    def set_agent(self, agent):
+        """Set agent instance"""
+        self.agent = agent
 
     async def on_ready(self):
-        print(f'Logged in as {self.user}')
+        """Called when bot is ready"""
+        logger.info(f"{self.user} is ready")
 
-    async def create_entry(self, ctx, title: str, content: str):
-        """Create entry"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
-            cursor.execute(sql, (title, content, json.dumps(dict(), ensure_ascii=False), "active"))
-            conn.commit()
-            await ctx.send(f"Created: {title} (ID: {cursor.lastrowid})")
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        if message.author.bot:
+            return
+        await self.process_commands(message)
 
-    async def list_entries(self, ctx, limit: int = 10):
-        """List entries"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            sql = "SELECT id, title FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
-            cursor.execute(sql, ("active", limit))
-            rows = cursor.fetchall()
-            if rows:
-                msg = "\n".join([f"{r[0]}: {r[1]}" for r in rows])
-                await ctx.send(f"\n{msg}")
-            else:
-                await ctx.send("No entries found.")
+    @commands.command(name="status")
+    async def status(self, ctx: commands.Context):
+        """Show agent status"""
+        if self.agent:
+            status = self.agent.get_status()
+            await ctx.send(f"**Status:** {status.get('status')}\n**Version:** {status.get('version')}")
+        else:
+            await ctx.send("Agent not configured")
+
+    @commands.command(name="info")
+    async def info(self, ctx: commands.Context):
+        """Show agent information"""
+        if self.agent:
+            await ctx.send(f"**Name:** {self.agent.name}\n**Description:** {self.agent.description}")
+        else:
+            await ctx.send("Agent not configured")
+
+    def start_bot(self):
+        """Start the bot"""
+        if self.token:
+            self.run(self.token)
+        else:
+            logger.warning("Discord token not provided")
+
+
+def main():
+    """Test discord bot"""
+    bot = DiscordBot()
+    print("Discord bot module loaded")
+
 
 if __name__ == "__main__":
-    import os
-    bot = DisasterRecoveryBot()
-    token = os.getenv("DISCORD_TOKEN")
-    if token:
-        bot.run(token)
+    main()

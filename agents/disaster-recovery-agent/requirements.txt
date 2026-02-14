@@ -1,1 +1,9 @@
-discord.py
+# Requirements for 災害復旧エージェント
+
+# Discord.py
+discord.py>=2.3.2
+
+# Database (sqlite3 is built-in)
+
+# Utilities
+python-dateutil>=2.8.2

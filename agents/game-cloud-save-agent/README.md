@@ -1,102 +1,90 @@
 # ゲームクラウドセーブエージェント
 
-ゲームクラウドセーブの管理
+ゲームクラウドセーブの管理・同期エージェント
 
-## 概要
+## Overview
 
-ゲームクラウドセーブエージェントはgamingカテゴリのエージェントです。Japanese言語に対応しています。
+This is the game-cloud-save-agent agent.
 
-## 機能
+## Features
 
-- データ処理・分析
-- タスク管理
-- 状態監視
-- Discord連携
+- Feature 1: TBD
+- Feature 2: TBD
+- Feature 3: TBD
 
-## インストール
+## Installation
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 使用方法
-
-### エージェントとして実行
-
-```bash
-python agent.py
-```
-
-### データベース操作
-
-```bash
-python db.py
-```
-
-### Discordボット
-
-```bash
-export DISCORD_TOKEN=your_token
-python discord.py
-```
-
-## データベース構造
-
-### records テーブル
-- `id`: 主キー
-- `type`: レコードタイプ
-- `title`: タイトル
-- `content`: コンテンツ
-- `metadata`: メタデータ（JSON）
-- `created_at`: 作成日時
-- `updated_at`: 更新日時
-
-### tasks テーブル
-- `id`: 主キー
-- `task_id`: タスクID
-- `status`: ステータス（pending/completed/failed）
-- `result`: 結果
-- `error`: エラーメッセージ
-- `created_at`: 作成日時
-- `completed_at`: 完了日時
-
-### settings テーブル
-- `key`: 設定キー
-- `value`: 設定値
-- `updated_at`: 更新日時
-
-## Discordコマンド
-
-- `!help` - ヘルプ表示
-- `!status` - ステータス確認
-- `!info` - エージェント情報
-
-## API
+## Usage
 
 ### Agent
 
 ```python
-from agent import GameCloudSaveAgent
-
-agent = GameCloudSaveAgent()
-await agent.initialize()
+from agent import GameCloudSaveAgentAgent
+agent = GameCloudSaveAgentAgent()
 result = await agent.process(data)
 ```
 
 ### Database
 
 ```python
-from db import GameCloudSaveAgentDB
-
-db = GameCloudSaveAgentDB()
-record_id = db.insert_record("type", "title", "content")
-record = db.get_record(record_id)
+from db import Database
+db = Database()
+record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
 ```
 
-## 言語サポート
+### Discord Integration
 
-- Japanese
+```python
+from discord import DiscordBot
+bot = DiscordBot(token="your_bot_token")
+bot.set_agent(agent)
+bot.start_bot()
+```
 
-## ライセンス
+## Commands
+
+### Discord Commands
+
+- `!status` - Show agent status
+- `!info` - Show agent information
+
+## Database Schema
+
+### Records Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| type | TEXT | Record type |
+| title | TEXT | Record title (optional) |
+| content | TEXT | Record content |
+| status | TEXT | Record status |
+| created_at | TIMESTAMP | Creation timestamp |
+| updated_at | TIMESTAMP | Last update timestamp |
+
+### Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| name | TEXT | Tag name (unique) |
+| created_at | TIMESTAMP | Creation timestamp |
+
+### Record Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| record_id | INTEGER | Foreign key to records |
+| tag_id | INTEGER | Foreign key to tags |
+
+## License
 
 MIT License
+
+## Author
+
+Created with OpenClaw
