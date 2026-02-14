@@ -1,56 +1,57 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-Discord Bot for siem-agent
+Discordボットモジュール - SIEMエージェント
 """
 
 import discord
 from discord.ext import commands
-import os
+import logging
+from typing import Optional
+from .db import Database
+
+logger = logging.getLogger(__name__)
 
 class DiscordBot(commands.Bot):
-    def __init__(self, token: str, db_manager):
+    """Discordボット"""
+
+    def __init__(self, db: Database, command_prefix: str = "!"):
         intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
-        self.token = token
-        self.db = db_manager
-    
+        super().__init__(command_prefix=command_prefix, intents=intents, help_command=commands.DefaultHelpCommand())
+        self.db = db
+
     async def on_ready(self):
-        print(f"Bot logged in as {self.user}")
-    
-    async def on_message(self, message):
-        if message.author == self.user:
+        logger.info(f"Logged in as {self.user.name} ({self.user.id})")
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"for commands"))
+
+    async def on_message(self, message: discord.Message):
+        if message.author.id == self.user.id:
             return
         await self.process_commands(message)
-    
-    @commands.command()
-    async def hello(self, ctx):
-        await ctx.send("Hello! I am SIEMエージェント")
-    
-    @commands.command()
-    async def add(self, ctx, *, content: str):
-        record_id = self.db.add_record(content)
-        await ctx.send(f"Added record #{record_id}")
-    
-    @commands.command()
-    async def list(self, ctx, limit: int = 10):
-        records = self.db.list_records(limit)
-        if records:
-            response = "Recent records:\n" + "\n".join(f"#{r['id']}: {r['content'][:50]}..." for r in records[:5])
-            await ctx.send(response)
-        else:
-            await ctx.send("No records found")
+
+    @commands.command(name="stats")
+    async def cmd_stats(self, ctx: commands.Context):
+        stats = self.db.get_stats()
+        embed = discord.Embed(title="📊 統計情報", color=discord.Color.blue())
+        embed.add_field(name="総レコード数", value=str(stats["total_records"]), inline=False)
+        embed.add_field(name="データベースパス", value=stats["db_path"], inline=False)
+        await ctx.send(embed=embed)
+
+    @commands.command(name="info")
+    async def cmd_info(self, ctx: commands.Context):
+        embed = discord.Embed(title="SIEMエージェント", description="SIEM（セキュリティ情報イベント管理）統合エージェント", color=discord.Color.green())
+        embed.add_field(name="カテゴリ", value="セキュリティ監視・アラート", inline=False)
+        await ctx.send(embed=embed)
+
+async def run_bot(token: str, db: Database):
+    bot = DiscordBot(db)
+    await bot.start(token)
 
 if __name__ == "__main__":
-    import sys
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    from db import DatabaseManager
-    
-    token = os.getenv("DISCORD_TOKEN")
-    if not token:
-        print("DISCORD_TOKEN is required")
+    import os
+    DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+    if not DISCORD_TOKEN:
+        print("DISCORD_TOKEN environment variable is required")
         exit(1)
-    
-    db = DatabaseManager()
-    bot = DiscordBot(token, db)
-    bot.run(token)
+    db = Database()

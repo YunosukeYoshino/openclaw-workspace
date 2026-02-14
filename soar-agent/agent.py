@@ -1,47 +1,42 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 SOARエージェント
-セキュリティオーケストレーション・自動化
+SOAR（セキュリティオーケストレーション・自動化）エージェント
 """
 
-import discord
-from discord.ext import commands
-import sqlite3
-from datetime import datetime
-import json
+import logging
+from typing import Dict, Any, Optional
+from .db import Database
 
-class SoarAgent(commands.Bot):
-    def __init__(self, token):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
-        self.token = token
-        self.db_path = "soar-agent.db"
-        self.init_db()
-    
-    def init_db(self):
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute("CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
-        conn.commit()
-        conn.close()
-    
-    async def on_ready(self):
-        print(f"{{self.user}} has connected to Discord!")
-    
-    async def on_message(self, message):
-        if message.author == self.user:
-            return
-        await self.process_commands(message)
-    
-    def run_bot(self):
-        self.run(self.token)
+logger = logging.getLogger(__name__)
+
+class SoarAgent:
+    """SOARエージェント"""
+
+    def __init__(self, db_path: str = "soar-agent.db"):
+        self.db = Database(db_path)
+        self.logger = logger
+
+    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        try:
+            self.db.save_record(input_data)
+            result = await self._execute_logic(input_data)
+            return {"status": "success", "result": result}
+        except Exception as e:
+            self.logger.error(f"処理エラー: {e}")
+            return {"status": "error", "message": str(e)}
+
+    async def _execute_logic(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        return {"processed": True, "data": input_data}
+
+    def get_stats(self) -> Dict[str, Any]:
+        return self.db.get_stats()
 
 if __name__ == "__main__":
-    import os
-    token = os.getenv("DISCORD_TOKEN")
-    if not token:
-        print("DISCORD_TOKEN environment variable is required")
-        exit(1)
-    bot = SoarAgent(token)
-    bot.run_bot()
+    import asyncio
+    async def main():
+        agent = SoarAgent()
+        result = await agent.process({"test": "data"})
+        print(result)
+    asyncio.run(main())

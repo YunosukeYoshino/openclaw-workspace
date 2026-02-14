@@ -1,110 +1,55 @@
-# erotic-personalization-agent
+# えっちパーソナライゼーションエージェント
 
-えっちパーソナライゼーションエージェント。パーソナライズされた体験。
+ユーザーごとのパーソナライズされた推薦を行うエージェント
 
-Erotic personalization agent. Personalized experience.
+## 概要
 
-## Description
+えっちコンテンツ推薦・トレンドカテゴリのエージェントです。ユーザーごとのパーソナライズされた推薦を行うエージェントを自動化・効率化します。
 
-このエージェントは以下のスキルを持っています：
-- personalization
-- experience
-- customization
-
-カテゴリー: erotic
-
-## Installation
+## インストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+## 使い方
 
-### Basic Usage
-
-```python
-from agent import EroticPersonalizationAgentAgent
-
-agent = EroticPersonalizationAgentAgent()
-
-# タスクを追加
-task_id = agent.add_task(
-    title="Example task",
-    description="This is an example task",
-    priority=1
-)
-
-# タスクを取得
-tasks = agent.get_tasks()
-print(tasks)
-
-# 統計情報を取得
-stats = agent.get_stats()
-print(stats)
-```
-
-### Discord Integration
+### 基本的な使用方法
 
 ```python
-from discord import DiscordBot
+from agent import EroticPersonalizationAgent
 
-bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
-await bot.connect()
-await bot.send_message("Hello from erotic-personalization-agent")
+async def main():
+    agent = EroticPersonalizationAgent()
+    result = await agent.process({"key": "value"})
+    print(result)
 ```
 
-## API Reference
+### Discordボットとして使用
 
-### Agent Methods
+```bash
+export DISCORD_TOKEN=your_bot_token
+python discord.py
+```
 
-- `__init__(db_path: str = None)` - エージェントを初期化
-- `add_task(title: str, description: str = None, priority: int = 0)` - タスクを追加
-- `get_tasks(status: str = None)` - タスクを取得
-- `update_task_status(task_id: int, status: str)` - タスクのステータスを更新
-- `log_event(event_type: str, data: Dict[str, Any] = None)` - イベントをログ
-- `get_stats()` - 統計情報を取得
+## 機能
 
-### Database Methods
+- データの記録・管理
+- SQLiteデータベースによる永続化
+- Discordボットとの連携
+- 統計情報の取得
 
-- `__init__(db_path: str = None)` - データベース接続を初期化
-- `init_database()` - データベースを初期化
-- `execute_query(query: str, params: tuple = ())` - クエリを実行
-- `execute_update(query: str, params: tuple = ())` - 更新クエリを実行
+## ファイル構成
 
-### Discord Methods
+```
+erotic-personalization-agent/
+├── agent.py       # メインエージェント
+├── db.py          # データベースモジュール
+├── discord.py     # Discordボット
+├── README.md      # このファイル
+└── requirements.txt
+```
 
-- `__init__(token: str = None, channel_id: str = None)` - ボットを初期化
-- `connect()` - Discordに接続
-- `send_message(message: str, embed: Dict[str, Any] = None)` - メッセージを送信
-- `send_embed(title: str, description: str, fields: List[Dict[str, Any]] = None)` - 埋め込みメッセージを送信
-- `notify_task_created(task_id: int, title: str)` - タスク作成を通知
-- `notify_task_completed(task_id: int, title: str)` - タスク完了を通知
-- `notify_error(error: str)` - エラーを通知
-
-## Database Schema
-
-### tasks table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary Key |
-| title | TEXT | Task title |
-| description | TEXT | Task description |
-| status | TEXT | Task status (pending/completed) |
-| priority | INTEGER | Task priority |
-| created_at | TIMESTAMP | Creation timestamp |
-| updated_at | TIMESTAMP | Update timestamp |
-
-### events table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary Key |
-| event_type | TEXT | Event type |
-| data | TEXT | Event data (JSON) |
-| created_at | TIMESTAMP | Creation timestamp |
-
-## License
+## ライセンス
 
 MIT License

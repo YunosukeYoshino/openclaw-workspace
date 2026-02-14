@@ -1,47 +1,55 @@
-# インシデントレスポンスエージェント (incident-response-agent)
+# インシデントレスポンスエージェント
 
-インシデント対応の自動化
+セキュリティインシデントへの対応を支援するエージェント
 
-## 機能 / Features
+## 概要
 
-- インシデント対応の自動化の管理・運用
-- Discordボットによる対話型インターフェース
-- SQLiteによるデータ永続化
+セキュリティ監視・アラートカテゴリのエージェントです。セキュリティインシデントへの対応を支援するエージェントを自動化・効率化します。
 
-## インストール / Installation
+## インストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 設定 / Configuration
+## 使い方
 
-環境変数 `DISCORD_TOKEN` を設定してください。
+### 基本的な使用方法
 
-Set the `DISCORD_TOKEN` environment variable.
+```python
+from agent import IncidentResponseAgent
 
-```bash
-export DISCORD_TOKEN="your_bot_token"
+async def main():
+    agent = IncidentResponseAgent()
+    result = await agent.process({"key": "value"})
+    print(result)
 ```
 
-## 使い方 / Usage
+### Discordボットとして使用
 
 ```bash
-python agent.py
-```
-
-または / Or:
-
-```bash
+export DISCORD_TOKEN=your_bot_token
 python discord.py
 ```
 
-## データベース / Database
+## 機能
 
-データはSQLiteに保存されます。`incident-response-agent.db`ファイルが作成されます。
+- データの記録・管理
+- SQLiteデータベースによる永続化
+- Discordボットとの連携
+- 統計情報の取得
 
-Data is stored in SQLite. A `incident-response-agent.db` file will be created.
+## ファイル構成
 
-## ライセンス / License
+```
+incident-response-agent/
+├── agent.py       # メインエージェント
+├── db.py          # データベースモジュール
+├── discord.py     # Discordボット
+├── README.md      # このファイル
+└── requirements.txt
+```
+
+## ライセンス
 
 MIT License

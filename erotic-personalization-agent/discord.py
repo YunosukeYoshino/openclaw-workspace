@@ -1,73 +1,57 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-erotic-personalization-agent - Discord Integration Module
+Discordボットモジュール - えっちパーソナライゼーションエージェント
 """
 
-import asyncio
-from typing import Optional, Dict, Any
-import json
+import discord
+from discord.ext import commands
+import logging
+from typing import Optional
+from .db import Database
 
-class DiscordBot:
-    def __init__(self, token: str = None, channel_id: str = None):
-        self.token = token
-        self.channel_id = channel_id
-        self.connected = False
+logger = logging.getLogger(__name__)
 
-    async def connect(self):
-        """Discordに接続"""
-        if self.token:
-            self.connected = True
-            print("Connected to Discord")
-        else:
-            print("No Discord token provided")
+class DiscordBot(commands.Bot):
+    """Discordボット"""
 
-    async def send_message(self, message: str, embed: Dict[str, Any] = None) -> bool:
-        """メッセージを送信"""
-        if not self.connected:
-            print("Not connected to Discord")
-            return False
+    def __init__(self, db: Database, command_prefix: str = "!"):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix=command_prefix, intents=intents, help_command=commands.DefaultHelpCommand())
+        self.db = db
 
-        print("Sending message:", message)
-        if embed:
-            print("Embed:", embed)
+    async def on_ready(self):
+        logger.info(f"Logged in as {self.user.name} ({self.user.id})")
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"for commands"))
 
-        return True
+    async def on_message(self, message: discord.Message):
+        if message.author.id == self.user.id:
+            return
+        await self.process_commands(message)
 
-    async def send_embed(self, title: str, description: str, fields: List[Dict[str, Any]] = None) -> bool:
-        """埋め込みメッセージを送信"""
-        embed = {
-            "title": title,
-            "description": description,
-            "fields": fields or []
-        }
-        return await self.send_message("", embed=embed)
+    @commands.command(name="stats")
+    async def cmd_stats(self, ctx: commands.Context):
+        stats = self.db.get_stats()
+        embed = discord.Embed(title="📊 統計情報", color=discord.Color.blue())
+        embed.add_field(name="総レコード数", value=str(stats["total_records"]), inline=False)
+        embed.add_field(name="データベースパス", value=stats["db_path"], inline=False)
+        await ctx.send(embed=embed)
 
-    async def notify_task_created(self, task_id: int, title: str):
-        """タスク作成を通知"""
-        await self.send_embed(
-            title="Task Created",
-            description="Task #" + str(task_id) + ": " + title
-        )
+    @commands.command(name="info")
+    async def cmd_info(self, ctx: commands.Context):
+        embed = discord.Embed(title="えっちパーソナライゼーションエージェント", description="ユーザーごとのパーソナライズされた推薦を行うエージェント", color=discord.Color.green())
+        embed.add_field(name="カテゴリ", value="えっちコンテンツ推薦・トレンド", inline=False)
+        await ctx.send(embed=embed)
 
-    async def notify_task_completed(self, task_id: int, title: str):
-        """タスク完了を通知"""
-        await self.send_embed(
-            title="Task Completed",
-            description="Task #" + str(task_id) + ": " + title
-        )
-
-    async def notify_error(self, error: str):
-        """エラーを通知"""
-        await self.send_embed(
-            title="Error",
-            description=error,
-            fields=[{"name": "Severity", "value": "High"}]
-        )
-
-async def main():
-    bot = DiscordBot()
-    await bot.connect()
-    await bot.send_message("erotic-personalization-agent Discord bot is ready")
+async def run_bot(token: str, db: Database):
+    bot = DiscordBot(db)
+    await bot.start(token)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    import os
+    DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+    if not DISCORD_TOKEN:
+        print("DISCORD_TOKEN environment variable is required")
+        exit(1)
+    db = Database()

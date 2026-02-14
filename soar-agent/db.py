@@ -1,51 +1,86 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-Database Manager for soar-agent
+データベースモジュール - SOARエージェント
 """
 
 import sqlite3
+import json
+from typing import Dict, Any, List, Optional
 from datetime import datetime
-from typing import List, Optional
+from pathlib import Path
 
-class DatabaseManager:
+class Database:
+    """データベース管理クラス"""
+
     def __init__(self, db_path: str = "soar-agent.db"):
         self.db_path = db_path
-        self.init_db()
-    
-    def init_db(self):
+        self._initialize_db()
+
+    def _get_connection(self) -> sqlite3.Connection:
         conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute("CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
+        conn.row_factory = sqlite3.Row
+        return conn
+
+    def _initialize_db(self):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY, value TEXT)")
         conn.commit()
         conn.close()
-    
-    def add_record(self, content: str) -> int:
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute("INSERT INTO records (content) VALUES (?)", (content,))
+
+    def save_record(self, data: Dict[str, Any]) -> int:
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO records (data) VALUES (?)", (json.dumps(data, ensure_ascii=False),))
+        record_id = cursor.lastrowid
         conn.commit()
-        record_id = c.lastrowid
         conn.close()
         return record_id
-    
-    def get_record(self, record_id: int) -> Optional[dict]:
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute("SELECT * FROM records WHERE id = ?", (record_id,))
-        row = c.fetchone()
+
+    def get_record(self, record_id: int) -> Optional[Dict[str, Any]]:
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM records WHERE id = ?", (record_id,))
+        row = cursor.fetchone()
         conn.close()
         if row:
-            return {"id": row[0], "content": row[1], "created_at": row[2]}
+            return {"id": row["id"], "data": json.loads(row["data"]), "created_at": row["created_at"], "updated_at": row["updated_at"]}
         return None
-    
-    def list_records(self, limit: int = 100) -> List[dict]:
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute("SELECT * FROM records ORDER BY created_at DESC LIMIT ?", (limit,))
-        rows = c.fetchall()
+
+    def get_all_records(self, limit: int = 100) -> List[Dict[str, Any]]:
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM records ORDER BY created_at DESC LIMIT ?", (limit,))
+        rows = cursor.fetchall()
         conn.close()
-        return [{"id": r[0], "content": r[1], "created_at": r[2]} for r in rows]
+        return [{"id": row["id"], "data": json.loads(row["data"]), "created_at": row["created_at"], "updated_at": row["updated_at"]} for row in rows]
+
+    def get_stats(self) -> Dict[str, Any]:
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) as total FROM records")
+        total = cursor.fetchone()["total"]
+        conn.close()
+        return {"total_records": total, "db_path": self.db_path}
+
+    def set_metadata(self, key: str, value: str):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("INSERT OR REPLACE INTO metadata (key, value) VALUES (?, ?)", (key, value))
+        conn.commit()
+        conn.close()
+
+    def get_metadata(self, key: str) -> Optional[str]:
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT value FROM metadata WHERE key = ?", (key,))
+        row = cursor.fetchone()
+        conn.close()
+        return row["value"] if row else None
 
 if __name__ == "__main__":
-    db = DatabaseManager()
+    db = Database()
     print("Database initialized")
+    print(db.get_stats())
