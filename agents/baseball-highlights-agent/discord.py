@@ -1,35 +1,42 @@
 #!/usr/bin/env python3
 """
-Discord Bot module for baseball-highlights-agent
+Discord integration for baseball-highlights-agent
 """
 
 import discord
 from discord.ext import commands
-import os
+import logging
 
-class BaseballHighlightsAgentBot(commands.Bot):
-    def __init__(self, *args, **kwargs):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(*args, intents=intents, **kwargs)
+class Baseball_Highlights_AgentDiscord(commands.Cog):
+    """Discord bot for baseball-highlights-agent"""
 
-    async def setup_hook(self):
-        """Load cogs."""
-        # Load cogs here
-        pass
+    def __init__(self, bot):
+        self.bot = bot
+        self.logger = logging.getLogger(__name__)
 
-@bot.event
-async def on_ready():
-    print(f'{bot.user} has connected to Discord!')
+    @commands.command(name="baseball_highlights_agent")
+    async def main_command(self, ctx, *, query=None):
+        """Main command for baseball-highlights-agent"""
+        if not query:
+            await ctx.send("Please provide a query.")
+            return
 
-@bot.command(name='info')
-async def info(ctx):
-    """Show bot information."""
-    await ctx.send(f"野球ハイライト映像管理エージェント - Baseball Highlights Video Agent")
+        self.logger.info(f"Command invoked by {ctx.author}: {query}")
+        # TODO: Implement command logic
+        await ctx.send(f"Processing: {query}")
+
+    @commands.command(name="baseball_highlights_agent_status")
+    async def status_command(self, ctx):
+        """Status command for baseball-highlights-agent"""
+        await ctx.send(f"Baseball Highlights Agent is operational.")
+
+def setup(bot):
+    """Setup the Discord cog"""
+    bot.add_cog(Baseball_Highlights_AgentDiscord(bot))
 
 if __name__ == "__main__":
-    token = os.getenv("DISCORD_TOKEN")
-    if not token:
-        print("DISCORD_TOKEN environment variable not set")
-        exit(1)
-    bot.run(token)
+    # Example usage
+    intents = discord.Intents.default()
+    intents.message_content = True
+    bot = commands.Bot(command_prefix="!", intents=intents)
+    setup(bot)

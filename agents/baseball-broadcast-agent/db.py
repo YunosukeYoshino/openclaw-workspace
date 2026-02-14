@@ -1,138 +1,107 @@
 #!/usr/bin/env python3
 """
-野球中継・解説エージェント - データベースモジュール
-Baseball Broadcast Agent - Database Module
-
-SQLite データベース管理
+Database module for baseball-broadcast-agent
 """
 
 import sqlite3
-import json
-from datetime import datetime
+from pathlib import Path
+from contextlib import contextmanager
+from typing import Optional, List, Dict, Any
 
+DB_PATH = Path(__file__).parent / "data" / "baseball-broadcast-agent.db"
 
-class BaseballExpertDatabase:
-    """野球エキスパートデータベース"""
+@contextmanager
+def get_db():
+    """Get database connection"""
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    try:
+        yield conn
+    finally:
+        conn.close()
 
-    def __init__(self, db_path=None):
-        if db_path is None:
-            db_path = os.path.join(
-                os.path.dirname(__file__),
-                "baseball_expert.db"
-            )
-        self.db_path = db_path
+def init_db():
+    """Initialize database tables"""
+    with get_db() as conn:
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS entries ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "type TEXT NOT NULL,"
+            "content TEXT NOT NULL,"
+            "metadata TEXT,"
+            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+            "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+            ")"
+        )
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS tags ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "name TEXT UNIQUE NOT NULL"
+            ")"
+        )
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS entry_tags ("
+            "entry_id INTEGER NOT NULL,"
+            "tag_id INTEGER NOT NULL,"
+            "PRIMARY KEY (entry_id, tag_id),"
+            "FOREIGN KEY (entry_id) REFERENCES entries(id),"
+            "FOREIGN KEY (tag_id) REFERENCES tags(id)"
+            ")"
+        )
+        conn.commit()
+
+class Database:
+    """Database operations for baseball-broadcast-agent"""
+
+    def __init__(self):
         self.init_db()
 
     def init_db(self):
-        """データベース初期化"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        self._create_tables(cursor)
-        conn.commit()
-        conn.close()
+        """Initialize database"""
+        init_db()
 
-    def _create_tables(self, cursor):
-        """テーブル作成"""
-        cursor.execute("""
-CREATE TABLE IF NOT EXISTS games (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    data TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);""")
+    def add_entry(self, entry_type: str, content: str, metadata: Optional[str] = None) -> int:
+        """Add a new entry"""
+        with get_db() as conn:
+            cursor = conn.execute(
+                'INSERT INTO entries (type, content, metadata) VALUES (?, ?, ?)',
+                (entry_type, content, metadata)
+            )
+            conn.commit()
+            return cursor.lastrowid
 
-        cursor.execute("""
-CREATE TABLE IF NOT EXISTS commentary (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    data TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);""")
+    def get_entries(self, entry_type: Optional[str] = None, limit: int = 100) -> List[Dict[str, Any]]:
+        """Get entries"""
+        with get_db() as conn:
+            if entry_type:
+                cursor = conn.execute(
+                    'SELECT * FROM entries WHERE type = ? ORDER BY created_at DESC LIMIT ?',
+                    (entry_type, limit)
+                )
+            else:
+                cursor = conn.execute(
+                    'SELECT * FROM entries ORDER BY created_at DESC LIMIT ?',
+                    (limit,)
+                )
+            return [dict(row) for row in cursor.fetchall()]
 
-        cursor.execute("""
-CREATE TABLE IF NOT EXISTS highlights (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    data TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);""")
+    def add_tag(self, name: str) -> int:
+        """Add a tag"""
+        with get_db() as conn:
+            cursor = conn.execute(
+                'INSERT OR IGNORE INTO tags (name) VALUES (?)',
+                (name,)
+            )
+            conn.commit()
+            return cursor.lastrowid
 
-    def insert(self, table, data):
-        """データ挿入"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(
-            f"INSERT INTO {table} (data) VALUES (?)",
-            (data,)
-        )
-        conn.commit()
-        conn.close()
+    def get_tags(self) -> List[str]:
+        """Get all tags"""
+        with get_db() as conn:
+            cursor = conn.execute('SELECT name FROM tags ORDER BY name')
+            return [row[0] for row in cursor.fetchall()]
 
-    def get_all(self, table, limit=100):
-        """全データ取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(
-            f"SELECT * FROM {table} ORDER BY created_at DESC LIMIT ?",
-            (limit,)
-        )
-        rows = cursor.fetchall()
-        conn.close()
-        return rows
-
-    def get_by_id(self, table, entry_id):
-        """ID指定で取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(
-            f"SELECT * FROM {table} WHERE id = ?",
-            (entry_id,)
-        )
-        row = cursor.fetchone()
-        conn.close()
-        return row
-
-    def search(self, table, query):
-        """検索"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(
-            f"SELECT * FROM {table} WHERE data LIKE ? ORDER BY created_at DESC",
-            (f"%{query}%",)
-        )
-        rows = cursor.fetchall()
-        conn.close()
-        return rows
-
-    def delete(self, table, entry_id):
-        """削除"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(
-            f"DELETE FROM {table} WHERE id = ?",
-            (entry_id,)
-        )
-        conn.commit()
-        conn.close()
-
-    def get_stats(self, table):
-        """統計情報取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT COUNT(*) FROM {table}")
-        count = cursor.fetchone()[0]
-        conn.close()
-        return {"count": count}
-
-    def cleanup_old_entries(self, table, days=30):
-        """古いエントリを削除"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(f"""
-            DELETE FROM {table}
-            WHERE created_at < datetime('now', '-{days} days')
-        """)
-        deleted = cursor.rowcount
-        conn.commit()
-        conn.close()
-        return deleted
+if __name__ == "__main__":
+    db = Database()
+    print(f"Database initialized: {DB_PATH}")

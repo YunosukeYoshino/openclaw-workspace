@@ -1,90 +1,42 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-network-segmentation-agent - Discord Integration
-Discord bot integration for network-segmentation-agent
+Discord integration for network-segmentation-agent
 """
 
 import discord
 from discord.ext import commands
 import logging
-from typing import Optional
-import json
-from pathlib import Path
 
-class NetworkSegmentationAgentDiscord:
-    """Discord bot integration for network-segmentation-agent"""
+class Network_Segmentation_AgentDiscord(commands.Cog):
+    """Discord bot for network-segmentation-agent"""
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot):
         self.bot = bot
-        self.logger = logging.getLogger("network-segmentation-agent.discord")
-        self.config_path = Path(__file__).parent / "discord_config.json"
-        self.config = self._load_config()
+        self.logger = logging.getLogger(__name__)
 
-    def _load_config(self) -> dict:
-        default_config = {
-            "command_prefix": "!",
-            "enabled_channels": [],
-            "admin_roles": []
-        }
-        if self.config_path.exists():
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                return {**default_config, **json.load(f)}
-        return default_config
+    @commands.command(name="network_segmentation_agent")
+    async def main_command(self, ctx, *, query=None):
+        """Main command for network-segmentation-agent"""
+        if not query:
+            await ctx.send("Please provide a query.")
+            return
 
-    def setup_commands(self):
-        @self.bot.command(name="networksegmentationagent_status")
-        async def agent_status(ctx):
-            embed = discord.Embed(
-                title="network-segmentation-agent Status",
-                description="ネットワークセグメンテーションエージェント。ネットワークセグメンテーションの管理。",
-                color=discord.Color.blue()
-            )
-            embed.add_field(name="Active", value="Yes", inline=True)
-            embed.add_field(name="Version", value="1.0.0", inline=True)
-            await ctx.send(embed=embed)
+        self.logger.info(f"Command invoked by {ctx.author}: {query}")
+        # TODO: Implement command logic
+        await ctx.send(f"Processing: {query}")
 
-        @self.bot.command(name="networksegmentationagent_help")
-        async def agent_help(ctx):
-            embed = discord.Embed(
-                title="network-segmentation-agent Help",
-                description="ネットワークセグメンテーションエージェント。ネットワークセグメンテーションの管理。",
-                color=discord.Color.green()
-            )
-            embed.add_field(
-                name="Commands",
-                value="`!networksegmentationagent_status` - Show agent status\n`!networksegmentationagent_help` - Show this help message",
-                inline=False
-            )
-            await ctx.send(embed=embed)
+    @commands.command(name="network_segmentation_agent_status")
+    async def status_command(self, ctx):
+        """Status command for network-segmentation-agent"""
+        await ctx.send(f"Network Segmentation Agent is operational.")
 
-    async def send_notification(self, channel_id: int, message: str, embed: discord.Embed = None):
-        try:
-            channel = self.bot.get_channel(channel_id)
-            if channel:
-                await channel.send(content=message, embed=embed)
-                return True
-        except Exception as e:
-            self.logger.error("Failed to send notification: " + str(e))
-        return False
+def setup(bot):
+    """Setup the Discord cog"""
+    bot.add_cog(Network_Segmentation_AgentDiscord(bot))
 
-    async def send_alert(self, channel_id: int, title: str, description: str, level: str = "info"):
-        color_map = {
-            "info": discord.Color.blue(),
-            "warning": discord.Color.orange(),
-            "error": discord.Color.red(),
-            "success": discord.Color.green()
-        }
-        embed = discord.Embed(
-            title=title,
-            description=description,
-            color=color_map.get(level, discord.Color.blue())
-        )
-        embed.set_footer(text="network-segmentation-agent")
-        return await self.send_notification(channel_id, "", embed)
-
-def setup(bot: commands.Bot):
-    discord_integration = NetworkSegmentationAgentDiscord(bot)
-    discord_integration.setup_commands()
-    bot.add_cog(discord_integration)
-    return discord_integration
+if __name__ == "__main__":
+    # Example usage
+    intents = discord.Intents.default()
+    intents.message_content = True
+    bot = commands.Bot(command_prefix="!", intents=intents)
+    setup(bot)

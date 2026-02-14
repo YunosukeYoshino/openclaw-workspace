@@ -1,98 +1,42 @@
 #!/usr/bin/env python3
 """
-野球中継・解説エージェント - Discord Bot モジュール
-Baseball Broadcast Agent - Discord Bot Module
-
-Discord Bot インターフェース
+Discord integration for baseball-broadcast-agent
 """
 
 import discord
 from discord.ext import commands
-from datetime import datetime
+import logging
 
+class Baseball_Broadcast_AgentDiscord(commands.Cog):
+    """Discord bot for baseball-broadcast-agent"""
 
-class BaseballExpertDiscordBot(commands.Bot):
-    """野球エキスパート Discord Bot"""
+    def __init__(self, bot):
+        self.bot = bot
+        self.logger = logging.getLogger(__name__)
 
-    def __init__(self, db):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
-        self.db = db
-
-    async def setup_hook(self):
-        """Bot 起動時のセットアップ"""
-        await self.tree.sync()
-
-    async def on_ready(self):
-        """Bot 準備完了"""
-        print(f"Bot ready: {self.user}")
-        print(f"Commands: "commentary", "highlight", "analyze", "report"")
-
-    @commands.command(name="scout")
-    async def cmd_scout(self, ctx, *args):
-        """スカウティングコマンド"""
-        if not args:
-            await ctx.send("スカウティング対象を指定してください。")
+    @commands.command(name="baseball_broadcast_agent")
+    async def main_command(self, ctx, *, query=None):
+        """Main command for baseball-broadcast-agent"""
+        if not query:
+            await ctx.send("Please provide a query.")
             return
 
-        player_name = " ".join(args)
-        result = {
-            "player": player_name,
-            "timestamp": datetime.now().isoformat()
-        }
-        self.db.insert("players", json.dumps(result, ensure_ascii=False))
-        await ctx.send(f"スカウティング開始: **{player_name}**")
+        self.logger.info(f"Command invoked by {ctx.author}: {query}")
+        # TODO: Implement command logic
+        await ctx.send(f"Processing: {query}")
 
-    @commands.command(name="eval")
-    async def cmd_eval(self, ctx, *args):
-        """評価コマンド"""
-        result = {
-            "timestamp": datetime.now().isoformat()
-        }
-        self.db.insert("evaluations", json.dumps(result, ensure_ascii=False))
-        await ctx.send("評価を開始します...")
+    @commands.command(name="baseball_broadcast_agent_status")
+    async def status_command(self, ctx):
+        """Status command for baseball-broadcast-agent"""
+        await ctx.send(f"Baseball Broadcast Agent is operational.")
 
-    @commands.command(name="report")
-    async def cmd_report(self, ctx):
-        """レポートコマンド"""
-        stats = self.db.get_stats("players")
-        await ctx.send(f"レポート生成中...（{stats['count']} 件のデータ）")
+def setup(bot):
+    """Setup the Discord cog"""
+    bot.add_cog(Baseball_Broadcast_AgentDiscord(bot))
 
-    @commands.command(name="analyze")
-    async def cmd_analyze(self, ctx, *args):
-        """分析コマンド"""
-        if not args:
-            await ctx.send("分析対象を指定してください。")
-            return
-
-        target = " ".join(args)
-        await ctx.send(f"分析中: **{target}**")
-
-    @commands.command(name="predict")
-    async def cmd_predict(self, ctx, *args):
-        """予測コマンド"""
-        await ctx.send("予測モデルを起動中...")
-
-    @commands.command(name="help")
-    async def cmd_help(self, ctx):
-        """ヘルプコマンド"""
-        help_text = f"""
-**野球中継・解説エージェント**
-
-使用可能なコマンド:
-- !scout <player> - 選手スカウティング
-- !eval - 評価実行
-- !report - レポート生成
-- !analyze <target> - 分析実行
-- !predict - 予測実行
-
-詳細: 試合実況・解説・ハイライト生成エージェント
-"""
-        await ctx.send(help_text)
-
-
-async def run_bot(token):
-    """Bot を実行"""
-    # 実際の実装ではここで bot.run(token) を呼び出す
-    pass
+if __name__ == "__main__":
+    # Example usage
+    intents = discord.Intents.default()
+    intents.message_content = True
+    bot = commands.Bot(command_prefix="!", intents=intents)
+    setup(bot)

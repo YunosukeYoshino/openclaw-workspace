@@ -1,70 +1,40 @@
 #!/usr/bin/env python3
 """
-BaseballHighlightsAgent Agent
-野球試合のハイライト映像・クリップを管理するエージェント
+野球ハイライトエージェント。試合ハイライト映像の管理。
+
+## Category
+baseball/highlights
+
+## Description
+野球ハイライトエージェント。試合ハイライト映像の管理。
 """
 
-import sqlite3
-import os
-from datetime import datetime
+import logging
+from pathlib import Path
 
-class BaseballHighlightsAgentAgent:
-    def __init__(self, db_path=None):
-        if db_path is None:
-            db_path = os.path.join(os.path.dirname(__file__), "data.db")
-        self.db_path = db_path
-        self.init_database()
+class Baseball_Highlights_AgentAgent:
+    """野球ハイライトエージェント。試合ハイライト映像の管理。"""
 
-    def init_database(self):
-        """Initialize the SQLite database with tables."""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+    def __init__(self, config=None):
+        self.config = config or {}
+        self.name = name
+        self.logger = logging.getLogger(__name__)
 
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS highlights (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS clips (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS video_sources (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        
-        conn.commit()
-        conn.close()
-        print(f"Database initialized: {self.db_path}")
+    async def process(self, input_data):
+        """Process input data"""
+        self.logger.info(f"Processing: {input_data}")
+        # TODO: Implement processing logic
+        return {"status": "success", "result": None}
 
-    def add_entry(self, data):
-        """Add a new entry."""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        # TODO: Implement based on actual schema
-        conn.commit()
-        conn.close()
+    async def start(self):
+        """Start the agent"""
+        self.logger.info(f"Starting {self.name}")
 
-    def get_entries(self, limit=None):
-        """Get all entries."""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM highlights ORDER BY created_at DESC")
-        entries = cursor.fetchall()
-        conn.close()
-        return entries[:limit] if limit else entries
+    async def stop(self):
+        """Stop the agent"""
+        self.logger.info(f"Stopping {self.name}")
 
 if __name__ == "__main__":
-    agent = BaseballHighlightsAgentAgent()
-    print(f"Baseball Highlights Agent Agent initialized")
+    import asyncio
+    agent = Baseball_Highlights_AgentAgent()
+    asyncio.run(agent.start())
