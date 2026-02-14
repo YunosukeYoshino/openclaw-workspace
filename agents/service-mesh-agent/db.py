@@ -1,138 +1,169 @@
 #!/usr/bin/env python3
-# service-mesh-agent データベース操作
+"""
+サービスメッシュエージェント - データベース管理
+SQLiteベースのデータ永続化
+"""
 
 import sqlite3
-import logging
-from typing import Optional, List, Dict, Any
+from datetime import datetime
+from typing import Optional, Dict, Any, List
 from contextlib import contextmanager
+import json
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+class ServiceMeshAgentDB:
+    """サービスメッシュエージェント データベースクラス"""
 
-
-@contextmanager
-def get_db_connection(db_path: str):
-    # データベース接続コンテキストマネージャー
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
-    try:
-        yield conn
-    finally:
-        conn.close()
-
-
-class Service_mesh_agentDatabase:
-    # service-mesh-agent データベース操作クラス
-
-    def __init__(self, db_path: str = "service-mesh-agent.db"):
-        # 初期化
+    def __init__(self, db_path: str = "data/service-mesh-agent.db"):
         self.db_path = db_path
+        self._init_db()
 
-    def initialize(self) -> None:
-        # データベースを初期化
-        with get_db_connection(self.db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute('''CREATE TABLE IF NOT EXISTS entries (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    content TEXT NOT NULL,
-    status TEXT DEFAULT 'active',
-    priority INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)''')
-            cursor.execute('''CREATE TABLE IF NOT EXISTS tags (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT UNIQUE NOT NULL
-)''')
-            cursor.execute('''CREATE TABLE IF NOT EXISTS entry_tags (
-    entry_id INTEGER NOT NULL,
-    tag_id INTEGER NOT NULL,
-    PRIMARY KEY (entry_id, tag_id),
-    FOREIGN KEY (entry_id) REFERENCES entries(id) ON DELETE CASCADE,
-    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
-)''')
-            cursor.execute('''CREATE INDEX IF NOT EXISTS idx_entries_status ON entries(status)''')
-            cursor.execute('''CREATE INDEX IF NOT EXISTS idx_entries_created_at ON entries(created_at)''')
+    @contextmanager
+    def _get_connection(self):
+        """データベース接続のコンテキストマネージャ"""
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        try:
+            yield conn
             conn.commit()
-        logger.info("Database initialized: %s", self.db_path)
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            conn.close()
 
-    def add_entry(self, title: Optional[str], content: str, status: str = "active", priority: int = 0) -> int:
-        # エントリーを追加
-        with get_db_connection(self.db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute('''INSERT INTO entries (title, content, status, priority, created_at, updated_at)
-VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-RETURNING id''', (title, content, status, priority))
-            entry_id = cursor.fetchone()["id"]
-            conn.commit()
-        logger.info("Entry added: %d", entry_id)
-        return entry_id
+    def _init_db(self):
+        """データベース初期化"""
+        with self._get_connection() as conn:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS records (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    type TEXT NOT NULL,
+                    title TEXT,
+                    content TEXT NOT NULL,
+                    metadata TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
 
-    def get_entry(self, entry_id: int) -> Optional[Dict[str, Any]]:
-        # エントリーを取得
-        with get_db_connection(self.db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute('SELECT * FROM entries WHERE id = ?', (entry_id,))
-            row = cursor.fetchone()
-            return dict(row) if row else None
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS tasks (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    task_id TEXT UNIQUE NOT NULL,
+                    status TEXT DEFAULT 'pending',
+                    result TEXT,
+                    error TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    completed_at TIMESTAMP
+                )
+            """)
 
-    def list_entries(self, status: Optional[str] = None, limit: int = 100) -> List[Dict[str, Any]]:
-        # エントリー一覧を取得
-        with get_db_connection(self.db_path) as conn:
-            cursor = conn.cursor()
-            if status:
-                cursor.execute('SELECT * FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?', (status, limit))
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS settings (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+
+    def insert_record(self, record_type: str, title: str, content: str,
+                       metadata: Optional[Dict[str, Any]] = None) -> int:
+        """レコード挿入"""
+        metadata_json = json.dumps(metadata) if metadata else None
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                'INSERT INTO records (type, title, content, metadata) VALUES (?, ?, ?, ?)',
+                (record_type, title, content, metadata_json)
+            )
+            return cursor.lastrowid
+
+    def get_record(self, record_id: int) -> Optional[Dict[str, Any]]:
+        """レコード取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT * FROM records WHERE id = ?', (record_id,)).fetchone()
+            if row:
+                return dict(row)
+        return None
+
+    def list_records(self, record_type: Optional[str] = None,
+                    limit: int = 100) -> List[Dict[str, Any]]:
+        """レコード一覧"""
+        with self._get_connection() as conn:
+            if record_type:
+                rows = conn.execute(
+                    'SELECT * FROM records WHERE type = ? ORDER BY created_at DESC LIMIT ?',
+                    (record_type, limit)
+                ).fetchall()
             else:
-                cursor.execute('SELECT * FROM entries ORDER BY created_at DESC LIMIT ?', (limit,))
-            rows = cursor.fetchall()
+                rows = conn.execute(
+                    'SELECT * FROM records ORDER BY created_at DESC LIMIT ?',
+                    (limit,)
+                ).fetchall()
             return [dict(row) for row in rows]
 
-    def update_entry(self, entry_id: int, title: Optional[str] = None,
-                     content: Optional[str] = None, status: Optional[str] = None,
-                     priority: Optional[int] = None) -> bool:
-        # エントリーを更新
-        updates = []
-        params = []
-        if title is not None:
-            updates.append("title = ?")
-            params.append(title)
-        if content is not None:
-            updates.append("content = ?")
-            params.append(content)
-        if status is not None:
-            updates.append("status = ?")
-            params.append(status)
-        if priority is not None:
-            updates.append("priority = ?")
-            params.append(priority)
-        if not updates:
-            return False
-        updates.append("updated_at = CURRENT_TIMESTAMP")
-        params.append(entry_id)
-        query = "UPDATE entries SET " + ', '.join(updates) + " WHERE id = ?"
-        with get_db_connection(self.db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute(query, params)
-            conn.commit()
-        logger.info("Entry updated: %d", entry_id)
-        return cursor.rowcount > 0
+    def insert_task(self, task_id: str, status: str = "pending") -> int:
+        """タスク挿入"""
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                'INSERT INTO tasks (task_id, status) VALUES (?, ?)',
+                (task_id, status)
+            )
+            return cursor.lastrowid
 
-    def delete_entry(self, entry_id: int) -> bool:
-        # エントリーを削除
-        with get_db_connection(self.db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute('DELETE FROM entries WHERE id = ?', (entry_id,))
-            conn.commit()
-        logger.info("Entry deleted: %d", entry_id)
-        return cursor.rowcount > 0
+    def update_task(self, task_id: str, status: str,
+                   result: Optional[str] = None, error: Optional[str] = None):
+        """タスク更新"""
+        completed_at = datetime.now().isoformat() if status == "completed" else None
+        with self._get_connection() as conn:
+            conn.execute(
+                'UPDATE tasks SET status = ?, result = ?, error = ?, completed_at = ? WHERE task_id = ?',
+                (status, result, error, completed_at, task_id)
+            )
 
-    def search_entries(self, query: str, limit: int = 100) -> List[Dict[str, Any]]:
-        # エントリーを検索
-        with get_db_connection(self.db_path) as conn:
-            cursor = conn.cursor()
-            search_pattern = "%" + query + "%"
-            cursor.execute('SELECT * FROM entries WHERE title LIKE ? OR content LIKE ? ORDER BY created_at DESC LIMIT ?',
-                         (search_pattern, search_pattern, limit))
-            rows = cursor.fetchall()
-            return [dict(row) for row in rows]
+    def get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """タスク取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT * FROM tasks WHERE task_id = ?', (task_id,)).fetchone()
+            if row:
+                return dict(row)
+        return None
+
+    def set_setting(self, key: str, value: str):
+        """設定保存"""
+        with self._get_connection() as conn:
+            conn.execute(
+                'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?, updated_at = CURRENT_TIMESTAMP',
+                (key, value, value)
+            )
+
+    def get_setting(self, key: str) -> Optional[str]:
+        """設定取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT value FROM settings WHERE key = ?', (key,)).fetchone()
+            if row:
+                return row['value']
+        return None
+
+async def main():
+    """動作確認"""
+    db = ServiceMeshAgentDB()
+
+    record_id = db.insert_record(
+        record_type="sample",
+        title="Sample Record",
+        content="This is a sample record for サービスメッシュエージェント"
+    )
+    print(f"Inserted record: {record_id}")
+
+    record = db.get_record(record_id)
+    print(f"Retrieved record: {record}")
+
+    db.insert_task("task_001")
+    db.update_task("task_001", "completed", result="Success")
+
+    task = db.get_task("task_001")
+    print(f"Task status: {task}")
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())

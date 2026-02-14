@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "baseball-stats-viz-agent",
+    "baseball-dashboard-agent",
+    "baseball-report-agent",
+    "baseball-insights-agent",
+    "baseball-metrics-agent",
+    "game-statistics-agent",
+    "game-metrics-viz-agent",
+    "game-insights-agent",
+    "game-dashboard-agent",
+    "game-reporting-agent",
+    "erotic-analytics-agent",
+    "erotic-trends-agent",
+    "erotic-insights-agent",
+    "erotic-dashboard-agent",
+    "erotic-reporting-agent",
+    "service-mesh-agent",
+    "istio-agent",
+    "linkerd-agent",
+    "consul-agent",
+    "envoy-agent",
+    "threat-detection-agent",
+    "security-siem-agent",
+    "edr-agent",
+    "xdr-agent",
+    "soar-agent-v2"
+  ],
+  "failed": []
+}

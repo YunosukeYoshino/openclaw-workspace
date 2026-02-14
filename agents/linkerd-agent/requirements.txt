@@ -1,0 +1,17 @@
+# Requirements for Linkerdエージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# kubernetes
+# pyyaml
+# requests
+# urllib3
+# rich

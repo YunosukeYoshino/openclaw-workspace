@@ -1,89 +1,102 @@
 #!/usr/bin/env python3
-# service-mesh-agent Discord ボット
+"""
+サービスメッシュエージェント - Discord連携
+Discordボットインターフェース
+"""
 
-import logging
-import discord
-from discord.ext import commands
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
+from datetime import datetime
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+class ServiceMeshAgentDiscord:
+    """サービスメッシュエージェント Discord連携クラス"""
 
+    def __init__(self, token: Optional[str] = None):
+        self.token = token or os.getenv("DISCORD_TOKEN")
+        self.client = None
+        self.commands: List[Dict[str, Any]] = []
 
-class Service_mesh_agentDiscordBot(commands.Bot):
-    # service-mesh-agent Discord ボット
+    async def start(self):
+        """Discordボット起動"""
+        if not self.token:
+            print("DISCORD_TOKEN not set, running in mock mode")
+            return
 
-    def __init__(self, db):
-        # 初期化
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents, help_command=None)
-        self.db = db
+        try:
+            import discord
+            intents = discord.Intents.default()
+            intents.message_content = True
+            self.client = discord.Client(intents=intents)
 
-    async def setup_hook(self):
-        # ボット起動時の設定
-        await self.add_cog(Service_mesh_agentCommands(self))
+            @self.client.event
+            async def on_ready():
+                print(f'{self.client.user} has connected to Discord!')
 
-    async def on_ready(self):
-        # 準備完了時のイベント
-        logger.info("Logged in as %s", self.user.name)
+            @self.client.event
+            async def on_message(message):
+                if message.author == self.client.user:
+                    return
 
+                await self._handle_message(message)
 
-class Service_mesh_agentCommands(commands.Cog):
-    # service-mesh-agent コマンド
+            await self.client.start(self.token)
+        except ImportError:
+            print("discord.py not installed, running in mock mode")
 
-    def __init__(self, bot: commands.Bot):
-        # 初期化
-        self.bot = bot
+    async def _handle_message(self, message):
+        """メッセージハンドリング"""
+        content = message.content.lower()
 
-    @commands.command(name="service_mesh_agent")
-    async def service_mesh_agent(self, ctx: commands.Context, action: str = "list", *, args: str = ""):
-        # メインコマンド
-        if action == "list":
-            entries = self.bot.db.list_entries(limit=20)
-            if not entries:
-                await ctx.send("エントリーがありません")
-                return
-            embed = discord.Embed(title="Service Mesh Agent 一覧", color=discord.Color.blue())
-            for entry in entries[:10]:
-                title = entry.get("title") or "タイトルなし"
-                content = entry.get("content", "")[:50]
-                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
-            await ctx.send(embed=embed)
-        elif action == "add":
-            if not args:
-                await ctx.send(f"使用方法: !service_mesh_agent add <内容>")
-                return
-            entry_id = self.bot.db.add_entry(title=None, content=args, status="active", priority=0)
-            await ctx.send(f"エントリーを追加しました (ID: {entry_id})")
-        elif action == "search":
-            if not args:
-                await ctx.send(f"使用方法: !service_mesh_agent search <キーワード>")
-                return
-            entries = self.bot.db.search_entries(args, limit=10)
-            if not entries:
-                await ctx.send("一致するエントリーがありません")
-                return
-            embed = discord.Embed(title=f"「{args}」の検索結果", color=discord.Color.green())
-            for entry in entries:
-                title = entry.get("title") or "タイトルなし"
-                content = entry.get("content", "")[:50]
-                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
-            await ctx.send(embed=embed)
+        if content.startswith('!help'):
+            help_text = await self.get_help()
+            await message.channel.send(help_text)
+
+        elif content.startswith('!status'):
+            status = await self.get_status()
+            await message.channel.send(status)
+
+    async def send_message(self, channel_id: int, content: str):
+        """メッセージ送信"""
+        if self.client:
+            channel = self.client.get_channel(channel_id)
+            if channel:
+                await channel.send(content)
         else:
-            await ctx.send(f"不明なアクションです: {action}\\n使用可能なアクション: list, add, search")
+            print(f"Mock: Send to channel {channel_id}: {content}")
 
-    @commands.command(name="service_mesh_agent_status")
-    async def service_mesh_agent_status(self, ctx: commands.Context):
-        # ステータス確認
-        entries = self.bot.db.list_entries(status="active")
-        embed = discord.Embed(title="Service Mesh Agent ステータス", color=discord.Color.gold())
-        embed.add_field(name="アクティブエントリー", value=str(len(entries)))
-        await ctx.send(embed=embed)
+    async def get_help(self) -> str:
+        """ヘルプメッセージ"""
+        return f"""
+**サービスメッシュエージェント - Commands**
 
-    @commands.command(name="service_mesh_agent_delete")
-    async def service_mesh_agent_delete(self, ctx: commands.Context, entry_id: int):
-        # エントリー削除
-        if self.bot.db.delete_entry(entry_id):
-            await ctx.send(f"エントリーを削除しました (ID: {entry_id})")
-        else:
-            await ctx.send(f"エントリーが見つかりません (ID: {entry_id})")
+!help - Show this help message
+!status - Show agent status
+!info - Show agent information
+
+cloud category agent
+"""
+
+    async def get_status(self) -> str:
+        """ステータスメッセージ"""
+        return f"""
+**サービスメッシュエージェント Status**
+
+Status: Ready
+Language: Japanese
+Category: cloud
+Commands: {len(self.commands)}
+"""
+
+    async def stop(self):
+        """ボット停止"""
+        if self.client:
+            await self.client.close()
+
+async def main():
+    """動作確認"""
+    bot = ServiceMeshAgentDiscord()
+    await bot.start()
+
+if __name__ == "__main__":
+    asyncio.run(main())

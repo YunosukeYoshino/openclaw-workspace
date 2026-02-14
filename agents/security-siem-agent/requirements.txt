@@ -1,0 +1,17 @@
+# Requirements for セキュリティSIEMエージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# elasticsearch
+# splunk-sdk
+# requests
+# pyyaml
+# rich

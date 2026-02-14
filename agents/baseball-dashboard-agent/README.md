@@ -1,62 +1,102 @@
-# {agent_name}
+# 野球ダッシュボードエージェント
 
-{japanese_name} - {description}
+野球データのダッシュボード表示
 
-## Description / 概要
+## 概要
 
-{full_description}
+野球ダッシュボードエージェントはbaseballカテゴリのエージェントです。Japanese言語に対応しています。
 
-## Features / 機能
+## 機能
 
-{features}
+- データ処理・分析
+- タスク管理
+- 状態監視
+- Discord連携
 
-## Installation / インストール
+## インストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage / 使用方法
+## 使用方法
+
+### エージェントとして実行
+
+```bash
+python agent.py
+```
+
+### データベース操作
+
+```bash
+python db.py
+```
+
+### Discordボット
+
+```bash
+export DISCORD_TOKEN=your_token
+python discord.py
+```
+
+## データベース構造
+
+### records テーブル
+- `id`: 主キー
+- `type`: レコードタイプ
+- `title`: タイトル
+- `content`: コンテンツ
+- `metadata`: メタデータ（JSON）
+- `created_at`: 作成日時
+- `updated_at`: 更新日時
+
+### tasks テーブル
+- `id`: 主キー
+- `task_id`: タスクID
+- `status`: ステータス（pending/completed/failed）
+- `result`: 結果
+- `error`: エラーメッセージ
+- `created_at`: 作成日時
+- `completed_at`: 完了日時
+
+### settings テーブル
+- `key`: 設定キー
+- `value`: 設定値
+- `updated_at`: 更新日時
+
+## Discordコマンド
+
+- `!help` - ヘルプ表示
+- `!status` - ステータス確認
+- `!info` - エージェント情報
+
+## API
+
+### Agent
 
 ```python
-from {agent_name} import {class_name}
+from agent import BaseballDashboardAgent
 
-# Create an agent / エージェントを作成
-agent = {class_name}()
-
-# Add an entry / エントリーを追加
-agent.add_entry("Title", "Content")
-
-# List entries / エントリーを一覧
-entries = agent.list_entries()
+agent = BaseballDashboardAgent()
+await agent.initialize()
+result = await agent.process(data)
 ```
 
-## Database Schema / データベーススキーマ
+### Database
 
-```sql
-CREATE TABLE {table_name} (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    {content_field} TEXT NOT NULL,
-    chart_type TEXT,
-    data_source TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+```python
+from db import BaseballDashboardAgentDB
+
+db = BaseballDashboardAgentDB()
+record_id = db.insert_record("type", "title", "content")
+record = db.get_record(record_id)
 ```
 
-## Discord Commands / Discordコマンド
+## 言語サポート
 
-- `!{discord_prefix}add <title> <content>` - Add entry / エントリーを追加
-- `!{discord_prefix}list [limit]` - List entries / エントリーを一覧
-- `!{discord_prefix}search <query>` - Search entries / エントリーを検索
+- Japanese
 
-## Requirements / 要件
+## ライセンス
 
-- Python 3.8+
-- discord.py
-- sqlite3
-- matplotlib (for visualization)
-
-## License / ライセンス
-
-MIT
+MIT License

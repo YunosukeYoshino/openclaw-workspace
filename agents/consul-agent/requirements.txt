@@ -1,0 +1,17 @@
+# Requirements for Consulエージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# consul
+# requests
+# pyyaml
+# typer
+# rich

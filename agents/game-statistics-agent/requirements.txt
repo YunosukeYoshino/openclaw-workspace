@@ -1,0 +1,17 @@
+# Requirements for ゲーム統計エージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# pandas
+# numpy
+# matplotlib
+# seaborn
+# requests

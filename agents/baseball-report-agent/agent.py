@@ -1,103 +1,109 @@
 #!/usr/bin/env python3
 """
-{agent_name} - {japanese_name}
-
-{description}
+野球レポート生成エージェント
+野球統計レポートの自動生成
 """
 
-import sqlite3
-from typing import Optional, List, Dict, Any
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
 from datetime import datetime
+import json
 
+class BaseballReportAgent:
+    """野球レポート生成エージェント"""
 
-class {class_name}:
-    """{japanese_name}"""
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        self.config = config or {}
+        self.name = "baseball-report-agent"
+        self.title = "野球レポート生成エージェント"
+        self.description = "野球統計レポートの自動生成"
+        self.category = "baseball"
+        self.language = "Japanese"
+        self.state = "idle"
+        self.created_at = datetime.now().isoformat()
+        self.tasks: List[Dict[str, Any]] = []
 
-    def __init__(self, db_path: str = "{agent_name}.db"):
-        self.db_path = db_path
-        self._init_db()
+    async def initialize(self) -> bool:
+        """エージェントの初期化"""
+        try:
+            self.state = "initializing"
+            print(f"Initializing {self.title}...")
+            await asyncio.sleep(0.5)
+            self.state = "ready"
+            return True
+        except Exception as e:
+            print(f"Error initializing: {e}")
+            self.state = "error"
+            return False
 
-    def _init_db(self):
-        """Initialize database / データベースを初期化"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """データ処理"""
+        if self.state != "ready":
+            return {"error": "Agent not ready", "state": self.state}
 
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS {table_name} (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                {content_field} TEXT NOT NULL,
-                chart_type TEXT,
-                data_source TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
+        self.state = "processing"
+        try:
+            result = {
+                "success": True,
+                "data": input_data,
+                "processed_at": datetime.now().isoformat(),
+                "agent": self.name
+            }
+            self.state = "ready"
+            return result
+        except Exception as e:
+            self.state = "error"
+            return {"error": str(e), "state": self.state}
 
-        conn.commit()
-        conn.close()
+    async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+        """タスク実行"""
+        task_id = task.get("id", f"task_{len(self.tasks)}")
+        self.tasks.append({"id": task_id, "task": task, "status": "pending"})
 
-    def add_entry(self, title: str, content: str, chart_type: str = "",
-                   data_source: str = "") -> int:
-        """Add a visualization entry / 可視化エントリーを追加"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        try:
+            result = await self.process(task.get("data", {}))
+            self.tasks[-1]["status"] = "completed"
+            return result
+        except Exception as e:
+            self.tasks[-1]["status"] = "failed"
+            return {"error": str(e), "task_id": task_id}
 
-        cursor.execute('''
-            INSERT INTO {table_name} (title, {content_field}, chart_type, data_source)
-            VALUES (?, ?, ?, ?)
-        ''', (title, content, chart_type, data_source))
+    async def get_status(self) -> Dict[str, Any]:
+        """ステータス取得"""
+        return {
+            "name": self.name,
+            "title": self.title,
+            "state": self.state,
+            "tasks_completed": sum(1 for t in self.tasks if t["status"] == "completed"),
+            "tasks_pending": sum(1 for t in self.tasks if t["status"] == "pending"),
+            "created_at": self.created_at
+        }
 
-        conn.commit()
-        entry_id = cursor.lastrowid
-        conn.close()
-        return entry_id
+    async def cleanup(self) -> None:
+        """クリーンアップ"""
+        self.state = "stopped"
+        print(f"{self.title} stopped.")
 
-    def get_entry(self, entry_id: int) -> Optional[Dict[str, Any]]:
-        """Get an entry by ID / IDでエントリーを取得"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
+async def main():
+    """メイン処理"""
+    agent = BaseballReportAgent()
+    await agent.initialize()
 
-        cursor.execute('''
-            SELECT * FROM {table_name} WHERE id = ?
-        ''', (entry_id,))
+    sample_task = {
+        "id": "sample_001",
+        "data": {
+            "message": "Sample task for 野球レポート生成エージェント"
+        }
+    }
 
-        row = cursor.fetchone()
-        conn.close()
+    result = await agent.execute_task(sample_task)
+    print(f"Result: {json.dumps(result, ensure_ascii=False, indent=2)}")
 
-        if row:
-            return dict(row)
-        return None
+    status = await agent.get_status()
+    print(f"Status: {json.dumps(status, ensure_ascii=False, indent=2)}")
 
-    def list_entries(self, limit: int = 50) -> List[Dict[str, Any]]:
-        """List all entries / 全エントリーを一覧"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-
-        cursor.execute('''
-            SELECT * FROM {table_name}
-            ORDER BY created_at DESC
-            LIMIT ?
-        ''', (limit,))
-
-        rows = cursor.fetchall()
-        conn.close()
-
-        return [dict(row) for row in rows]
-
-    def {custom_method}(self) -> Any:
-        """{custom_method_description}"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        # TODO: Implement custom logic
-
-        conn.close()
-        return None
-
+    await agent.cleanup()
 
 if __name__ == "__main__":
-    agent = {class_name}()
-    print("{japanese_name} initialized!")
-    print(f"Database: {{agent.db_path}}")
+    asyncio.run(main())

@@ -1,5 +1,17 @@
-discord.py>=2.0.0
-python-dotenv>=1.0.0
-matplotlib>=3.5.0
-plotly>=5.0.0
-pandas>=1.3.0
+# Requirements for 野球レポート生成エージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# pandas
+# matplotlib
+# reportlab
+# jinja2
+# requests

@@ -1,0 +1,17 @@
+# Requirements for SOAR V2エージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# requests
+# pyyaml
+# jinja2
+# schedule
+# typer
