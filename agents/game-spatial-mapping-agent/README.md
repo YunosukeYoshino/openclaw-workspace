@@ -1,10 +1,10 @@
-# baseball-game-planner-agent
+# game-spatial-mapping-agent
 
-野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。
+ゲーム空間マッピングエージェント。空間マッピングの管理。
 
 ## 概要
 
-このエージェントは 野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。 ためのAIアシスタントです。
+このエージェントは ゲーム空間マッピングエージェント。空間マッピングの管理。 ためのAIアシスタントです。
 
 ## 機能
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### 基本的な使用
 
 ```python
-from agent import BaseballGamePlannerAgent
+from agent import GameSpatialMappingAgent
 
-agent = BaseballGamePlannerAgent()
+agent = GameSpatialMappingAgent()
 task = {"id": "task_001", "type": "example"}
 result = agent.process_task(task)
 print(result)
@@ -35,9 +35,9 @@ print(result)
 ### データベースの使用
 
 ```python
-from db import BaseballGamePlannerAgentDB
+from db import GameSpatialMappingAgentDB
 
-db = BaseballGamePlannerAgentDB()
+db = GameSpatialMappingAgentDB()
 db.insert_data("example_type", "example_content", {"key": "value"})
 data = db.query_data("example_type", limit=10)
 ```
@@ -55,7 +55,7 @@ bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 ## API
 
-### BaseballGamePlannerAgent.process_task(task)
+### GameSpatialMappingAgent.process_task(task)
 
 タスクを処理して結果を返します。
 
@@ -65,7 +65,7 @@ bot.run("YOUR_DISCORD_BOT_TOKEN")
 **Returns:**
 - Dict[str, Any]: 処理結果
 
-### BaseballGamePlannerAgentDB.insert_data(data_type, content, metadata)
+### GameSpatialMappingAgentDB.insert_data(data_type, content, metadata)
 
 データベースにデータを挿入します。
 
@@ -77,7 +77,7 @@ bot.run("YOUR_DISCORD_BOT_TOKEN")
 **Returns:**
 - int: 挿入されたレコードID
 
-### BaseballGamePlannerAgentDB.query_data(data_type, limit)
+### GameSpatialMappingAgentDB.query_data(data_type, limit)
 
 データベースからデータをクエリします。
 

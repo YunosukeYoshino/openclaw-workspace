@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-baseball-game-planner-agent - Discord Integration
-Discord bot integration for baseball-game-planner-agent
+baseball-matchup-analyzer-agent - Discord Integration
+Discord bot integration for baseball-matchup-analyzer-agent
 """
 
 import discord
@@ -12,12 +12,12 @@ from typing import Optional
 import json
 from pathlib import Path
 
-class BaseballGamePlannerAgentDiscord:
-    """Discord bot integration for baseball-game-planner-agent"""
+class BaseballMatchupAnalyzerAgentDiscord:
+    """Discord bot integration for baseball-matchup-analyzer-agent"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.logger = logging.getLogger("baseball-game-planner-agent.discord")
+        self.logger = logging.getLogger("baseball-matchup-analyzer-agent.discord")
         self.config_path = Path(__file__).parent / "discord_config.json"
         self.config = self._load_config()
 
@@ -33,27 +33,27 @@ class BaseballGamePlannerAgentDiscord:
         return default_config
 
     def setup_commands(self):
-        @self.bot.command(name="baseballgameplanneragent_status")
+        @self.bot.command(name="baseballmatchupanalyzeragent_status")
         async def agent_status(ctx):
             embed = discord.Embed(
-                title="baseball-game-planner-agent Status",
-                description="野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。",
+                title="baseball-matchup-analyzer-agent Status",
+                description="野球対戦分析エージェント。対戦相手の分析・戦略策定。",
                 color=discord.Color.blue()
             )
             embed.add_field(name="Active", value="Yes", inline=True)
             embed.add_field(name="Version", value="1.0.0", inline=True)
             await ctx.send(embed=embed)
 
-        @self.bot.command(name="baseballgameplanneragent_help")
+        @self.bot.command(name="baseballmatchupanalyzeragent_help")
         async def agent_help(ctx):
             embed = discord.Embed(
-                title="baseball-game-planner-agent Help",
-                description="野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。",
+                title="baseball-matchup-analyzer-agent Help",
+                description="野球対戦分析エージェント。対戦相手の分析・戦略策定。",
                 color=discord.Color.green()
             )
             embed.add_field(
                 name="Commands",
-                value="`!baseballgameplanneragent_status` - Show agent status\n`!baseballgameplanneragent_help` - Show this help message",
+                value="`!baseballmatchupanalyzeragent_status` - Show agent status\n`!baseballmatchupanalyzeragent_help` - Show this help message",
                 inline=False
             )
             await ctx.send(embed=embed)
@@ -80,11 +80,11 @@ class BaseballGamePlannerAgentDiscord:
             description=description,
             color=color_map.get(level, discord.Color.blue())
         )
-        embed.set_footer(text="baseball-game-planner-agent")
+        embed.set_footer(text="baseball-matchup-analyzer-agent")
         return await self.send_notification(channel_id, "", embed)
 
 def setup(bot: commands.Bot):
-    discord_integration = BaseballGamePlannerAgentDiscord(bot)
+    discord_integration = BaseballMatchupAnalyzerAgentDiscord(bot)
     discord_integration.setup_commands()
     bot.add_cog(discord_integration)
     return discord_integration

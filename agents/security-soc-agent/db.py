@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-baseball-game-planner-agent - Database Module
-SQLite database management for baseball-game-planner-agent
+security-soc-agent - Database Module
+SQLite database management for security-soc-agent
 """
 
 import sqlite3
@@ -11,12 +11,12 @@ from datetime import datetime
 from typing import Optional, List, Dict, Any
 from pathlib import Path
 
-class BaseballGamePlannerAgentDB:
-    """Database manager for baseball-game-planner-agent"""
+class SecuritySocAgentDB:
+    """Database manager for security-soc-agent"""
 
     def __init__(self, db_path: str = None):
         if db_path is None:
-            db_path = str(Path(__file__).parent / "baseball-game-planner-agent.db")
+            db_path = str(Path(__file__).parent / "security-soc-agent.db")
 
         self.db_path = db_path
         self.conn = None
@@ -128,7 +128,7 @@ class BaseballGamePlannerAgentDB:
             self.conn.close()
 
 if __name__ == "__main__":
-    db = BaseballGamePlannerAgentDB()
-    print("Database for baseball-game-planner-agent initialized at " + str(db.db_path))
+    db = SecuritySocAgentDB()
+    print("Database for security-soc-agent initialized at " + str(db.db_path))
     print("Stats: " + str(db.get_stats()))
     db.close()

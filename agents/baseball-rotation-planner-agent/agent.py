@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-baseball-game-planner-agent
-野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。
+baseball-rotation-planner-agent
+野球ローテーションプランナーエージェント。先発ローテーションの計画。
 """
 
 import logging
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class BaseballGamePlannerAgent:
-    """野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。"""
+class BaseballRotationPlannerAgent:
+    """野球ローテーションプランナーエージェント。先発ローテーションの計画。"""
 
     def __init__(self):
-        self.name = "baseball-game-planner-agent"
+        self.name = "baseball-rotation-planner-agent"
         self.logger = logging.getLogger(self.name)
         self.logger.setLevel(logging.INFO)
 
@@ -57,5 +57,5 @@ class BaseballGamePlannerAgent:
         return []
 
 if __name__ == "__main__":
-    agent = BaseballGamePlannerAgent()
+    agent = BaseballRotationPlannerAgent()
     print("Agent " + agent.name + " initialized")

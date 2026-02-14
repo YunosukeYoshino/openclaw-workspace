@@ -1,10 +1,10 @@
-# baseball-game-planner-agent
+# threat-intelligence-v2-agent
 
-野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。
+脅威インテリジェンスV2エージェント。高度な脅威インテリジェンス。
 
 ## 概要
 
-このエージェントは 野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。 ためのAIアシスタントです。
+このエージェントは 脅威インテリジェンスV2エージェント。高度な脅威インテリジェンス。 ためのAIアシスタントです。
 
 ## 機能
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### 基本的な使用
 
 ```python
-from agent import BaseballGamePlannerAgent
+from agent import ThreatIntelligenceV2Agent
 
-agent = BaseballGamePlannerAgent()
+agent = ThreatIntelligenceV2Agent()
 task = {"id": "task_001", "type": "example"}
 result = agent.process_task(task)
 print(result)
@@ -35,9 +35,9 @@ print(result)
 ### データベースの使用
 
 ```python
-from db import BaseballGamePlannerAgentDB
+from db import ThreatIntelligenceV2AgentDB
 
-db = BaseballGamePlannerAgentDB()
+db = ThreatIntelligenceV2AgentDB()
 db.insert_data("example_type", "example_content", {"key": "value"})
 data = db.query_data("example_type", limit=10)
 ```
@@ -55,7 +55,7 @@ bot.run("YOUR_DISCORD_BOT_TOKEN")
 
 ## API
 
-### BaseballGamePlannerAgent.process_task(task)
+### ThreatIntelligenceV2Agent.process_task(task)
 
 タスクを処理して結果を返します。
 
@@ -65,7 +65,7 @@ bot.run("YOUR_DISCORD_BOT_TOKEN")
 **Returns:**
 - Dict[str, Any]: 処理結果
 
-### BaseballGamePlannerAgentDB.insert_data(data_type, content, metadata)
+### ThreatIntelligenceV2AgentDB.insert_data(data_type, content, metadata)
 
 データベースにデータを挿入します。
 
@@ -77,7 +77,7 @@ bot.run("YOUR_DISCORD_BOT_TOKEN")
 **Returns:**
 - int: 挿入されたレコードID
 
-### BaseballGamePlannerAgentDB.query_data(data_type, limit)
+### ThreatIntelligenceV2AgentDB.query_data(data_type, limit)
 
 データベースからデータをクエリします。
 

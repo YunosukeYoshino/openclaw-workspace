@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-baseball-game-planner-agent
-野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。
+erotic-social-analytics-agent
+えっちソーシャルアナリティクスエージェント。ソーシャル指標の分析。
 """
 
 import logging
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class BaseballGamePlannerAgent:
-    """野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。"""
+class EroticSocialAnalyticsAgent:
+    """えっちソーシャルアナリティクスエージェント。ソーシャル指標の分析。"""
 
     def __init__(self):
-        self.name = "baseball-game-planner-agent"
+        self.name = "erotic-social-analytics-agent"
         self.logger = logging.getLogger(self.name)
         self.logger.setLevel(logging.INFO)
 
@@ -57,5 +57,5 @@ class BaseballGamePlannerAgent:
         return []
 
 if __name__ == "__main__":
-    agent = BaseballGamePlannerAgent()
+    agent = EroticSocialAnalyticsAgent()
     print("Agent " + agent.name + " initialized")

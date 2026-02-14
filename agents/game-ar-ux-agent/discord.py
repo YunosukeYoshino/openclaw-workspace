@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-baseball-game-planner-agent - Discord Integration
-Discord bot integration for baseball-game-planner-agent
+game-ar-ux-agent - Discord Integration
+Discord bot integration for game-ar-ux-agent
 """
 
 import discord
@@ -12,12 +12,12 @@ from typing import Optional
 import json
 from pathlib import Path
 
-class BaseballGamePlannerAgentDiscord:
-    """Discord bot integration for baseball-game-planner-agent"""
+class GameArUxAgentDiscord:
+    """Discord bot integration for game-ar-ux-agent"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.logger = logging.getLogger("baseball-game-planner-agent.discord")
+        self.logger = logging.getLogger("game-ar-ux-agent.discord")
         self.config_path = Path(__file__).parent / "discord_config.json"
         self.config = self._load_config()
 
@@ -33,27 +33,27 @@ class BaseballGamePlannerAgentDiscord:
         return default_config
 
     def setup_commands(self):
-        @self.bot.command(name="baseballgameplanneragent_status")
+        @self.bot.command(name="gamearuxagent_status")
         async def agent_status(ctx):
             embed = discord.Embed(
-                title="baseball-game-planner-agent Status",
-                description="野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。",
+                title="game-ar-ux-agent Status",
+                description="ゲームAR UXエージェント。AR体験のUX設計・管理。",
                 color=discord.Color.blue()
             )
             embed.add_field(name="Active", value="Yes", inline=True)
             embed.add_field(name="Version", value="1.0.0", inline=True)
             await ctx.send(embed=embed)
 
-        @self.bot.command(name="baseballgameplanneragent_help")
+        @self.bot.command(name="gamearuxagent_help")
         async def agent_help(ctx):
             embed = discord.Embed(
-                title="baseball-game-planner-agent Help",
-                description="野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。",
+                title="game-ar-ux-agent Help",
+                description="ゲームAR UXエージェント。AR体験のUX設計・管理。",
                 color=discord.Color.green()
             )
             embed.add_field(
                 name="Commands",
-                value="`!baseballgameplanneragent_status` - Show agent status\n`!baseballgameplanneragent_help` - Show this help message",
+                value="`!gamearuxagent_status` - Show agent status\n`!gamearuxagent_help` - Show this help message",
                 inline=False
             )
             await ctx.send(embed=embed)
@@ -80,11 +80,11 @@ class BaseballGamePlannerAgentDiscord:
             description=description,
             color=color_map.get(level, discord.Color.blue())
         )
-        embed.set_footer(text="baseball-game-planner-agent")
+        embed.set_footer(text="game-ar-ux-agent")
         return await self.send_notification(channel_id, "", embed)
 
 def setup(bot: commands.Bot):
-    discord_integration = BaseballGamePlannerAgentDiscord(bot)
+    discord_integration = GameArUxAgentDiscord(bot)
     discord_integration.setup_commands()
     bot.add_cog(discord_integration)
     return discord_integration

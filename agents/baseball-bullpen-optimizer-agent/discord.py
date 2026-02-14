@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-baseball-game-planner-agent - Discord Integration
-Discord bot integration for baseball-game-planner-agent
+baseball-bullpen-optimizer-agent - Discord Integration
+Discord bot integration for baseball-bullpen-optimizer-agent
 """
 
 import discord
@@ -12,12 +12,12 @@ from typing import Optional
 import json
 from pathlib import Path
 
-class BaseballGamePlannerAgentDiscord:
-    """Discord bot integration for baseball-game-planner-agent"""
+class BaseballBullpenOptimizerAgentDiscord:
+    """Discord bot integration for baseball-bullpen-optimizer-agent"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.logger = logging.getLogger("baseball-game-planner-agent.discord")
+        self.logger = logging.getLogger("baseball-bullpen-optimizer-agent.discord")
         self.config_path = Path(__file__).parent / "discord_config.json"
         self.config = self._load_config()
 
@@ -33,27 +33,27 @@ class BaseballGamePlannerAgentDiscord:
         return default_config
 
     def setup_commands(self):
-        @self.bot.command(name="baseballgameplanneragent_status")
+        @self.bot.command(name="baseballbullpenoptimizeragent_status")
         async def agent_status(ctx):
             embed = discord.Embed(
-                title="baseball-game-planner-agent Status",
-                description="野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。",
+                title="baseball-bullpen-optimizer-agent Status",
+                description="野球ブルペンオプティマイザーエージェント。リリーフ陣の最適化。",
                 color=discord.Color.blue()
             )
             embed.add_field(name="Active", value="Yes", inline=True)
             embed.add_field(name="Version", value="1.0.0", inline=True)
             await ctx.send(embed=embed)
 
-        @self.bot.command(name="baseballgameplanneragent_help")
+        @self.bot.command(name="baseballbullpenoptimizeragent_help")
         async def agent_help(ctx):
             embed = discord.Embed(
-                title="baseball-game-planner-agent Help",
-                description="野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。",
+                title="baseball-bullpen-optimizer-agent Help",
+                description="野球ブルペンオプティマイザーエージェント。リリーフ陣の最適化。",
                 color=discord.Color.green()
             )
             embed.add_field(
                 name="Commands",
-                value="`!baseballgameplanneragent_status` - Show agent status\n`!baseballgameplanneragent_help` - Show this help message",
+                value="`!baseballbullpenoptimizeragent_status` - Show agent status\n`!baseballbullpenoptimizeragent_help` - Show this help message",
                 inline=False
             )
             await ctx.send(embed=embed)
@@ -80,11 +80,11 @@ class BaseballGamePlannerAgentDiscord:
             description=description,
             color=color_map.get(level, discord.Color.blue())
         )
-        embed.set_footer(text="baseball-game-planner-agent")
+        embed.set_footer(text="baseball-bullpen-optimizer-agent")
         return await self.send_notification(channel_id, "", embed)
 
 def setup(bot: commands.Bot):
-    discord_integration = BaseballGamePlannerAgentDiscord(bot)
+    discord_integration = BaseballBullpenOptimizerAgentDiscord(bot)
     discord_integration.setup_commands()
     bot.add_cog(discord_integration)
     return discord_integration

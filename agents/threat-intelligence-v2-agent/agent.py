@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-baseball-game-planner-agent
-野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。
+threat-intelligence-v2-agent
+脅威インテリジェンスV2エージェント。高度な脅威インテリジェンス。
 """
 
 import logging
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class BaseballGamePlannerAgent:
-    """野球ゲームプランナーエージェント。試合のゲームプラン・戦略の立案・管理。"""
+class ThreatIntelligenceV2Agent:
+    """脅威インテリジェンスV2エージェント。高度な脅威インテリジェンス。"""
 
     def __init__(self):
-        self.name = "baseball-game-planner-agent"
+        self.name = "threat-intelligence-v2-agent"
         self.logger = logging.getLogger(self.name)
         self.logger.setLevel(logging.INFO)
 
@@ -57,5 +57,5 @@ class BaseballGamePlannerAgent:
         return []
 
 if __name__ == "__main__":
-    agent = BaseballGamePlannerAgent()
+    agent = ThreatIntelligenceV2Agent()
     print("Agent " + agent.name + " initialized")
