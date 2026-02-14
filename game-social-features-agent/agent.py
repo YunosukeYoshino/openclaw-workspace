@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-野球解説エージェント
-解説コンテンツの管理
+ゲームソーシャル機能エージェント
+ソーシャル機能の実装
 """
 
 import discord
@@ -10,13 +10,13 @@ import sqlite3
 from datetime import datetime
 import json
 
-class BaseballCommentatorAgent(commands.Bot):
+class GameSocialFeaturesAgent(commands.Bot):
     def __init__(self, token):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix="!", intents=intents)
         self.token = token
-        self.db_path = "baseball-commentator-agent.db"
+        self.db_path = "game-social-features-agent.db"
         self.init_db()
     
     def init_db(self):
@@ -43,5 +43,5 @@ if __name__ == "__main__":
     if not token:
         print("DISCORD_TOKEN environment variable is required")
         exit(1)
-    bot = BaseballCommentatorAgent(token)
+    bot = GameSocialFeaturesAgent(token)
     bot.run_bot()

@@ -1,10 +1,10 @@
-# えっちNSFW検知エージェント (erotic-nsfw-detector-agent)
+# ゲームソーシャル機能エージェント (game-social-features-agent)
 
-NSFWコンテンツの検知
+ソーシャル機能の実装
 
 ## 機能 / Features
 
-- NSFWコンテンツの検知の管理・運用
+- ソーシャル機能の実装の管理・運用
 - Discordボットによる対話型インターフェース
 - SQLiteによるデータ永続化
 
@@ -38,9 +38,9 @@ python discord.py
 
 ## データベース / Database
 
-データはSQLiteに保存されます。`erotic-nsfw-detector-agent.db`ファイルが作成されます。
+データはSQLiteに保存されます。`game-social-features-agent.db`ファイルが作成されます。
 
-Data is stored in SQLite. A `erotic-nsfw-detector-agent.db` file will be created.
+Data is stored in SQLite. A `game-social-features-agent.db` file will be created.
 
 ## ライセンス / License
 

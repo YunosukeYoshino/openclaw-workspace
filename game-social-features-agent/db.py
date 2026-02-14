@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Database Manager for security-scan-agent
+Database Manager for game-social-features-agent
 """
 
 import sqlite3
@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import List, Optional
 
 class DatabaseManager:
-    def __init__(self, db_path: str = "security-scan-agent.db"):
+    def __init__(self, db_path: str = "game-social-features-agent.db"):
         self.db_path = db_path
         self.init_db()
     

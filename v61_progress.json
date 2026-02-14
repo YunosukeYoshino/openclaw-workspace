@@ -26,7 +26,27 @@
     "sso-provider-agent",
     "auth-agent",
     "oauth-provider-agent",
-    "identity-verification-agent"
+    "identity-verification-agent",
+    "baseball-media-broadcast-agent",
+    "baseball-content-creator-agent",
+    "baseball-commentator-agent",
+    "baseball-production-agent",
+    "baseball-highlights-agent",
+    "game-social-connect-agent",
+    "game-multiplayer-coordinator-agent",
+    "game-party-manager-agent",
+    "game-social-features-agent",
+    "game-competitive-agent",
+    "erotic-content-classifier-agent",
+    "erotic-content-discovery-agent",
+    "erotic-auto-tag-agent",
+    "erotic-image-analyzer-agent",
+    "erotic-nsfw-detector-agent",
+    "vulnerability-scanner-agent",
+    "pentest-agent",
+    "bug-bounty-agent",
+    "exploit-analysis-agent",
+    "security-scan-agent"
   ],
   "failed": []
 }

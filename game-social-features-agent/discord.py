@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Discord Bot for game-social-connect-agent
+Discord Bot for game-social-features-agent
 """
 
 import discord
@@ -25,7 +25,7 @@ class DiscordBot(commands.Bot):
     
     @commands.command()
     async def hello(self, ctx):
-        await ctx.send("Hello! I am ゲームソーシャルコネクトエージェント")
+        await ctx.send("Hello! I am ゲームソーシャル機能エージェント")
     
     @commands.command()
     async def add(self, ctx, *, content: str):
