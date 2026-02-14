@@ -1,102 +1,70 @@
 #!/usr/bin/env python3
 """
-APIバージョニングエージェント - Discord連携
-Discordボットインターフェース
+Discord integration for APIバージョニングエージェント
 """
 
-import asyncio
-import os
-from typing import Optional, Dict, Any, List
-from datetime import datetime
+import logging
+from typing import Optional
+import discord
+from discord.ext import commands
 
-class ApiVersioningAgentDiscord:
-    """APIバージョニングエージェント Discord連携クラス"""
+logger = logging.getLogger(__name__)
+
+
+class DiscordBot(commands.Bot):
+    """Discord bot for APIバージョニングエージェント"""
 
     def __init__(self, token: Optional[str] = None):
-        self.token = token or os.getenv("DISCORD_TOKEN")
-        self.client = None
-        self.commands: List[Dict[str, Any]] = []
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix="!", intents=intents)
+        self.token = token or ""
+        self.agent = None
 
-    async def start(self):
-        """Discordボット起動"""
-        if not self.token:
-            print("DISCORD_TOKEN not set, running in mock mode")
+    def set_agent(self, agent):
+        """Set agent instance"""
+        self.agent = agent
+
+    async def on_ready(self):
+        """Called when bot is ready"""
+        logger.info(f"{self.user} is ready")
+
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        if message.author.bot:
             return
+        await self.process_commands(message)
 
-        try:
-            import discord
-            intents = discord.Intents.default()
-            intents.message_content = True
-            self.client = discord.Client(intents=intents)
-
-            @self.client.event
-            async def on_ready():
-                print(f'{self.client.user} has connected to Discord!')
-
-            @self.client.event
-            async def on_message(message):
-                if message.author == self.client.user:
-                    return
-
-                await self._handle_message(message)
-
-            await self.client.start(self.token)
-        except ImportError:
-            print("discord.py not installed, running in mock mode")
-
-    async def _handle_message(self, message):
-        """メッセージハンドリング"""
-        content = message.content.lower()
-
-        if content.startswith('!help'):
-            help_text = await self.get_help()
-            await message.channel.send(help_text)
-
-        elif content.startswith('!status'):
-            status = await self.get_status()
-            await message.channel.send(status)
-
-    async def send_message(self, channel_id: int, content: str):
-        """メッセージ送信"""
-        if self.client:
-            channel = self.client.get_channel(channel_id)
-            if channel:
-                await channel.send(content)
+    @commands.command(name="status")
+    async def status(self, ctx: commands.Context):
+        """Show agent status"""
+        if self.agent:
+            status = self.agent.get_status()
+            await ctx.send(f"**Status:** {status.get('status')}\n**Version:** {status.get('version')}")
         else:
-            print(f"Mock: Send to channel {channel_id}: {content}")
+            await ctx.send("Agent not configured")
 
-    async def get_help(self) -> str:
-        """ヘルプメッセージ"""
-        return f"""
-**APIバージョニングエージェント - Commands**
+    @commands.command(name="info")
+    async def info(self, ctx: commands.Context):
+        """Show agent information"""
+        if self.agent:
+            await ctx.send(f"**Name:** {self.agent.name}\n**Description:** {self.agent.description}")
+        else:
+            await ctx.send("Agent not configured")
 
-!help - Show this help message
-!status - Show agent status
-!info - Show agent information
+    def start_bot(self):
+        """Start the bot"""
+        if self.token:
+            self.run(self.token)
+        else:
+            logger.warning("Discord token not provided")
 
-cloud category agent
-"""
 
-    async def get_status(self) -> str:
-        """ステータスメッセージ"""
-        return f"""
-**APIバージョニングエージェント Status**
+def main():
+    """Test discord bot"""
+    bot = DiscordBot()
+    print("Discord bot module loaded")
 
-Status: Ready
-Language: Japanese
-Category: cloud
-Commands: {len(self.commands)}
-"""
-
-    async def stop(self):
-        """ボット停止"""
-        if self.client:
-            await self.client.close()
-
-async def main():
-    """動作確認"""
-    bot = ApiVersioningAgentDiscord()
-    await bot.start()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

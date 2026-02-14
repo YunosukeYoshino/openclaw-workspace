@@ -1,17 +1,9 @@
 # Requirements for APIドキュメントエージェント
-# Automatically generated dependencies
 
-# Core dependencies
-asyncio
-typing
-datetime
-json
-sqlite3
-contextlib
+# Discord.py
+discord.py>=2.3.2
 
-# Additional dependencies
-# fastapi
-# uvicorn
-# swagger
-# redoc
-# requests
+# Database (sqlite3 is built-in)
+
+# Utilities
+python-dateutil>=2.8.2

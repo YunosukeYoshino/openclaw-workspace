@@ -1,42 +1,70 @@
 #!/usr/bin/env python3
 """
-Discord integration for security-compliance-agent
+Discord integration for セキュリティコンプライアンスエージェント
 """
 
+import logging
+from typing import Optional
 import discord
 from discord.ext import commands
-import logging
 
-class Security_Compliance_AgentDiscord(commands.Cog):
-    """Discord bot for security-compliance-agent"""
+logger = logging.getLogger(__name__)
 
-    def __init__(self, bot):
-        self.bot = bot
-        self.logger = logging.getLogger(__name__)
 
-    @commands.command(name="security_compliance_agent")
-    async def main_command(self, ctx, *, query=None):
-        """Main command for security-compliance-agent"""
-        if not query:
-            await ctx.send("Please provide a query.")
+class DiscordBot(commands.Bot):
+    """Discord bot for セキュリティコンプライアンスエージェント"""
+
+    def __init__(self, token: Optional[str] = None):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix="!", intents=intents)
+        self.token = token or ""
+        self.agent = None
+
+    def set_agent(self, agent):
+        """Set agent instance"""
+        self.agent = agent
+
+    async def on_ready(self):
+        """Called when bot is ready"""
+        logger.info(f"{self.user} is ready")
+
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        if message.author.bot:
             return
+        await self.process_commands(message)
 
-        self.logger.info(f"Command invoked by {ctx.author}: {query}")
-        # TODO: Implement command logic
-        await ctx.send(f"Processing: {query}")
+    @commands.command(name="status")
+    async def status(self, ctx: commands.Context):
+        """Show agent status"""
+        if self.agent:
+            status = self.agent.get_status()
+            await ctx.send(f"**Status:** {status.get('status')}\n**Version:** {status.get('version')}")
+        else:
+            await ctx.send("Agent not configured")
 
-    @commands.command(name="security_compliance_agent_status")
-    async def status_command(self, ctx):
-        """Status command for security-compliance-agent"""
-        await ctx.send(f"Security Compliance Agent is operational.")
+    @commands.command(name="info")
+    async def info(self, ctx: commands.Context):
+        """Show agent information"""
+        if self.agent:
+            await ctx.send(f"**Name:** {self.agent.name}\n**Description:** {self.agent.description}")
+        else:
+            await ctx.send("Agent not configured")
 
-def setup(bot):
-    """Setup the Discord cog"""
-    bot.add_cog(Security_Compliance_AgentDiscord(bot))
+    def start_bot(self):
+        """Start the bot"""
+        if self.token:
+            self.run(self.token)
+        else:
+            logger.warning("Discord token not provided")
+
+
+def main():
+    """Test discord bot"""
+    bot = DiscordBot()
+    print("Discord bot module loaded")
+
 
 if __name__ == "__main__":
-    # Example usage
-    intents = discord.Intents.default()
-    intents.message_content = True
-    bot = commands.Bot(command_prefix="!", intents=intents)
-    setup(bot)
+    main()
