@@ -1,73 +1,56 @@
 #!/usr/bin/env python3
 """
-soar-agent - Discord Integration Module
+Discord Bot for soar-agent
 """
 
-import asyncio
-from typing import Optional, Dict, Any
-import json
+import discord
+from discord.ext import commands
+import os
 
-class DiscordBot:
-    def __init__(self, token: str = None, channel_id: str = None):
+class DiscordBot(commands.Bot):
+    def __init__(self, token: str, db_manager):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix="!", intents=intents)
         self.token = token
-        self.channel_id = channel_id
-        self.connected = False
-
-    async def connect(self):
-        """Discordに接続"""
-        if self.token:
-            self.connected = True
-            print("Connected to Discord")
+        self.db = db_manager
+    
+    async def on_ready(self):
+        print(f"Bot logged in as {self.user}")
+    
+    async def on_message(self, message):
+        if message.author == self.user:
+            return
+        await self.process_commands(message)
+    
+    @commands.command()
+    async def hello(self, ctx):
+        await ctx.send("Hello! I am SOARエージェント")
+    
+    @commands.command()
+    async def add(self, ctx, *, content: str):
+        record_id = self.db.add_record(content)
+        await ctx.send(f"Added record #{record_id}")
+    
+    @commands.command()
+    async def list(self, ctx, limit: int = 10):
+        records = self.db.list_records(limit)
+        if records:
+            response = "Recent records:\n" + "\n".join(f"#{r['id']}: {r['content'][:50]}..." for r in records[:5])
+            await ctx.send(response)
         else:
-            print("No Discord token provided")
-
-    async def send_message(self, message: str, embed: Dict[str, Any] = None) -> bool:
-        """メッセージを送信"""
-        if not self.connected:
-            print("Not connected to Discord")
-            return False
-
-        print("Sending message:", message)
-        if embed:
-            print("Embed:", embed)
-
-        return True
-
-    async def send_embed(self, title: str, description: str, fields: List[Dict[str, Any]] = None) -> bool:
-        """埋め込みメッセージを送信"""
-        embed = {
-            "title": title,
-            "description": description,
-            "fields": fields or []
-        }
-        return await self.send_message("", embed=embed)
-
-    async def notify_task_created(self, task_id: int, title: str):
-        """タスク作成を通知"""
-        await self.send_embed(
-            title="Task Created",
-            description="Task #" + str(task_id) + ": " + title
-        )
-
-    async def notify_task_completed(self, task_id: int, title: str):
-        """タスク完了を通知"""
-        await self.send_embed(
-            title="Task Completed",
-            description="Task #" + str(task_id) + ": " + title
-        )
-
-    async def notify_error(self, error: str):
-        """エラーを通知"""
-        await self.send_embed(
-            title="Error",
-            description=error,
-            fields=[{"name": "Severity", "value": "High"}]
-        )
-
-async def main():
-    bot = DiscordBot()
-    await bot.connect()
-    await bot.send_message("soar-agent Discord bot is ready")
+            await ctx.send("No records found")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    import sys
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from db import DatabaseManager
+    
+    token = os.getenv("DISCORD_TOKEN")
+    if not token:
+        print("DISCORD_TOKEN is required")
+        exit(1)
+    
+    db = DatabaseManager()
+    bot = DiscordBot(token, db)
+    bot.run(token)
