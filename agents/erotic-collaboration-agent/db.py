@@ -1,174 +1,107 @@
 #!/usr/bin/env python3
 """
-Database for えっちコラボレーションエージェント / Erotic Collaboration Agent
+Database module for えっちコラボレーションエージェント
 """
 
 import sqlite3
 import logging
-from typing import Any, Dict, List, Optional
-from datetime import datetime
+from typing import Optional, List, Dict, Any
 from pathlib import Path
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
 
 class Database:
-    """Database for erotic-collaboration-agent"""
+    """Database handler for えっちコラボレーションエージェント"""
 
-    def __init__(self, db_path: str = "data/erotic-collaboration-agent.db"):
-        self.db_path = Path(db_path)
-        self.conn: Optional[sqlite3.Connection] = None
+    def __init__(self, db_path: Optional[str] = None):
+        if db_path is None:
+            db_path = Path(__file__).parent / "erotic-collaboration-agent.db"
+        self.db_path = db_path
+        self.conn = None
+        self.init_db()
 
-    async def initialize(self):
-        """Initialize database and create tables"""
+    def init_db(self):
+        """Initialize database tables"""
         self.conn = sqlite3.connect(self.db_path)
-        self._create_tables()
-        logger.info(f"Database initialized: {self.db_path}")
-
-    def _create_tables(self):
-        """Create database tables"""
-        cursor = self.conn.cursor()
-
-        # Main entries table
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS entries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                content TEXT NOT NULL,
-                category TEXT,
-                tags TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-
-        # Tags table
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS tags (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT UNIQUE NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-
-        # Entry tags relation table
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS entry_tags (
-                entry_id INTEGER,
-                tag_id INTEGER,
-                PRIMARY KEY (entry_id, tag_id),
-                FOREIGN KEY (entry_id) REFERENCES entries(id),
-                FOREIGN KEY (tag_id) REFERENCES tags(id)
-            )
-        """)
-
+        self.conn.row_factory = sqlite3.Row
+        self.conn.execute('CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, title TEXT, content TEXT NOT NULL, status TEXT DEFAULT "active", created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
+        self.conn.execute('CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
+        self.conn.execute('CREATE TABLE IF NOT EXISTS record_tags (record_id INTEGER NOT NULL, tag_id INTEGER NOT NULL, PRIMARY KEY (record_id, tag_id), FOREIGN KEY (record_id) REFERENCES records(id) ON DELETE CASCADE, FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE)')
         self.conn.commit()
 
-    async def create_entry(self, title: str, content: str, category: str = None, tags: List[str] = None) -> int:
-        """Create a new entry"""
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            INSERT INTO entries (title, content, category, tags)
-            VALUES (?, ?, ?, ?)
-        """, (title, content, category, ','.join(tags or [])))
-        self.conn.commit()
-        entry_id = cursor.lastrowid
-
+    def add_record(self, record_type: str, title: Optional[str], content: str, tags: Optional[List[str]] = None) -> int:
+        """Add a new record"""
+        cursor = self.conn.execute('INSERT INTO records (type, title, content) VALUES (?, ?, ?)', (record_type, title, content))
+        record_id = cursor.lastrowid
         if tags:
-            for tag in tags:
-                await self._add_tag_to_entry(entry_id, tag)
-
-        return entry_id
-
-    async def _add_tag_to_entry(self, entry_id: int, tag_name: str):
-        """Add a tag to an entry"""
-        cursor = self.conn.cursor()
-        cursor.execute('INSERT OR IGNORE INTO tags (name) VALUES (?)', (tag_name,))
+            for tag_name in tags:
+                cursor = self.conn.execute('INSERT OR IGNORE INTO tags (name) VALUES (?)', (tag_name,))
+                tag_id = cursor.lastrowid if cursor.lastrowid else self._get_tag_id(tag_name)
+                self.conn.execute('INSERT INTO record_tags (record_id, tag_id) VALUES (?, ?)', (record_id, tag_id))
         self.conn.commit()
-        cursor.execute('SELECT id FROM tags WHERE name = ?', (tag_name,))
-        tag_id = cursor.fetchone()[0]
-        cursor.execute('INSERT OR IGNORE INTO entry_tags (entry_id, tag_id) VALUES (?, ?)',
-                      (entry_id, tag_id))
-        self.conn.commit()
+        return record_id
 
-    async def get_entry(self, entry_id: int) -> Optional[Dict[str, Any]]:
-        """Get an entry by ID"""
-        cursor = self.conn.cursor()
-        cursor.execute('SELECT * FROM entries WHERE id = ?', (entry_id,))
+    def _get_tag_id(self, tag_name: str) -> Optional[int]:
+        """Get tag ID by name"""
+        cursor = self.conn.execute('SELECT id FROM tags WHERE name = ?', (tag_name,))
         row = cursor.fetchone()
-        if row:
-            return {
-                "id": row[0], "title": row[1], "content": row[2],
-                "category": row[3], "tags": row[4].split(',') if row[4] else [],
-                "created_at": row[5], "updated_at": row[6]
-            }
-        return None
+        return row['id'] if row else None
 
-    async def list_entries(self, category: str = None, limit: int = 100) -> List[Dict[str, Any]]:
-        """List entries"""
-        cursor = self.conn.cursor()
-        if category:
-            cursor.execute('SELECT * FROM entries WHERE category = ? ORDER BY created_at DESC LIMIT ?',
-                          (category, limit))
+    def get_record(self, record_id: int) -> Optional[Dict[str, Any]]:
+        """Get record by ID"""
+        cursor = self.conn.execute('SELECT * FROM records WHERE id = ?', (record_id,))
+        row = cursor.fetchone()
+        return dict(row) if row else None
+
+    def get_records(self, record_type: Optional[str] = None, limit: int = 100) -> List[Dict[str, Any]]:
+        """Get records by type"""
+        if record_type:
+            cursor = self.conn.execute('SELECT * FROM records WHERE type = ? ORDER BY created_at DESC LIMIT ?', (record_type, limit))
         else:
-            cursor.execute('SELECT * FROM entries ORDER BY created_at DESC LIMIT ?', (limit,))
-        rows = cursor.fetchall()
-        return [{
-            "id": row[0], "title": row[1], "content": row[2],
-            "category": row[3], "tags": row[4].split(',') if row[4] else [],
-            "created_at": row[5], "updated_at": row[6]
-        } for row in rows]
+            cursor = self.conn.execute('SELECT * FROM records ORDER BY created_at DESC LIMIT ?', (limit,))
+        return [dict(row) for row in cursor.fetchall()]
 
-    async def search_entries(self, query: str) -> List[Dict[str, Any]]:
-        """Search entries"""
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            SELECT * FROM entries WHERE title LIKE ? OR content LIKE ? ORDER BY created_at DESC
-        """, (f'%{query}%', f'%{query}%'))
-        rows = cursor.fetchall()
-        return [{
-            "id": row[0], "title": row[1], "content": row[2],
-            "category": row[3], "tags": row[4].split(',') if row[4] else [],
-            "created_at": row[5], "updated_at": row[6]
-        } for row in rows]
-
-    async def update_entry(self, entry_id: int, title: str = None, content: str = None,
-                          category: str = None, tags: List[str] = None) -> bool:
-        """Update an entry"""
-        cursor = self.conn.cursor()
-        updates = []
+    def update_record(self, record_id: int, **kwargs) -> bool:
+        """Update record"""
+        fields = []
         values = []
-
-        if title:
-            updates.append("title = ?")
-            values.append(title)
-        if content:
-            updates.append("content = ?")
-            values.append(content)
-        if category:
-            updates.append("category = ?")
-            values.append(category)
-        if tags is not None:
-            updates.append("tags = ?")
-            values.append(','.join(tags))
-
-        if updates:
-            updates.append("updated_at = CURRENT_TIMESTAMP")
-            values.append(entry_id)
-            cursor.execute(f"UPDATE entries SET {', '.join(updates)} WHERE id = ?", values)
-            self.conn.commit()
-            return cursor.rowcount > 0
-        return False
-
-    async def delete_entry(self, entry_id: int) -> bool:
-        """Delete an entry"""
-        cursor = self.conn.cursor()
-        cursor.execute('DELETE FROM entry_tags WHERE entry_id = ?', (entry_id,))
-        cursor.execute('DELETE FROM entries WHERE id = ?', (entry_id,))
+        for key, value in kwargs.items():
+            if key in ['type', 'title', 'content', 'status']:
+                fields.append(f"{key} = ?")
+                values.append(value)
+        if not fields:
+            return False
+        fields.append("updated_at = ?")
+        values.append(datetime.now().isoformat())
+        values.append(record_id)
+        self.conn.execute(f"UPDATE records SET {', '.join(fields)} WHERE id = ?", values)
         self.conn.commit()
-        return cursor.rowcount > 0
+        return True
+
+    def delete_record(self, record_id: int) -> bool:
+        """Delete record"""
+        self.conn.execute('DELETE FROM records WHERE id = ?', (record_id,))
+        self.conn.commit()
+        return True
 
     def close(self):
         """Close database connection"""
         if self.conn:
             self.conn.close()
+
+
+def main():
+    """Test database"""
+    db = Database()
+    print("Database initialized at:", db.db_path)
+    record_id = db.add_record("test", "Test Record", "Test content", ["tag1", "tag2"])
+    print("Added record:", record_id)
+    record = db.get_record(record_id)
+    print("Retrieved record:", record)
+    db.close()
+
+
+if __name__ == "__main__":
+    main()

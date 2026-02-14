@@ -1,95 +1,90 @@
-# えっちコラボレーションエージェント / Erotic Collaboration Agent
+# えっちコラボレーションエージェント
 
-erotic-collaboration-agent
+えっちクリエイターのコラボレーション管理エージェント
 
-## 概要 / Overview
+## Overview
 
-クリエイター間のコラボ企画の提案・管理、リクエストマッチング、プロジェクト進捗管理、作品の共同作成、リリース、プロモーション
+This is the erotic-collaboration-agent agent.
 
-Propose and manage creator collab projects, request matching, project progress tracking, collaborative creation, releases, promotions
+## Features
 
-## 機能 / Features
+- Feature 1: TBD
+- Feature 2: TBD
+- Feature 3: TBD
 
-- Collab Proposal
-- Request Matching
-- Progress Tracking
-- Co-creation Tools
-- Release Management
-- Promotion
-
-## 技術スタック / Tech Stack
-
-- discord.py, requests, pandas, gitpython, yaml
-
-## インストール / Installation
+## Installation
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd erotic-collaboration-agent
-
-# Install dependencies
 pip install -r requirements.txt
 ```
 
-## 使い方 / Usage
+## Usage
 
-### エージェントとして使用 / As an Agent
+### Agent
+
+```python
+from agent import EroticCollaborationAgentAgent
+agent = EroticCollaborationAgentAgent()
+result = await agent.process(data)
+```
+
+### Database
 
 ```python
 from db import Database
-from agent import EroticCollaborationAgent
-
-# Initialize database
-db = Database(db_path="data/erotic-collaboration-agent.db")
-await db.initialize()
-
-# Initialize agent
-agent = EroticCollaborationAgent(db)
-await agent.initialize()
-
-# Process data
-result = await agent.process({"key": "value"})
-print(result)
+db = Database()
+record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
 ```
 
-### Discord Botとして使用 / As a Discord Bot
+### Discord Integration
 
 ```python
 from discord import DiscordBot
-
-# Create bot
-bot = create_bot(db, token="YOUR_DISCORD_TOKEN", command_prefix="!")
-
-# Run bot
-bot.run()
+bot = DiscordBot(token="your_bot_token")
+bot.set_agent(agent)
+bot.start_bot()
 ```
 
-## データベース構造 / Database Schema
+## Commands
 
-### entries テーブル
+### Discord Commands
 
-| カラム | 型 | 説明 |
-|--------|------|------|
-| id | INTEGER | 主キー |
-| title | TEXT | タイトル |
-| content | TEXT | コンテンツ |
-| category | TEXT | カテゴリ |
-| tags | TEXT | タグ（カンマ区切り） |
-| created_at | TIMESTAMP | 作成日時 |
-| updated_at | TIMESTAMP | 更新日時 |
+- `!status` - Show agent status
+- `!info` - Show agent information
 
-## Discordコマンド / Discord Commands
+## Database Schema
 
-| コマンド | 説明 |
-|----------|------|
-| `!status` | エージェントのステータスを確認 |
-| `!help` | ヘルプを表示 |
-| `!create <title> <content>` | 新しいエントリーを作成 |
-| `!list [category]` | エントリーを一覧表示 |
-| `!search <query>` | エントリーを検索 |
-| `!get <id>` | IDでエントリーを取得 |
+### Records Table
 
-## ライセンス / License
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| type | TEXT | Record type |
+| title | TEXT | Record title (optional) |
+| content | TEXT | Record content |
+| status | TEXT | Record status |
+| created_at | TIMESTAMP | Creation timestamp |
+| updated_at | TIMESTAMP | Last update timestamp |
+
+### Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| name | TEXT | Tag name (unique) |
+| created_at | TIMESTAMP | Creation timestamp |
+
+### Record Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| record_id | INTEGER | Foreign key to records |
+| tag_id | INTEGER | Foreign key to tags |
+
+## License
 
 MIT License
+
+## Author
+
+Created with OpenClaw
