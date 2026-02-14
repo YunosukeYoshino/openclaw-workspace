@@ -1,10 +1,10 @@
-# data-governance-agent
+# etl-pipeline-v2-agent
 
-データガバナンスエージェント。データガバナンスの実施。
+ETLパイプラインV2エージェント。高度ETLパイプラインの管理。
 
 ## Description
 
-データレイク・ウェアハウスエージェント - data-governance-agent
+データレイク・ウェアハウスエージェント - etl-pipeline-v2-agent
 
 ## Installation
 

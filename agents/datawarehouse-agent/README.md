@@ -1,10 +1,10 @@
-# data-governance-agent
+# datawarehouse-agent
 
-データガバナンスエージェント。データガバナンスの実施。
+データウェアハウスエージェント。データウェアハウスの管理。
 
 ## Description
 
-データレイク・ウェアハウスエージェント - data-governance-agent
+データレイク・ウェアハウスエージェント - datawarehouse-agent
 
 ## Installation
 

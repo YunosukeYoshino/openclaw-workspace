@@ -1,10 +1,10 @@
-# data-governance-agent
+# datalake-manager-agent
 
-データガバナンスエージェント。データガバナンスの実施。
+データレイクマネージャーエージェント。データレイクの管理・運用。
 
 ## Description
 
-データレイク・ウェアハウスエージェント - data-governance-agent
+データレイク・ウェアハウスエージェント - datalake-manager-agent
 
 ## Installation
 

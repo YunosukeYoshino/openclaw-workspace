@@ -24,7 +24,12 @@
     "shift-left-agent",
     "sast-agent",
     "dast-agent",
-    "sca-agent"
+    "sca-agent",
+    "datalake-manager-agent",
+    "datawarehouse-agent",
+    "etl-pipeline-v2-agent",
+    "data-catalog-agent",
+    "data-governance-agent"
   ],
   "total": 25
 }

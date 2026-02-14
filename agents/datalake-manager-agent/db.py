@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Database schema for data-governance-agent
+Database schema for datalake-manager-agent
 """
 
 import sqlite3
 from pathlib import Path
 
-def init_db(db_path: str = "agents/data-governance-agent/data.db"):
+def init_db(db_path: str = "agents/datalake-manager-agent/data.db"):
     """Initialize database"""
     Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 

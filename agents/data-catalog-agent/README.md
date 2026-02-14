@@ -1,10 +1,10 @@
-# data-governance-agent
+# data-catalog-agent
 
-データガバナンスエージェント。データガバナンスの実施。
+データカタログエージェント。データカタログの管理。
 
 ## Description
 
-データレイク・ウェアハウスエージェント - data-governance-agent
+データレイク・ウェアハウスエージェント - data-catalog-agent
 
 ## Installation
 

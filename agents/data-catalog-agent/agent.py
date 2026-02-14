@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 データレイク・ウェアハウスエージェント
-data-governance-agent - データガバナンスエージェント。データガバナンスの実施。
+data-catalog-agent - データカタログエージェント。データカタログの管理。
 """
 
 import sqlite3
@@ -10,10 +10,10 @@ import json
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class DataGovernance:
-    """データガバナンスエージェント。データガバナンスの実施。"""
+class DataCatalog:
+    """データカタログエージェント。データカタログの管理。"""
 
-    def __init__(self, db_path: str = "agents/data-governance-agent/data.db"):
+    def __init__(self, db_path: str = "agents/data-catalog-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -103,5 +103,5 @@ class DataGovernance:
 
 if __name__ == "__main__":
     import json
-    agent = DataGovernance()
+    agent = DataCatalog()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))
