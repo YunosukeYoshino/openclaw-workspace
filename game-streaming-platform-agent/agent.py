@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 """
-game-streaming-platform-agent
-
-ゲームストリーミングプラットフォームエージェント。配信プラットフォームの管理。
+game-streaming-platform-agent - ゲームストリーミングプラットフォームエージェント。ストリーミングプラットフォームの運営。
 """
 
 import sqlite3
-import asyncio
-from pathlib import Path
-from typing import Optional, List, Dict, Any
 import json
+from datetime import datetime
+from typing import Optional, Dict, List
+import logging
 
-class GameStreamingPlatformAgentAgent:
-    def __init__(self, db_path: str = None):
-        self.db_path = db_path or str(Path(__file__).parent / "game-streaming-platform-agent.db")
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class GameStreamingPlatformAgent:
+    """game-streaming-platform-agent"""
+
+    def __init__(self, db_path: str = "game-streaming-platform-agent.db"):
+        self.db_path = db_path
         self.init_database()
 
     def init_database(self):
@@ -21,127 +24,177 @@ class GameStreamingPlatformAgentAgent:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS tasks (
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS entries (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                description TEXT,
-                status TEXT DEFAULT 'pending',
-                priority INTEGER DEFAULT 0,
+                title TEXT,
+                content TEXT NOT NULL,
+                metadata TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        """)
-
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS events (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                event_type TEXT NOT NULL,
-                data TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
+        ''')
 
         conn.commit()
         conn.close()
 
-    def add_task(self, title: str, description: str = None, priority: int = 0) -> int:
-        """タスクを追加"""
+    def add_entry(self, title: Optional[str], content: str, metadata: Optional[Dict] = None) -> int:
+        """エントリー追加"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute(
-            'INSERT INTO tasks (title, description, priority) VALUES (?, ?, ?)',
-            (title, description, priority)
-        )
+        metadata_json = json.dumps(metadata) if metadata else None
 
-        task_id = cursor.lastrowid
+        cursor.execute('''
+            INSERT INTO entries (title, content, metadata)
+            VALUES (?, ?, ?)
+        ''', (title, content, metadata_json))
+
+        entry_id = cursor.lastrowid
         conn.commit()
         conn.close()
 
-        return task_id
+        logger.info(f"Entry added: ID={entry_id}")
+        return entry_id
 
-    def get_tasks(self, status: str = None) -> List[Dict[str, Any]]:
-        """タスクを取得"""
+    def get_entry(self, entry_id: int) -> Optional[Dict]:
+        """エントリー取得"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        if status:
-            cursor.execute('SELECT * FROM tasks WHERE status = ?', (status,))
-        else:
-            cursor.execute('SELECT * FROM tasks')
+        cursor.execute('''
+            SELECT id, title, content, metadata, created_at, updated_at
+            FROM entries WHERE id = ?
+        ''', (entry_id,))
+
+        row = cursor.fetchone()
+        conn.close()
+
+        if row:
+            return {
+                "id": row[0],
+                "title": row[1],
+                "content": row[2],
+                "metadata": json.loads(row[3]) if row[3] else None,
+                "created_at": row[4],
+                "updated_at": row[5]
+            }
+        return None
+
+    def list_entries(self, limit: int = 100, offset: int = 0) -> List[Dict]:
+        """エントリー一覧"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT id, title, content, metadata, created_at, updated_at
+            FROM entries ORDER BY created_at DESC
+            LIMIT ? OFFSET ?
+        ''', (limit, offset))
 
         rows = cursor.fetchall()
         conn.close()
 
-        columns = ['id', 'title', 'description', 'status', 'priority', 'created_at', 'updated_at']
-        return [dict(zip(columns, row)) for row in rows]
+        return [{
+            "id": row[0],
+            "title": row[1],
+            "content": row[2],
+            "metadata": json.loads(row[3]) if row[3] else None,
+            "created_at": row[4],
+            "updated_at": row[5]
+        } for row in rows]
 
-    def update_task_status(self, task_id: int, status: str) -> bool:
-        """タスクのステータスを更新"""
+    def update_entry(self, entry_id: int, title: Optional[str] = None,
+                    content: Optional[str] = None, metadata: Optional[Dict] = None) -> bool:
+        """エントリー更新"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute(
-            'UPDATE tasks SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-            (status, task_id)
-        )
+        updates = []
+        params = []
 
-        affected = cursor.rowcount
+        if title is not None:
+            updates.append("title = ?")
+            params.append(title)
+        if content is not None:
+            updates.append("content = ?")
+            params.append(content)
+        if metadata is not None:
+            updates.append("metadata = ?")
+            params.append(json.dumps(metadata))
+
+        if not updates:
+            conn.close()
+            return False
+
+        updates.append("updated_at = ?")
+        params.append(datetime.now().isoformat())
+        params.append(entry_id)
+
+        cursor.execute(f'''
+            UPDATE entries SET {', '.join(updates)}
+            WHERE id = ?
+        ''', params)
+
         conn.commit()
         conn.close()
 
-        return affected > 0
+        return cursor.rowcount > 0
 
-    def log_event(self, event_type: str, data: Dict[str, Any] = None) -> int:
-        """イベントをログ"""
+    def delete_entry(self, entry_id: int) -> bool:
+        """エントリー削除"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute(
-            'INSERT INTO events (event_type, data) VALUES (?, ?)',
-            (event_type, json.dumps(data) if data else None)
-        )
+        cursor.execute('DELETE FROM entries WHERE id = ?', (entry_id,))
 
-        event_id = cursor.lastrowid
         conn.commit()
         conn.close()
 
-        return event_id
+        return cursor.rowcount > 0
 
-    def get_stats(self) -> Dict[str, Any]:
-        """統計情報を取得"""
+    def search_entries(self, query: str, limit: int = 100) -> List[Dict]:
+        """エントリー検索"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute('SELECT COUNT(*) FROM tasks')
-        total_tasks = cursor.fetchone()[0]
+        cursor.execute('''
+            SELECT id, title, content, metadata, created_at, updated_at
+            FROM entries
+            WHERE title LIKE ? OR content LIKE ?
+            ORDER BY created_at DESC
+            LIMIT ?
+        ''', (f'%{query}%', f'%{query}%', limit))
 
-        cursor.execute('SELECT COUNT(*) FROM tasks WHERE status = "pending"')
-        pending_tasks = cursor.fetchone()[0]
-
-        cursor.execute('SELECT COUNT(*) FROM tasks WHERE status = "completed"')
-        completed_tasks = cursor.fetchone()[0]
-
-        cursor.execute('SELECT COUNT(*) FROM events')
-        total_events = cursor.fetchone()[0]
-
+        rows = cursor.fetchall()
         conn.close()
 
-        return {
-            'total_tasks': total_tasks,
-            'pending_tasks': pending_tasks,
-            'completed_tasks': completed_tasks,
-            'total_events': total_events
-        }
+        return [{
+            "id": row[0],
+            "title": row[1],
+            "content": row[2],
+            "metadata": json.loads(row[3]) if row[3] else None,
+            "created_at": row[4],
+            "updated_at": row[5]
+        } for row in rows]
 
-async def main():
-    agent = GameStreamingPlatformAgentAgent()
 
-    print("AGENT_NAME is running...")
+def main():
+    """メイン関数"""
+    agent = GameStreamingPlatformAgent()
 
-    stats = agent.get_stats()
-    print("Stats:", stats)
+    # サンプル実行
+    entry_id = agent.add_entry(
+        title="サンプル",
+        content="ゲームストリーミングプラットフォームエージェント。ストリーミングプラットフォームの運営。",
+        metadata={"version": "1.0"}
+    )
+
+    print(f"Created entry: {entry_id}")
+
+    entry = agent.get_entry(entry_id)
+    print(f"Entry: {entry}")
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

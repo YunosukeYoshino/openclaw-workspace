@@ -1,47 +1,75 @@
-# インシデントトリアージエージェント (incident-triage-agent)
+# incident-triage-agent
 
-インシデントの分類・優先度付け
+インシデントトリアージエージェント。インシデントの分類・優先順位。
 
-## 機能 / Features
+## 機能
 
-- インシデントの分類・優先度付けの管理・運用
-- Discordボットによる対話型インターフェース
-- SQLiteによるデータ永続化
+- エントリーの追加・取得・更新・削除
+- タグ付け・検索機能
+- Discord Bot連携
+- SQLiteデータベースによる永続化
 
-## インストール / Installation
+## インストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 設定 / Configuration
+## 使用方法
 
-環境変数 `DISCORD_TOKEN` を設定してください。
+### 基本使用
 
-Set the `DISCORD_TOKEN` environment variable.
+```python
+from agent import IncidentTriageAgent
+
+agent = IncidentTriageAgent()
+
+# エントリー追加
+entry_id = agent.add_entry(
+    title="タイトル",
+    content="コンテンツ",
+    metadata={"key": "value"}
+)
+
+# エントリー取得
+entry = agent.get_entry(entry_id)
+print(entry)
+```
+
+### Discord Bot
 
 ```bash
 export DISCORD_TOKEN="your_bot_token"
-```
-
-## 使い方 / Usage
-
-```bash
-python agent.py
-```
-
-または / Or:
-
-```bash
 python discord.py
 ```
 
-## データベース / Database
+コマンド:
+- `!status` - ステータス確認
+- `!add <content>` - エントリー追加
+- `!list` - エントリー一覧
+- `!search <query>` - エントリー検索
+- `!help` - ヘルプ表示
 
-データはSQLiteに保存されます。`incident-triage-agent.db`ファイルが作成されます。
+## データベーススキーマ
 
-Data is stored in SQLite. A `incident-triage-agent.db` file will be created.
+### entriesテーブル
+- `id` - エントリーID (主キー)
+- `title` - タイトル
+- `content` - コンテンツ
+- `metadata` - メタデータ (JSON)
+- `status` - ステータス
+- `created_at` - 作成日時
+- `updated_at` - 更新日時
 
-## ライセンス / License
+### tagsテーブル
+- `id` - タグID (主キー)
+- `name` - タグ名 (ユニーク)
+- `created_at` - 作成日時
+
+### entry_tagsテーブル
+- `entry_id` - エントリーID (外部キー)
+- `tag_id` - タグID (外部キー)
+
+## ライセンス
 
 MIT License

@@ -1,110 +1,75 @@
 # serverless-function-agent
 
-サーバーレスファンクションエージェント。Lambda等の管理。
+サーバーレスファンクションエージェント。サーバーレス関数の管理。
 
-Serverless function agent. Manage Lambda and other functions.
+## 機能
 
-## Description
+- エントリーの追加・取得・更新・削除
+- タグ付け・検索機能
+- Discord Bot連携
+- SQLiteデータベースによる永続化
 
-このエージェントは以下のスキルを持っています：
-- serverless
-- lambda
-- function
-
-カテゴリー: infrastructure
-
-## Installation
+## インストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+## 使用方法
 
-### Basic Usage
+### 基本使用
 
 ```python
-from agent import ServerlessFunctionAgentAgent
+from agent import ServerlessFunctionAgent
 
-agent = ServerlessFunctionAgentAgent()
+agent = ServerlessFunctionAgent()
 
-# タスクを追加
-task_id = agent.add_task(
-    title="Example task",
-    description="This is an example task",
-    priority=1
+# エントリー追加
+entry_id = agent.add_entry(
+    title="タイトル",
+    content="コンテンツ",
+    metadata={"key": "value"}
 )
 
-# タスクを取得
-tasks = agent.get_tasks()
-print(tasks)
-
-# 統計情報を取得
-stats = agent.get_stats()
-print(stats)
+# エントリー取得
+entry = agent.get_entry(entry_id)
+print(entry)
 ```
 
-### Discord Integration
+### Discord Bot
 
-```python
-from discord import DiscordBot
-
-bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
-await bot.connect()
-await bot.send_message("Hello from serverless-function-agent")
+```bash
+export DISCORD_TOKEN="your_bot_token"
+python discord.py
 ```
 
-## API Reference
+コマンド:
+- `!status` - ステータス確認
+- `!add <content>` - エントリー追加
+- `!list` - エントリー一覧
+- `!search <query>` - エントリー検索
+- `!help` - ヘルプ表示
 
-### Agent Methods
+## データベーススキーマ
 
-- `__init__(db_path: str = None)` - エージェントを初期化
-- `add_task(title: str, description: str = None, priority: int = 0)` - タスクを追加
-- `get_tasks(status: str = None)` - タスクを取得
-- `update_task_status(task_id: int, status: str)` - タスクのステータスを更新
-- `log_event(event_type: str, data: Dict[str, Any] = None)` - イベントをログ
-- `get_stats()` - 統計情報を取得
+### entriesテーブル
+- `id` - エントリーID (主キー)
+- `title` - タイトル
+- `content` - コンテンツ
+- `metadata` - メタデータ (JSON)
+- `status` - ステータス
+- `created_at` - 作成日時
+- `updated_at` - 更新日時
 
-### Database Methods
+### tagsテーブル
+- `id` - タグID (主キー)
+- `name` - タグ名 (ユニーク)
+- `created_at` - 作成日時
 
-- `__init__(db_path: str = None)` - データベース接続を初期化
-- `init_database()` - データベースを初期化
-- `execute_query(query: str, params: tuple = ())` - クエリを実行
-- `execute_update(query: str, params: tuple = ())` - 更新クエリを実行
+### entry_tagsテーブル
+- `entry_id` - エントリーID (外部キー)
+- `tag_id` - タグID (外部キー)
 
-### Discord Methods
-
-- `__init__(token: str = None, channel_id: str = None)` - ボットを初期化
-- `connect()` - Discordに接続
-- `send_message(message: str, embed: Dict[str, Any] = None)` - メッセージを送信
-- `send_embed(title: str, description: str, fields: List[Dict[str, Any]] = None)` - 埋め込みメッセージを送信
-- `notify_task_created(task_id: int, title: str)` - タスク作成を通知
-- `notify_task_completed(task_id: int, title: str)` - タスク完了を通知
-- `notify_error(error: str)` - エラーを通知
-
-## Database Schema
-
-### tasks table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary Key |
-| title | TEXT | Task title |
-| description | TEXT | Task description |
-| status | TEXT | Task status (pending/completed) |
-| priority | INTEGER | Task priority |
-| created_at | TIMESTAMP | Creation timestamp |
-| updated_at | TIMESTAMP | Update timestamp |
-
-### events table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary Key |
-| event_type | TEXT | Event type |
-| data | TEXT | Event data (JSON) |
-| created_at | TIMESTAMP | Creation timestamp |
-
-## License
+## ライセンス
 
 MIT License

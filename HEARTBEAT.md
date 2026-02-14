@@ -1,10 +1,12 @@
 # HEARTBEAT.md
 
 ## Checks (rotate through)
-
 - [x] memory/ の今日のファイルを確認・更新 (memory/YYYY-MM-DD.md)
 - [x] workspace の git status を確認。変更があれば commit & push
 - [x] MEMORY.md が最新か確認。古い情報があれば整理
+- [x] 次期プロジェクト案 V65 作成・実行・完了
+
+## 次期プロジェクト案 V66 (進行中)
 
 ## 次期プロジェクト案 V45 ✅ 完了 (2026-02-13 23:45 UTC)
 
