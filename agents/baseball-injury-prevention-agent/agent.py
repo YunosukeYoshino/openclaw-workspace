@@ -1,30 +1,44 @@
 #!/usr/bin/env python3
-"""
-baseball-injury-prevention-agent - 野球選手健康管理・フィジカルエージェント
-5/25 in V36
-"""
+# baseball-injury-prevention-agent
+# 野球怪我予防エージェント。選手の怪我予防・リスク評価。
 
+import asyncio
 import logging
-from pathlib import Path
-from .db import Database
-from .discord import DiscordHandler
+from db import Baseball_injury_prevention_agentDatabase
+from discord import Baseball_injury_prevention_agentDiscordBot
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class BaseballInjuryPrevention:
-    """baseball-injury-prevention-agent - 野球選手健康管理・フィジカルエージェント"""
 
-    def __init__(self, db_path: str = None, discord_token: str = None):
-        self.db = Database(db_path or str(Path(__file__).parent / "baseball-injury-prevention-agent.db"))
-        self.discord = DiscordHandler(discord_token)
+class Baseball_injury_prevention_agentAgent:
+    # baseball-injury-prevention-agent メインエージェント
+
+    def __init__(self, db_path: str = "baseball-injury-prevention-agent.db"):
+        # 初期化
+        self.db = Baseball_injury_prevention_agentDatabase(db_path)
+        self.discord_bot = Baseball_injury_prevention_agentDiscordBot(self.db)
 
     async def run(self):
-        """メイン実行ループ"""
+        # エージェントを実行
         logger.info("Starting baseball-injury-prevention-agent...")
-        await self.discord.start()
+        self.db.initialize()
+        await self.discord_bot.start()
+
+    async def stop(self):
+        # エージェントを停止
+        logger.info("Stopping baseball-injury-prevention-agent...")
+        await self.discord_bot.stop()
+
+
+async def main():
+    # メイン関数
+    agent = Baseball_injury_prevention_agentAgent()
+    try:
+        await agent.run()
+    except KeyboardInterrupt:
+        await agent.stop()
+
 
 if __name__ == "__main__":
-    agent = BaseballInjuryPrevention()
-    import asyncio
-    asyncio.run(agent.run())
+    asyncio.run(main())

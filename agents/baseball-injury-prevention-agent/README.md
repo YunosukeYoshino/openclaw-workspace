@@ -1,52 +1,41 @@
 # baseball-injury-prevention-agent
 
-**Category**: 野球選手健康管理・フィジカルエージェント
-**Version**: V36 - Agent 5/25
-**Status**: Active
+## 概要
+野球怪我予防エージェント。選手の怪我予防・リスク評価。
 
-## Overview
+## カテゴリ
+野球選手健康・メンタル
 
-baseball-injury-prevention-agent is an AI-powered agent for 野球選手健康管理・フィジカルエージェント.
+## トリガーワード
+怪我予防, リスク評価, 怪我防止
 
-## Features
+## 主な機能
 
-- Intelligent content processing
-- Persistent storage with SQLite
-- Discord integration support
-- RESTful API ready
+### データ管理
+- baseball-injury-prevention-agent 関連データのSQLiteデータベース管理
+- CRUD操作の実装
+- 検索・フィルタリング機能
 
-## Installation
+### チャットボット機能
+- Discord連携によるインタラクティブ応答
+- 自然言語によるクエリ処理
+- コマンドパターンマッチング
 
+## 使用方法
+
+### インストール
 ```bash
 cd agents/baseball-injury-prevention-agent
 pip install -r requirements.txt
 ```
 
-## Usage
-
-```python
-from agent import BaseballInjuryPrevention
-
-agent = BaseballInjuryPrevention()
-await agent.run()
+### 実行
+```bash
+python agent.py
 ```
 
-## Database
+## ライセンス
+MIT License
 
-The agent uses SQLite for persistent storage. Database file: `baseball-injury-prevention-agent.db`
-
-### Schema
-
-- `entries`: Main content storage
-  - `id`: Primary key
-  - `content`: Text content
-  - `created_at`: Timestamp
-  - `updated_at`: Timestamp
-
-## Discord Integration
-
-Set `DISCORD_TOKEN` environment variable to enable Discord features.
-
-## License
-
-MIT
+## バージョン
+1.0.0

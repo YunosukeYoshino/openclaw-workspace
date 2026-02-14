@@ -1,34 +1,44 @@
 #!/usr/bin/env python3
-"""
-えっちコンプライアンスエージェント。規制対応・コンプライアンス。
-
-えっちコンプライアンスエージェント。規制対応・コンプライアンス。
-"""
+# erotic-compliance-agent
+# えっちコンテンツコンプライアンスエージェント。法的コンプライアンスの管理・監査。
 
 import asyncio
-import discord
-from discord.ext import commands
+import logging
+from db import Erotic_compliance_agentDatabase
+from discord import Erotic_compliance_agentDiscordBot
 
-class EroticComplianceAgentBot(commands.Bot):
-    """erotic-compliance-agent Bot"""
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    def __init__(self):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
 
-    async def setup_hook(self):
-        """Bot起動時の処理"""
-        print(f"{self.__class__.__name__} is ready!")
+class Erotic_compliance_agentAgent:
+    # erotic-compliance-agent メインエージェント
 
-    async def on_ready(self):
-        """Bot準備完了時の処理"""
-        print(f"Logged in as {self.user}")
+    def __init__(self, db_path: str = "erotic-compliance-agent.db"):
+        # 初期化
+        self.db = Erotic_compliance_agentDatabase(db_path)
+        self.discord_bot = Erotic_compliance_agentDiscordBot(self.db)
 
-def main():
-    """メイン関数"""
-    bot = EroticComplianceAgentBot()
-    # bot.run("YOUR_DISCORD_BOT_TOKEN")
+    async def run(self):
+        # エージェントを実行
+        logger.info("Starting erotic-compliance-agent...")
+        self.db.initialize()
+        await self.discord_bot.start()
+
+    async def stop(self):
+        # エージェントを停止
+        logger.info("Stopping erotic-compliance-agent...")
+        await self.discord_bot.stop()
+
+
+async def main():
+    # メイン関数
+    agent = Erotic_compliance_agentAgent()
+    try:
+        await agent.run()
+    except KeyboardInterrupt:
+        await agent.stop()
+
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

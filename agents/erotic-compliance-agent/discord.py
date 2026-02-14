@@ -1,57 +1,89 @@
 #!/usr/bin/env python3
-"""
-erotic-compliance-agent - Discord Botモジュール
-"""
+# erotic-compliance-agent Discord ボット
 
+import logging
 import discord
 from discord.ext import commands
-from db import EroticComplianceAgentDB
 
-class EroticComplianceAgentDiscordBot(commands.Bot):
-    """erotic-compliance-agent Discord Bot"""
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    def __init__(self, db_path: str = "erotic-compliance-agent.db"):
+
+class Erotic_compliance_agentDiscordBot(commands.Bot):
+    # erotic-compliance-agent Discord ボット
+
+    def __init__(self, db):
+        # 初期化
         intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
-        self.db = EroticComplianceAgentDB(db_path)
+        super().__init__(command_prefix="!", intents=intents, help_command=None)
+        self.db = db
 
     async def setup_hook(self):
-        """Bot起動時の処理"""
-        print(f"{self.__class__.__name__} is ready!")
+        # ボット起動時の設定
+        await self.add_cog(Erotic_compliance_agentCommands(self))
 
     async def on_ready(self):
-        """Bot準備完了時の処理"""
-        print(f"Logged in as {self.user}")
+        # 準備完了時のイベント
+        logger.info("Logged in as %s", self.user.name)
 
-    @commands.command()
-    async def status(self, ctx: commands.Context):
-        """ステータス表示"""
-        entries = self.db.list_entries(limit=1)
-        await ctx.send(f"{self.__class__.__name__} is running! Total entries: {len(entries)}")
 
-    @commands.command()
-    async def add(self, ctx: commands.Context, title: str, *, content: str):
-        """エントリー追加"""
-        entry_id = self.db.add_entry(title, content)
-        await ctx.send(f"Added entry with ID: {entry_id}")
+class Erotic_compliance_agentCommands(commands.Cog):
+    # erotic-compliance-agent コマンド
 
-    @commands.command()
-    async def list(self, ctx: commands.Context, limit: int = 10):
-        """エントリー一覧"""
-        entries = self.db.list_entries(limit=limit)
-        if entries:
-            response = "**Entries:**\n"
+    def __init__(self, bot: commands.Bot):
+        # 初期化
+        self.bot = bot
+
+    @commands.command(name="erotic_compliance_agent")
+    async def erotic_compliance_agent(self, ctx: commands.Context, action: str = "list", *, args: str = ""):
+        # メインコマンド
+        if action == "list":
+            entries = self.bot.db.list_entries(limit=20)
+            if not entries:
+                await ctx.send("エントリーがありません")
+                return
+            embed = discord.Embed(title="Erotic Compliance Agent 一覧", color=discord.Color.blue())
+            for entry in entries[:10]:
+                title = entry.get("title") or "タイトルなし"
+                content = entry.get("content", "")[:50]
+                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
+            await ctx.send(embed=embed)
+        elif action == "add":
+            if not args:
+                await ctx.send(f"使用方法: !erotic_compliance_agent add <内容>")
+                return
+            entry_id = self.bot.db.add_entry(title=None, content=args, status="active", priority=0)
+            await ctx.send(f"エントリーを追加しました (ID: {entry_id})")
+        elif action == "search":
+            if not args:
+                await ctx.send(f"使用方法: !erotic_compliance_agent search <キーワード>")
+                return
+            entries = self.bot.db.search_entries(args, limit=10)
+            if not entries:
+                await ctx.send("一致するエントリーがありません")
+                return
+            embed = discord.Embed(title=f"「{args}」の検索結果", color=discord.Color.green())
             for entry in entries:
-                response += f"- #{entry['id']}: {entry['title']}\n"
-            await ctx.send(response)
+                title = entry.get("title") or "タイトルなし"
+                content = entry.get("content", "")[:50]
+                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
+            await ctx.send(embed=embed)
         else:
-            await ctx.send("No entries found.")
+            await ctx.send(f"不明なアクションです: {action}\\n使用可能なアクション: list, add, search")
 
-def main():
-    """メイン関数"""
-    bot = EroticComplianceAgentDiscordBot()
-    # bot.run("YOUR_DISCORD_BOT_TOKEN")
+    @commands.command(name="erotic_compliance_agent_status")
+    async def erotic_compliance_agent_status(self, ctx: commands.Context):
+        # ステータス確認
+        entries = self.bot.db.list_entries(status="active")
+        embed = discord.Embed(title="Erotic Compliance Agent ステータス", color=discord.Color.gold())
+        embed.add_field(name="アクティブエントリー", value=str(len(entries)))
+        await ctx.send(embed=embed)
 
-if __name__ == "__main__":
-    main()
+    @commands.command(name="erotic_compliance_agent_delete")
+    async def erotic_compliance_agent_delete(self, ctx: commands.Context, entry_id: int):
+        # エントリー削除
+        if self.bot.db.delete_entry(entry_id):
+            await ctx.send(f"エントリーを削除しました (ID: {entry_id})")
+        else:
+            await ctx.send(f"エントリーが見つかりません (ID: {entry_id})")

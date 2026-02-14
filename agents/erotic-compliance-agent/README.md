@@ -1,48 +1,41 @@
 # erotic-compliance-agent
 
-えっちコンプライアンスエージェント。規制対応・コンプライアンス。
+## 概要
+えっちコンテンツコンプライアンスエージェント。法的コンプライアンスの管理・監査。
 
-えっちコンプライアンスエージェント。規制対応・コンプライアンス。
+## カテゴリ
+えっちコンテンツ法務・コンプライアンス
 
-## Files
+## トリガーワード
+コンプライアンス, 法的対応, コンプライアンス管理
 
-- `agent.py` - メインエージェントコード
-- `db.py` - データベースモジュール
-- `discord.py` - Discord Botモジュール
-- `requirements.txt` - Python依存パッケージ
+## 主な機能
 
-## Installation
+### データ管理
+- erotic-compliance-agent 関連データのSQLiteデータベース管理
+- CRUD操作の実装
+- 検索・フィルタリング機能
 
+### チャットボット機能
+- Discord連携によるインタラクティブ応答
+- 自然言語によるクエリ処理
+- コマンドパターンマッチング
+
+## 使用方法
+
+### インストール
 ```bash
+cd agents/erotic-compliance-agent
 pip install -r requirements.txt
 ```
 
-## Usage
-
-### Agent
-
+### 実行
 ```bash
 python agent.py
 ```
 
-### Database
+## ライセンス
+MIT License
 
-```bash
-python db.py
-```
-
-### Discord Bot
-
-```bash
-python discord.py
-```
-
-## Commands
-
-- `!status` - Show bot status
-- `!add <title> <content>` - Add an entry
-- `!list [limit]` - List entries
-
-## Project
-
-えっちコンテンツコンプライアンス・法務エージェント
+## バージョン
+1.0.0

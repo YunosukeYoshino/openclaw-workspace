@@ -1,41 +1,41 @@
 # anomaly-detection-agent
 
-異常検知エージェント。異常行動の検知。
+## 概要
+異常検知エージェント。異常行動・パターンの検知・分析。
 
-## Description
+## カテゴリ
+セキュリティアナリティクス
 
-セキュリティアクセスログ・監視エージェント - anomaly-detection-agent
+## トリガーワード
+異常検知, 異常行動, パターン検知
 
-## Installation
+## 主な機能
 
+### データ管理
+- anomaly-detection-agent 関連データのSQLiteデータベース管理
+- CRUD操作の実装
+- 検索・フィルタリング機能
+
+### チャットボット機能
+- Discord連携によるインタラクティブ応答
+- 自然言語によるクエリ処理
+- コマンドパターンマッチング
+
+## 使用方法
+
+### インストール
 ```bash
+cd agents/anomaly-detection-agent
 pip install -r requirements.txt
-python3 db.py  # Initialize database
 ```
 
-## Usage
-
+### 実行
 ```bash
-python3 agent.py
+python agent.py
 ```
 
-## Files
+## ライセンス
+MIT License
 
-- `agent.py` - Main agent logic
-- `db.py` - Database initialization
-- `discord.py` - Discord integration
-- `requirements.txt` - Dependencies
-
-## API
-
-### Actions
-
-- `create` - Create new entry
-- `get` - Get entry by ID
-- `update` - Update entry
-- `delete` - Delete entry
-- `list` - List entries
-
-## Environment Variables
-
-- `DISCORD_TOKEN` - Discord bot token (optional)
+## バージョン
+1.0.0
