@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "baseball-physical-coach-v2-agent",
+    "baseball-mental-coach-v2-agent",
+    "baseball-nutrition-agent",
+    "baseball-recovery-agent",
+    "baseball-prevention-agent",
+    "game-skill-tracker-agent",
+    "game-leveling-agent",
+    "game-exp-optimizer-agent",
+    "game-achievement-hunter-agent",
+    "game-quest-agent",
+    "erotic-ai-video-cutter-agent",
+    "erotic-ai-video-merger-agent",
+    "erotic-ai-video-watermark-agent",
+    "erotic-ai-video-crop-agent",
+    "erotic-ai-video-speed-agent",
+    "cache-manager-agent",
+    "memory-pool-agent",
+    "cache-warmup-agent",
+    "cache-eviction-agent",
+    "distributed-cache-agent",
+    "siem-collector-agent",
+    "siem-analyzer-agent",
+    "soc-alert-agent",
+    "security-orchestrator-agent",
+    "threat-intel-agent"
+  ],
+  "total": 25
+}

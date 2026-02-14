@@ -1,67 +1,41 @@
-# Baseball Injury Prevention Agent
+# baseball-prevention-agent
 
-野球怪我予防エージェント
+野球予防エージェント。怪我の予防・健康管理。
 
-## 概要 / Overview
+## Description
 
-怪我予防のためのエクササイズ、トレーニングプログラムを提案するエージェント
+野球フィジカル・メンタルコーチングエージェント - baseball-prevention-agent
 
-## 機能 / Features
-
-- データ収集 / Data collection
-- 分析・解析 / Analysis
-- レポート生成 / Report generation
-- 通知機能 / Notification system
-
-## インストール / Installation
+## Installation
 
 ```bash
 pip install -r requirements.txt
+python3 db.py  # Initialize database
 ```
 
-## 使用方法 / Usage
-
-### エージェントの実行 / Running the Agent
+## Usage
 
 ```bash
-python agent.py
+python3 agent.py
 ```
 
-### データベースの初期化 / Database Initialization
+## Files
 
-```bash
-python db.py
-```
+- `agent.py` - Main agent logic
+- `db.py` - Database initialization
+- `discord.py` - Discord integration
+- `requirements.txt` - Dependencies
 
-### Discordボットの起動 / Starting Discord Bot
+## API
 
-```bash
-DISCORD_TOKEN=your_token_here python discord.py
-```
+### Actions
 
-## 設定 / Configuration
+- `create` - Create new entry
+- `get` - Get entry by ID
+- `update` - Update entry
+- `delete` - Delete entry
+- `list` - List entries
 
-環境変数を使用して設定をカスタマイズできます。
+## Environment Variables
 
-```bash
-export DISCORD_TOKEN=your_bot_token
-export LOG_LEVEL=INFO
-```
-
-## API / API Reference
-
-### add_entry(title, content, **kwargs)
-
-新しいエントリを追加します。
-
-### get_entry(entry_id)
-
-エントリIDでエントリを取得します。
-
-### list_entries(status=None, limit=100)
-
-エントリの一覧を取得します。
-
-## ライセンス / License
-
-MIT License
+- `DISCORD_TOKEN` - Discord bot token (optional)

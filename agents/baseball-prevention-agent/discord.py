@@ -1,101 +1,51 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Discord Integration for Baseball Injury Prevention Agent
-野球怪我予防エージェント
+Discord integration for baseball-prevention-agent
 """
 
 import discord
-from discord.ext import commands, tasks
-import logging
+from discord.ext import commands
+import sqlite3
+import json
 from typing import Optional
-from pathlib import Path
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("baseball-prevention-agent")
+class BaseballPreventionBot(commands.Bot):
+    """Discord bot for baseball-prevention-agent"""
 
-
-class BaseballPreventionAgentDiscord(commands.Bot):
-    """Discord bot for Baseball Injury Prevention Agent"""
-
-    def __init__(self, command_prefix: str = "!", intents: Optional[discord.Intents] = None):
-        intents = intents or discord.Intents.default()
+    def __init__(self, command_prefix: str = "!", db_path: str = "agents/baseball-prevention-agent/data.db"):
+        intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix=command_prefix, intents=intents)
-        self.started = False
-
-    async def setup_hook(self):
-        """Called when the bot is starting."""
-        await self.add_commands()
-        logger.info(f""野球怪我予防エージェント" Discord bot ready")
-
-    async def add_commands(self):
-        """Add bot commands."""
-
-        @self.command(name="status")
-        async def status(ctx):
-            """Show bot status."""
-            embed = discord.Embed(
-                title="Baseball Injury Prevention Agent Status",
-                color=discord.Color.blue()
-            )
-            embed.add_field(name="Status", value="✅ Online", inline=True)
-            embed.add_field(name="Version", value="1.0.0", inline=True)
-            await ctx.send(embed=embed)
-
-        @self.command(name="help")
-        async def help_cmd(ctx):
-            """Show help message."""
-            embed = discord.Embed(
-                title="Baseball Injury Prevention Agent - Help",
-                description="野球怪我予防エージェント",
-                color=discord.Color.green()
-            )
-            embed.add_field(name="Commands", value="`!status` - Show status\n`!help` - Show this help", inline=False)
-            await ctx.send(embed=embed)
+        self.db_path = db_path
 
     async def on_ready(self):
-        """Called when the bot is ready."""
-        logger.info(f""野球怪我予防エージェント" bot logged in as {self.user}")
-        self.started = True
+        print(f'Logged in as {self.user}')
 
-    async def on_message(self, message):
-        """Called when a message is received."""
-        if message.author == self.user:
-            return
-        await self.process_commands(message)
+    async def create_entry(self, ctx, title: str, content: str):
+        """Create entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+            cursor.execute(sql, (title, content, json.dumps(dict(), ensure_ascii=False), "active"))
+            conn.commit()
+            await ctx.send(f"Created: {title} (ID: {cursor.lastrowid})")
 
-    async def send_notification(self, channel_id: int, content: str, **kwargs):
-        """Send notification to a channel."""
-        try:
-            channel = self.get_channel(channel_id)
-            if channel:
-                await channel.send(content, **kwargs)
-        except Exception as e:
-            logger.error(f"Failed to send notification: {e}")
-
-    async def send_embed(self, channel_id: int, title: str, description: str, **kwargs):
-        """Send an embed to a channel."""
-        try:
-            channel = self.get_channel(channel_id)
-            if channel:
-                embed = discord.Embed(title=title, description=description, **kwargs)
-                await channel.send(embed=embed)
-        except Exception as e:
-            logger.error(f"Failed to send embed: {e}")
-
-
-async def run_bot(token: str):
-    """Run the Discord bot."""
-    bot = BaseballPreventionAgentDiscord()
-    await bot.start(token)
-
+    async def list_entries(self, ctx, limit: int = 10):
+        """List entries"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "SELECT id, title FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
+            cursor.execute(sql, ("active", limit))
+            rows = cursor.fetchall()
+            if rows:
+                msg = "\n".join([f"{r[0]}: {r[1]}" for r in rows])
+                await ctx.send(f"\n{msg}")
+            else:
+                await ctx.send("No entries found.")
 
 if __name__ == "__main__":
     import os
-    token = os.getenv("DISCORD_TOKEN", "")
-    if not token:
-        logger.warning("DISCORD_TOKEN not set, running without Discord")
-    else:
-        import asyncio
-        asyncio.run(run_bot(token))
+    bot = BaseballPreventionBot()
+    token = os.getenv("DISCORD_TOKEN")
+    if token:
+        bot.run(token)

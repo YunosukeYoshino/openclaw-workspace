@@ -1,30 +1,51 @@
 #!/usr/bin/env python3
-"""Discord integration for baseball-nutrition-agent"""
+"""
+Discord integration for baseball-nutrition-agent
+"""
 
-import logging
-import os
+import discord
+from discord.ext import commands
+import sqlite3
+import json
 from typing import Optional
 
-logger = logging.getLogger(__name__)
+class BaseballNutritionBot(commands.Bot):
+    """Discord bot for baseball-nutrition-agent"""
 
-class DiscordHandler:
-    """Discord bot handler"""
+    def __init__(self, command_prefix: str = "!", db_path: str = "agents/baseball-nutrition-agent/data.db"):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix=command_prefix, intents=intents)
+        self.db_path = db_path
 
-    def __init__(self, token: Optional[str] = None):
-        self.token = token or os.getenv("DISCORD_TOKEN")
-        self.enabled = bool(self.token)
+    async def on_ready(self):
+        print(f'Logged in as {self.user}')
 
-    async def start(self):
-        """Start Discord bot"""
-        if self.enabled:
-            logger.info("Discord integration is configured")
-        else:
-            logger.info("Discord integration not configured (no token)")
+    async def create_entry(self, ctx, title: str, content: str):
+        """Create entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+            cursor.execute(sql, (title, content, json.dumps(dict(), ensure_ascii=False), "active"))
+            conn.commit()
+            await ctx.send(f"Created: {title} (ID: {cursor.lastrowid})")
 
-    async def send_message(self, channel_id: str, message: str):
-        """Send message to Discord channel"""
-        if not self.enabled:
-            logger.warning("Discord not enabled")
-            return
-        # Implementation would use discord.py library
-        logger.info(f"Would send to {channel_id}: {message[:50]}...")
+    async def list_entries(self, ctx, limit: int = 10):
+        """List entries"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "SELECT id, title FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
+            cursor.execute(sql, ("active", limit))
+            rows = cursor.fetchall()
+            if rows:
+                msg = "\n".join([f"{r[0]}: {r[1]}" for r in rows])
+                await ctx.send(f"\n{msg}")
+            else:
+                await ctx.send("No entries found.")
+
+if __name__ == "__main__":
+    import os
+    bot = BaseballNutritionBot()
+    token = os.getenv("DISCORD_TOKEN")
+    if token:
+        bot.run(token)
