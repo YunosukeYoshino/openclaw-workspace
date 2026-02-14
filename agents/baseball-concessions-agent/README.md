@@ -1,10 +1,10 @@
-# 野球施設管理エージェント
+# 野球コンセッションエージェント
 
-野球球場の施設管理エージェント
+野球球場の売店・飲食管理エージェント
 
 ## Overview
 
-This is the baseball-facilities-agent agent.
+This is the baseball-concessions-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import BaseballFacilitiesAgentAgent
-agent = BaseballFacilitiesAgentAgent()
+from agent import BaseballConcessionsAgentAgent
+agent = BaseballConcessionsAgentAgent()
 result = await agent.process(data)
 ```
 

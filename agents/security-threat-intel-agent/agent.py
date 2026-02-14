@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-セキュリティ脅威インテリジェンスエージェント - 脅威インテリジェンスの収集・分析エージェント
+セキュリティ脅威インテリジェンスエージェント - セキュリティ脅威インテリジェンスの収集・分析エージェント
 """
 
 import logging
@@ -17,7 +17,7 @@ class SecurityThreatIntelAgentAgent:
     def __init__(self):
         self.name = "security-threat-intel-agent"
         self.version = "1.0.0"
-        self.description = "脅威インテリジェンスの収集・分析エージェント"
+        self.description = "セキュリティ脅威インテリジェンスの収集・分析エージェント"
 
     async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """Process input data"""

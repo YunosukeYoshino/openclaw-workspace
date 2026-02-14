@@ -1,10 +1,10 @@
-# 野球施設管理エージェント
+# セキュリティ脅威フィードエージェント
 
-野球球場の施設管理エージェント
+脅威フィードの管理・統合エージェント
 
 ## Overview
 
-This is the baseball-facilities-agent agent.
+This is the security-threat-feed-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import BaseballFacilitiesAgentAgent
-agent = BaseballFacilitiesAgentAgent()
+from agent import SecurityThreatFeedAgentAgent
+agent = SecurityThreatFeedAgentAgent()
 result = await agent.process(data)
 ```
 

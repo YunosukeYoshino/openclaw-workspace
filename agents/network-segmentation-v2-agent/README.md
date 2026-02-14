@@ -1,10 +1,10 @@
-# 野球施設管理エージェント
+# ネットワークセグメンテーションV2エージェント
 
-野球球場の施設管理エージェント
+ネットワークセグメンテーションの管理V2エージェント
 
 ## Overview
 
-This is the baseball-facilities-agent agent.
+This is the network-segmentation-v2-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import BaseballFacilitiesAgentAgent
-agent = BaseballFacilitiesAgentAgent()
+from agent import NetworkSegmentationV2AgentAgent
+agent = NetworkSegmentationV2AgentAgent()
 result = await agent.process(data)
 ```
 

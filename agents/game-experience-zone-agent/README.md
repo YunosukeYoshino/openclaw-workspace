@@ -1,10 +1,10 @@
-# 野球施設管理エージェント
+# ゲーム体験ゾーンエージェント
 
-野球球場の施設管理エージェント
+ゲーム体験エリアの管理エージェント
 
 ## Overview
 
-This is the baseball-facilities-agent agent.
+This is the game-experience-zone-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import BaseballFacilitiesAgentAgent
-agent = BaseballFacilitiesAgentAgent()
+from agent import GameExperienceZoneAgentAgent
+agent = GameExperienceZoneAgentAgent()
 result = await agent.process(data)
 ```
 

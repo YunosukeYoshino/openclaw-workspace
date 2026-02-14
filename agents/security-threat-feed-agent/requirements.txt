@@ -1,4 +1,4 @@
-# Requirements for 野球施設管理エージェント
+# Requirements for セキュリティ脅威フィードエージェント
 
 # Discord.py
 discord.py>=2.3.2

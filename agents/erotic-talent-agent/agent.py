@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-野球施設管理エージェント - 野球球場の施設管理エージェント
+えっちタレント管理エージェント - えっちタレントの管理・ブッキングエージェント
 """
 
 import logging
@@ -11,13 +11,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class BaseballFacilitiesAgentAgent:
-    """野球施設管理エージェント"""
+class EroticTalentAgentAgent:
+    """えっちタレント管理エージェント"""
 
     def __init__(self):
-        self.name = "baseball-facilities-agent"
+        self.name = "erotic-talent-agent"
         self.version = "1.0.0"
-        self.description = "野球球場の施設管理エージェント"
+        self.description = "えっちタレントの管理・ブッキングエージェント"
 
     async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """Process input data"""
@@ -49,7 +49,7 @@ class BaseballFacilitiesAgentAgent:
 
 async def main():
     """Main function"""
-    agent = BaseballFacilitiesAgentAgent()
+    agent = EroticTalentAgentAgent()
     logger.info(f"{agent.name} v{agent.version} initialized")
 
 

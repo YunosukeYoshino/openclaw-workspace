@@ -1,10 +1,10 @@
-# 野球施設管理エージェント
+# ゲームイベントコーディネーターエージェント
 
-野球球場の施設管理エージェント
+ゲームイベントの調整・管理エージェント
 
 ## Overview
 
-This is the baseball-facilities-agent agent.
+This is the game-event-coordinator-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import BaseballFacilitiesAgentAgent
-agent = BaseballFacilitiesAgentAgent()
+from agent import GameEventCoordinatorAgentAgent
+agent = GameEventCoordinatorAgentAgent()
 result = await agent.process(data)
 ```
 

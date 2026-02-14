@@ -1,10 +1,10 @@
-# 野球施設管理エージェント
+# えっちロケーションブッキングエージェント
 
-野球球場の施設管理エージェント
+えっちロケーションのブッキング管理エージェント
 
 ## Overview
 
-This is the baseball-facilities-agent agent.
+This is the erotic-location-booking-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import BaseballFacilitiesAgentAgent
-agent = BaseballFacilitiesAgentAgent()
+from agent import EroticLocationBookingAgentAgent
+agent = EroticLocationBookingAgentAgent()
 result = await agent.process(data)
 ```
 

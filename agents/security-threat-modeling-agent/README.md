@@ -1,10 +1,10 @@
-# 野球施設管理エージェント
+# セキュリティ脅威モデリングエージェント
 
-野球球場の施設管理エージェント
+脅威モデリングの自動化エージェント
 
 ## Overview
 
-This is the baseball-facilities-agent agent.
+This is the security-threat-modeling-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import BaseballFacilitiesAgentAgent
-agent = BaseballFacilitiesAgentAgent()
+from agent import SecurityThreatModelingAgentAgent
+agent = SecurityThreatModelingAgentAgent()
 result = await agent.process(data)
 ```
 

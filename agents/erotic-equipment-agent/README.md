@@ -1,10 +1,10 @@
-# 野球施設管理エージェント
+# えっち機材管理エージェント
 
-野球球場の施設管理エージェント
+えっちコンテンツ制作機材の管理エージェント
 
 ## Overview
 
-This is the baseball-facilities-agent agent.
+This is the erotic-equipment-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import BaseballFacilitiesAgentAgent
-agent = BaseballFacilitiesAgentAgent()
+from agent import EroticEquipmentAgentAgent
+agent = EroticEquipmentAgentAgent()
 result = await agent.process(data)
 ```
 

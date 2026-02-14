@@ -1,10 +1,10 @@
-# 野球施設管理エージェント
+# 野球座席管理エージェント
 
-野球球場の施設管理エージェント
+野球球場の座席管理エージェント
 
 ## Overview
 
-This is the baseball-facilities-agent agent.
+This is the baseball-seating-management-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import BaseballFacilitiesAgentAgent
-agent = BaseballFacilitiesAgentAgent()
+from agent import BaseballSeatingManagementAgentAgent
+agent = BaseballSeatingManagementAgentAgent()
 result = await agent.process(data)
 ```
 

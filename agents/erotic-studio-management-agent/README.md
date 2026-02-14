@@ -1,10 +1,10 @@
-# 野球施設管理エージェント
+# えっちスタジオ管理エージェント
 
-野球球場の施設管理エージェント
+えっちスタジオの運用管理エージェント
 
 ## Overview
 
-This is the baseball-facilities-agent agent.
+This is the erotic-studio-management-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import BaseballFacilitiesAgentAgent
-agent = BaseballFacilitiesAgentAgent()
+from agent import EroticStudioManagementAgentAgent
+agent = EroticStudioManagementAgentAgent()
 result = await agent.process(data)
 ```
 

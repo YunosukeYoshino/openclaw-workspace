@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Discord integration for 野球施設管理エージェント
+Discord integration for ネットワーク仮想化エージェント
 """
 
 import logging
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class DiscordBot(commands.Bot):
-    """Discord bot for 野球施設管理エージェント"""
+    """Discord bot for ネットワーク仮想化エージェント"""
 
     def __init__(self, token: Optional[str] = None):
         intents = discord.Intents.default()

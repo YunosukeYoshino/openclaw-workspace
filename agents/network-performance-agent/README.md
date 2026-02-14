@@ -1,10 +1,10 @@
-# 野球施設管理エージェント
+# ネットワークパフォーマンスエージェント
 
-野球球場の施設管理エージェント
+ネットワークパフォーマンスの最適化エージェント
 
 ## Overview
 
-This is the baseball-facilities-agent agent.
+This is the network-performance-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import BaseballFacilitiesAgentAgent
-agent = BaseballFacilitiesAgentAgent()
+from agent import NetworkPerformanceAgentAgent
+agent = NetworkPerformanceAgentAgent()
 result = await agent.process(data)
 ```
 

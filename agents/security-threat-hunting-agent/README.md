@@ -1,10 +1,10 @@
-# 野球施設管理エージェント
+# セキュリティ脅威ハンティングエージェント
 
-野球球場の施設管理エージェント
+能動的な脅威ハンティング・調査エージェント
 
 ## Overview
 
-This is the baseball-facilities-agent agent.
+This is the security-threat-hunting-agent agent.
 
 ## Features
 
@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ### Agent
 
 ```python
-from agent import BaseballFacilitiesAgentAgent
-agent = BaseballFacilitiesAgentAgent()
+from agent import SecurityThreatHuntingAgentAgent
+agent = SecurityThreatHuntingAgentAgent()
 result = await agent.process(data)
 ```
 
