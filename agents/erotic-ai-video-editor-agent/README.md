@@ -1,41 +1,43 @@
-# erotic-ai-video-editor-agent
+# えっちAI動画編集エージェント
 
-えっちAI動画編集エージェント。AIによる動画の編集・加工。
+AIによるえっちコンテンツ動画の編集を管理するエージェント
 
-## Description
+An agent that manages AI editing of erotic content videos. Provides features such as cut editing, transitions, and effect addition.
 
-えっちコンテンツAI動画生成・編集エージェント - erotic-ai-video-editor-agent
+## 機能
 
-## Installation
+- エントリーの追加・取得・更新・削除
+- タグによる分類・検索
+- 統計情報の表示
+- Discordボット連携
+
+## インストール
 
 ```bash
+cd erotic-ai-video-editor-agent
 pip install -r requirements.txt
-python3 db.py  # Initialize database
 ```
 
-## Usage
+## 使用方法
+
+### Python API
+
+```python
+from agent import EroticAiVideoEditorAgent
+
+agent = EroticAiVideoEditorAgent()
+entry_id = agent.add_entry("サンプル", "これはサンプルエントリーです", tags=["sample", "test"])
+print(f"作成されたエントリーID: {entry_id}")
+agent.close()
+```
+
+### Discord Bot
 
 ```bash
-python3 agent.py
+export DISCORD_BOT_TOKEN="your_bot_token_here"
+python discord.py
 ```
 
-## Files
+## ライセンス
 
-- `agent.py` - Main agent logic
-- `db.py` - Database initialization
-- `discord.py` - Discord integration
-- `requirements.txt` - Dependencies
-
-## API
-
-### Actions
-
-- `create` - Create new entry
-- `get` - Get entry by ID
-- `update` - Update entry
-- `delete` - Delete entry
-- `list` - List entries
-
-## Environment Variables
-
-- `DISCORD_TOKEN` - Discord bot token (optional)
+MIT License
