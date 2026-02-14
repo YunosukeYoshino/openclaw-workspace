@@ -1,109 +1,52 @@
-#!/usr/bin/env python3
-"""
-ゲーム配信分析エージェント
-ゲーム配信のアナリティクス分析
-"""
+"""ゲーム配信分析エージェント。配信データの分析・統計"""
 
-import asyncio
-import os
-from typing import Optional, Dict, Any, List
-from datetime import datetime
-import json
+import discord
+from db import AgentDatabase
 
-class GameStreamAnalyticsAgent:
-    """ゲーム配信分析エージェント"""
+class GameStreamAnalyticsAgent(discord.Client):
+    """ゲーム配信分析エージェント。配信データの分析・統計"""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
-        self.config = config or {}
-        self.name = "game-stream-analytics-agent"
-        self.title = "ゲーム配信分析エージェント"
-        self.description = "ゲーム配信のアナリティクス分析"
-        self.category = "gaming"
-        self.language = "Japanese"
-        self.state = "idle"
-        self.created_at = datetime.now().isoformat()
-        self.tasks: List[Dict[str, Any]] = []
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.db = AgentDatabase(f"game-stream-analytics-agent.db")
 
-    async def initialize(self) -> bool:
-        """エージェントの初期化"""
-        try:
-            self.state = "initializing"
-            print(f"Initializing {self.title}...")
-            await asyncio.sleep(0.5)
-            self.state = "ready"
-            return True
-        except Exception as e:
-            print(f"Error initializing: {e}")
-            self.state = "error"
-            return False
+    async def on_ready(self):
+        print(f"{self.user} is ready!")
 
-    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        """データ処理"""
-        if self.state != "ready":
-            return {"error": "Agent not ready", "state": self.state}
+    async def on_message(self, message):
+        if message.author == self.user:
+            return
 
-        self.state = "processing"
-        try:
-            result = {
-                "success": True,
-                "data": input_data,
-                "processed_at": datetime.now().isoformat(),
-                "agent": self.name
-            }
-            self.state = "ready"
-            return result
-        except Exception as e:
-            self.state = "error"
-            return {"error": str(e), "state": self.state}
+        if message.content.startswith("!"):
+            await self.handle_command(message)
 
-    async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """タスク実行"""
-        task_id = task.get("id", f"task_{len(self.tasks)}")
-        self.tasks.append({"id": task_id, "task": task, "status": "pending"})
+    async def handle_command(self, message):
+        command = message.content[1:].split()[0]
 
-        try:
-            result = await self.process(task.get("data", {}))
-            self.tasks[-1]["status"] = "completed"
-            return result
-        except Exception as e:
-            self.tasks[-1]["status"] = "failed"
-            return {"error": str(e), "task_id": task_id}
+        if command == "help":
+            await self.show_help(message)
+        elif command == "status":
+            await self.show_status(message)
+        elif command == "list":
+            await self.list_items(message)
+        else:
+            await message.channel.send(f"Unknown command: {command}")
 
-    async def get_status(self) -> Dict[str, Any]:
-        """ステータス取得"""
-        return {
-            "name": self.name,
-            "title": self.title,
-            "state": self.state,
-            "tasks_completed": sum(1 for t in self.tasks if t["status"] == "completed"),
-            "tasks_pending": sum(1 for t in self.tasks if t["status"] == "pending"),
-            "created_at": self.created_at
-        }
+    async def show_help(self, message):
+        help_text = f"""
+        game-stream-analytics-agent - ゲーム配信分析エージェント。配信データの分析・統計
 
-    async def cleanup(self) -> None:
-        """クリーンアップ"""
-        self.state = "stopped"
-        print(f"{self.title} stopped.")
+        Commands:
+        !help - Show this help
+        !status - Show status
+        !list - List items
+        """
+        await message.channel.send(help_text)
 
-async def main():
-    """メイン処理"""
-    agent = GameStreamAnalyticsAgent()
-    await agent.initialize()
+    async def show_status(self, message):
+        status = self.db.get_status()
+        await message.channel.send(f"Status: {status}")
 
-    sample_task = {
-        "id": "sample_001",
-        "data": {
-            "message": "Sample task for ゲーム配信分析エージェント"
-        }
-    }
-
-    result = await agent.execute_task(sample_task)
-    print(f"Result: {json.dumps(result, ensure_ascii=False, indent=2)}")
-
-    status = await agent.get_status()
-    print(f"Status: {json.dumps(status, ensure_ascii=False, indent=2)}")
-
-    await agent.cleanup()
-
-if __name__ == "__main__":
-    asyncio.run(main())
+    async def list_items(self, message):
+        items = self.db.list_items()
+        await message.channel.send(f"Items: {items}")

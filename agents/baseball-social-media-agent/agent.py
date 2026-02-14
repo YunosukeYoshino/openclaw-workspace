@@ -1,30 +1,52 @@
-#!/usr/bin/env python3
-"""
-baseball-social-media-agent - 野球メディア・コンテンツ制作エージェント
-5/25 in V33
-"""
+"""野球ソーシャルメディアエージェント。SNS運営・コンテンツ管理"""
 
-import logging
-from pathlib import Path
-from .db import Database
-from .discord import DiscordHandler
+import discord
+from db import AgentDatabase
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+class BaseballSocialMediaAgent(discord.Client):
+    """野球ソーシャルメディアエージェント。SNS運営・コンテンツ管理"""
 
-class BaseballSocialMedia:
-    """baseball-social-media-agent - 野球メディア・コンテンツ制作エージェント"""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.db = AgentDatabase(f"baseball-social-media-agent.db")
 
-    def __init__(self, db_path: str = None, discord_token: str = None):
-        self.db = Database(db_path or str(Path(__file__).parent / "baseball-social-media-agent.db"))
-        self.discord = DiscordHandler(discord_token)
+    async def on_ready(self):
+        print(f"{self.user} is ready!")
 
-    async def run(self):
-        """メイン実行ループ"""
-        logger.info("Starting baseball-social-media-agent...")
-        await self.discord.start()
+    async def on_message(self, message):
+        if message.author == self.user:
+            return
 
-if __name__ == "__main__":
-    agent = BaseballSocialMedia()
-    import asyncio
-    asyncio.run(agent.run())
+        if message.content.startswith("!"):
+            await self.handle_command(message)
+
+    async def handle_command(self, message):
+        command = message.content[1:].split()[0]
+
+        if command == "help":
+            await self.show_help(message)
+        elif command == "status":
+            await self.show_status(message)
+        elif command == "list":
+            await self.list_items(message)
+        else:
+            await message.channel.send(f"Unknown command: {command}")
+
+    async def show_help(self, message):
+        help_text = f"""
+        baseball-social-media-agent - 野球ソーシャルメディアエージェント。SNS運営・コンテンツ管理
+
+        Commands:
+        !help - Show this help
+        !status - Show status
+        !list - List items
+        """
+        await message.channel.send(help_text)
+
+    async def show_status(self, message):
+        status = self.db.get_status()
+        await message.channel.send(f"Status: {status}")
+
+    async def list_items(self, message):
+        items = self.db.list_items()
+        await message.channel.send(f"Items: {items}")

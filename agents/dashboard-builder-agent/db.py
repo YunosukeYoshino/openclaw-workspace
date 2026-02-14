@@ -1,134 +1,157 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-dashboard-builder-agent - Database Module
-SQLite database management for dashboard-builder-agent
-"""
+"""Database module for agent"""
 
 import sqlite3
-import json
 from datetime import datetime
-from typing import Optional, List, Dict, Any
-from pathlib import Path
+from typing import List, Optional, Dict, Any
 
-class DashboardBuilderAgentDB:
-    """Database manager for dashboard-builder-agent"""
+class AgentDatabase:
+    """Agent database management"""
 
-    def __init__(self, db_path: str = None):
-        if db_path is None:
-            db_path = str(Path(__file__).parent / "dashboard-builder-agent.db")
-
+    def __init__(self, db_path: str = "agent.db"):
         self.db_path = db_path
-        self.conn = None
-        self.connect()
-        self.init_tables()
+        self.init_db()
 
-    def connect(self):
-        self.conn = sqlite3.connect(self.db_path)
-        self.conn.row_factory = sqlite3.Row
+    def init_db(self):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
 
-    def init_tables(self):
-        cursor = self.conn.cursor()
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS data (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                type TEXT,
-                content TEXT,
-                metadata TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
+        CREATE TABLE IF NOT EXISTS items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            content TEXT,
+            status TEXT DEFAULT 'active',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
         """)
 
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS tasks (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                task_type TEXT,
-                status TEXT DEFAULT "pending",
-                result TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                completed_at TIMESTAMP
-            )
+        CREATE TABLE IF NOT EXISTS status_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            status TEXT NOT NULL,
+            message TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
         """)
 
+        conn.commit()
+        conn.close()
+
+    def add_item(self, name: str, content: str = "", status: str = "active") -> int:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS logs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                level TEXT,
-                message TEXT,
-                metadata TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
+        INSERT INTO items (name, content, status)
+        VALUES (?, ?, ?)
+        """, (name, content, status))
 
-        self.conn.commit()
+        item_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
 
-    def insert_data(self, data_type: str, content: str, metadata: Dict = None) -> int:
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            INSERT INTO data (type, content, metadata)
-            VALUES (?, ?, ?)
-        """, (data_type, content, json.dumps(metadata or dict())))
-        self.conn.commit()
-        return cursor.lastrowid
+        return item_id
 
-    def query_data(self, data_type: str = None, limit: int = 100) -> List[Dict]:
-        cursor = self.conn.cursor()
-        if data_type:
-            cursor.execute('SELECT * FROM data WHERE type = ? ORDER BY created_at DESC LIMIT ?',
-                         (data_type, limit))
+    def get_item(self, item_id: int) -> Optional[Dict[str, Any]]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM items WHERE id = ?", (item_id,))
+        row = cursor.fetchone()
+
+        conn.close()
+
+        if row:
+            return {
+                "id": row[0],
+                "name": row[1],
+                "content": row[2],
+                "status": row[3],
+                "created_at": row[4],
+                "updated_at": row[5]
+            }
+        return None
+
+    def update_item(self, item_id: int, **kwargs) -> bool:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        update_fields = []
+        values = []
+
+        for key, value in kwargs.items():
+            if key in ["name", "content", "status"]:
+                update_fields.append(f"{{key}} = ?")
+                values.append(value)
+
+        if not update_fields:
+            conn.close()
+            return False
+
+        values.append(item_id)
+        query = f"UPDATE items SET {{', '.join(update_fields)}}, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+
+        cursor.execute(query, values)
+        conn.commit()
+        conn.close()
+
+        return True
+
+    def list_items(self, status: Optional[str] = None) -> List[Dict[str, Any]]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        if status:
+            cursor.execute("SELECT * FROM items WHERE status = ?", (status,))
         else:
-            cursor.execute('SELECT * FROM data ORDER BY created_at DESC LIMIT ?', (limit,))
-        return [dict(row) for row in cursor.fetchall()]
+            cursor.execute("SELECT * FROM items")
 
-    def create_task(self, task_type: str, metadata: Dict = None) -> int:
-        cursor = self.conn.cursor()
+        rows = cursor.fetchall()
+        conn.close()
+
+        return [
+            {
+                "id": row[0],
+                "name": row[1],
+                "content": row[2],
+                "status": row[3],
+                "created_at": row[4],
+                "updated_at": row[5]
+            }
+            for row in rows
+        ]
+
+    def set_status(self, status: str, message: str = ""):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
         cursor.execute("""
-            INSERT INTO tasks (task_type, status)
-            VALUES (?, "pending")
-        """, (task_type,))
-        self.conn.commit()
-        return cursor.lastrowid
+        INSERT INTO status_log (status, message)
+        VALUES (?, ?)
+        """, (status, message))
 
-    def update_task(self, task_id: int, status: str, result: Dict = None) -> bool:
-        cursor = self.conn.cursor()
+        conn.commit()
+        conn.close()
+
+    def get_status(self) -> Dict[str, Any]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
         cursor.execute("""
-            UPDATE tasks
-            SET status = ?, result = ?, completed_at = CURRENT_TIMESTAMP
-            WHERE id = ?
-        """, (status, json.dumps(result or dict()), task_id))
-        self.conn.commit()
-        return cursor.rowcount > 0
+        SELECT * FROM status_log
+        ORDER BY created_at DESC
+        LIMIT 1
+        """)
 
-    def log(self, level: str, message: str, metadata: Dict = None):
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            INSERT INTO logs (level, message, metadata)
-            VALUES (?, ?, ?)
-        """, (level, message, json.dumps(metadata or dict())))
-        self.conn.commit()
+        row = cursor.fetchone()
+        conn.close()
 
-    def get_stats(self) -> Dict[str, Any]:
-        cursor = self.conn.cursor()
-        cursor.execute('SELECT COUNT(*) as count FROM data')
-        data_count = cursor.fetchone()["count"]
-        cursor.execute('SELECT COUNT(*) as count FROM tasks WHERE status = "pending"')
-        pending_tasks = cursor.fetchone()["count"]
-        cursor.execute('SELECT COUNT(*) as count FROM tasks WHERE status = "completed"')
-        completed_tasks = cursor.fetchone()["count"]
-        return {
-            "data_count": data_count,
-            "pending_tasks": pending_tasks,
-            "completed_tasks": completed_tasks,
-            "total_tasks": pending_tasks + completed_tasks
-        }
-
-    def close(self):
-        if self.conn:
-            self.conn.close()
-
-if __name__ == "__main__":
-    db = DashboardBuilderAgentDB()
-    print("Database for dashboard-builder-agent initialized at " + str(db.db_path))
-    print("Stats: " + str(db.get_stats()))
-    db.close()
+        if row:
+            return {
+                "id": row[0],
+                "status": row[1],
+                "message": row[2],
+                "created_at": row[3]
+            }
+        return {"status": "unknown"}

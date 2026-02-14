@@ -1,52 +1,49 @@
 # baseball-social-media-agent
 
-**Category**: 野球メディア・コンテンツ制作エージェント
-**Version**: V33 - Agent 5/25
-**Status**: Active
+野球ソーシャルメディアエージェント。SNS運営・コンテンツ管理
 
-## Overview
+## 機能
 
-baseball-social-media-agent is an AI-powered agent for 野球メディア・コンテンツ制作エージェント.
+- 野球ソーシャルメディアエージェント。SNS運営・コンテンツ管理
+- Discordボット連携
+- データベース管理
 
-## Features
-
-- Intelligent content processing
-- Persistent storage with SQLite
-- Discord integration support
-- RESTful API ready
-
-## Installation
+## インストール
 
 ```bash
-cd agents/baseball-social-media-agent
 pip install -r requirements.txt
 ```
 
-## Usage
+## 使用方法
 
-```python
-from agent import BaseballSocialMedia
-
-agent = BaseballSocialMedia()
-await agent.run()
+```bash
+python agent.py
 ```
 
-## Database
+## コマンド
 
-The agent uses SQLite for persistent storage. Database file: `baseball-social-media-agent.db`
+- `!help` - ヘルプを表示
+- `!status` - ステータスを表示
 
-### Schema
+## 設定
 
-- `entries`: Main content storage
-  - `id`: Primary key
-  - `content`: Text content
-  - `created_at`: Timestamp
-  - `updated_at`: Timestamp
+環境変数を設定してください：
 
-## Discord Integration
+```bash
+export DISCORD_TOKEN="your_discord_token"
+```
 
-Set `DISCORD_TOKEN` environment variable to enable Discord features.
+## ディレクトリ構造
 
-## License
+```
+baseball-social-media-agent/
+├── agent.py       - メインエージェントコード
+├── db.py          - データベースモジュール
+├── discord.py     - Discordボット
+├── README.md      - このファイル
+└── requirements.txt
+```
 
-MIT
+## ライセンス
+
+MIT License

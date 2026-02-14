@@ -1,169 +1,157 @@
-#!/usr/bin/env python3
-"""
-ゲーム配信アフィリエイトエージェント - データベース管理
-SQLiteベースのデータ永続化
-"""
+"""Database module for agent"""
 
 import sqlite3
 from datetime import datetime
-from typing import Optional, Dict, Any, List
-from contextlib import contextmanager
-import json
+from typing import List, Optional, Dict, Any
 
-class GameStreamAffiliateAgentDB:
-    """ゲーム配信アフィリエイトエージェント データベースクラス"""
+class AgentDatabase:
+    """Agent database management"""
 
-    def __init__(self, db_path: str = "data/game-stream-affiliate-agent.db"):
+    def __init__(self, db_path: str = "agent.db"):
         self.db_path = db_path
-        self._init_db()
+        self.init_db()
 
-    @contextmanager
-    def _get_connection(self):
-        """データベース接続のコンテキストマネージャ"""
+    def init_db(self):
         conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        try:
-            yield conn
-            conn.commit()
-        except Exception as e:
-            conn.rollback()
-            raise e
-        finally:
+        cursor = conn.cursor()
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            content TEXT,
+            status TEXT DEFAULT 'active',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """)
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS status_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            status TEXT NOT NULL,
+            message TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """)
+
+        conn.commit()
+        conn.close()
+
+    def add_item(self, name: str, content: str = "", status: str = "active") -> int:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+        INSERT INTO items (name, content, status)
+        VALUES (?, ?, ?)
+        """, (name, content, status))
+
+        item_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+
+        return item_id
+
+    def get_item(self, item_id: int) -> Optional[Dict[str, Any]]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM items WHERE id = ?", (item_id,))
+        row = cursor.fetchone()
+
+        conn.close()
+
+        if row:
+            return {
+                "id": row[0],
+                "name": row[1],
+                "content": row[2],
+                "status": row[3],
+                "created_at": row[4],
+                "updated_at": row[5]
+            }
+        return None
+
+    def update_item(self, item_id: int, **kwargs) -> bool:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        update_fields = []
+        values = []
+
+        for key, value in kwargs.items():
+            if key in ["name", "content", "status"]:
+                update_fields.append(f"{{key}} = ?")
+                values.append(value)
+
+        if not update_fields:
             conn.close()
+            return False
 
-    def _init_db(self):
-        """データベース初期化"""
-        with self._get_connection() as conn:
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS records (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    type TEXT NOT NULL,
-                    title TEXT,
-                    content TEXT NOT NULL,
-                    metadata TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
+        values.append(item_id)
+        query = f"UPDATE items SET {{', '.join(update_fields)}}, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
 
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS tasks (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    task_id TEXT UNIQUE NOT NULL,
-                    status TEXT DEFAULT 'pending',
-                    result TEXT,
-                    error TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    completed_at TIMESTAMP
-                )
-            """)
+        cursor.execute(query, values)
+        conn.commit()
+        conn.close()
 
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS settings (
-                    key TEXT PRIMARY KEY,
-                    value TEXT NOT NULL,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
+        return True
 
-    def insert_record(self, record_type: str, title: str, content: str,
-                       metadata: Optional[Dict[str, Any]] = None) -> int:
-        """レコード挿入"""
-        metadata_json = json.dumps(metadata) if metadata else None
-        with self._get_connection() as conn:
-            cursor = conn.execute(
-                'INSERT INTO records (type, title, content, metadata) VALUES (?, ?, ?, ?)',
-                (record_type, title, content, metadata_json)
-            )
-            return cursor.lastrowid
+    def list_items(self, status: Optional[str] = None) -> List[Dict[str, Any]]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
 
-    def get_record(self, record_id: int) -> Optional[Dict[str, Any]]:
-        """レコード取得"""
-        with self._get_connection() as conn:
-            row = conn.execute('SELECT * FROM records WHERE id = ?', (record_id,)).fetchone()
-            if row:
-                return dict(row)
-        return None
+        if status:
+            cursor.execute("SELECT * FROM items WHERE status = ?", (status,))
+        else:
+            cursor.execute("SELECT * FROM items")
 
-    def list_records(self, record_type: Optional[str] = None,
-                    limit: int = 100) -> List[Dict[str, Any]]:
-        """レコード一覧"""
-        with self._get_connection() as conn:
-            if record_type:
-                rows = conn.execute(
-                    'SELECT * FROM records WHERE type = ? ORDER BY created_at DESC LIMIT ?',
-                    (record_type, limit)
-                ).fetchall()
-            else:
-                rows = conn.execute(
-                    'SELECT * FROM records ORDER BY created_at DESC LIMIT ?',
-                    (limit,)
-                ).fetchall()
-            return [dict(row) for row in rows]
+        rows = cursor.fetchall()
+        conn.close()
 
-    def insert_task(self, task_id: str, status: str = "pending") -> int:
-        """タスク挿入"""
-        with self._get_connection() as conn:
-            cursor = conn.execute(
-                'INSERT INTO tasks (task_id, status) VALUES (?, ?)',
-                (task_id, status)
-            )
-            return cursor.lastrowid
+        return [
+            {
+                "id": row[0],
+                "name": row[1],
+                "content": row[2],
+                "status": row[3],
+                "created_at": row[4],
+                "updated_at": row[5]
+            }
+            for row in rows
+        ]
 
-    def update_task(self, task_id: str, status: str,
-                   result: Optional[str] = None, error: Optional[str] = None):
-        """タスク更新"""
-        completed_at = datetime.now().isoformat() if status == "completed" else None
-        with self._get_connection() as conn:
-            conn.execute(
-                'UPDATE tasks SET status = ?, result = ?, error = ?, completed_at = ? WHERE task_id = ?',
-                (status, result, error, completed_at, task_id)
-            )
+    def set_status(self, status: str, message: str = ""):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
 
-    def get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
-        """タスク取得"""
-        with self._get_connection() as conn:
-            row = conn.execute('SELECT * FROM tasks WHERE task_id = ?', (task_id,)).fetchone()
-            if row:
-                return dict(row)
-        return None
+        cursor.execute("""
+        INSERT INTO status_log (status, message)
+        VALUES (?, ?)
+        """, (status, message))
 
-    def set_setting(self, key: str, value: str):
-        """設定保存"""
-        with self._get_connection() as conn:
-            conn.execute(
-                'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?, updated_at = CURRENT_TIMESTAMP',
-                (key, value, value)
-            )
+        conn.commit()
+        conn.close()
 
-    def get_setting(self, key: str) -> Optional[str]:
-        """設定取得"""
-        with self._get_connection() as conn:
-            row = conn.execute('SELECT value FROM settings WHERE key = ?', (key,)).fetchone()
-            if row:
-                return row['value']
-        return None
+    def get_status(self) -> Dict[str, Any]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
 
-async def main():
-    """動作確認"""
-    db = GameStreamAffiliateAgentDB()
+        cursor.execute("""
+        SELECT * FROM status_log
+        ORDER BY created_at DESC
+        LIMIT 1
+        """)
 
-    record_id = db.insert_record(
-        record_type="sample",
-        title="Sample Record",
-        content="This is a sample record for ゲーム配信アフィリエイトエージェント"
-    )
-    print(f"Inserted record: {record_id}")
+        row = cursor.fetchone()
+        conn.close()
 
-    record = db.get_record(record_id)
-    print(f"Retrieved record: {record}")
-
-    db.insert_task("task_001")
-    db.update_task("task_001", "completed", result="Success")
-
-    task = db.get_task("task_001")
-    print(f"Task status: {task}")
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+        if row:
+            return {
+                "id": row[0],
+                "status": row[1],
+                "message": row[2],
+                "created_at": row[3]
+            }
+        return {"status": "unknown"}

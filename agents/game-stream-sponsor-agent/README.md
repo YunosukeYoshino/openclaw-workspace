@@ -1,17 +1,12 @@
-# ゲーム配信スポンサーエージェント
+# game-stream-sponsor-agent
 
-ゲーム配信のスポンサー管理
-
-## 概要
-
-ゲーム配信スポンサーエージェントはgamingカテゴリのエージェントです。Japanese言語に対応しています。
+ゲーム配信スポンサーエージェント。スポンサーの管理
 
 ## 機能
 
-- データ処理・分析
-- タスク管理
-- 状態監視
-- Discord連携
+- ゲーム配信スポンサーエージェント。スポンサーの管理
+- Discordボット連携
+- データベース管理
 
 ## インストール
 
@@ -21,81 +16,33 @@ pip install -r requirements.txt
 
 ## 使用方法
 
-### エージェントとして実行
-
 ```bash
 python agent.py
 ```
 
-### データベース操作
+## コマンド
+
+- `!help` - ヘルプを表示
+- `!status` - ステータスを表示
+
+## 設定
+
+環境変数を設定してください：
 
 ```bash
-python db.py
+export DISCORD_TOKEN="your_discord_token"
 ```
 
-### Discordボット
+## ディレクトリ構造
 
-```bash
-export DISCORD_TOKEN=your_token
-python discord.py
 ```
-
-## データベース構造
-
-### records テーブル
-- `id`: 主キー
-- `type`: レコードタイプ
-- `title`: タイトル
-- `content`: コンテンツ
-- `metadata`: メタデータ（JSON）
-- `created_at`: 作成日時
-- `updated_at`: 更新日時
-
-### tasks テーブル
-- `id`: 主キー
-- `task_id`: タスクID
-- `status`: ステータス（pending/completed/failed）
-- `result`: 結果
-- `error`: エラーメッセージ
-- `created_at`: 作成日時
-- `completed_at`: 完了日時
-
-### settings テーブル
-- `key`: 設定キー
-- `value`: 設定値
-- `updated_at`: 更新日時
-
-## Discordコマンド
-
-- `!help` - ヘルプ表示
-- `!status` - ステータス確認
-- `!info` - エージェント情報
-
-## API
-
-### Agent
-
-```python
-from agent import GameStreamSponsorAgent
-
-agent = GameStreamSponsorAgent()
-await agent.initialize()
-result = await agent.process(data)
+game-stream-sponsor-agent/
+├── agent.py       - メインエージェントコード
+├── db.py          - データベースモジュール
+├── discord.py     - Discordボット
+├── README.md      - このファイル
+└── requirements.txt
 ```
-
-### Database
-
-```python
-from db import GameStreamSponsorAgentDB
-
-db = GameStreamSponsorAgentDB()
-record_id = db.insert_record("type", "title", "content")
-record = db.get_record(record_id)
-```
-
-## 言語サポート
-
-- Japanese
 
 ## ライセンス
 

@@ -1,61 +1,52 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-data-visualization-agent
-データ可視化エージェント。データ可視化の管理・生成。
-"""
+"""データ可視化エージェント。データ可視化の管理・生成"""
 
-import logging
-from datetime import datetime
-from typing import Optional, List, Dict, Any
+import discord
+from db import AgentDatabase
 
-class DataVisualizationAgent:
-    """データ可視化エージェント。データ可視化の管理・生成。"""
+class DataVisualizationAgent(discord.Client):
+    """データ可視化エージェント。データ可視化の管理・生成"""
 
-    def __init__(self):
-        self.name = "data-visualization-agent"
-        self.logger = logging.getLogger(self.name)
-        self.logger.setLevel(logging.INFO)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.db = AgentDatabase(f"data-visualization-agent.db")
 
-        self.state = {
-            "active": True,
-            "last_activity": datetime.utcnow().isoformat(),
-            "tasks_processed": 0,
-            "errors": []
-        }
+    async def on_ready(self):
+        print(f"{self.user} is ready!")
 
-    def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        try:
-            self.state["tasks_processed"] += 1
-            self.state["last_activity"] = datetime.utcnow().isoformat()
+    async def on_message(self, message):
+        if message.author == self.user:
+            return
 
-            result = {
-                "success": True,
-                "agent": self.name,
-                "task_id": task.get("id"),
-                "message": "Task processed by " + self.name,
-                "timestamp": datetime.utcnow().isoformat()
-            }
+        if message.content.startswith("!"):
+            await self.handle_command(message)
 
-            self.logger.info(result["message"])
-            return result
+    async def handle_command(self, message):
+        command = message.content[1:].split()[0]
 
-        except Exception as e:
-            self.logger.error("Error processing task: " + str(e))
-            self.state["errors"].append(str(e))
-            return {
-                "success": False,
-                "agent": self.name,
-                "error": str(e),
-                "timestamp": datetime.utcnow().isoformat()
-            }
+        if command == "help":
+            await self.show_help(message)
+        elif command == "status":
+            await self.show_status(message)
+        elif command == "list":
+            await self.list_items(message)
+        else:
+            await message.channel.send(f"Unknown command: {command}")
 
-    def get_status(self) -> Dict[str, Any]:
-        return self.state
+    async def show_help(self, message):
+        help_text = f"""
+        data-visualization-agent - データ可視化エージェント。データ可視化の管理・生成
 
-    def query(self, params: Dict[str, Any]) -> List[Dict[str, Any]]:
-        return []
+        Commands:
+        !help - Show this help
+        !status - Show status
+        !list - List items
+        """
+        await message.channel.send(help_text)
 
-if __name__ == "__main__":
-    agent = DataVisualizationAgent()
-    print("Agent " + agent.name + " initialized")
+    async def show_status(self, message):
+        status = self.db.get_status()
+        await message.channel.send(f"Status: {status}")
+
+    async def list_items(self, message):
+        items = self.db.list_items()
+        await message.channel.send(f"Items: {items}")

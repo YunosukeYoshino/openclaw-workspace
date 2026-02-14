@@ -1,17 +1,2 @@
-# Requirements for ゲーム配信分析エージェント
-# Automatically generated dependencies
-
-# Core dependencies
-asyncio
-typing
-datetime
-json
-sqlite3
-contextlib
-
-# Additional dependencies
-# pandas
-# numpy
-# matplotlib
-# plotly
-# requests
+discord.py>=2.3.0
+python-dotenv>=1.0.0

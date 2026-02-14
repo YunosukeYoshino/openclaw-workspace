@@ -1,84 +1,157 @@
-#!/usr/bin/env python3
-"""Database module for baseball-social-media-agent"""
+"""Database module for agent"""
 
 import sqlite3
-import logging
-from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Optional, Dict, Any
 
-logger = logging.getLogger(__name__)
+class AgentDatabase:
+    """Agent database management"""
 
-class Database:
-    """SQLite database handler"""
-
-    def __init__(self, db_path: str):
+    def __init__(self, db_path: str = "agent.db"):
         self.db_path = db_path
         self.init_db()
 
     def init_db(self):
-        """Initialize database tables"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS entries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                content TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
+        CREATE TABLE IF NOT EXISTS items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            content TEXT,
+            status TEXT DEFAULT 'active',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """)
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS status_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            status TEXT NOT NULL,
+            message TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
         """)
 
         conn.commit()
         conn.close()
 
-    def add_entry(self, content: str) -> int:
-        """Add a new entry"""
+    def add_item(self, name: str, content: str = "", status: str = "active") -> int:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO entries (content) VALUES (?)", (content,))
-        entry_id = cursor.lastrowid
+
+        cursor.execute("""
+        INSERT INTO items (name, content, status)
+        VALUES (?, ?, ?)
+        """, (name, content, status))
+
+        item_id = cursor.lastrowid
         conn.commit()
         conn.close()
-        return entry_id
 
-    def get_entry(self, entry_id: int) -> Optional[Dict]:
-        """Get an entry by ID"""
+        return item_id
+
+    def get_item(self, item_id: int) -> Optional[Dict[str, Any]]:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM entries WHERE id = ?", (entry_id,))
+
+        cursor.execute("SELECT * FROM items WHERE id = ?", (item_id,))
         row = cursor.fetchone()
+
         conn.close()
+
         if row:
-            return {"id": row[0], "content": row[1], "created_at": row[2], "updated_at": row[3]}
+            return {
+                "id": row[0],
+                "name": row[1],
+                "content": row[2],
+                "status": row[3],
+                "created_at": row[4],
+                "updated_at": row[5]
+            }
         return None
 
-    def list_entries(self, limit: int = 100) -> List[Dict]:
-        """List all entries"""
+    def update_item(self, item_id: int, **kwargs) -> bool:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM entries ORDER BY created_at DESC LIMIT ?", (limit,))
+
+        update_fields = []
+        values = []
+
+        for key, value in kwargs.items():
+            if key in ["name", "content", "status"]:
+                update_fields.append(f"{{key}} = ?")
+                values.append(value)
+
+        if not update_fields:
+            conn.close()
+            return False
+
+        values.append(item_id)
+        query = f"UPDATE items SET {{', '.join(update_fields)}}, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+
+        cursor.execute(query, values)
+        conn.commit()
+        conn.close()
+
+        return True
+
+    def list_items(self, status: Optional[str] = None) -> List[Dict[str, Any]]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        if status:
+            cursor.execute("SELECT * FROM items WHERE status = ?", (status,))
+        else:
+            cursor.execute("SELECT * FROM items")
+
         rows = cursor.fetchall()
         conn.close()
-        return [{"id": r[0], "content": r[1], "created_at": r[2], "updated_at": r[3]} for r in rows]
 
-    def update_entry(self, entry_id: int, content: str) -> bool:
-        """Update an entry"""
+        return [
+            {
+                "id": row[0],
+                "name": row[1],
+                "content": row[2],
+                "status": row[3],
+                "created_at": row[4],
+                "updated_at": row[5]
+            }
+            for row in rows
+        ]
+
+    def set_status(self, status: str, message: str = ""):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        cursor.execute("UPDATE entries SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", (content, entry_id))
-        success = cursor.rowcount > 0
+
+        cursor.execute("""
+        INSERT INTO status_log (status, message)
+        VALUES (?, ?)
+        """, (status, message))
+
         conn.commit()
         conn.close()
-        return success
 
-    def delete_entry(self, entry_id: int) -> bool:
-        """Delete an entry"""
+    def get_status(self) -> Dict[str, Any]:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM entries WHERE id = ?", (entry_id,))
-        success = cursor.rowcount > 0
-        conn.commit()
+
+        cursor.execute("""
+        SELECT * FROM status_log
+        ORDER BY created_at DESC
+        LIMIT 1
+        """)
+
+        row = cursor.fetchone()
         conn.close()
-        return success
+
+        if row:
+            return {
+                "id": row[0],
+                "status": row[1],
+                "message": row[2],
+                "created_at": row[3]
+            }
+        return {"status": "unknown"}

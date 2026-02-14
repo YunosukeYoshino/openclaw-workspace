@@ -1,30 +1,56 @@
-#!/usr/bin/env python3
-"""Discord integration for baseball-social-media-agent"""
+"""Discord bot for baseball-social-media-agent"""
 
-import logging
 import os
-from typing import Optional
+import discord
+from dotenv import load_dotenv
 
-logger = logging.getLogger(__name__)
+load_dotenv()
 
-class DiscordHandler:
-    """Discord bot handler"""
+intents = discord.Intents.default()
+intents.message_content = True
+intents.messages = True
 
-    def __init__(self, token: Optional[str] = None):
-        self.token = token or os.getenv("DISCORD_TOKEN")
-        self.enabled = bool(self.token)
+client = discord.Client(intents=intents)
 
-    async def start(self):
-        """Start Discord bot"""
-        if self.enabled:
-            logger.info("Discord integration is configured")
-        else:
-            logger.info("Discord integration not configured (no token)")
+@client.event
+async def on_ready():
+    print(f"{client.user} is ready!")
 
-    async def send_message(self, channel_id: str, message: str):
-        """Send message to Discord channel"""
-        if not self.enabled:
-            logger.warning("Discord not enabled")
-            return
-        # Implementation would use discord.py library
-        logger.info(f"Would send to {channel_id}: {message[:50]}...")
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    if message.content.startswith("!"):
+        await handle_command(message)
+
+async def handle_command(message):
+    command = message.content[1:].split()[0]
+
+    if command == "help":
+        await show_help(message)
+    elif command == "status":
+        await show_status(message)
+    else:
+        await message.channel.send(f"Unknown command: {command}")
+
+async def show_help(message):
+    help_text = f"""
+    baseball-social-media-agent - 野球ソーシャルメディアエージェント。SNS運営・コンテンツ管理
+
+    Commands:
+    !help - Show this help
+    !status - Show status
+    """
+    await message.channel.send(help_text)
+
+async def show_status(message):
+    await message.channel.send("Bot is running normally!")
+
+if __name__ == "__main__":
+    token = os.getenv("DISCORD_TOKEN")
+    if not token:
+        print("DISCORD_TOKEN not found!")
+        exit(1)
+
+    client.run(token)

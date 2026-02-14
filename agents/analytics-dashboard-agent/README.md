@@ -1,17 +1,12 @@
 # analytics-dashboard-agent
 
-アナリティクスダッシュボードエージェント。アナリティクスダッシュボードの管理。
-
-## 概要
-
-このエージェントは アナリティクスダッシュボードエージェント。アナリティクスダッシュボードの管理。 ためのAIアシスタントです。
+アナリティクスダッシュボードエージェント。アナリティクスダッシュボードの管理
 
 ## 機能
 
-- データの収集・分析
-- 自動タスク処理
+- アナリティクスダッシュボードエージェント。アナリティクスダッシュボードの管理
+- Discordボット連携
 - データベース管理
-- Discord連携
 
 ## インストール
 
@@ -21,95 +16,34 @@ pip install -r requirements.txt
 
 ## 使用方法
 
-### 基本的な使用
-
-```python
-from agent import AnalyticsDashboardAgent
-
-agent = AnalyticsDashboardAgent()
-task = {"id": "task_001", "type": "example"}
-result = agent.process_task(task)
-print(result)
+```bash
+python agent.py
 ```
 
-### データベースの使用
+## コマンド
 
-```python
-from db import AnalyticsDashboardAgentDB
-
-db = AnalyticsDashboardAgentDB()
-db.insert_data("example_type", "example_content", {"key": "value"})
-data = db.query_data("example_type", limit=10)
-```
-
-### Discordボットの使用
-
-```python
-from discord.ext import commands
-from discord import setup
-
-bot = commands.Bot(command_prefix="!")
-discord_integration = setup(bot)
-bot.run("YOUR_DISCORD_BOT_TOKEN")
-```
-
-## API
-
-### AnalyticsDashboardAgent.process_task(task)
-
-タスクを処理して結果を返します。
-
-**Parameters:**
-- `task` (Dict[str, Any]): 処理するタスク
-
-**Returns:**
-- Dict[str, Any]: 処理結果
-
-### AnalyticsDashboardAgentDB.insert_data(data_type, content, metadata)
-
-データベースにデータを挿入します。
-
-**Parameters:**
-- `data_type` (str): データタイプ
-- `content` (str): コンテンツ
-- `metadata` (Dict): メタデータ（オプション）
-
-**Returns:**
-- int: 挿入されたレコードID
-
-### AnalyticsDashboardAgentDB.query_data(data_type, limit)
-
-データベースからデータをクエリします。
-
-**Parameters:**
-- `data_type` (str): データタイプ（オプション）
-- `limit` (int): 取得する最大件数
-
-**Returns:**
-- List[Dict]: クエリ結果
+- `!help` - ヘルプを表示
+- `!status` - ステータスを表示
 
 ## 設定
 
-### Discord設定
+環境変数を設定してください：
 
-`discord_config.json` ファイルを作成して設定します。
+```bash
+export DISCORD_TOKEN="your_discord_token"
+```
 
-```json
-{
-  "command_prefix": "!",
-  "enabled_channels": [],
-  "admin_roles": []
-}
+## ディレクトリ構造
+
+```
+analytics-dashboard-agent/
+├── agent.py       - メインエージェントコード
+├── db.py          - データベースモジュール
+├── discord.py     - Discordボット
+├── README.md      - このファイル
+└── requirements.txt
 ```
 
 ## ライセンス
 
 MIT License
-
-## 貢献
-
-プルリクエストを歓迎します。
-
-## 連絡先
-
-問題や質問がある場合は、Issueを開いてください。
