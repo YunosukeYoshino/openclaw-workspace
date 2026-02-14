@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "baseball-scout-network-agent",
+    "baseball-draft-sim-agent",
+    "baseball-prospect-agent",
+    "baseball-scout-report-agent",
+    "baseball-combine-agent",
+    "game-matchmaker-agent",
+    "game-ranking-system-agent",
+    "game-elo-agent",
+    "game-season-agent",
+    "game-tournament-agent",
+    "erotic-ai-multimodal-agent",
+    "erotic-ai-vision-agent",
+    "erotic-ai-embeddings-agent",
+    "erotic-ai-retrieval-agent",
+    "erotic-ai-fusion-agent",
+    "data-replication-agent",
+    "database-sync-agent",
+    "master-slave-agent",
+    "multi-master-agent",
+    "conflict-resolver-agent",
+    "devsecops-agent",
+    "shift-left-agent",
+    "sast-agent",
+    "dast-agent",
+    "sca-agent"
+  ],
+  "total": 25
+}
