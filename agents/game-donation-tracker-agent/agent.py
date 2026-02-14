@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ゲームライブストリーミング・インタラクションエージェント
-game-poll-widget-agent - ゲーム投票ウィジェットエージェント。投票ウィジェットの管理。
+game-donation-tracker-agent - ゲーム寄付追跡エージェント。投げ銭・寄付の追跡。
 """
 
 import sqlite3
@@ -10,10 +10,10 @@ import json
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class GamePollWidget:
-    """ゲーム投票ウィジェットエージェント。投票ウィジェットの管理。"""
+class GameDonationTracker:
+    """ゲーム寄付追跡エージェント。投げ銭・寄付の追跡。"""
 
-    def __init__(self, db_path: str = "agents/game-poll-widget-agent/data.db"):
+    def __init__(self, db_path: str = "agents/game-donation-tracker-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -103,5 +103,5 @@ class GamePollWidget:
 
 if __name__ == "__main__":
     import json
-    agent = GamePollWidget()
+    agent = GameDonationTracker()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

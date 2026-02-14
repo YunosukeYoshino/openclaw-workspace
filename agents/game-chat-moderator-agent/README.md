@@ -1,10 +1,10 @@
-# game-poll-widget-agent
+# game-chat-moderator-agent
 
-ゲーム投票ウィジェットエージェント。投票ウィジェットの管理。
+ゲームチャットモデレーターエージェント。チャットのモデレーション。
 
 ## Description
 
-ゲームライブストリーミング・インタラクションエージェント - game-poll-widget-agent
+ゲームライブストリーミング・インタラクションエージェント - game-chat-moderator-agent
 
 ## Installation
 

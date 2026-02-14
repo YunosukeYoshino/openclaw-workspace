@@ -1,10 +1,10 @@
-# game-poll-widget-agent
+# game-subscription-alert-agent
 
-ゲーム投票ウィジェットエージェント。投票ウィジェットの管理。
+ゲームサブスクリプションアラートエージェント。登録アラートの管理。
 
 ## Description
 
-ゲームライブストリーミング・インタラクションエージェント - game-poll-widget-agent
+ゲームライブストリーミング・インタラクションエージェント - game-subscription-alert-agent
 
 ## Installation
 

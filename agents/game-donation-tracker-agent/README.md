@@ -1,10 +1,10 @@
-# game-poll-widget-agent
+# game-donation-tracker-agent
 
-ゲーム投票ウィジェットエージェント。投票ウィジェットの管理。
+ゲーム寄付追跡エージェント。投げ銭・寄付の追跡。
 
 ## Description
 
-ゲームライブストリーミング・インタラクションエージェント - game-poll-widget-agent
+ゲームライブストリーミング・インタラクションエージェント - game-donation-tracker-agent
 
 ## Installation
 

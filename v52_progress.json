@@ -24,7 +24,12 @@
     "session-monitor-agent",
     "user-behavior-agent",
     "anomaly-detection-agent",
-    "access-reporter-agent"
+    "access-reporter-agent",
+    "game-live-overlay-agent",
+    "game-chat-moderator-agent",
+    "game-poll-widget-agent",
+    "game-donation-tracker-agent",
+    "game-subscription-alert-agent"
   ],
   "total": 25
 }

@@ -1,10 +1,10 @@
-# game-poll-widget-agent
+# game-live-overlay-agent
 
-ゲーム投票ウィジェットエージェント。投票ウィジェットの管理。
+ゲームライブオーバーレイエージェント。ライブ配信のオーバーレイ表示管理。
 
 ## Description
 
-ゲームライブストリーミング・インタラクションエージェント - game-poll-widget-agent
+ゲームライブストリーミング・インタラクションエージェント - game-live-overlay-agent
 
 ## Installation
 
