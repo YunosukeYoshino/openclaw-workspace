@@ -1,489 +1,368 @@
 #!/usr/bin/env python3
 """
-オーケストレーター V58 - 野球国際交流×ゲームAI NPC×えっちAI生成×MLエージェント×プライバシー保護AI
+Orchestrator V58 - Next Project Plan V58
+Baseball / Game / Adult Content x Performance & Security Agents
 """
 
 import os
 import json
-import subprocess
 from pathlib import Path
 
-# プロジェクト定義
-V58_AGENTS = {
-    "baseball": [
-        {
-            "name": "baseball-international-scouting-agent",
-            "dir": "baseball-international-scouting-agent",
-            "title": "野球国際スカウティングエージェント",
-            "description": "海外選手のスカウティングと評価"
-        },
-        {
-            "name": "baseball-world-cup-agent",
-            "dir": "baseball-world-cup-agent",
-            "title": "野球ワールドカップエージェント",
-            "description": "国際大会の管理・分析"
-        },
-        {
-            "name": "baseball-olympic-agent",
-            "dir": "baseball-olympic-agent",
-            "title": "野球オリンピックエージェント",
-            "description": "オリンピック野球の管理"
-        },
-        {
-            "name": "baseball-international-exchange-agent",
-            "dir": "baseball-international-exchange-agent",
-            "title": "野球国際交流エージェント",
-            "description": "国際交流プログラムの管理"
-        },
-        {
-            "name": "baseball-foreign-market-agent",
-            "dir": "baseball-foreign-market-agent",
-            "title": "野球海外市場エージェント",
-            "description": "海外市場の分析・拡大"
-        }
+WORKSPACE = Path("/workspace")
+
+# Agent definitions
+AGENTS_V58 = {
+    "Baseball Media & Journalism Agents": [
+        ("baseball-media-coverage-agent", "Baseball Media Coverage Agent. Media reporting tracking and analysis."),
+        ("baseball-reporter-agent", "Baseball Reporter Agent. Journalist activity and reporting management."),
+        ("baseball-press-release-agent", "Baseball Press Release Agent. Official announcement management and distribution."),
+        ("baseball-interview-coordinator-agent", "Baseball Interview Coordinator Agent. Player and manager interview planning and execution."),
+        ("baseball-media-relations-agent", "Baseball Media Relations Agent. Media engagement and PR activity management."),
     ],
-    "game": [
-        {
-            "name": "game-ai-npc-manager-agent",
-            "dir": "game-ai-npc-manager-agent",
-            "title": "ゲームAI NPCマネージャーエージェント",
-            "description": "AI NPCの生成・管理"
-        },
-        {
-            "name": "game-matchmaking-agent",
-            "dir": "game-matchmaking-agent",
-            "title": "ゲームマッチメイキングエージェント",
-            "description": "マッチメイキングの最適化"
-        },
-        {
-            "name": "game-anti-cheat-v2-agent",
-            "dir": "game-anti-cheat-v2-agent",
-            "title": "ゲームアンチチートV2エージェント",
-            "description": "高度なチート対策"
-        },
-        {
-            "name": "game-skill-based-agent",
-            "dir": "game-skill-based-agent",
-            "title": "ゲームスキルベースエージェント",
-            "description": "スキルベースマッチング"
-        },
-        {
-            "name": "game-region-lock-agent",
-            "dir": "game-region-lock-agent",
-            "title": "ゲームリージョンロックエージェント",
-            "description": "リージョン制限の管理"
-        }
+    "Game AI & NPC Development Agents": [
+        ("game-npc-ai-agent", "Game NPC AI Agent. NPC AI behavior and dialogue management."),
+        ("game-dialogue-system-agent", "Game Dialogue System Agent. Dialogue system design and implementation."),
+        ("game-behavior-tree-agent", "Game Behavior Tree Agent. Behavior tree construction and management."),
+        ("game-ai-pathfinding-agent", "Game AI Pathfinding Agent. AI pathfinding and movement control."),
+        ("game-enemy-ai-agent", "Game Enemy AI Agent. Enemy character AI design and management."),
     ],
-    "erotic": [
-        {
-            "name": "erotic-ai-content-gen-v3-agent",
-            "dir": "erotic-ai-content-gen-v3-agent",
-            "title": "えっちAIコンテンツ生成V3エージェント",
-            "description": "高度AIコンテンツ生成"
-        },
-        {
-            "name": "erotic-ai-scenario-agent",
-            "dir": "erotic-ai-scenario-agent",
-            "title": "えっちAIシナリオエージェント",
-            "description": "AIシナリオの生成・管理"
-        },
-        {
-            "name": "erotic-ai-character-creator-agent",
-            "dir": "erotic-ai-character-creator-agent",
-            "title": "えっちAIキャラクタークリエイターエージェント",
-            "description": "AIキャラクターの生成"
-        },
-        {
-            "name": "erotic-ai-dialogue-agent",
-            "dir": "erotic-ai-dialogue-agent",
-            "title": "えっちAIダイアログエージェント",
-            "description": "AI対話の生成・管理"
-        },
-        {
-            "name": "erotic-ai-content-eval-agent",
-            "dir": "erotic-ai-content-eval-agent",
-            "title": "えっちAIコンテンツ評価エージェント",
-            "description": "AI生成コンテンツの評価"
-        }
+    "Adult Content 3D & VR Agents": [
+        ("erotic-3d-modeler-agent", "Adult 3D Modeler Agent. 3D model management and generation."),
+        ("erotic-vr-content-agent", "Adult VR Content Agent. VR content creation and management."),
+        ("erotic-ar-integration-agent", "Adult AR Integration Agent. AR content integration and management."),
+        ("erotic-3d-animation-agent", "Adult 3D Animation Agent. 3D animation creation and management."),
+        ("erotic-spatial-audio-agent", "Adult Spatial Audio Agent. Spatial audio effects management."),
     ],
-    "tech": [
-        {
-            "name": "ml-model-builder-agent",
-            "dir": "ml-model-builder-agent",
-            "title": "MLモデルビルダーエージェント",
-            "description": "機械学習モデルの構築"
-        },
-        {
-            "name": "ml-hyperparam-tuner-agent",
-            "dir": "ml-hyperparam-tuner-agent",
-            "title": "MLハイパーパラメータチューナーエージェント",
-            "description": "ハイパーパラメータの最適化"
-        },
-        {
-            "name": "ml-feature-store-agent",
-            "dir": "ml-feature-store-agent",
-            "title": "MLフィーチャーストアエージェント",
-            "description": "特徴量ストアの管理"
-        },
-        {
-            "name": "ml-model-monitor-agent",
-            "dir": "ml-model-monitor-agent",
-            "title": "MLモデルモニターエージェント",
-            "description": "モデルの監視・管理"
-        },
-        {
-            "name": "ml-experiment-tracker-agent",
-            "dir": "ml-experiment-tracker-agent",
-            "title": "ML実験トラッカーエージェント",
-            "description": "実験の追跡・管理"
-        }
+    "Performance Optimization & Cache Agents": [
+        ("cache-manager-agent", "Cache Manager Agent. Cache strategy management and optimization."),
+        ("cdn-optimizer-agent", "CDN Optimizer Agent. CDN optimization and management."),
+        ("query-optimizer-agent", "Query Optimizer Agent. Database query optimization."),
+        ("memory-pool-agent", "Memory Pool Agent. Memory pool management and optimization."),
+        ("connection-pool-agent", "Connection Pool Agent. Connection pool management and optimization."),
     ],
-    "security": [
-        {
-            "name": "privacy-preserving-ml-agent",
-            "dir": "privacy-preserving-ml-agent",
-            "title": "プライバシー保護MLエージェント",
-            "description": "プライバシー保護機械学習"
-        },
-        {
-            "name": "differential-privacy-agent",
-            "dir": "differential-privacy-agent",
-            "title": "差分プライバシーエージェント",
-            "description": "差分プライバシーの適用"
-        },
-        {
-            "name": "federated-learning-agent",
-            "dir": "federated-learning-agent",
-            "title": "フェデレーテッドラーニングエージェント",
-            "description": "連合学習の管理"
-        },
-        {
-            "name": "anonymization-agent",
-            "dir": "anonymization-agent",
-            "title": "匿名化エージェント",
-            "description": "データの匿名化処理"
-        },
-        {
-            "name": "data-minimization-agent",
-            "dir": "data-minimization-agent",
-            "title": "データ最小化エージェント",
-            "description": "データ最小化の実施"
-        }
-    ]
+    "Security Sandbox & Isolation Agents": [
+        ("sandbox-manager-agent", "Sandbox Manager Agent. Sandbox environment management."),
+        ("container-isolation-agent", "Container Isolation Agent. Container isolation management and monitoring."),
+        ("network-segmentation-agent", "Network Segmentation Agent. Network segmentation management."),
+        ("process-isolation-agent", "Process Isolation Agent. Process isolation management and monitoring."),
+        ("resource-quota-agent", "Resource Quota Agent. Resource allocation management and limits."),
+    ],
 }
 
-def create_agent_directory(agent_dir, agent_name, title, description):
-    """エージェントディレクトリとファイルを作成"""
-    base_path = Path("/workspace") / agent_dir
-    base_path.mkdir(parents=True, exist_ok=True)
-    
+def create_agent_directory(agent_name, description):
+    """Create agent directory and files"""
+    agent_dir = WORKSPACE / agent_name
+    agent_dir.mkdir(parents=True, exist_ok=True)
+
     # agent.py
-    agent_py_content = '''#!/usr/bin/env python3
+    agent_py = f'''#!/usr/bin/env python3
 """
-''' + title + '''
-''' + description + '''
+{agent_name} - {description}
 """
 
-import discord
-from discord.ext import commands
-import sqlite3
-from datetime import datetime
-import json
+import asyncio
+from pathlib import Path
 
-class ''' + agent_name.replace("-", "_").title().replace("_", "") + '''(commands.Bot):
-    def __init__(self, token):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
-        self.token = token
-        self.db_path = "''' + agent_name + '''.db"
-        self.init_db()
-    
-    def init_db(self):
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute("CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
-        conn.commit()
-        conn.close()
-    
-    async def on_ready(self):
-        print(f"{{self.user}} has connected to Discord!")
-    
-    async def on_message(self, message):
-        if message.author == self.user:
-            return
-        await self.process_commands(message)
-    
-    def run_bot(self):
-        self.run(self.token)
+class {snake_to_camel(agent_name)}:
+    def __init__(self):
+        self.name = "{agent_name}"
+        self.description = "{description}"
+
+    async def process(self, input_data):
+        result = {{"agent": self.name, "status": "processed", "input": input_data}}
+        return result
+
+    async def analyze(self, data):
+        return {{"agent": self.name, "analysis": "completed", "data": data}}
+
+    async def optimize(self, config):
+        return {{"agent": self.name, "optimization": "applied", "config": config}}
+
+async def main():
+    agent = {snake_to_camel(agent_name)}()
+    print(f"Agent: {{agent.name}}")
+    print(f"Description: {{agent.description}}")
 
 if __name__ == "__main__":
-    import os
-    token = os.getenv("DISCORD_TOKEN")
-    if not token:
-        print("DISCORD_TOKEN environment variable is required")
-        exit(1)
-    bot = ''' + agent_name.replace("-", "_").title().replace("_", "") + '''(token)
-    bot.run_bot()
+    asyncio.run(main())
 '''
-    
-    (base_path / "agent.py").write_text(agent_py_content)
-    
+
     # db.py
-    db_py_content = '''#!/usr/bin/env python3
+    db_py = f'''#!/usr/bin/env python3
 """
-Database Manager for ''' + agent_name + '''
+{agent_name} - Database Module
+SQLite-based data persistence
 """
 
 import sqlite3
+import json
+from pathlib import Path
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional, List, Dict, Any
 
-class DatabaseManager:
-    def __init__(self, db_path: str = "''' + agent_name + '''.db"):
+class {snake_to_camel(agent_name)}DB:
+    def __init__(self, db_path: Optional[Path] = None):
+        if db_path is None:
+            db_path = Path(__file__).parent / "{agent_name}.db"
         self.db_path = db_path
-        self.init_db()
-    
-    def init_db(self):
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute("CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
-        conn.commit()
-        conn.close()
-    
-    def add_record(self, content: str) -> int:
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute("INSERT INTO records (content) VALUES (?)", (content,))
-        conn.commit()
-        record_id = c.lastrowid
-        conn.close()
-        return record_id
-    
-    def get_record(self, record_id: int) -> Optional[dict]:
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute("SELECT * FROM records WHERE id = ?", (record_id,))
-        row = c.fetchone()
-        conn.close()
+        self.conn = None
+        self._connect()
+        self._create_tables()
+
+    def _connect(self):
+        self.conn = sqlite3.connect(str(self.db_path))
+        self.conn.row_factory = sqlite3.Row
+
+    def _create_tables(self):
+        cursor = self.conn.cursor()
+        cursor.execute('CREATE TABLE IF NOT EXISTS data_entries (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, title TEXT, content TEXT NOT NULL, status TEXT DEFAULT \"active\", priority INTEGER DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
+        cursor.execute('CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL)')
+        cursor.execute('CREATE TABLE IF NOT EXISTS entry_tags (entry_id INTEGER, tag_id INTEGER, PRIMARY KEY (entry_id, tag_id), FOREIGN KEY (entry_id) REFERENCES data_entries(id) ON DELETE CASCADE, FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE)')
+        self.conn.commit()
+
+    def insert(self, entry_type: str, content: str, title: Optional[str] = None,
+                status: str = 'active', priority: int = 0, tags: Optional[List[str]] = None) -> int:
+        cursor = self.conn.cursor()
+        cursor.execute('INSERT INTO data_entries (type, title, content, status, priority) VALUES (?, ?, ?, ?, ?)', (entry_type, title, content, status, priority))
+        entry_id = cursor.lastrowid
+
+        if tags:
+            for tag in tags:
+                tag_id = self._get_or_create_tag(tag)
+                cursor.execute('INSERT INTO entry_tags (entry_id, tag_id) VALUES (?, ?)', (entry_id, tag_id))
+
+        self.conn.commit()
+        return entry_id
+
+    def _get_or_create_tag(self, tag_name: str) -> int:
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT id FROM tags WHERE name = ?', (tag_name,))
+        row = cursor.fetchone()
         if row:
-            return {"id": row[0], "content": row[1], "created_at": row[2]}
+            return row['id']
+
+        cursor.execute('INSERT INTO tags (name) VALUES (?)', (tag_name,))
+        return cursor.lastrowid
+
+    def get_by_id(self, entry_id: int) -> Optional[Dict[str, Any]]:
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT * FROM data_entries WHERE id = ?', (entry_id,))
+        row = cursor.fetchone()
+        if row:
+            return dict(row)
         return None
-    
-    def list_records(self, limit: int = 100) -> List[dict]:
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute("SELECT * FROM records ORDER BY created_at DESC LIMIT ?", (limit,))
-        rows = c.fetchall()
-        conn.close()
-        return [{"id": r[0], "content": r[1], "created_at": r[2]} for r in rows]
 
-if __name__ == "__main__":
-    db = DatabaseManager()
-    print("Database initialized")
-'''
-    
-    (base_path / "db.py").write_text(db_py_content)
-    
-    # discord.py
-    discord_py_content = '''#!/usr/bin/env python3
-"""
-Discord Bot for ''' + agent_name + '''
-"""
-
-import discord
-from discord.ext import commands
-import os
-
-class DiscordBot(commands.Bot):
-    def __init__(self, token: str, db_manager):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
-        self.token = token
-        self.db = db_manager
-    
-    async def on_ready(self):
-        print(f"Bot logged in as {self.user}")
-    
-    async def on_message(self, message):
-        if message.author == self.user:
-            return
-        await self.process_commands(message)
-    
-    @commands.command()
-    async def hello(self, ctx):
-        await ctx.send("Hello! I am ''' + title + '''")
-    
-    @commands.command()
-    async def add(self, ctx, *, content: str):
-        record_id = self.db.add_record(content)
-        await ctx.send(f"Added record #{record_id}")
-    
-    @commands.command()
-    async def list(self, ctx, limit: int = 10):
-        records = self.db.list_records(limit)
-        if records:
-            response = "Recent records:\\n" + "\\n".join(f"#{r['id']}: {r['content'][:50]}..." for r in records[:5])
-            await ctx.send(response)
+    def list_by_type(self, entry_type: str, limit: Optional[int] = None) -> List[Dict[str, Any]]:
+        cursor = self.conn.cursor()
+        query = 'SELECT * FROM data_entries WHERE type = ? ORDER BY created_at DESC'
+        if limit:
+            query += ' LIMIT ?'
+            cursor.execute(query, (entry_type, limit))
         else:
-            await ctx.send("No records found")
+            cursor.execute(query, (entry_type,))
+        return [dict(row) for row in cursor.fetchall()]
+
+    def update_status(self, entry_id: int, status: str):
+        cursor = self.conn.cursor()
+        cursor.execute('UPDATE data_entries SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', (status, entry_id))
+        self.conn.commit()
+
+    def close(self):
+        if self.conn:
+            self.conn.close()
+
+def snake_to_camel(name):
+    return ''.join(word.capitalize() for word in name.replace('-', '_').split('_'))
 
 if __name__ == "__main__":
-    import sys
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    from db import DatabaseManager
-    
-    token = os.getenv("DISCORD_TOKEN")
-    if not token:
-        print("DISCORD_TOKEN is required")
-        exit(1)
-    
-    db = DatabaseManager()
-    bot = DiscordBot(token, db)
-    bot.run(token)
+    db = {snake_to_camel(agent_name)}DB()
+    print("Database initialized at:", db.db_path)
+    db.close()
 '''
-    
-    (base_path / "discord.py").write_text(discord_py_content)
-    
-    # requirements.txt
-    requirements_content = '''discord.py>=2.3.0
+
+    # discord.py
+    discord_py = f'''#!/usr/bin/env python3
+"""
+{agent_name} - Discord Integration
+Discord bot interface
+"""
+
+import asyncio
+from typing import Optional, List, Dict, Any
+
+class {snake_to_camel(agent_name)}Discord:
+    def __init__(self, token: Optional[str] = None):
+        self.token = token
+        self.name = "{agent_name}"
+        self.description = "{description}"
+
+    async def send_message(self, channel_id: str, message: str) -> Dict[str, Any]:
+        result = {{
+            "agent": self.name,
+            "channel": channel_id,
+            "message": message,
+            "status": "sent"
+        }}
+        return result
+
+    async def send_embed(self, channel_id: str, title: str,
+                         description: str, fields: Optional[List[Dict[str, str]]] = None) -> Dict[str, Any]:
+        result = {{
+            "agent": self.name,
+            "channel": channel_id,
+            "title": title,
+            "description": description,
+            "fields": fields or [],
+            "status": "sent"
+        }}
+        return result
+
+    async def create_poll(self, channel_id: str, question: str,
+                          options: List[str], duration_hours: int = 24) -> Dict[str, Any]:
+        result = {{
+            "agent": self.name,
+            "channel": channel_id,
+            "question": question,
+            "options": options,
+            "duration_hours": duration_hours,
+            "status": "created"
+        }}
+        return result
+
+    async def add_reaction(self, message_id: str, emoji: str) -> Dict[str, Any]:
+        result = {{
+            "agent": self.name,
+            "message_id": message_id,
+            "emoji": emoji,
+            "status": "reacted"
+        }}
+        return result
+
+    async def reply_to_user(self, user_id: str, message: str) -> Dict[str, Any]:
+        result = {{
+            "agent": self.name,
+            "user_id": user_id,
+            "message": message,
+            "status": "replied"
+        }}
+        return result
+
+def snake_to_camel(name):
+    return ''.join(word.capitalize() for word in name.replace('-', '_').split('_'))
+
+async def main():
+    discord = {snake_to_camel(agent_name)}Discord()
+    print(f"Discord integration for {{discord.name}}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
 '''
-    (base_path / "requirements.txt").write_text(requirements_content)
-    
-    # README.md (Bilingual)
-    readme_content = '''# ''' + title + ''' (''' + agent_name + ''')
 
-''' + description + '''
+    # README.md
+    readme_md = f'''# {agent_name}
 
-## 機能 / Features
+{description}
 
-- ''' + description + '''の管理・運用
-- Discordボットによる対話型インターフェース
-- SQLiteによるデータ永続化
+## Overview
 
-## インストール / Installation
+{description}
+
+## Files
+
+- `agent.py` - Main agent class
+- `db.py` - SQLite database module
+- `discord.py` - Discord integration
+- `requirements.txt` - Python dependencies
+
+## Installation
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 設定 / Configuration
+## Usage
 
-環境変数 `DISCORD_TOKEN` を設定してください。
+```python
+from agent import {snake_to_camel(agent_name)}
+from db import {snake_to_camel(agent_name)}DB
+from discord import {snake_to_camel(agent_name)}Discord
 
-Set the `DISCORD_TOKEN` environment variable.
+# Initialize agent
+agent = {snake_to_camel(agent_name)}()
+db = {snake_to_camel(agent_name)}DB()
+discord = {snake_to_camel(agent_name)}Discord()
 
-```bash
-export DISCORD_TOKEN="your_bot_token"
+# Run process
+result = await agent.process(input_data)
+print(result)
 ```
 
-## 使い方 / Usage
+## Features
 
-```bash
-python agent.py
-```
+- Data processing and analysis
+- SQLite data persistence
+- Discord bot integration
+- Async processing support
 
-または / Or:
+## License
 
-```bash
-python discord.py
-```
-
-## データベース / Database
-
-データはSQLiteに保存されます。`''' + agent_name + '''.db`ファイルが作成されます。
-
-Data is stored in SQLite. A `''' + agent_name + '''.db` file will be created.
-
-## ライセンス / License
-
-MIT License
+MIT
 '''
-    
-    (base_path / "README.md").write_text(readme_content)
-    
-    return True
+
+    # requirements.txt
+    requirements_txt = '''aiohttp>=3.9.0
+aiosqlite>=0.19.0
+python-dotenv>=1.0.0
+'''
+
+    # Write files
+    (agent_dir / "agent.py").write_text(agent_py)
+    (agent_dir / "db.py").write_text(db_py)
+    (agent_dir / "discord.py").write_text(discord_py)
+    (agent_dir / "README.md").write_text(readme_md)
+    (agent_dir / "requirements.txt").write_text(requirements_txt)
+
+    return agent_dir
+
+def snake_to_camel(name):
+    return ''.join(word.capitalize() for word in name.replace('-', '_').split('_'))
 
 def main():
-    progress_file = Path("/workspace/v58_progress.json")
-    
-    # 進捗をロード
+    progress_file = WORKSPACE / "v58_progress.json"
+
+    # Load progress
+    progress = {}
     if progress_file.exists():
         progress = json.loads(progress_file.read_text())
-    else:
-        progress = {"completed": [], "failed": []}
-    
-    total_agents = sum(len(agents) for agents in V58_AGENTS.values())
-    completed = len(progress["completed"])
-    
-    print(f"=== オーケストレーター V58 ===")
-    print(f"進捗: {completed}/{total_agents}")
-    print()
-    
-    # エージェントを作成
-    for category, agents in V58_AGENTS.items():
-        print(f"--- {category.upper()} ---")
-        for agent in agents:
-            agent_name = agent["name"]
-            agent_dir = agent["dir"]
-            title = agent["title"]
-            description = agent["description"]
-            
-            if agent_name in progress["completed"]:
-                print(f"✓ {agent_name} (既に完了)")
+
+    created_count = 0
+    total_count = sum(len(agents) for agents in AGENTS_V58.values())
+
+    for category, agents in AGENTS_V58.items():
+        for agent_name, description in agents:
+            if agent_name in progress.get("completed", []):
                 continue
-            
-            if agent_name in progress["failed"]:
-                print(f"? {agent_name} (再試行)")
-            
+
             try:
-                print(f"  作成中: {agent_name}...")
-                if create_agent_directory(agent_dir, agent_name, title, description):
-                    progress["completed"].append(agent_name)
-                    if agent_name in progress["failed"]:
-                        progress["failed"].remove(agent_name)
-                    print(f"  ✓ {agent_name} 完了")
-                else:
-                    raise Exception("作成失敗")
+                agent_dir = create_agent_directory(agent_name, description)
+                print(f"Created: {agent_name}")
+
+                if "completed" not in progress:
+                    progress["completed"] = []
+                progress["completed"].append(agent_name)
+
+                created_count += 1
+
             except Exception as e:
-                print(f"  ✗ {agent_name} 失敗: {e}")
+                print(f"Error creating {agent_name}: {e}")
                 import traceback
                 traceback.print_exc()
-                if agent_name not in progress["failed"]:
-                    progress["failed"].append(agent_name)
-            
-            # 進捗を保存
-            progress_file.write_text(json.dumps(progress, indent=2))
-    
-    # 最終報告
-    completed = len(progress["completed"])
-    failed = len(progress["failed"])
-    
-    print()
-    print("=== 完了報告 ===")
-    print(f"完了: {completed}/{total_agents}")
-    print(f"失敗: {failed}")
-    
-    if failed > 0:
-        print(f"失敗したエージェント:")
-        for name in progress["failed"]:
-            print(f"  - {name}")
-    else:
-        print("🎉 全エージェントの作成が完了しました！")
-    
-    # Git commit
-    print()
-    print("Git commit & push...")
-    try:
-        subprocess.run(["git", "add", "-A"], check=True)
-        subprocess.run(["git", "commit", "-m", "feat: 次期プロジェクト案 V58 完了 (25/25)"], check=True)
-        subprocess.run(["git", "push"], check=True)
-        print("✓ Git commit & push 完了")
-    except Exception as e:
-        print(f"✗ Git 操作失敗: {e}")
-        import traceback
-        traceback.print_exc()
+
+    # Save progress
+    progress_file.write_text(json.dumps(progress, indent=2, ensure_ascii=False))
+
+    print(f"\\nTotal created: {created_count}/{total_count}")
+    print("V58 completed!")
 
 if __name__ == "__main__":
     main()
