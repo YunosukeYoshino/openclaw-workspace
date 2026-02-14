@@ -1,0 +1,11 @@
+{
+  "agent_id": "etl-monitoring-alert-agent",
+  "name": "ETLモニタリング・アラートエージェント",
+  "description": "ETLパイプラインの監視・アラート管理",
+  "tags": [
+    "data",
+    "etl",
+    "monitoring"
+  ],
+  "version": "1.0.0"
+}

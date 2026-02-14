@@ -1,0 +1,11 @@
+{
+  "agent_id": "data-lineage-tracker-agent",
+  "name": "データリネージトラッカーエージェント",
+  "description": "データリネージ（系譜）の追跡・可視化",
+  "tags": [
+    "data",
+    "etl",
+    "lineage"
+  ],
+  "version": "1.0.0"
+}

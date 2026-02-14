@@ -1,0 +1,11 @@
+{
+  "agent_id": "baseball-pitching-coach-agent",
+  "name": "野球投球コーチエージェント",
+  "description": "投球フォーム・メカニクスのコーチング・分析",
+  "tags": [
+    "baseball",
+    "coaching",
+    "pitching"
+  ],
+  "version": "1.0.0"
+}

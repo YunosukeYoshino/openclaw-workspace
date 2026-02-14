@@ -1,0 +1,11 @@
+{
+  "agent_id": "baseball-hitting-coach-agent",
+  "name": "野球打撃コーチエージェント",
+  "description": "打撃フォーム・テクニックのコーチング・分析",
+  "tags": [
+    "baseball",
+    "coaching",
+    "hitting"
+  ],
+  "version": "1.0.0"
+}

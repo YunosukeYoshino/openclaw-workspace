@@ -1,0 +1,11 @@
+{
+  "agent_id": "batch-etl-scheduler-agent",
+  "name": "バッチETLスケジューラーエージェント",
+  "description": "バッチETLジョブのスケジューリング・管理",
+  "tags": [
+    "data",
+    "etl",
+    "batch"
+  ],
+  "version": "1.0.0"
+}

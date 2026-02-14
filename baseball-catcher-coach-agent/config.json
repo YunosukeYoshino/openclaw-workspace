@@ -1,0 +1,11 @@
+{
+  "agent_id": "baseball-catcher-coach-agent",
+  "name": "野球捕手コーチエージェント",
+  "description": "捕手スキル・フレーミング・投手リードのコーチング",
+  "tags": [
+    "baseball",
+    "coaching",
+    "catcher"
+  ],
+  "version": "1.0.0"
+}

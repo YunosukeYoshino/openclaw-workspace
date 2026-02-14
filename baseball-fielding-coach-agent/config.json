@@ -1,0 +1,11 @@
+{
+  "agent_id": "baseball-fielding-coach-agent",
+  "name": "野球守備コーチエージェント",
+  "description": "守備技術・ポジションプレイのコーチング・分析",
+  "tags": [
+    "baseball",
+    "coaching",
+    "fielding"
+  ],
+  "version": "1.0.0"
+}

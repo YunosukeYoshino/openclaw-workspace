@@ -1,0 +1,11 @@
+{
+  "agent_id": "compliance-audit-orchestrator-agent",
+  "name": "コンプライアンス監査オーケストレーターエージェント",
+  "description": "コンプライアンス監査の計画・実行・管理",
+  "tags": [
+    "security",
+    "compliance",
+    "audit"
+  ],
+  "version": "1.0.0"
+}

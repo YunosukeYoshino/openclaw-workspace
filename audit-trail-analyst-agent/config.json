@@ -1,0 +1,11 @@
+{
+  "agent_id": "audit-trail-analyst-agent",
+  "name": "監査証跡アナリストエージェント",
+  "description": "監査証跡の分析・ログの監査",
+  "tags": [
+    "security",
+    "compliance",
+    "audit-trail"
+  ],
+  "version": "1.0.0"
+}

@@ -1,0 +1,11 @@
+{
+  "agent_id": "compliance-reporter-v2-agent",
+  "name": "コンプライアンスレポーターV2エージェント",
+  "description": "コンプライアンスレポートの自動生成・配信",
+  "tags": [
+    "security",
+    "compliance",
+    "reporting"
+  ],
+  "version": "1.0.0"
+}

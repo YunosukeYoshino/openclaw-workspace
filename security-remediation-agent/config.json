@@ -1,0 +1,11 @@
+{
+  "agent_id": "security-remediation-agent",
+  "name": "セキュリティ修復エージェント",
+  "description": "セキュリティ問題の修復・対策の管理",
+  "tags": [
+    "security",
+    "compliance",
+    "remediation"
+  ],
+  "version": "1.0.0"
+}

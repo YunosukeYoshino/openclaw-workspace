@@ -1,0 +1,11 @@
+{
+  "agent_id": "game-ui-ux-designer-agent",
+  "name": "ゲームUI/UXデザイナーエージェント",
+  "description": "ゲームUI・UXデザインの管理・最適化",
+  "tags": [
+    "game",
+    "design",
+    "ui-ux"
+  ],
+  "version": "1.0.0"
+}

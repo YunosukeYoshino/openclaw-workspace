@@ -1,0 +1,11 @@
+{
+  "agent_id": "stream-etl-orchestrator-agent",
+  "name": "ストリーミングETLオーケストレーターエージェント",
+  "description": "ストリーミングETLパイプラインの管理・最適化",
+  "tags": [
+    "data",
+    "etl",
+    "streaming"
+  ],
+  "version": "1.0.0"
+}

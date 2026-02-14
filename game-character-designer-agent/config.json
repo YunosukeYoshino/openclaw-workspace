@@ -1,0 +1,11 @@
+{
+  "agent_id": "game-character-designer-agent",
+  "name": "ゲームキャラクターデザイナーエージェント",
+  "description": "キャラクターデザインの管理・作成支援",
+  "tags": [
+    "game",
+    "design",
+    "character"
+  ],
+  "version": "1.0.0"
+}

@@ -1,0 +1,11 @@
+{
+  "agent_id": "erotic-segmentation-agent",
+  "name": "えっちコンテンツセグメンテーションエージェント",
+  "description": "ユーザー・コンテンツのセグメンテーション分析",
+  "tags": [
+    "erotic",
+    "analytics",
+    "segmentation"
+  ],
+  "version": "1.0.0"
+}

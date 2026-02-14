@@ -1,0 +1,11 @@
+{
+  "agent_id": "erotic-content-scoring-agent",
+  "name": "えっちコンテンツスコアリングエージェント",
+  "description": "コンテンツ品質・人気のスコアリング",
+  "tags": [
+    "erotic",
+    "analytics",
+    "scoring"
+  ],
+  "version": "1.0.0"
+}

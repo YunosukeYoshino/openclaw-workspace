@@ -1,0 +1,11 @@
+{
+  "agent_id": "game-concept-artist-agent",
+  "name": "ゲームコンセプトアーティストエージェント",
+  "description": "コンセプトアート・ビジュアルデザインの管理",
+  "tags": [
+    "game",
+    "design",
+    "concept"
+  ],
+  "version": "1.0.0"
+}

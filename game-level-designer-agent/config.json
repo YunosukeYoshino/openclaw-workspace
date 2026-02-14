@@ -1,0 +1,11 @@
+{
+  "agent_id": "game-level-designer-agent",
+  "name": "ゲームレベルデザイナーエージェント",
+  "description": "レベルデザイン・ステージ構成の管理・作成",
+  "tags": [
+    "game",
+    "design",
+    "level"
+  ],
+  "version": "1.0.0"
+}

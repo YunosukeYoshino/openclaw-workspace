@@ -1,0 +1,11 @@
+{
+  "agent_id": "game-environment-artist-agent",
+  "name": "ゲーム環境アーティストエージェント",
+  "description": "ゲーム環境・背景デザインの管理・作成",
+  "tags": [
+    "game",
+    "design",
+    "environment"
+  ],
+  "version": "1.0.0"
+}

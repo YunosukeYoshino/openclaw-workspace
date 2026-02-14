@@ -1,0 +1,11 @@
+{
+  "agent_id": "data-validation-agent",
+  "name": "データバリデーションエージェント",
+  "description": "データ品質チェック・バリデーション",
+  "tags": [
+    "data",
+    "etl",
+    "validation"
+  ],
+  "version": "1.0.0"
+}

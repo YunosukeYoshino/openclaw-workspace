@@ -1,0 +1,11 @@
+{
+  "agent_id": "policy-compliance-checker-agent",
+  "name": "ポリシーコンプライアンスチェッカーエージェント",
+  "description": "ポリシーコンプライアンスのチェック・確認",
+  "tags": [
+    "security",
+    "compliance",
+    "policy"
+  ],
+  "version": "1.0.0"
+}

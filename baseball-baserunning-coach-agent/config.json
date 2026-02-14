@@ -1,0 +1,11 @@
+{
+  "agent_id": "baseball-baserunning-coach-agent",
+  "name": "野球走塁コーチエージェント",
+  "description": "走塁技術・リード・盗塁のコーチング・分析",
+  "tags": [
+    "baseball",
+    "coaching",
+    "baserunning"
+  ],
+  "version": "1.0.0"
+}
