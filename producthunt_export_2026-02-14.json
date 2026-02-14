@@ -1,0 +1,59 @@
+[
+  {
+    "id": "test-1",
+    "name": "AI Code Assistant",
+    "description": "An intelligent coding assistant that understands your project context",
+    "url": "https://www.producthunt.com/posts/test-1",
+    "votes": 245,
+    "comments": 56,
+    "tagline": "Write code 10x faster with AI",
+    "topics": [
+      "AI",
+      "Productivity"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:28:19.026409",
+    "note": null,
+    "priority": null,
+    "status": null
+  },
+  {
+    "id": "test-2",
+    "name": "Notion Alternative",
+    "description": "A modern workspace for your team with real-time collaboration",
+    "url": "https://www.producthunt.com/posts/test-2",
+    "votes": 189,
+    "comments": 42,
+    "tagline": "The best productivity tool for teams",
+    "topics": [
+      "AI",
+      "Productivity"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:28:19.026409",
+    "note": null,
+    "priority": null,
+    "status": null
+  },
+  {
+    "id": "test-3",
+    "name": "ChatGPT Wrapper",
+    "description": "Build AI-powered chatbots in minutes",
+    "url": "https://www.producthunt.com/posts/test-3",
+    "votes": 156,
+    "comments": 31,
+    "tagline": "Supercharge ChatGPT for your business",
+    "topics": [
+      "AI",
+      "Productivity"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T20:28:19.026409",
+    "note": null,
+    "priority": null,
+    "status": null
+  }
+]
