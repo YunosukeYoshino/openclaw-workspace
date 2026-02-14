@@ -1,57 +1,90 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-log-retention-agent - Discord Botモジュール
+log-retention-agent - Discord Integration
+Discord bot integration for log-retention-agent
 """
 
 import discord
 from discord.ext import commands
-from db import LogRetentionAgentDB
+import logging
+from typing import Optional
+import json
+from pathlib import Path
 
-class LogRetentionAgentDiscordBot(commands.Bot):
-    """log-retention-agent Discord Bot"""
+class LogRetentionAgentDiscord:
+    """Discord bot integration for log-retention-agent"""
 
-    def __init__(self, db_path: str = "log-retention-agent.db"):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
-        self.db = LogRetentionAgentDB(db_path)
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.logger = logging.getLogger("log-retention-agent.discord")
+        self.config_path = Path(__file__).parent / "discord_config.json"
+        self.config = self._load_config()
 
-    async def setup_hook(self):
-        """Bot起動時の処理"""
-        print(f"{self.__class__.__name__} is ready!")
+    def _load_config(self) -> dict:
+        default_config = {
+            "command_prefix": "!",
+            "enabled_channels": [],
+            "admin_roles": []
+        }
+        if self.config_path.exists():
+            with open(self.config_path, "r", encoding="utf-8") as f:
+                return {**default_config, **json.load(f)}
+        return default_config
 
-    async def on_ready(self):
-        """Bot準備完了時の処理"""
-        print(f"Logged in as {self.user}")
+    def setup_commands(self):
+        @self.bot.command(name="logretentionagent_status")
+        async def agent_status(ctx):
+            embed = discord.Embed(
+                title="log-retention-agent Status",
+                description="ログリテンションエージェント。ログ保存期間の管理。",
+                color=discord.Color.blue()
+            )
+            embed.add_field(name="Active", value="Yes", inline=True)
+            embed.add_field(name="Version", value="1.0.0", inline=True)
+            await ctx.send(embed=embed)
 
-    @commands.command()
-    async def status(self, ctx: commands.Context):
-        """ステータス表示"""
-        entries = self.db.list_entries(limit=1)
-        await ctx.send(f"{self.__class__.__name__} is running! Total entries: {len(entries)}")
+        @self.bot.command(name="logretentionagent_help")
+        async def agent_help(ctx):
+            embed = discord.Embed(
+                title="log-retention-agent Help",
+                description="ログリテンションエージェント。ログ保存期間の管理。",
+                color=discord.Color.green()
+            )
+            embed.add_field(
+                name="Commands",
+                value="`!logretentionagent_status` - Show agent status\n`!logretentionagent_help` - Show this help message",
+                inline=False
+            )
+            await ctx.send(embed=embed)
 
-    @commands.command()
-    async def add(self, ctx: commands.Context, title: str, *, content: str):
-        """エントリー追加"""
-        entry_id = self.db.add_entry(title, content)
-        await ctx.send(f"Added entry with ID: {entry_id}")
+    async def send_notification(self, channel_id: int, message: str, embed: discord.Embed = None):
+        try:
+            channel = self.bot.get_channel(channel_id)
+            if channel:
+                await channel.send(content=message, embed=embed)
+                return True
+        except Exception as e:
+            self.logger.error("Failed to send notification: " + str(e))
+        return False
 
-    @commands.command()
-    async def list(self, ctx: commands.Context, limit: int = 10):
-        """エントリー一覧"""
-        entries = self.db.list_entries(limit=limit)
-        if entries:
-            response = "**Entries:**\n"
-            for entry in entries:
-                response += f"- #{entry['id']}: {entry['title']}\n"
-            await ctx.send(response)
-        else:
-            await ctx.send("No entries found.")
+    async def send_alert(self, channel_id: int, title: str, description: str, level: str = "info"):
+        color_map = {
+            "info": discord.Color.blue(),
+            "warning": discord.Color.orange(),
+            "error": discord.Color.red(),
+            "success": discord.Color.green()
+        }
+        embed = discord.Embed(
+            title=title,
+            description=description,
+            color=color_map.get(level, discord.Color.blue())
+        )
+        embed.set_footer(text="log-retention-agent")
+        return await self.send_notification(channel_id, "", embed)
 
-def main():
-    """メイン関数"""
-    bot = LogRetentionAgentDiscordBot()
-    # bot.run("YOUR_DISCORD_BOT_TOKEN")
-
-if __name__ == "__main__":
-    main()
+def setup(bot: commands.Bot):
+    discord_integration = LogRetentionAgentDiscord(bot)
+    discord_integration.setup_commands()
+    bot.add_cog(discord_integration)
+    return discord_integration
