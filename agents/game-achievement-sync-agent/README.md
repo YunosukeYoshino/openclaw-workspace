@@ -1,52 +1,102 @@
-# game-achievement-sync-agent
+# ゲーム実績同期エージェント
 
-**Category**: ゲームクロスプレイ・マルチプラットフォームエージェント
-**Version**: V36 - Agent 8/25
-**Status**: Active
+ゲーム実績の同期・管理
 
-## Overview
+## 概要
 
-game-achievement-sync-agent is an AI-powered agent for ゲームクロスプレイ・マルチプラットフォームエージェント.
+ゲーム実績同期エージェントはgamingカテゴリのエージェントです。Japanese言語に対応しています。
 
-## Features
+## 機能
 
-- Intelligent content processing
-- Persistent storage with SQLite
-- Discord integration support
-- RESTful API ready
+- データ処理・分析
+- タスク管理
+- 状態監視
+- Discord連携
 
-## Installation
+## インストール
 
 ```bash
-cd agents/game-achievement-sync-agent
 pip install -r requirements.txt
 ```
 
-## Usage
+## 使用方法
 
-```python
-from agent import GameAchievementSync
+### エージェントとして実行
 
-agent = GameAchievementSync()
-await agent.run()
+```bash
+python agent.py
 ```
 
-## Database
+### データベース操作
 
-The agent uses SQLite for persistent storage. Database file: `game-achievement-sync-agent.db`
+```bash
+python db.py
+```
 
-### Schema
+### Discordボット
 
-- `entries`: Main content storage
-  - `id`: Primary key
-  - `content`: Text content
-  - `created_at`: Timestamp
-  - `updated_at`: Timestamp
+```bash
+export DISCORD_TOKEN=your_token
+python discord.py
+```
 
-## Discord Integration
+## データベース構造
 
-Set `DISCORD_TOKEN` environment variable to enable Discord features.
+### records テーブル
+- `id`: 主キー
+- `type`: レコードタイプ
+- `title`: タイトル
+- `content`: コンテンツ
+- `metadata`: メタデータ（JSON）
+- `created_at`: 作成日時
+- `updated_at`: 更新日時
 
-## License
+### tasks テーブル
+- `id`: 主キー
+- `task_id`: タスクID
+- `status`: ステータス（pending/completed/failed）
+- `result`: 結果
+- `error`: エラーメッセージ
+- `created_at`: 作成日時
+- `completed_at`: 完了日時
 
-MIT
+### settings テーブル
+- `key`: 設定キー
+- `value`: 設定値
+- `updated_at`: 更新日時
+
+## Discordコマンド
+
+- `!help` - ヘルプ表示
+- `!status` - ステータス確認
+- `!info` - エージェント情報
+
+## API
+
+### Agent
+
+```python
+from agent import GameAchievementSyncAgent
+
+agent = GameAchievementSyncAgent()
+await agent.initialize()
+result = await agent.process(data)
+```
+
+### Database
+
+```python
+from db import GameAchievementSyncAgentDB
+
+db = GameAchievementSyncAgentDB()
+record_id = db.insert_record("type", "title", "content")
+record = db.get_record(record_id)
+```
+
+## 言語サポート
+
+- Japanese
+
+## ライセンス
+
+MIT License

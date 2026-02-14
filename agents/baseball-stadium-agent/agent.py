@@ -1,77 +1,109 @@
 #!/usr/bin/env python3
 """
 野球場エージェント
-Baseball Stadium Agent
-
-野球場情報・観戦ガイドを管理するエージェント
-Agent for managing baseball stadium information and viewing guides
+野球場の情報管理
 """
 
 import asyncio
-from typing import Optional
-from .db import BaseballStadiumAgentDB
+import os
+from typing import Optional, Dict, Any, List
+from datetime import datetime
+import json
 
-class BaseballStadiumAgentAgent:
-    "Baseball Stadium Agent""
+class BaseballStadiumAgent:
+    """野球場エージェント"""
 
-    def __init__(self, db_path: str = "data/baseball-stadium-agent.db"):
-        self.db = BaseballStadiumAgentDB(db_path)
-        self.name = "野球場エージェント"
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        self.config = config or {}
+        self.name = "baseball-stadium-agent"
+        self.title = "野球場エージェント"
+        self.description = "野球場の情報管理"
+        self.category = "baseball"
+        self.language = "Japanese"
+        self.state = "idle"
+        self.created_at = datetime.now().isoformat()
+        self.tasks: List[Dict[str, Any]] = []
 
-    async def process_command(self, command: str, args: list) -> str:
-        """コマンドを処理する"""
-        if command in ["rule", "term", "explain"]:
-            return await self.show_rule(args)
-        elif command in ["hof", "inductee", "category"]:
-            return await self.show_hof(args)
-        elif command in ["award", "mvp", "cy"]:
-            return await self.show_award(args)
-        elif command in ["stadium", "seat", "access"]:
-            return await self.show_stadium(args)
-        elif command in ["legend", "play", "record"]:
-            return await self.show_legend(args)
-        else:
-            return "不明なコマンドです。"
+    async def initialize(self) -> bool:
+        """エージェントの初期化"""
+        try:
+            self.state = "initializing"
+            print(f"Initializing {self.title}...")
+            await asyncio.sleep(0.5)
+            self.state = "ready"
+            return True
+        except Exception as e:
+            print(f"Error initializing: {e}")
+            self.state = "error"
+            return False
 
-    async def show_rule(self, args: list) -> str:
-        """ルールを表示する"""
-        rules = self.db.get_all_rules()
-        if not rules:
-            return "ルールが登録されていません。"
-        return "\\n".join([f"- {{r['name']}}: {{r['description']}}" for r in rules[:5]])
+    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """データ処理"""
+        if self.state != "ready":
+            return {"error": "Agent not ready", "state": self.state}
 
-    async def show_hof(self, args: list) -> str:
-        """殿堂入り選手を表示する"""
-        inductees = self.db.get_all_inductees()
-        if not inductees:
-            return "殿堂入り選手が登録されていません。"
-        return "\\n".join([f"- {{i['name']}} ({{i['year']}})" for i in inductees[:5]])
+        self.state = "processing"
+        try:
+            result = {
+                "success": True,
+                "data": input_data,
+                "processed_at": datetime.now().isoformat(),
+                "agent": self.name
+            }
+            self.state = "ready"
+            return result
+        except Exception as e:
+            self.state = "error"
+            return {"error": str(e), "state": self.state}
 
-    async def show_award(self, args: list) -> str:
-        """賞を表示する"""
-        awards = self.db.get_all_awards()
-        if not awards:
-            return "賞が登録されていません。"
-        return "\\n".join([f"- {{a['name']}} ({{a['year']}})" for a in awards[:5]])
+    async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+        """タスク実行"""
+        task_id = task.get("id", f"task_{len(self.tasks)}")
+        self.tasks.append({"id": task_id, "task": task, "status": "pending"})
 
-    async def show_stadium(self, args: list) -> str:
-        """野球場を表示する"""
-        stadiums = self.db.get_all_stadiums()
-        if not stadiums:
-            return "野球場が登録されていません。"
-        return "\\n".join([f"- {{s['name']}} (収容: {{s['capacity']}})" for s in stadiums[:5]])
+        try:
+            result = await self.process(task.get("data", {}))
+            self.tasks[-1]["status"] = "completed"
+            return result
+        except Exception as e:
+            self.tasks[-1]["status"] = "failed"
+            return {"error": str(e), "task_id": task_id}
 
-    async def show_legend(self, args: list) -> str:
-        """伝説を表示する"""
-        legends = self.db.get_all_legends()
-        if not legends:
-            return "伝説が登録されていません。"
-        return "\\n".join([f"- {{l['name']}}: {{l['description']}}" for l in legends[:5]])
+    async def get_status(self) -> Dict[str, Any]:
+        """ステータス取得"""
+        return {
+            "name": self.name,
+            "title": self.title,
+            "state": self.state,
+            "tasks_completed": sum(1 for t in self.tasks if t["status"] == "completed"),
+            "tasks_pending": sum(1 for t in self.tasks if t["status"] == "pending"),
+            "created_at": self.created_at
+        }
 
-def main():
-    import sys
-    agent = BaseballStadiumAgentAgent()
-    print(f"{{agent.name}} エージェントが準備完了")
+    async def cleanup(self) -> None:
+        """クリーンアップ"""
+        self.state = "stopped"
+        print(f"{self.title} stopped.")
+
+async def main():
+    """メイン処理"""
+    agent = BaseballStadiumAgent()
+    await agent.initialize()
+
+    sample_task = {
+        "id": "sample_001",
+        "data": {
+            "message": "Sample task for 野球場エージェント"
+        }
+    }
+
+    result = await agent.execute_task(sample_task)
+    print(f"Result: {json.dumps(result, ensure_ascii=False, indent=2)}")
+
+    status = await agent.get_status()
+    print(f"Status: {json.dumps(status, ensure_ascii=False, indent=2)}")
+
+    await agent.cleanup()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

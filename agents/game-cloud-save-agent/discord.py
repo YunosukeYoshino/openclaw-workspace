@@ -1,57 +1,102 @@
 #!/usr/bin/env python3
 """
-game-cloud-save-agent - Discord Botモジュール
+ゲームクラウドセーブエージェント - Discord連携
+Discordボットインターフェース
 """
 
-import discord
-from discord.ext import commands
-from db import GameCloudSaveAgentDB
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
+from datetime import datetime
 
-class GameCloudSaveAgentDiscordBot(commands.Bot):
-    """game-cloud-save-agent Discord Bot"""
+class GameCloudSaveAgentDiscord:
+    """ゲームクラウドセーブエージェント Discord連携クラス"""
 
-    def __init__(self, db_path: str = "game-cloud-save-agent.db"):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents)
-        self.db = GameCloudSaveAgentDB(db_path)
+    def __init__(self, token: Optional[str] = None):
+        self.token = token or os.getenv("DISCORD_TOKEN")
+        self.client = None
+        self.commands: List[Dict[str, Any]] = []
 
-    async def setup_hook(self):
-        """Bot起動時の処理"""
-        print(f"{self.__class__.__name__} is ready!")
+    async def start(self):
+        """Discordボット起動"""
+        if not self.token:
+            print("DISCORD_TOKEN not set, running in mock mode")
+            return
 
-    async def on_ready(self):
-        """Bot準備完了時の処理"""
-        print(f"Logged in as {self.user}")
+        try:
+            import discord
+            intents = discord.Intents.default()
+            intents.message_content = True
+            self.client = discord.Client(intents=intents)
 
-    @commands.command()
-    async def status(self, ctx: commands.Context):
-        """ステータス表示"""
-        entries = self.db.list_entries(limit=1)
-        await ctx.send(f"{self.__class__.__name__} is running! Total entries: {len(entries)}")
+            @self.client.event
+            async def on_ready():
+                print(f'{self.client.user} has connected to Discord!')
 
-    @commands.command()
-    async def add(self, ctx: commands.Context, title: str, *, content: str):
-        """エントリー追加"""
-        entry_id = self.db.add_entry(title, content)
-        await ctx.send(f"Added entry with ID: {entry_id}")
+            @self.client.event
+            async def on_message(message):
+                if message.author == self.client.user:
+                    return
 
-    @commands.command()
-    async def list(self, ctx: commands.Context, limit: int = 10):
-        """エントリー一覧"""
-        entries = self.db.list_entries(limit=limit)
-        if entries:
-            response = "**Entries:**\n"
-            for entry in entries:
-                response += f"- #{entry['id']}: {entry['title']}\n"
-            await ctx.send(response)
+                await self._handle_message(message)
+
+            await self.client.start(self.token)
+        except ImportError:
+            print("discord.py not installed, running in mock mode")
+
+    async def _handle_message(self, message):
+        """メッセージハンドリング"""
+        content = message.content.lower()
+
+        if content.startswith('!help'):
+            help_text = await self.get_help()
+            await message.channel.send(help_text)
+
+        elif content.startswith('!status'):
+            status = await self.get_status()
+            await message.channel.send(status)
+
+    async def send_message(self, channel_id: int, content: str):
+        """メッセージ送信"""
+        if self.client:
+            channel = self.client.get_channel(channel_id)
+            if channel:
+                await channel.send(content)
         else:
-            await ctx.send("No entries found.")
+            print(f"Mock: Send to channel {channel_id}: {content}")
 
-def main():
-    """メイン関数"""
-    bot = GameCloudSaveAgentDiscordBot()
-    # bot.run("YOUR_DISCORD_BOT_TOKEN")
+    async def get_help(self) -> str:
+        """ヘルプメッセージ"""
+        return f"""
+**ゲームクラウドセーブエージェント - Commands**
+
+!help - Show this help message
+!status - Show agent status
+!info - Show agent information
+
+gaming category agent
+"""
+
+    async def get_status(self) -> str:
+        """ステータスメッセージ"""
+        return f"""
+**ゲームクラウドセーブエージェント Status**
+
+Status: Ready
+Language: Japanese
+Category: gaming
+Commands: {len(self.commands)}
+"""
+
+    async def stop(self):
+        """ボット停止"""
+        if self.client:
+            await self.client.close()
+
+async def main():
+    """動作確認"""
+    bot = GameCloudSaveAgentDiscord()
+    await bot.start()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

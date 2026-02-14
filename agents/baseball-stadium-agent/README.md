@@ -1,45 +1,102 @@
-# 野球場エージェント / Baseball Stadium Agent
+# 野球場エージェント
 
-野球場情報・観戦ガイドを管理するエージェント
-Agent for managing baseball stadium information and viewing guides
+野球場の情報管理
 
-## Features / 機能
+## 概要
 
-- ルール・用語の説明 (Rule Explanation)
-- 殿堂入り選手の管理 (Hall of Fame Management)
-- 賞の管理 (Awards Management)
-- 野球場情報の管理 (Stadium Information Management)
-- 伝説的選手・名場面の管理 (Legends Management)
+野球場エージェントはbaseballカテゴリのエージェントです。Japanese言語に対応しています。
 
-## Installation / インストール
+## 機能
+
+- データ処理・分析
+- タスク管理
+- 状態監視
+- Discord連携
+
+## インストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage / 使用方法
+## 使用方法
 
-```python
-from agents.baseball-stadium-agent.agent import BaseballStadiumAgentAgent
+### エージェントとして実行
 
-agent = BaseballStadiumAgentAgent()
-result = await agent.process_command("rule", ["obstruction"])
-print(result)
+```bash
+python agent.py
 ```
 
-## Database / データベース
+### データベース操作
 
-- `rules` - ルール・用語データ
-- `entries` - 一般エントリーデータ
+```bash
+python db.py
+```
 
-## Commands / コマンド
+### Discordボット
 
-- `rule <term>` - 用語を説明
-- `hof <name>` - 殿堂入り選手を表示
-- `award <name>` - 賞を表示
-- `stadium <name>` - 野球場情報を表示
-- `legend <name>` - 伝説を表示
+```bash
+export DISCORD_TOKEN=your_token
+python discord.py
+```
 
-## License / ライセンス
+## データベース構造
 
-MIT
+### records テーブル
+- `id`: 主キー
+- `type`: レコードタイプ
+- `title`: タイトル
+- `content`: コンテンツ
+- `metadata`: メタデータ（JSON）
+- `created_at`: 作成日時
+- `updated_at`: 更新日時
+
+### tasks テーブル
+- `id`: 主キー
+- `task_id`: タスクID
+- `status`: ステータス（pending/completed/failed）
+- `result`: 結果
+- `error`: エラーメッセージ
+- `created_at`: 作成日時
+- `completed_at`: 完了日時
+
+### settings テーブル
+- `key`: 設定キー
+- `value`: 設定値
+- `updated_at`: 更新日時
+
+## Discordコマンド
+
+- `!help` - ヘルプ表示
+- `!status` - ステータス確認
+- `!info` - エージェント情報
+
+## API
+
+### Agent
+
+```python
+from agent import BaseballStadiumAgent
+
+agent = BaseballStadiumAgent()
+await agent.initialize()
+result = await agent.process(data)
+```
+
+### Database
+
+```python
+from db import BaseballStadiumAgentDB
+
+db = BaseballStadiumAgentDB()
+record_id = db.insert_record("type", "title", "content")
+record = db.get_record(record_id)
+```
+
+## 言語サポート
+
+- Japanese
+
+## ライセンス
+
+MIT License

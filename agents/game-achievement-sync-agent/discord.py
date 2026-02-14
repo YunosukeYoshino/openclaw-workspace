@@ -1,30 +1,102 @@
 #!/usr/bin/env python3
-"""Discord integration for game-achievement-sync-agent"""
+"""
+ゲーム実績同期エージェント - Discord連携
+Discordボットインターフェース
+"""
 
-import logging
+import asyncio
 import os
-from typing import Optional
+from typing import Optional, Dict, Any, List
+from datetime import datetime
 
-logger = logging.getLogger(__name__)
-
-class DiscordHandler:
-    """Discord bot handler"""
+class GameAchievementSyncAgentDiscord:
+    """ゲーム実績同期エージェント Discord連携クラス"""
 
     def __init__(self, token: Optional[str] = None):
         self.token = token or os.getenv("DISCORD_TOKEN")
-        self.enabled = bool(self.token)
+        self.client = None
+        self.commands: List[Dict[str, Any]] = []
 
     async def start(self):
-        """Start Discord bot"""
-        if self.enabled:
-            logger.info("Discord integration is configured")
-        else:
-            logger.info("Discord integration not configured (no token)")
-
-    async def send_message(self, channel_id: str, message: str):
-        """Send message to Discord channel"""
-        if not self.enabled:
-            logger.warning("Discord not enabled")
+        """Discordボット起動"""
+        if not self.token:
+            print("DISCORD_TOKEN not set, running in mock mode")
             return
-        # Implementation would use discord.py library
-        logger.info(f"Would send to {channel_id}: {message[:50]}...")
+
+        try:
+            import discord
+            intents = discord.Intents.default()
+            intents.message_content = True
+            self.client = discord.Client(intents=intents)
+
+            @self.client.event
+            async def on_ready():
+                print(f'{self.client.user} has connected to Discord!')
+
+            @self.client.event
+            async def on_message(message):
+                if message.author == self.client.user:
+                    return
+
+                await self._handle_message(message)
+
+            await self.client.start(self.token)
+        except ImportError:
+            print("discord.py not installed, running in mock mode")
+
+    async def _handle_message(self, message):
+        """メッセージハンドリング"""
+        content = message.content.lower()
+
+        if content.startswith('!help'):
+            help_text = await self.get_help()
+            await message.channel.send(help_text)
+
+        elif content.startswith('!status'):
+            status = await self.get_status()
+            await message.channel.send(status)
+
+    async def send_message(self, channel_id: int, content: str):
+        """メッセージ送信"""
+        if self.client:
+            channel = self.client.get_channel(channel_id)
+            if channel:
+                await channel.send(content)
+        else:
+            print(f"Mock: Send to channel {channel_id}: {content}")
+
+    async def get_help(self) -> str:
+        """ヘルプメッセージ"""
+        return f"""
+**ゲーム実績同期エージェント - Commands**
+
+!help - Show this help message
+!status - Show agent status
+!info - Show agent information
+
+gaming category agent
+"""
+
+    async def get_status(self) -> str:
+        """ステータスメッセージ"""
+        return f"""
+**ゲーム実績同期エージェント Status**
+
+Status: Ready
+Language: Japanese
+Category: gaming
+Commands: {len(self.commands)}
+"""
+
+    async def stop(self):
+        """ボット停止"""
+        if self.client:
+            await self.client.close()
+
+async def main():
+    """動作確認"""
+    bot = GameAchievementSyncAgentDiscord()
+    await bot.start()
+
+if __name__ == "__main__":
+    asyncio.run(main())

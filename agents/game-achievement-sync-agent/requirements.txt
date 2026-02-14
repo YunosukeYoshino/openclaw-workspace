@@ -1,4 +1,17 @@
-# Requirements for game-achievement-sync-agent
-aiosqlite>=0.19.0
-discord.py>=2.3.0
-python-dotenv>=1.0.0
+# Requirements for ゲーム実績同期エージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# pandas
+# numpy
+# requests
+# fastapi
+# redis

@@ -1,173 +1,169 @@
 #!/usr/bin/env python3
 """
-compliance-monitor-agent - データベースモジュール
+コンプライアンスモニターエージェント - データベース管理
+SQLiteベースのデータ永続化
 """
 
 import sqlite3
-import json
-from pathlib import Path
-from typing import Optional, List, Dict, Any
+from datetime import datetime
+from typing import Optional, Dict, Any, List
 from contextlib import contextmanager
+import json
 
-DB_PATH = Path(__file__).parent / "compliance-monitor-agent.db"
+class ComplianceMonitorAgentDB:
+    """コンプライアンスモニターエージェント データベースクラス"""
 
-@contextmanager
-def get_db_connection():
-    conn = sqlite3.connect(str(DB_PATH))
-    conn.row_factory = sqlite3.Row
-    try:
-        yield conn
-    finally:
-        conn.close()
+    def __init__(self, db_path: str = "data/compliance-monitor-agent.db"):
+        self.db_path = db_path
+        self._init_db()
 
-def init_db():
-    conn = sqlite3.connect(str(DB_PATH))
-    cursor = conn.cursor()
+    @contextmanager
+    def _get_connection(self):
+        """データベース接続のコンテキストマネージャ"""
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        try:
+            yield conn
+            conn.commit()
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            conn.close()
 
-    cursor.execute("CREATE TABLE IF NOT EXISTS compliance_monitor_agent (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, metadata TEXT, status TEXT DEFAULT 'active', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
-    cursor.execute("CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL)")
-    cursor.execute("CREATE TABLE IF NOT EXISTS compliance_monitor_agent_tags (compliance_monitor_agent_id INTEGER NOT NULL, tag_id INTEGER NOT NULL, PRIMARY KEY (compliance_monitor_agent_id, tag_id), FOREIGN KEY (compliance_monitor_agent_id) REFERENCES compliance_monitor_agent(id) ON DELETE CASCADE, FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE)")
+    def _init_db(self):
+        """データベース初期化"""
+        with self._get_connection() as conn:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS records (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    type TEXT NOT NULL,
+                    title TEXT,
+                    content TEXT NOT NULL,
+                    metadata TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
 
-    cursor.execute(f'CREATE INDEX IF NOT EXISTS idx_compliance_monitor_agent_created_at ON compliance_monitor_agent(created_at)')
-    cursor.execute(f'CREATE INDEX IF NOT EXISTS idx_compliance_monitor_agent_status ON compliance_monitor_agent(status)')
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS tasks (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    task_id TEXT UNIQUE NOT NULL,
+                    status TEXT DEFAULT 'pending',
+                    result TEXT,
+                    error TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    completed_at TIMESTAMP
+                )
+            """)
 
-    conn.commit()
-    conn.close()
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS settings (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
 
-def create_entry(title: str, content: str, metadata: Optional[Dict[str, Any]] = None, tags: Optional[List[str]] = None) -> int:
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
+    def insert_record(self, record_type: str, title: str, content: str,
+                       metadata: Optional[Dict[str, Any]] = None) -> int:
+        """レコード挿入"""
         metadata_json = json.dumps(metadata) if metadata else None
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                'INSERT INTO records (type, title, content, metadata) VALUES (?, ?, ?, ?)',
+                (record_type, title, content, metadata_json)
+            )
+            return cursor.lastrowid
 
-        cursor.execute(f"INSERT INTO compliance_monitor_agent (title, content, metadata) VALUES (?, ?, ?)", (title, content, metadata_json))
-
-        entry_id = cursor.lastrowid
-
-        if tags:
-            for tag_name in tags:
-                cursor.execute("INSERT OR IGNORE INTO tags (name) VALUES (?)", (tag_name,))
-                cursor.execute("SELECT id FROM tags WHERE name = ?", (tag_name,))
-                tag_id = cursor.fetchone()[0]
-                cursor.execute(f"INSERT INTO compliance_monitor_agent_tags (compliance_monitor_agent_id, tag_id) VALUES (?, ?)", (entry_id, tag_id))
-
-        conn.commit()
-        return entry_id
-
-def get_entry(entry_id: int) -> Optional[Dict[str, Any]]:
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT id, title, content, metadata, status, created_at, updated_at FROM compliance_monitor_agent WHERE id = ?", (entry_id,))
-        row = cursor.fetchone()
-        if row:
-            return dict(row)
+    def get_record(self, record_id: int) -> Optional[Dict[str, Any]]:
+        """レコード取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT * FROM records WHERE id = ?', (record_id,)).fetchone()
+            if row:
+                return dict(row)
         return None
 
-def list_entries(status: Optional[str] = None, limit: int = 100, offset: int = 0) -> List[Dict[str, Any]]:
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
+    def list_records(self, record_type: Optional[str] = None,
+                    limit: int = 100) -> List[Dict[str, Any]]:
+        """レコード一覧"""
+        with self._get_connection() as conn:
+            if record_type:
+                rows = conn.execute(
+                    'SELECT * FROM records WHERE type = ? ORDER BY created_at DESC LIMIT ?',
+                    (record_type, limit)
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    'SELECT * FROM records ORDER BY created_at DESC LIMIT ?',
+                    (limit,)
+                ).fetchall()
+            return [dict(row) for row in rows]
 
-        if status:
-            cursor.execute(f"SELECT id, title, content, metadata, status, created_at, updated_at FROM compliance_monitor_agent WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?", (status, limit, offset))
-        else:
-            cursor.execute(f"SELECT id, title, content, metadata, status, created_at, updated_at FROM compliance_monitor_agent ORDER BY created_at DESC LIMIT ? OFFSET ?", (limit, offset))
+    def insert_task(self, task_id: str, status: str = "pending") -> int:
+        """タスク挿入"""
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                'INSERT INTO tasks (task_id, status) VALUES (?, ?)',
+                (task_id, status)
+            )
+            return cursor.lastrowid
 
-        return [dict(row) for row in cursor.fetchall()]
+    def update_task(self, task_id: str, status: str,
+                   result: Optional[str] = None, error: Optional[str] = None):
+        """タスク更新"""
+        completed_at = datetime.now().isoformat() if status == "completed" else None
+        with self._get_connection() as conn:
+            conn.execute(
+                'UPDATE tasks SET status = ?, result = ?, error = ?, completed_at = ? WHERE task_id = ?',
+                (status, result, error, completed_at, task_id)
+            )
 
-def search_entries(query: str, limit: int = 100) -> List[Dict[str, Any]]:
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
-        search_pattern = "%" + query + "%"
-        cursor.execute(f"SELECT id, title, content, metadata, status, created_at, updated_at FROM compliance_monitor_agent WHERE title LIKE ? OR content LIKE ? ORDER BY created_at DESC LIMIT ?", (search_pattern, search_pattern, limit))
+    def get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """タスク取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT * FROM tasks WHERE task_id = ?', (task_id,)).fetchone()
+            if row:
+                return dict(row)
+        return None
 
-        return [dict(row) for row in cursor.fetchall()]
+    def set_setting(self, key: str, value: str):
+        """設定保存"""
+        with self._get_connection() as conn:
+            conn.execute(
+                'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?, updated_at = CURRENT_TIMESTAMP',
+                (key, value, value)
+            )
 
-def update_entry(entry_id: int, **kwargs) -> bool:
-    valid_fields = ["title", "content", "metadata", "status"]
-    update_fields = {k: v for k, v in kwargs.items() if k in valid_fields}
+    def get_setting(self, key: str) -> Optional[str]:
+        """設定取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT value FROM settings WHERE key = ?', (key,)).fetchone()
+            if row:
+                return row['value']
+        return None
 
-    if not update_fields:
-        return False
+async def main():
+    """動作確認"""
+    db = ComplianceMonitorAgentDB()
 
-    if "metadata" in update_fields and update_fields["metadata"]:
-        update_fields["metadata"] = json.dumps(update_fields["metadata"])
+    record_id = db.insert_record(
+        record_type="sample",
+        title="Sample Record",
+        content="This is a sample record for コンプライアンスモニターエージェント"
+    )
+    print(f"Inserted record: {record_id}")
 
-    set_clause = ", ".join([f"{k} = ?" for k in update_fields.keys()])
-    values = list(update_fields.values())
-    values.append(entry_id)
+    record = db.get_record(record_id)
+    print(f"Retrieved record: {record}")
 
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
-        cursor.execute(f"UPDATE compliance_monitor_agent SET {set_clause}, updated_at = CURRENT_TIMESTAMP WHERE id = ?", values)
-        conn.commit()
-        return cursor.rowcount > 0
+    db.insert_task("task_001")
+    db.update_task("task_001", "completed", result="Success")
 
-def delete_entry(entry_id: int) -> bool:
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
-        cursor.execute(f"DELETE FROM compliance_monitor_agent_tags WHERE compliance_monitor_agent_id = ?", (entry_id,))
-        cursor.execute(f"DELETE FROM compliance_monitor_agent WHERE id = ?", (entry_id,))
-        conn.commit()
-        return cursor.rowcount > 0
-
-def add_tag_to_entry(entry_id: int, tag_name: str) -> bool:
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
-        cursor.execute("INSERT OR IGNORE INTO tags (name) VALUES (?)", (tag_name,))
-        cursor.execute("SELECT id FROM tags WHERE name = ?", (tag_name,))
-        row = cursor.fetchone()
-        if not row:
-            return False
-
-        tag_id = row[0]
-        cursor.execute(f"INSERT OR IGNORE INTO compliance_monitor_agent_tags (compliance_monitor_agent_id, tag_id) VALUES (?, ?)", (entry_id, tag_id))
-        conn.commit()
-        return True
-
-def remove_tag_from_entry(entry_id: int, tag_name: str) -> bool:
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
-        cursor.execute(f"DELETE FROM compliance_monitor_agent_tags WHERE compliance_monitor_agent_id = ? AND tag_id = (SELECT id FROM tags WHERE name = ?)", (entry_id, tag_name))
-        conn.commit()
-        return cursor.rowcount > 0
-
-def get_all_tags() -> List[str]:
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT name FROM tags ORDER BY name")
-        return [row[0] for row in cursor.fetchall()]
-
-def get_entries_by_tag(tag_name: str, limit: int = 100) -> List[Dict[str, Any]]:
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT e.id, e.title, e.content, e.metadata, e.status, e.created_at, e.updated_at FROM compliance_monitor_agent e INNER JOIN compliance_monitor_agent_tags et ON e.id = et.compliance_monitor_agent_id INNER JOIN tags t ON et.tag_id = t.id WHERE t.name = ? ORDER BY e.created_at DESC LIMIT ?", (tag_name, limit))
-
-        return [dict(row) for row in cursor.fetchall()]
-
-def get_stats() -> Dict[str, Any]:
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
-
-        cursor.execute(f"SELECT COUNT(*) FROM compliance_monitor_agent")
-        total_entries = cursor.fetchone()[0]
-
-        cursor.execute(f"SELECT COUNT(*) FROM compliance_monitor_agent WHERE status = 'active'")
-        active_entries = cursor.fetchone()[0]
-
-        cursor.execute("SELECT COUNT(*) FROM tags")
-        total_tags = cursor.fetchone()[0]
-
-        cursor.execute(f"SELECT name, COUNT(*) as count FROM compliance_monitor_agent_tags INNER JOIN tags ON compliance_monitor_agent_tags.tag_id = tags.id GROUP BY name ORDER BY count DESC LIMIT 10")
-        top_tags = [{"name": row[0], "count": row[1]} for row in cursor.fetchall()]
-
-        return {
-            "total_entries": total_entries,
-            "active_entries": active_entries,
-            "archived_entries": total_entries - active_entries,
-            "total_tags": total_tags,
-            "top_tags": top_tags,
-        }
+    task = db.get_task("task_001")
+    print(f"Task status: {task}")
 
 if __name__ == "__main__":
-    init_db()
-    print("データベース初期化完了")
-    print("統計情報:", get_stats())
+    import asyncio
+    asyncio.run(main())

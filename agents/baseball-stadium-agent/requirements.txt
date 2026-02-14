@@ -1,2 +1,17 @@
-discord.py>=2.3.0
-aiohttp>=3.9.0
+# Requirements for 野球場エージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# pandas
+# numpy
+# requests
+# geopy
+# matplotlib

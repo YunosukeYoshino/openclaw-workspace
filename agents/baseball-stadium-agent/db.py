@@ -1,98 +1,169 @@
 #!/usr/bin/env python3
 """
-野球場エージェント Database Module
-Baseball Stadium Agent データベースモジュール
+野球場エージェント - データベース管理
+SQLiteベースのデータ永続化
 """
 
 import sqlite3
-from pathlib import Path
-from typing import List, Dict, Optional
 from datetime import datetime
+from typing import Optional, Dict, Any, List
+from contextlib import contextmanager
+import json
 
 class BaseballStadiumAgentDB:
-    "Baseball Stadium Agent Database"
+    """野球場エージェント データベースクラス"""
 
     def __init__(self, db_path: str = "data/baseball-stadium-agent.db"):
-        self.db_path = Path(db_path)
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        self.conn = sqlite3.connect(str(self.db_path))
-        self.create_tables()
+        self.db_path = db_path
+        self._init_db()
 
-    def create_tables(self):
-        """テーブルを作成する"""
-        cursor = self.conn.cursor()
+    @contextmanager
+    def _get_connection(self):
+        """データベース接続のコンテキストマネージャ"""
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        try:
+            yield conn
+            conn.commit()
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            conn.close()
 
-        # rules/stadiums/legends テーブル
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS rules (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                description TEXT,
-                category TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    def _init_db(self):
+        """データベース初期化"""
+        with self._get_connection() as conn:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS records (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    type TEXT NOT NULL,
+                    title TEXT,
+                    content TEXT NOT NULL,
+                    metadata TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS tasks (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    task_id TEXT UNIQUE NOT NULL,
+                    status TEXT DEFAULT 'pending',
+                    result TEXT,
+                    error TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    completed_at TIMESTAMP
+                )
+            """)
+
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS settings (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+
+    def insert_record(self, record_type: str, title: str, content: str,
+                       metadata: Optional[Dict[str, Any]] = None) -> int:
+        """レコード挿入"""
+        metadata_json = json.dumps(metadata) if metadata else None
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                'INSERT INTO records (type, title, content, metadata) VALUES (?, ?, ?, ?)',
+                (record_type, title, content, metadata_json)
             )
-        ''')
+            return cursor.lastrowid
 
-        # entries テーブル
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS entries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT,
-                content TEXT NOT NULL,
-                type TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    def get_record(self, record_id: int) -> Optional[Dict[str, Any]]:
+        """レコード取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT * FROM records WHERE id = ?', (record_id,)).fetchone()
+            if row:
+                return dict(row)
+        return None
+
+    def list_records(self, record_type: Optional[str] = None,
+                    limit: int = 100) -> List[Dict[str, Any]]:
+        """レコード一覧"""
+        with self._get_connection() as conn:
+            if record_type:
+                rows = conn.execute(
+                    'SELECT * FROM records WHERE type = ? ORDER BY created_at DESC LIMIT ?',
+                    (record_type, limit)
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    'SELECT * FROM records ORDER BY created_at DESC LIMIT ?',
+                    (limit,)
+                ).fetchall()
+            return [dict(row) for row in rows]
+
+    def insert_task(self, task_id: str, status: str = "pending") -> int:
+        """タスク挿入"""
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                'INSERT INTO tasks (task_id, status) VALUES (?, ?)',
+                (task_id, status)
             )
-        ''')
+            return cursor.lastrowid
 
-        self.conn.commit()
+    def update_task(self, task_id: str, status: str,
+                   result: Optional[str] = None, error: Optional[str] = None):
+        """タスク更新"""
+        completed_at = datetime.now().isoformat() if status == "completed" else None
+        with self._get_connection() as conn:
+            conn.execute(
+                'UPDATE tasks SET status = ?, result = ?, error = ?, completed_at = ? WHERE task_id = ?',
+                (status, result, error, completed_at, task_id)
+            )
 
-    def get_all_rules(self) -> List[Dict]:
-        """すべてのルールを取得する"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM rules ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
+    def get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """タスク取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT * FROM tasks WHERE task_id = ?', (task_id,)).fetchone()
+            if row:
+                return dict(row)
+        return None
 
-    def get_all_inductees(self) -> List[Dict]:
-        """すべての殿堂入り選手を取得する（rulesテーブルを使用）"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM rules WHERE category = 'hof' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
+    def set_setting(self, key: str, value: str):
+        """設定保存"""
+        with self._get_connection() as conn:
+            conn.execute(
+                'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?, updated_at = CURRENT_TIMESTAMP',
+                (key, value, value)
+            )
 
-    def get_all_awards(self) -> List[Dict]:
-        """すべての賞を取得する（rulesテーブルを使用）"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM rules WHERE category = 'award' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
+    def get_setting(self, key: str) -> Optional[str]:
+        """設定取得"""
+        with self._get_connection() as conn:
+            row = conn.execute('SELECT value FROM settings WHERE key = ?', (key,)).fetchone()
+            if row:
+                return row['value']
+        return None
 
-    def get_all_stadiums(self) -> List[Dict]:
-        """すべての野球場を取得する（rulesテーブルを使用）"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM rules WHERE category = 'stadium' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
-
-    def get_all_legends(self) -> List[Dict]:
-        """すべての伝説を取得する（rulesテーブルを使用）"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM rules WHERE category = 'legend' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
-
-    def add_rule(self, name: str, description: str, category: str = "general") -> int:
-        """ルールを追加する"""
-        cursor = self.conn.cursor()
-        cursor.execute(
-            "INSERT INTO rules (name, description, category) VALUES (?, ?, ?)",
-            (name, description, category)
-        )
-        self.conn.commit()
-        return cursor.lastrowid
-
-    def close(self):
-        """接続を閉じる"""
-        self.conn.close()
-
-def main():
+async def main():
+    """動作確認"""
     db = BaseballStadiumAgentDB()
-    print("Database initialized")
+
+    record_id = db.insert_record(
+        record_type="sample",
+        title="Sample Record",
+        content="This is a sample record for 野球場エージェント"
+    )
+    print(f"Inserted record: {record_id}")
+
+    record = db.get_record(record_id)
+    print(f"Retrieved record: {record}")
+
+    db.insert_task("task_001")
+    db.update_task("task_001", "completed", result="Success")
+
+    task = db.get_task("task_001")
+    print(f"Task status: {task}")
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())
