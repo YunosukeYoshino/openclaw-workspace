@@ -1,10 +1,10 @@
-# workflow-monitor-agent
+# erotic-ai-quality-metric-agent
 
-ワークフローモニターエージェント。ワークフローの監視
+えっちAI品質メトリクスエージェント。AI品質指標の計算
 
 ## 機能
 
-- ワークフローモニターエージェント。ワークフローの監視
+- えっちAI品質メトリクスエージェント。AI品質指標の計算
 - Discordボット連携
 - データベース管理
 
@@ -36,7 +36,7 @@ export DISCORD_TOKEN="your_discord_token"
 ## ディレクトリ構造
 
 ```
-workflow-monitor-agent/
+erotic-ai-quality-metric-agent/
 ├── agent.py       - メインエージェントコード
 ├── db.py          - データベースモジュール
 ├── discord.py     - Discordボット

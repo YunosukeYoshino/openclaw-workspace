@@ -1,10 +1,10 @@
-# workflow-monitor-agent
+# workflow-engine-agent
 
-ワークフローモニターエージェント。ワークフローの監視
+ワークフローエンジンエージェント。ワークフローの実行・管理
 
 ## 機能
 
-- ワークフローモニターエージェント。ワークフローの監視
+- ワークフローエンジンエージェント。ワークフローの実行・管理
 - Discordボット連携
 - データベース管理
 
@@ -36,7 +36,7 @@ export DISCORD_TOKEN="your_discord_token"
 ## ディレクトリ構造
 
 ```
-workflow-monitor-agent/
+workflow-engine-agent/
 ├── agent.py       - メインエージェントコード
 ├── db.py          - データベースモジュール
 ├── discord.py     - Discordボット

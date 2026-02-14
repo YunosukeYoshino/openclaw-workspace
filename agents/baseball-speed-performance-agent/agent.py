@@ -1,14 +1,14 @@
-"""ワークフローモニターエージェント。ワークフローの監視"""
+"""野球走力パフォーマンス分析エージェント。走塁・盗塁データの分析"""
 
 import discord
 from db import AgentDatabase
 
-class WorkflowMonitorAgent(discord.Client):
-    """ワークフローモニターエージェント。ワークフローの監視"""
+class BaseballSpeedPerformanceAgent(discord.Client):
+    """野球走力パフォーマンス分析エージェント。走塁・盗塁データの分析"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.db = AgentDatabase(f"workflow-monitor-agent.db")
+        self.db = AgentDatabase(f"baseball-speed-performance-agent.db")
 
     async def on_ready(self):
         print(f"{self.user} is ready!")
@@ -37,7 +37,7 @@ class WorkflowMonitorAgent(discord.Client):
     async def show_help(self, message):
         """ヘルプを表示"""
         help_text = f"""
-        workflow-monitor-agent - ワークフローモニターエージェント。ワークフローの監視
+        baseball-speed-performance-agent - 野球走力パフォーマンス分析エージェント。走塁・盗塁データの分析
 
         Commands:
         !help - Show this help

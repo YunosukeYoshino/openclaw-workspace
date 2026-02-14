@@ -1,4 +1,4 @@
-"""Discord bot for workflow-monitor-agent"""
+"""Discord bot for baseball-consistency-agent"""
 
 import os
 import discord
@@ -39,7 +39,7 @@ async def handle_command(message):
 async def show_help(message):
     """ヘルプを表示"""
     help_text = f"""
-    workflow-monitor-agent - ワークフローモニターエージェント。ワークフローの監視
+    baseball-consistency-agent - 野球一貫性分析エージェント。パフォーマンスの安定性分析
 
     Commands:
     !help - Show this help

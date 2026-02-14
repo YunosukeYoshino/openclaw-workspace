@@ -1,10 +1,10 @@
-# workflow-monitor-agent
+# game-rl-agent
 
-ワークフローモニターエージェント。ワークフローの監視
+ゲーム強化学習エージェント。強化学習モデルの管理
 
 ## 機能
 
-- ワークフローモニターエージェント。ワークフローの監視
+- ゲーム強化学習エージェント。強化学習モデルの管理
 - Discordボット連携
 - データベース管理
 
@@ -36,7 +36,7 @@ export DISCORD_TOKEN="your_discord_token"
 ## ディレクトリ構造
 
 ```
-workflow-monitor-agent/
+game-rl-agent/
 ├── agent.py       - メインエージェントコード
 ├── db.py          - データベースモジュール
 ├── discord.py     - Discordボット

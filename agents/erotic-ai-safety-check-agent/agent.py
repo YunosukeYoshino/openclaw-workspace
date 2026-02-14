@@ -1,14 +1,14 @@
-"""ワークフローモニターエージェント。ワークフローの監視"""
+"""えっちAI安全性チェックエージェント。AIによる安全性確認"""
 
 import discord
 from db import AgentDatabase
 
-class WorkflowMonitorAgent(discord.Client):
-    """ワークフローモニターエージェント。ワークフローの監視"""
+class EroticAiSafetyCheckAgent(discord.Client):
+    """えっちAI安全性チェックエージェント。AIによる安全性確認"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.db = AgentDatabase(f"workflow-monitor-agent.db")
+        self.db = AgentDatabase(f"erotic-ai-safety-check-agent.db")
 
     async def on_ready(self):
         print(f"{self.user} is ready!")
@@ -37,7 +37,7 @@ class WorkflowMonitorAgent(discord.Client):
     async def show_help(self, message):
         """ヘルプを表示"""
         help_text = f"""
-        workflow-monitor-agent - ワークフローモニターエージェント。ワークフローの監視
+        erotic-ai-safety-check-agent - えっちAI安全性チェックエージェント。AIによる安全性確認
 
         Commands:
         !help - Show this help

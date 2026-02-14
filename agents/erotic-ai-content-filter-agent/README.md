@@ -1,10 +1,10 @@
-# workflow-monitor-agent
+# erotic-ai-content-filter-agent
 
-ワークフローモニターエージェント。ワークフローの監視
+えっちAIコンテンツフィルターエージェント。AIによるコンテンツフィルタリング
 
 ## 機能
 
-- ワークフローモニターエージェント。ワークフローの監視
+- えっちAIコンテンツフィルターエージェント。AIによるコンテンツフィルタリング
 - Discordボット連携
 - データベース管理
 
@@ -36,7 +36,7 @@ export DISCORD_TOKEN="your_discord_token"
 ## ディレクトリ構造
 
 ```
-workflow-monitor-agent/
+erotic-ai-content-filter-agent/
 ├── agent.py       - メインエージェントコード
 ├── db.py          - データベースモジュール
 ├── discord.py     - Discordボット

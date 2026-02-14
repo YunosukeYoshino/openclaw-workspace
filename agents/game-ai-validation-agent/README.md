@@ -1,10 +1,10 @@
-# workflow-monitor-agent
+# game-ai-validation-agent
 
-ワークフローモニターエージェント。ワークフローの監視
+ゲームAI検証エージェント。モデル検証・評価
 
 ## 機能
 
-- ワークフローモニターエージェント。ワークフローの監視
+- ゲームAI検証エージェント。モデル検証・評価
 - Discordボット連携
 - データベース管理
 
@@ -36,7 +36,7 @@ export DISCORD_TOKEN="your_discord_token"
 ## ディレクトリ構造
 
 ```
-workflow-monitor-agent/
+game-ai-validation-agent/
 ├── agent.py       - メインエージェントコード
 ├── db.py          - データベースモジュール
 ├── discord.py     - Discordボット

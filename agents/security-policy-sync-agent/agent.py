@@ -1,14 +1,14 @@
-"""ワークフローモニターエージェント。ワークフローの監視"""
+"""セキュリティポリシー同期エージェント。ポリシーの同期・配布"""
 
 import discord
 from db import AgentDatabase
 
-class WorkflowMonitorAgent(discord.Client):
-    """ワークフローモニターエージェント。ワークフローの監視"""
+class SecurityPolicySyncAgent(discord.Client):
+    """セキュリティポリシー同期エージェント。ポリシーの同期・配布"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.db = AgentDatabase(f"workflow-monitor-agent.db")
+        self.db = AgentDatabase(f"security-policy-sync-agent.db")
 
     async def on_ready(self):
         print(f"{self.user} is ready!")
@@ -37,7 +37,7 @@ class WorkflowMonitorAgent(discord.Client):
     async def show_help(self, message):
         """ヘルプを表示"""
         help_text = f"""
-        workflow-monitor-agent - ワークフローモニターエージェント。ワークフローの監視
+        security-policy-sync-agent - セキュリティポリシー同期エージェント。ポリシーの同期・配布
 
         Commands:
         !help - Show this help

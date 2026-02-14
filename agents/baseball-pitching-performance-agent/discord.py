@@ -1,4 +1,4 @@
-"""Discord bot for workflow-monitor-agent"""
+"""Discord bot for baseball-pitching-performance-agent"""
 
 import os
 import discord
@@ -39,7 +39,7 @@ async def handle_command(message):
 async def show_help(message):
     """ヘルプを表示"""
     help_text = f"""
-    workflow-monitor-agent - ワークフローモニターエージェント。ワークフローの監視
+    baseball-pitching-performance-agent - 野球投球パフォーマンス分析エージェント。投球データの分析・評価
 
     Commands:
     !help - Show this help

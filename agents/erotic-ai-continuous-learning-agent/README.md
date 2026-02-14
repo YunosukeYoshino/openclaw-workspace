@@ -1,10 +1,10 @@
-# workflow-monitor-agent
+# erotic-ai-continuous-learning-agent
 
-ワークフローモニターエージェント。ワークフローの監視
+えっちAI継続学習エージェント。AIの継続的改善
 
 ## 機能
 
-- ワークフローモニターエージェント。ワークフローの監視
+- えっちAI継続学習エージェント。AIの継続的改善
 - Discordボット連携
 - データベース管理
 
@@ -36,7 +36,7 @@ export DISCORD_TOKEN="your_discord_token"
 ## ディレクトリ構造
 
 ```
-workflow-monitor-agent/
+erotic-ai-continuous-learning-agent/
 ├── agent.py       - メインエージェントコード
 ├── db.py          - データベースモジュール
 ├── discord.py     - Discordボット

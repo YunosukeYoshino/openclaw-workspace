@@ -1,14 +1,14 @@
-"""ワークフローモニターエージェント。ワークフローの監視"""
+"""ゲームAIデータ拡張エージェント。トレーニングデータの拡張"""
 
 import discord
 from db import AgentDatabase
 
-class WorkflowMonitorAgent(discord.Client):
-    """ワークフローモニターエージェント。ワークフローの監視"""
+class GameAiDataAugmentationAgent(discord.Client):
+    """ゲームAIデータ拡張エージェント。トレーニングデータの拡張"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.db = AgentDatabase(f"workflow-monitor-agent.db")
+        self.db = AgentDatabase(f"game-ai-data-augmentation-agent.db")
 
     async def on_ready(self):
         print(f"{self.user} is ready!")
@@ -37,7 +37,7 @@ class WorkflowMonitorAgent(discord.Client):
     async def show_help(self, message):
         """ヘルプを表示"""
         help_text = f"""
-        workflow-monitor-agent - ワークフローモニターエージェント。ワークフローの監視
+        game-ai-data-augmentation-agent - ゲームAIデータ拡張エージェント。トレーニングデータの拡張
 
         Commands:
         !help - Show this help

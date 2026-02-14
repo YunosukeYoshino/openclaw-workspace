@@ -1,4 +1,4 @@
-"""Discord bot for workflow-monitor-agent"""
+"""Discord bot for game-rl-agent"""
 
 import os
 import discord
@@ -39,7 +39,7 @@ async def handle_command(message):
 async def show_help(message):
     """ヘルプを表示"""
     help_text = f"""
-    workflow-monitor-agent - ワークフローモニターエージェント。ワークフローの監視
+    game-rl-agent - ゲーム強化学習エージェント。強化学習モデルの管理
 
     Commands:
     !help - Show this help

@@ -1,4 +1,4 @@
-"""Discord bot for workflow-monitor-agent"""
+"""Discord bot for erotic-ai-quality-metric-agent"""
 
 import os
 import discord
@@ -39,7 +39,7 @@ async def handle_command(message):
 async def show_help(message):
     """ヘルプを表示"""
     help_text = f"""
-    workflow-monitor-agent - ワークフローモニターエージェント。ワークフローの監視
+    erotic-ai-quality-metric-agent - えっちAI品質メトリクスエージェント。AI品質指標の計算
 
     Commands:
     !help - Show this help

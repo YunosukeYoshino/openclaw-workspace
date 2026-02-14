@@ -1,10 +1,10 @@
-# workflow-monitor-agent
+# policy-enforcement-agent
 
-ワークフローモニターエージェント。ワークフローの監視
+ポリシー適用エージェント。ポリシーの適用・強制
 
 ## 機能
 
-- ワークフローモニターエージェント。ワークフローの監視
+- ポリシー適用エージェント。ポリシーの適用・強制
 - Discordボット連携
 - データベース管理
 
@@ -36,7 +36,7 @@ export DISCORD_TOKEN="your_discord_token"
 ## ディレクトリ構造
 
 ```
-workflow-monitor-agent/
+policy-enforcement-agent/
 ├── agent.py       - メインエージェントコード
 ├── db.py          - データベースモジュール
 ├── discord.py     - Discordボット

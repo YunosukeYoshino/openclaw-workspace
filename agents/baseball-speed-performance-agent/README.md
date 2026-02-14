@@ -1,10 +1,10 @@
-# workflow-monitor-agent
+# baseball-speed-performance-agent
 
-ワークフローモニターエージェント。ワークフローの監視
+野球走力パフォーマンス分析エージェント。走塁・盗塁データの分析
 
 ## 機能
 
-- ワークフローモニターエージェント。ワークフローの監視
+- 野球走力パフォーマンス分析エージェント。走塁・盗塁データの分析
 - Discordボット連携
 - データベース管理
 
@@ -36,7 +36,7 @@ export DISCORD_TOKEN="your_discord_token"
 ## ディレクトリ構造
 
 ```
-workflow-monitor-agent/
+baseball-speed-performance-agent/
 ├── agent.py       - メインエージェントコード
 ├── db.py          - データベースモジュール
 ├── discord.py     - Discordボット
