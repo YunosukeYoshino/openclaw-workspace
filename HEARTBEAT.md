@@ -338,6 +338,41 @@
 
 ## 次期プロジェクト案 V85 (進行中)
 
+### 野球歴史・伝説エージェント (5個)
+- baseball-history-agent - 野球歴史エージェント
+- baseball-legend-players-agent - 野球伝説の選手エージェント
+- baseball-historical-games-agent - 野球歴史的名試合エージェント
+- baseball-museum-agent - 野球博物館エージェント
+- baseball-hall-of-fame-v2-agent - 野球殿堂V2エージェント
+
+### ゲームクラシック・レトロエージェント (5個)
+- game-classic-collection-agent - ゲームクラシックコレクションエージェント
+- game-retro-archive-agent - ゲームレトロアーカイブエージェント
+- game-legacy-support-agent - ゲームレガシーサポートエージェント
+- game-preservation-agent - ゲーム保存エージェント
+- game-archival-agent - ゲームアーカイブエージェント
+
+### えっちコンテンツAIアシスタントエージェント (5個)
+- erotic-ai-assistant-v2-agent - えっちAIアシスタントV2エージェント
+- erotic-ai-chatbot-v2-agent - えっちAIチャットボットV2エージェント
+- erotic-ai-recommendation-agent - えっちAI推薦エージェント
+- erotic-ai-matcher-agent - えっちAIマッチングエージェント
+- erotic-ai-companion-v2-agent - えっちAIコンパニオンV2エージェント
+
+### ブロックチェーン・Web3エージェント (5個)
+- blockchain-integration-agent - ブロックチェーン統合エージェント
+- web3-agent - Web3エージェント
+- smart-contract-agent - スマートコントラクトエージェント
+- nft-agent - NFTエージェント
+- crypto-payment-agent - 暗号通貨決済エージェント
+
+### セキュリティ・データ保護エージェント (5個)
+- data-encryption-agent - データ暗号化エージェント
+- data-masking-agent - データマスキングエージェント
+- tokenization-agent - トークン化エージェント
+- key-management-agent - キー管理エージェント
+- privacy-enhancement-agent - プライバシー強化エージェント
+
 ### 野球データサイエンス・予測エージェント (5個)
 - baseball-data-science-agent - 野球データサイエンスエージェント
 - baseball-machine-learning-agent - 野球機械学習エージェント

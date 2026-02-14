@@ -1,205 +1,79 @@
 #!/usr/bin/env python3
 """
-baseball-international-league-agent - Discord Botモジュール
+baseball-international-league-agent - Discord Bot モジュール
 """
 
-import discord
-from discord.ext import commands
-import logging
-from typing import Optional
+import os
 import asyncio
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from typing import Optional, Dict, Any
 
 
-class BaseballInternationalLeagueAgentBot(commands.Bot):
-    """baseball-international-league-agent Discord Bot"""
+class BaseballInternationalLeagueAgentDiscordBot:
+    """野球国際リーグエージェント。国際リーグの管理。 Discord Bot"""
 
-    def __init__(self, command_prefix: str = "!", token: Optional[str] = None):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix=command_prefix, intents=intents)
+    def __init__(self, config_path=None):
+        self.config_path = config_path
+        self.token = os.getenv("DISCORD_TOKEN")
+        self.channel_id = os.getenv("DISCORD_CHANNEL_ID")
+        self.enabled = self.token and self.channel_id
+        self.name = "baseball-international-league-agent"
 
-        self.token = token
-
-    async def setup_hook(self):
-        """Botセットアップ"""
-        logger.info(f"Bot ready: {self.user}")
-
-    async def on_ready(self):
-        """Bot起動時"""
-        logger.info(f"Bot is ready! Logged in as {self.user}")
-        activity = discord.Activity(
-            type=discord.ActivityType.watching,
-            name="野球国際リーグエージェント。国際リーグの運営・管理。"
-        )
-        await self.change_presence(activity=activity)
-
-    async def on_message(self, message: discord.Message):
-        """メッセージ受信時"""
-        if message.author == self.user:
+    async def start(self):
+        """Botを開始"""
+        if not self.enabled:
+            print(f"[{self.name}] Discord Botは無効化されています")
             return
 
-        await self.process_commands(message)
+        print(f"[{self.name}] Discord Botを開始")
 
-    async def send_help(self, channel: discord.TextChannel):
-        """ヘルプ送信"""
-        embed = discord.Embed(
-            title="baseball-international-league-agent",
-            description="野球国際リーグエージェント。国際リーグの運営・管理。",
-            color=0x00ff00
+    async def stop(self):
+        """Botを停止"""
+        print(f"[{self.name}] Discord Botを停止")
+
+    async def send_message(self, message: str, embed: Optional[Dict] = None):
+        """メッセージを送信"""
+        if not self.enabled:
+            return
+
+        print(f"[{self.name}] メッセージ送信: {message}")
+
+    async def send_embed(self, title: str, description: str, fields: Optional[Dict] = None, color: int = 0x00ff00):
+        """埋め込みメッセージを送信"""
+        if not self.enabled:
+            return
+
+        embed_data = {
+            "title": title,
+            "description": description,
+            "color": color
+        }
+        if fields:
+            embed_data["fields"] = fields
+
+        await self.send_message("", embed=embed_data)
+
+    async def notify_task_complete(self, task_id: str, result: Dict[str, Any]):
+        """タスク完了を通知"""
+        await self.send_embed(
+            title=f"✅ タスク完了: {task_id}",
+            description=f"{result.get('message', '処理完了')}"
         )
 
-        embed.add_field(
-            name="コマンド",
-            value="`!status` - ステータス確認\n`!add <content>` - エントリー追加\n`!list` - エントリー一覧\n`!search <query>` - エントリー検索\n`!help` - ヘルプ表示",
-            inline=False
-        )
-
-        await channel.send(embed=embed)
-
-    async def send_status(self, channel: discord.TextChannel, status_data: dict):
-        """ステータス送信"""
-        embed = discord.Embed(
-            title="ステータス",
-            description=f"現在のステータス",
-            color=0x00ff00
-        )
-
-        for key, value in status_data.items():
-            embed.add_field(name=key, value=str(value), inline=False)
-
-        await channel.send(embed=embed)
-
-    async def send_entry(self, channel: discord.TextChannel, entry: dict):
-        """エントリー送信"""
-        embed = discord.Embed(
-            title=entry.get('title', 'エントリー'),
-            description=entry.get('content', '')[:2000],
-            color=0x00ff00
-        )
-
-        if entry.get('metadata'):
-            embed.add_field(
-                name="メタデータ",
-                value=f"```json\n{entry['metadata']}\n```",
-                inline=False
-            )
-
-        embed.set_footer(text=f"ID: {entry.get('id')} | 作成: {entry.get('created_at')}")
-
-        await channel.send(embed=embed)
-
-    async def send_error(self, channel: discord.TextChannel, error: str):
-        """エラー送信"""
-        embed = discord.Embed(
-            title="エラー",
+    async def notify_task_error(self, task_id: str, error: str):
+        """タスクエラーを通知"""
+        await self.send_embed(
+            title=f"❌ タスクエラー: {task_id}",
             description=error,
             color=0xff0000
         )
-        await channel.send(embed=embed)
-
-
-class BaseballInternationalLeagueAgentCommands(commands.Cog):
-    """baseball-international-league-agent コマンド"""
-
-    def __init__(self, bot: BaseballInternationalLeagueAgentBot):
-        self.bot = bot
-        self.db = None  # DatabaseManagerをセット
-
-    def set_db(self, db):
-        """データベース設定"""
-        self.db = db
-
-    @commands.command(name='status')
-    async def cmd_status(self, ctx: commands.Context):
-        """ステータス確認"""
-        if not self.db:
-            await self.bot.send_error(ctx.channel, "データベースが未設定です")
-            return
-
-        stats = self.db.get_stats()
-        await self.bot.send_status(ctx.channel, stats)
-
-    @commands.command(name='add')
-    async def cmd_add(self, ctx: commands.Context, *, content: str):
-        """エントリー追加"""
-        if not self.db:
-            await self.bot.send_error(ctx.channel, "データベースが未設定です")
-            return
-
-        try:
-            entry_id = self.db.add_entry(
-                title=None,
-                content=content,
-                metadata={"author": str(ctx.author)}
-            )
-
-            await ctx.send(f"エントリーを追加しました (ID: {entry_id})")
-        except Exception as e:
-            await self.bot.send_error(ctx.channel, f"追加失敗: {e}")
-
-    @commands.command(name='list')
-    async def cmd_list(self, ctx: commands.Context, limit: int = 10):
-        """エントリー一覧"""
-        if not self.db:
-            await self.bot.send_error(ctx.channel, "データベースが未設定です")
-            return
-
-        entries = self.db.list_entries(limit=limit)
-
-        if not entries:
-            await ctx.send("エントリーがありません")
-            return
-
-        for entry in entries:
-            await self.bot.send_entry(ctx.channel, entry)
-
-    @commands.command(name='search')
-    async def cmd_search(self, ctx: commands.Context, *, query: str):
-        """エントリー検索"""
-        if not self.db:
-            await self.bot.send_error(ctx.channel, "データベースが未設定です")
-            return
-
-        entries = self.db.search_entries(query, limit=10)
-
-        if not entries:
-            await ctx.send(f"検索結果: '{query}' - 見つかりませんでした")
-            return
-
-        for entry in entries:
-            await self.bot.send_entry(ctx.channel, entry)
-
-    @commands.command(name='help')
-    async def cmd_help(self, ctx: commands.Context):
-        """ヘルプ表示"""
-        await self.bot.send_help(ctx.channel)
-
-
-def create_bot(token: Optional[str] = None, command_prefix: str = "!") -> BaseballInternationalLeagueAgentBot:
-    """Botインスタンス作成"""
-    bot = BaseballInternationalLeagueAgentBot(command_prefix=command_prefix, token=token)
-
-    # コグを追加
-    bot.add_cog(BaseballInternationalLeagueAgentCommands(bot))
-
-    return bot
-
-
-def main():
-    """メイン関数"""
-    import os
-
-    token = os.getenv("DISCORD_TOKEN")
-    if not token:
-        logger.error("DISCORD_TOKEN environment variable not set")
-        return
-
-    bot = create_bot(token=token)
-    bot.run(token)
 
 
 if __name__ == "__main__":
-    main()
+    # テスト実行
+    async def test():
+        bot = BaseballInternationalLeagueAgentDiscordBot()
+        await bot.start()
+        await bot.send_message("テストメッセージ")
+        await bot.stop()
+
+    asyncio.run(test())

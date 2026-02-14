@@ -1,0 +1,17 @@
+# Requirements for キー管理エージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# cryptography
+# pandas
+# numpy
+# requests
+# schedule

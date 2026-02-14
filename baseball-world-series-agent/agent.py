@@ -1,42 +1,76 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-野球ワールドシリーズエージェント
-ワールドシリーズの歴史・記録を管理するエージェント
+baseball-world-series-agent - 野球ワールドシリーズエージェント。ワールドシリーズの管理。
 """
 
-import logging
-from typing import Dict, Any, Optional
-from .db import Database
+import sys
+import os
+import asyncio
+from pathlib import Path
+from datetime import datetime
 
-logger = logging.getLogger(__name__)
+# エージェントディレクトリをパスに追加
+sys.path.insert(0, str(Path(__file__).parent))
 
-class BaseballWorldSeriesAgent:
-    """野球ワールドシリーズエージェント"""
+from db import BaseballWorldSeriesAgentDatabase
+from discord import BaseballWorldSeriesAgentDiscordBot
 
-    def __init__(self, db_path: str = "baseball-world-series-agent.db"):
-        self.db = Database(db_path)
-        self.logger = logger
 
-    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+class BaseballWorldSeriesAgentAgent:
+    """野球ワールドシリーズエージェント。ワールドシリーズの管理。"""
+
+    def __init__(self, config_path=None):
+        self.config_path = config_path or os.path.join(os.path.dirname(__file__), "config.json")
+        self.db = BaseballWorldSeriesAgentDatabase(self.config_path)
+        self.discord = BaseballWorldSeriesAgentDiscordBot(self.config_path)
+        self.name = "baseball-world-series-agent"
+        self.version = "1.0.0"
+        self.status = "idle"
+
+    async def start(self):
+        """エージェントを開始"""
+        self.status = "running"
+        print(f"[{self.name}] 開始 (v{self.version})")
+        await self.discord.start()
+
+    async def stop(self):
+        """エージェントを停止"""
+        self.status = "stopped"
+        print(f"[{self.name}] 停止")
+        await self.discord.stop()
+
+    async def run_task(self, task_data):
+        """タスクを実行"""
         try:
-            self.db.save_record(input_data)
-            result = await self._execute_logic(input_data)
-            return {"status": "success", "result": result}
+            task_type = task_data.get("type")
+            task_params = task_data.get("params", {})
+
+            if task_type == "baseball-world-series-agent":
+                result = await self._baseball_world_series_agent(**task_params)
+                return {"success": True, "result": result}
+            else:
+                return {"success": False, "error": "未知のタスクタイプ"}
+
         except Exception as e:
-            self.logger.error(f"処理エラー: {e}")
-            return {"status": "error", "message": str(e)}
+            print(f"[{self.name}] タスク実行エラー: {e}")
+            return {"success": False, "error": str(e)}
 
-    async def _execute_logic(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        return {"processed": True, "data": input_data}
+    async def _baseball_world_series_agent(self, **params):
+        """野球ワールドシリーズエージェント。ワールドシリーズの管理。のメイン処理"""
+        # TODO: 実装を追加
+        result = {"message": "野球ワールドシリーズエージェント。ワールドシリーズの管理。処理完了", "params": params}
+        return result
 
-    def get_stats(self) -> Dict[str, Any]:
-        return self.db.get_stats()
+
+async def main():
+    """メインエントリーポイント"""
+    agent = BaseballWorldSeriesAgentAgent()
+    try:
+        await agent.start()
+    except KeyboardInterrupt:
+        print("\nシャットダウン中...")
+        await agent.stop()
+
 
 if __name__ == "__main__":
-    import asyncio
-    async def main():
-        agent = BaseballWorldSeriesAgent()
-        result = await agent.process({"test": "data"})
-        print(result)
     asyncio.run(main())

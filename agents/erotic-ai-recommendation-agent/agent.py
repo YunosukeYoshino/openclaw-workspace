@@ -1,61 +1,109 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-erotic-ai-recommendation-agent
-えっちAIレコメンデーションエージェント。AIによるレコメンデーション。
+えっちAI推薦エージェント
+えっちAIによる推薦
 """
 
-import logging
+import asyncio
+import os
+from typing import Optional, Dict, Any, List
 from datetime import datetime
-from typing import Optional, List, Dict, Any
+import json
 
 class EroticAiRecommendationAgent:
-    """えっちAIレコメンデーションエージェント。AIによるレコメンデーション。"""
+    """えっちAI推薦エージェント"""
 
-    def __init__(self):
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        self.config = config or {}
         self.name = "erotic-ai-recommendation-agent"
-        self.logger = logging.getLogger(self.name)
-        self.logger.setLevel(logging.INFO)
+        self.title = "えっちAI推薦エージェント"
+        self.description = "えっちAIによる推薦"
+        self.category = "content"
+        self.language = "Japanese"
+        self.state = "idle"
+        self.created_at = datetime.now().isoformat()
+        self.tasks: List[Dict[str, Any]] = []
 
-        self.state = {
-            "active": True,
-            "last_activity": datetime.utcnow().isoformat(),
-            "tasks_processed": 0,
-            "errors": []
-        }
-
-    def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    async def initialize(self) -> bool:
+        """エージェントの初期化"""
         try:
-            self.state["tasks_processed"] += 1
-            self.state["last_activity"] = datetime.utcnow().isoformat()
+            self.state = "initializing"
+            print(f"Initializing {self.title}...")
+            await asyncio.sleep(0.5)
+            self.state = "ready"
+            return True
+        except Exception as e:
+            print(f"Error initializing: {e}")
+            self.state = "error"
+            return False
 
+    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """データ処理"""
+        if self.state != "ready":
+            return {"error": "Agent not ready", "state": self.state}
+
+        self.state = "processing"
+        try:
             result = {
                 "success": True,
-                "agent": self.name,
-                "task_id": task.get("id"),
-                "message": "Task processed by " + self.name,
-                "timestamp": datetime.utcnow().isoformat()
+                "data": input_data,
+                "processed_at": datetime.now().isoformat(),
+                "agent": self.name
             }
-
-            self.logger.info(result["message"])
+            self.state = "ready"
             return result
-
         except Exception as e:
-            self.logger.error("Error processing task: " + str(e))
-            self.state["errors"].append(str(e))
-            return {
-                "success": False,
-                "agent": self.name,
-                "error": str(e),
-                "timestamp": datetime.utcnow().isoformat()
-            }
+            self.state = "error"
+            return {"error": str(e), "state": self.state}
 
-    def get_status(self) -> Dict[str, Any]:
-        return self.state
+    async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+        """タスク実行"""
+        task_id = task.get("id", f"task_{len(self.tasks)}")
+        self.tasks.append({"id": task_id, "task": task, "status": "pending"})
 
-    def query(self, params: Dict[str, Any]) -> List[Dict[str, Any]]:
-        return []
+        try:
+            result = await self.process(task.get("data", {}))
+            self.tasks[-1]["status"] = "completed"
+            return result
+        except Exception as e:
+            self.tasks[-1]["status"] = "failed"
+            return {"error": str(e), "task_id": task_id}
+
+    async def get_status(self) -> Dict[str, Any]:
+        """ステータス取得"""
+        return {
+            "name": self.name,
+            "title": self.title,
+            "state": self.state,
+            "tasks_completed": sum(1 for t in self.tasks if t["status"] == "completed"),
+            "tasks_pending": sum(1 for t in self.tasks if t["status"] == "pending"),
+            "created_at": self.created_at
+        }
+
+    async def cleanup(self) -> None:
+        """クリーンアップ"""
+        self.state = "stopped"
+        print(f"{self.title} stopped.")
+
+async def main():
+    """メイン処理"""
+    agent = EroticAiRecommendationAgent()
+    await agent.initialize()
+
+    sample_task = {
+        "id": "sample_001",
+        "data": {
+            "message": "Sample task for えっちAI推薦エージェント"
+        }
+    }
+
+    result = await agent.execute_task(sample_task)
+    print(f"Result: {json.dumps(result, ensure_ascii=False, indent=2)}")
+
+    status = await agent.get_status()
+    print(f"Status: {json.dumps(status, ensure_ascii=False, indent=2)}")
+
+    await agent.cleanup()
 
 if __name__ == "__main__":
-    agent = EroticAiRecommendationAgent()
-    print("Agent " + agent.name + " initialized")
+    asyncio.run(main())

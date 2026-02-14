@@ -1,56 +1,76 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-コンテナオーケストレーションエージェント
-Docker/Kubernetesのオーケストレーションを管理するエージェント
+container-orchestration-agent - コンテナオーケストレーションエージェント。コンテナオーケストレーションの管理。
 """
 
-import logging
-from typing import Dict, Any, Optional
-from .db import Database
+import sys
+import os
+import asyncio
+from pathlib import Path
+from datetime import datetime
 
-logger = logging.getLogger(__name__)
+# エージェントディレクトリをパスに追加
+sys.path.insert(0, str(Path(__file__).parent))
 
-class ContainerOrchestrationAgent:
-    """コンテナオーケストレーションエージェント"""
+from db import ContainerOrchestrationAgentDatabase
+from discord import ContainerOrchestrationAgentDiscordBot
 
-    def __init__(self, db_path: str = "container-orchestration-agent.db"):
-        self.db = Database(db_path)
-        self.logger = logger
 
-    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        メイン処理関数
+class ContainerOrchestrationAgentAgent:
+    """コンテナオーケストレーションエージェント。コンテナオーケストレーションの管理。"""
 
-        Args:
-            input_data: 入力データ
+    def __init__(self, config_path=None):
+        self.config_path = config_path or os.path.join(os.path.dirname(__file__), "config.json")
+        self.db = ContainerOrchestrationAgentDatabase(self.config_path)
+        self.discord = ContainerOrchestrationAgentDiscordBot(self.config_path)
+        self.name = "container-orchestration-agent"
+        self.version = "1.0.0"
+        self.status = "idle"
 
-        Returns:
-            処理結果
-        """
+    async def start(self):
+        """エージェントを開始"""
+        self.status = "running"
+        print(f"[{self.name}] 開始 (v{self.version})")
+        await self.discord.start()
+
+    async def stop(self):
+        """エージェントを停止"""
+        self.status = "stopped"
+        print(f"[{self.name}] 停止")
+        await self.discord.stop()
+
+    async def run_task(self, task_data):
+        """タスクを実行"""
         try:
-            self.db.save_record(input_data)
-            result = await self._execute_logic(input_data)
-            return {"status": "success", "result": result}
+            task_type = task_data.get("type")
+            task_params = task_data.get("params", {})
+
+            if task_type == "container-orchestration-agent":
+                result = await self._container_orchestration_agent(**task_params)
+                return {"success": True, "result": result}
+            else:
+                return {"success": False, "error": "未知のタスクタイプ"}
+
         except Exception as e:
-            self.logger.error(f"処理エラー: {e}")
-            return {"status": "error", "message": str(e)}
+            print(f"[{self.name}] タスク実行エラー: {e}")
+            return {"success": False, "error": str(e)}
 
-    async def _execute_logic(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        """エージェント固有の処理ロジック"""
-        # TODO: エージェントごとの固有ロジックを実装
-        return {"processed": True, "data": input_data}
+    async def _container_orchestration_agent(self, **params):
+        """コンテナオーケストレーションエージェント。コンテナオーケストレーションの管理。のメイン処理"""
+        # TODO: 実装を追加
+        result = {"message": "コンテナオーケストレーションエージェント。コンテナオーケストレーションの管理。処理完了", "params": params}
+        return result
 
-    def get_stats(self) -> Dict[str, Any]:
-        """統計情報を取得"""
-        return self.db.get_stats()
+
+async def main():
+    """メインエントリーポイント"""
+    agent = ContainerOrchestrationAgentAgent()
+    try:
+        await agent.start()
+    except KeyboardInterrupt:
+        print("\nシャットダウン中...")
+        await agent.stop()
+
 
 if __name__ == "__main__":
-    import asyncio
-
-    async def main():
-        agent = ContainerOrchestrationAgent()
-        result = await agent.process({"test": "data"})
-        print(result)
-
     asyncio.run(main())

@@ -1,16 +1,16 @@
-# erotic-ai-recommendation-agent
+# えっちAI推薦エージェント
 
-えっちAIレコメンデーションエージェント。AIによるレコメンデーション。
+えっちAIによる推薦
 
 ## 概要
 
-このエージェントは えっちAIレコメンデーションエージェント。AIによるレコメンデーション。 ためのAIアシスタントです。
+えっちAI推薦エージェントはcontentカテゴリのエージェントです。Japanese言語に対応しています。
 
 ## 機能
 
-- データの収集・分析
-- 自動タスク処理
-- データベース管理
+- データ処理・分析
+- タスク管理
+- 状態監視
 - Discord連携
 
 ## インストール
@@ -21,95 +21,82 @@ pip install -r requirements.txt
 
 ## 使用方法
 
-### 基本的な使用
+### エージェントとして実行
+
+```bash
+python agent.py
+```
+
+### データベース操作
+
+```bash
+python db.py
+```
+
+### Discordボット
+
+```bash
+export DISCORD_TOKEN=your_token
+python discord.py
+```
+
+## データベース構造
+
+### records テーブル
+- `id`: 主キー
+- `type`: レコードタイプ
+- `title`: タイトル
+- `content`: コンテンツ
+- `metadata`: メタデータ（JSON）
+- `created_at`: 作成日時
+- `updated_at`: 更新日時
+
+### tasks テーブル
+- `id`: 主キー
+- `task_id`: タスクID
+- `status`: ステータス（pending/completed/failed）
+- `result`: 結果
+- `error`: エラーメッセージ
+- `created_at`: 作成日時
+- `completed_at`: 完了日時
+
+### settings テーブル
+- `key`: 設定キー
+- `value`: 設定値
+- `updated_at`: 更新日時
+
+## Discordコマンド
+
+- `!help` - ヘルプ表示
+- `!status` - ステータス確認
+- `!info` - エージェント情報
+
+## API
+
+### Agent
 
 ```python
 from agent import EroticAiRecommendationAgent
 
 agent = EroticAiRecommendationAgent()
-task = {"id": "task_001", "type": "example"}
-result = agent.process_task(task)
-print(result)
+await agent.initialize()
+result = await agent.process(data)
 ```
 
-### データベースの使用
+### Database
 
 ```python
 from db import EroticAiRecommendationAgentDB
 
 db = EroticAiRecommendationAgentDB()
-db.insert_data("example_type", "example_content", {"key": "value"})
-data = db.query_data("example_type", limit=10)
+record_id = db.insert_record("type", "title", "content")
+record = db.get_record(record_id)
 ```
 
-### Discordボットの使用
+## 言語サポート
 
-```python
-from discord.ext import commands
-from discord import setup
-
-bot = commands.Bot(command_prefix="!")
-discord_integration = setup(bot)
-bot.run("YOUR_DISCORD_BOT_TOKEN")
-```
-
-## API
-
-### EroticAiRecommendationAgent.process_task(task)
-
-タスクを処理して結果を返します。
-
-**Parameters:**
-- `task` (Dict[str, Any]): 処理するタスク
-
-**Returns:**
-- Dict[str, Any]: 処理結果
-
-### EroticAiRecommendationAgentDB.insert_data(data_type, content, metadata)
-
-データベースにデータを挿入します。
-
-**Parameters:**
-- `data_type` (str): データタイプ
-- `content` (str): コンテンツ
-- `metadata` (Dict): メタデータ（オプション）
-
-**Returns:**
-- int: 挿入されたレコードID
-
-### EroticAiRecommendationAgentDB.query_data(data_type, limit)
-
-データベースからデータをクエリします。
-
-**Parameters:**
-- `data_type` (str): データタイプ（オプション）
-- `limit` (int): 取得する最大件数
-
-**Returns:**
-- List[Dict]: クエリ結果
-
-## 設定
-
-### Discord設定
-
-`discord_config.json` ファイルを作成して設定します。
-
-```json
-{
-  "command_prefix": "!",
-  "enabled_channels": [],
-  "admin_roles": []
-}
-```
+- Japanese
 
 ## ライセンス
 
 MIT License
-
-## 貢献
-
-プルリクエストを歓迎します。
-
-## 連絡先
-
-問題や質問がある場合は、Issueを開いてください。

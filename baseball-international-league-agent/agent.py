@@ -1,200 +1,76 @@
 #!/usr/bin/env python3
 """
-baseball-international-league-agent - 野球国際リーグエージェント。国際リーグの運営・管理。
+baseball-international-league-agent - 野球国際リーグエージェント。国際リーグの管理。
 """
 
-import sqlite3
-import json
+import sys
+import os
+import asyncio
+from pathlib import Path
 from datetime import datetime
-from typing import Optional, Dict, List
-import logging
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# エージェントディレクトリをパスに追加
+sys.path.insert(0, str(Path(__file__).parent))
 
-class BaseballInternationalLeagueAgent:
-    """baseball-international-league-agent"""
-
-    def __init__(self, db_path: str = "baseball-international-league-agent.db"):
-        self.db_path = db_path
-        self.init_database()
-
-    def init_database(self):
-        """データベース初期化"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS entries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT,
-                content TEXT NOT NULL,
-                metadata TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-
-        conn.commit()
-        conn.close()
-
-    def add_entry(self, title: Optional[str], content: str, metadata: Optional[Dict] = None) -> int:
-        """エントリー追加"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        metadata_json = json.dumps(metadata) if metadata else None
-
-        cursor.execute('''
-            INSERT INTO entries (title, content, metadata)
-            VALUES (?, ?, ?)
-        ''', (title, content, metadata_json))
-
-        entry_id = cursor.lastrowid
-        conn.commit()
-        conn.close()
-
-        logger.info(f"Entry added: ID={entry_id}")
-        return entry_id
-
-    def get_entry(self, entry_id: int) -> Optional[Dict]:
-        """エントリー取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute('''
-            SELECT id, title, content, metadata, created_at, updated_at
-            FROM entries WHERE id = ?
-        ''', (entry_id,))
-
-        row = cursor.fetchone()
-        conn.close()
-
-        if row:
-            return {
-                "id": row[0],
-                "title": row[1],
-                "content": row[2],
-                "metadata": json.loads(row[3]) if row[3] else None,
-                "created_at": row[4],
-                "updated_at": row[5]
-            }
-        return None
-
-    def list_entries(self, limit: int = 100, offset: int = 0) -> List[Dict]:
-        """エントリー一覧"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute('''
-            SELECT id, title, content, metadata, created_at, updated_at
-            FROM entries ORDER BY created_at DESC
-            LIMIT ? OFFSET ?
-        ''', (limit, offset))
-
-        rows = cursor.fetchall()
-        conn.close()
-
-        return [{
-            "id": row[0],
-            "title": row[1],
-            "content": row[2],
-            "metadata": json.loads(row[3]) if row[3] else None,
-            "created_at": row[4],
-            "updated_at": row[5]
-        } for row in rows]
-
-    def update_entry(self, entry_id: int, title: Optional[str] = None,
-                    content: Optional[str] = None, metadata: Optional[Dict] = None) -> bool:
-        """エントリー更新"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        updates = []
-        params = []
-
-        if title is not None:
-            updates.append("title = ?")
-            params.append(title)
-        if content is not None:
-            updates.append("content = ?")
-            params.append(content)
-        if metadata is not None:
-            updates.append("metadata = ?")
-            params.append(json.dumps(metadata))
-
-        if not updates:
-            conn.close()
-            return False
-
-        updates.append("updated_at = ?")
-        params.append(datetime.now().isoformat())
-        params.append(entry_id)
-
-        cursor.execute(f'''
-            UPDATE entries SET {', '.join(updates)}
-            WHERE id = ?
-        ''', params)
-
-        conn.commit()
-        conn.close()
-
-        return cursor.rowcount > 0
-
-    def delete_entry(self, entry_id: int) -> bool:
-        """エントリー削除"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute('DELETE FROM entries WHERE id = ?', (entry_id,))
-
-        conn.commit()
-        conn.close()
-
-        return cursor.rowcount > 0
-
-    def search_entries(self, query: str, limit: int = 100) -> List[Dict]:
-        """エントリー検索"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute('''
-            SELECT id, title, content, metadata, created_at, updated_at
-            FROM entries
-            WHERE title LIKE ? OR content LIKE ?
-            ORDER BY created_at DESC
-            LIMIT ?
-        ''', (f'%{query}%', f'%{query}%', limit))
-
-        rows = cursor.fetchall()
-        conn.close()
-
-        return [{
-            "id": row[0],
-            "title": row[1],
-            "content": row[2],
-            "metadata": json.loads(row[3]) if row[3] else None,
-            "created_at": row[4],
-            "updated_at": row[5]
-        } for row in rows]
+from db import BaseballInternationalLeagueAgentDatabase
+from discord import BaseballInternationalLeagueAgentDiscordBot
 
 
-def main():
-    """メイン関数"""
-    agent = BaseballInternationalLeagueAgent()
+class BaseballInternationalLeagueAgentAgent:
+    """野球国際リーグエージェント。国際リーグの管理。"""
 
-    # サンプル実行
-    entry_id = agent.add_entry(
-        title="サンプル",
-        content="野球国際リーグエージェント。国際リーグの運営・管理。",
-        metadata={"version": "1.0"}
-    )
+    def __init__(self, config_path=None):
+        self.config_path = config_path or os.path.join(os.path.dirname(__file__), "config.json")
+        self.db = BaseballInternationalLeagueAgentDatabase(self.config_path)
+        self.discord = BaseballInternationalLeagueAgentDiscordBot(self.config_path)
+        self.name = "baseball-international-league-agent"
+        self.version = "1.0.0"
+        self.status = "idle"
 
-    print(f"Created entry: {entry_id}")
+    async def start(self):
+        """エージェントを開始"""
+        self.status = "running"
+        print(f"[{self.name}] 開始 (v{self.version})")
+        await self.discord.start()
 
-    entry = agent.get_entry(entry_id)
-    print(f"Entry: {entry}")
+    async def stop(self):
+        """エージェントを停止"""
+        self.status = "stopped"
+        print(f"[{self.name}] 停止")
+        await self.discord.stop()
+
+    async def run_task(self, task_data):
+        """タスクを実行"""
+        try:
+            task_type = task_data.get("type")
+            task_params = task_data.get("params", {})
+
+            if task_type == "baseball-international-league-agent":
+                result = await self._baseball_international_league_agent(**task_params)
+                return {"success": True, "result": result}
+            else:
+                return {"success": False, "error": "未知のタスクタイプ"}
+
+        except Exception as e:
+            print(f"[{self.name}] タスク実行エラー: {e}")
+            return {"success": False, "error": str(e)}
+
+    async def _baseball_international_league_agent(self, **params):
+        """野球国際リーグエージェント。国際リーグの管理。のメイン処理"""
+        # TODO: 実装を追加
+        result = {"message": "野球国際リーグエージェント。国際リーグの管理。処理完了", "params": params}
+        return result
+
+
+async def main():
+    """メインエントリーポイント"""
+    agent = BaseballInternationalLeagueAgentAgent()
+    try:
+        await agent.start()
+    except KeyboardInterrupt:
+        print("\nシャットダウン中...")
+        await agent.stop()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

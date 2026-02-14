@@ -1,75 +1,52 @@
 # baseball-international-league-agent
 
-野球国際リーグエージェント。国際リーグの運営・管理。
+野球国際リーグエージェント。国際リーグの管理。
 
 ## 機能
 
-- エントリーの追加・取得・更新・削除
-- タグ付け・検索機能
-- Discord Bot連携
-- SQLiteデータベースによる永続化
+- 野球国際リーグエージェント。国際リーグの管理。
+- データベース管理
+- Discord Bot統合
 
 ## インストール
 
-```bash
+\`\`\`bash
 pip install -r requirements.txt
-```
+\`\`\`
 
 ## 使用方法
 
-### 基本使用
+\`\`\`bash
+# エージェントを開始
+python agent.py
 
-```python
-from agent import BaseballInternationalLeagueAgent
+# データベースを初期化
+python db.py
 
-agent = BaseballInternationalLeagueAgent()
-
-# エントリー追加
-entry_id = agent.add_entry(
-    title="タイトル",
-    content="コンテンツ",
-    metadata={"key": "value"}
-)
-
-# エントリー取得
-entry = agent.get_entry(entry_id)
-print(entry)
-```
-
-### Discord Bot
-
-```bash
-export DISCORD_TOKEN="your_bot_token"
+# Discord Botをテスト
 python discord.py
-```
+\`\`\`
 
-コマンド:
-- `!status` - ステータス確認
-- `!add <content>` - エントリー追加
-- `!list` - エントリー一覧
-- `!search <query>` - エントリー検索
-- `!help` - ヘルプ表示
+## 設定
 
-## データベーススキーマ
+環境変数または \`config.json\` で設定を管理します。
 
-### entriesテーブル
-- `id` - エントリーID (主キー)
-- `title` - タイトル
-- `content` - コンテンツ
-- `metadata` - メタデータ (JSON)
-- `status` - ステータス
-- `created_at` - 作成日時
-- `updated_at` - 更新日時
+\`\`\`bash
+export DISCORD_TOKEN="your_bot_token"
+export DISCORD_CHANNEL_ID="your_channel_id"
+\`\`\`
 
-### tagsテーブル
-- `id` - タグID (主キー)
-- `name` - タグ名 (ユニーク)
-- `created_at` - 作成日時
+## プロジェクト構成
 
-### entry_tagsテーブル
-- `entry_id` - エントリーID (外部キー)
-- `tag_id` - タグID (外部キー)
+\`\`\`
+baseball-international-league-agent/
+├── agent.py         # メインエージェント
+├── db.py           # データベースモジュール
+├── discord.py      # Discord Botモジュール
+├── README.md       # このファイル
+└── requirements.txt # Python依存関係
+\`\`\`
 
 ## ライセンス
 
-MIT License
+MIT

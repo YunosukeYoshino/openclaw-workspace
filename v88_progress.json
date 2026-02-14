@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "baseball-media-agent",
+    "baseball-broadcast-agent-v2",
+    "baseball-podcast-v2-agent",
+    "baseball-content-creation-agent",
+    "baseball-media-analytics-agent",
+    "game-streaming-v2-agent",
+    "game-streamer-v2-agent",
+    "game-stream-quality-v2-agent",
+    "game-stream-monetization-v2-agent",
+    "game-stream-interactive-agent",
+    "erotic-ai-generation-v2-agent",
+    "erotic-ai-chat-v2-agent",
+    "erotic-ai-vision-agent",
+    "erotic-ai-audio-agent",
+    "erotic-ai-fusion-agent",
+    "event-driven-agent",
+    "event-bus-agent",
+    "event-sourcing-agent",
+    "cqrs-agent",
+    "event-store-agent",
+    "data-backup-agent",
+    "data-recovery-agent",
+    "data-retention-agent",
+    "data-archiving-agent",
+    "data-purge-agent"
+  ],
+  "total": 25
+}

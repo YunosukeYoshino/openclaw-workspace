@@ -1,285 +1,212 @@
 #!/usr/bin/env python3
 """
-baseball-international-league-agent - データベース管理モジュール
+baseball-international-league-agent - データベースモジュール
 """
 
 import sqlite3
 import json
+from pathlib import Path
 from datetime import datetime
-from typing import Optional, Dict, List, Any
-import logging
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from typing import List, Dict, Optional, Any
 
 
-class DatabaseManager:
-    """データベース管理クラス"""
+class BaseballInternationalLeagueAgentDatabase:
+    """野球国際リーグエージェント。国際リーグの管理。 データベース"""
 
-    def __init__(self, db_path: str = "baseball-international-league-agent.db"):
-        self.db_path = db_path
-        self.init_database()
+    def __init__(self, config_path=None):
+        self.config_path = config_path or Path(__file__).parent / "config.json"
+        self.db_path = Path(__file__).parent / "data" / f"{self.__class__.__name__}.db"
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.init_db()
 
-    def init_database(self):
-        """データベース初期化"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+    def init_db(self):
+        """データベースを初期化"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
 
-        # エントリーテーブル
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS entries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT,
-                content TEXT NOT NULL,
-                metadata TEXT,
-                status TEXT DEFAULT 'active',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
+            # メインテーブル
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS baseball_international_league_agent (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    type TEXT NOT NULL,
+                    title TEXT,
+                    content TEXT NOT NULL,
+                    status TEXT DEFAULT 'active',
+                    priority INTEGER DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
 
-        # タグテーブル
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS tags (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT UNIQUE NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
+            # メタデータテーブル
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS metadata (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
 
-        # エントリータグ関連テーブル
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS entry_tags (
-                entry_id INTEGER,
-                tag_id INTEGER,
-                PRIMARY KEY (entry_id, tag_id),
-                FOREIGN KEY (entry_id) REFERENCES entries(id) ON DELETE CASCADE,
-                FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
-            )
-        ''')
+            # タグテーブル
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS tags (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT UNIQUE NOT NULL
+                )
+            """)
 
-        conn.commit()
-        conn.close()
+            # エントリータグリレーションテーブル
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS entry_tags (
+                    entry_id INTEGER,
+                    tag_id INTEGER,
+                    PRIMARY KEY (entry_id, tag_id),
+                    FOREIGN KEY (entry_id) REFERENCES baseball_international_league_agent(id) ON DELETE CASCADE,
+                    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+                )
+            """)
 
-    def add_entry(self, title: Optional[str], content: str,
-                  metadata: Optional[Dict] = None, tags: Optional[List[str]] = None) -> int:
-        """エントリー追加"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+            conn.commit()
 
-        metadata_json = json.dumps(metadata) if metadata else None
+    def create_entry(self, entry_data: Dict[str, Any]) -> int:
+        """エントリーを作成"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO baseball_international_league_agent (type, title, content, status, priority)
+                VALUES (?, ?, ?, ?, ?)
+            """, (
+                entry_data.get("type", "default"),
+                entry_data.get("title"),
+                entry_data.get("content"),
+                entry_data.get("status", "active"),
+                entry_data.get("priority", 0)
+            ))
+            entry_id = cursor.lastrowid
 
-        cursor.execute('''
-            INSERT INTO entries (title, content, metadata)
-            VALUES (?, ?, ?)
-        ''', (title, content, metadata_json))
+            # タグを追加
+            for tag_name in entry_data.get("tags", []):
+                self._add_tag_to_entry(cursor, entry_id, tag_name)
 
-        entry_id = cursor.lastrowid
+            conn.commit()
+            return entry_id
 
-        # タグを追加
-        if tags:
-            for tag_name in tags:
-                tag_id = self._get_or_create_tag(cursor, tag_name)
-                cursor.execute('''
-                    INSERT INTO entry_tags (entry_id, tag_id)
-                    VALUES (?, ?)
-                ''', (entry_id, tag_id))
-
-        conn.commit()
-        conn.close()
-
-        logger.info(f"Entry added: ID={entry_id}")
-        return entry_id
-
-    def _get_or_create_tag(self, cursor, tag_name: str) -> int:
-        """タグ取得または作成"""
-        cursor.execute('SELECT id FROM tags WHERE name = ?', (tag_name,))
-        row = cursor.fetchone()
-
-        if row:
-            return row[0]
-
-        cursor.execute('INSERT INTO tags (name) VALUES (?)', (tag_name,))
-        return cursor.lastrowid
-
-    def get_entry(self, entry_id: int) -> Optional[Dict]:
-        """エントリー取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute('''
-            SELECT id, title, content, metadata, status, created_at, updated_at
-            FROM entries WHERE id = ?
-        ''', (entry_id,))
-
-        row = cursor.fetchone()
-
-        if not row:
-            conn.close()
+    def get_entry(self, entry_id: int) -> Optional[Dict[str, Any]]:
+        """エントリーを取得"""
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM baseball_international_league_agent WHERE id = ?", (entry_id,))
+            row = cursor.fetchone()
+            if row:
+                entry = dict(row)
+                entry["tags"] = self._get_entry_tags(cursor, entry_id)
+                return entry
             return None
 
-        # タグを取得
-        cursor.execute('''
-            SELECT t.name FROM tags t
-            JOIN entry_tags et ON t.id = et.tag_id
-            WHERE et.entry_id = ?
-        ''', (entry_id,))
-        tags = [tag_row[0] for tag_row in cursor.fetchall()]
+    def list_entries(self, entry_type: Optional[str] = None, limit: int = 100) -> List[Dict[str, Any]]:
+        """エントリー一覧を取得"""
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
 
-        conn.close()
+            if entry_type:
+                cursor.execute("""
+                    SELECT * FROM baseball_international_league_agent
+                    WHERE type = ?
+                    ORDER BY created_at DESC
+                    LIMIT ?
+                """, (entry_type, limit))
+            else:
+                cursor.execute("""
+                    SELECT * FROM baseball_international_league_agent
+                    ORDER BY created_at DESC
+                    LIMIT ?
+                """, (limit,))
 
-        return {
-            "id": row[0],
-            "title": row[1],
-            "content": row[2],
-            "metadata": json.loads(row[3]) if row[3] else None,
-            "status": row[4],
-            "tags": tags,
-            "created_at": row[5],
-            "updated_at": row[6]
-        }
+            entries = []
+            for row in cursor.fetchall():
+                entry = dict(row)
+                entry["tags"] = self._get_entry_tags(cursor, entry["id"])
+                entries.append(entry)
 
-    def list_entries(self, status: Optional[str] = None,
-                     limit: int = 100, offset: int = 0) -> List[Dict]:
-        """エントリー一覧"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+            return entries
 
-        if status:
-            cursor.execute('''
-                SELECT id, title, content, metadata, status, created_at, updated_at
-                FROM entries WHERE status = ?
-                ORDER BY created_at DESC
-                LIMIT ? OFFSET ?
-            ''', (status, limit, offset))
-        else:
-            cursor.execute('''
-                SELECT id, title, content, metadata, status, created_at, updated_at
-                FROM entries
-                ORDER BY created_at DESC
-                LIMIT ? OFFSET ?
-            ''', (limit, offset))
-
-        rows = cursor.fetchall()
-        conn.close()
-
-        return [{
-            "id": row[0],
-            "title": row[1],
-            "content": row[2],
-            "metadata": json.loads(row[3]) if row[3] else None,
-            "status": row[4],
-            "created_at": row[5],
-            "updated_at": row[6]
-        } for row in rows]
-
-    def update_entry(self, entry_id: int, **kwargs) -> bool:
-        """エントリー更新"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        updates = []
-        params = []
-
-        if 'title' in kwargs:
-            updates.append("title = ?")
-            params.append(kwargs['title'])
-        if 'content' in kwargs:
-            updates.append("content = ?")
-            params.append(kwargs['content'])
-        if 'metadata' in kwargs:
-            updates.append("metadata = ?")
-            params.append(json.dumps(kwargs['metadata']))
-        if 'status' in kwargs:
-            updates.append("status = ?")
-            params.append(kwargs['status'])
-
-        if not updates:
-            conn.close()
-            return False
-
-        updates.append("updated_at = ?")
-        params.append(datetime.now().isoformat())
-        params.append(entry_id)
-
-        cursor.execute(f'''
-            UPDATE entries SET {', '.join(updates)}
-            WHERE id = ?
-        ''', params)
-
-        conn.commit()
-        conn.close()
-
-        return cursor.rowcount > 0
+    def update_entry(self, entry_id: int, entry_data: Dict[str, Any]) -> bool:
+        """エントリーを更新"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE baseball_international_league_agent
+                SET type = ?, title = ?, content = ?, status = ?, priority = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            """, (
+                entry_data.get("type"),
+                entry_data.get("title"),
+                entry_data.get("content"),
+                entry_data.get("status"),
+                entry_data.get("priority"),
+                entry_id
+            ))
+            conn.commit()
+            return cursor.rowcount > 0
 
     def delete_entry(self, entry_id: int) -> bool:
-        """エントリー削除"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """エントリーを削除"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM baseball_international_league_agent WHERE id = ?", (entry_id,))
+            conn.commit()
+            return cursor.rowcount > 0
 
-        cursor.execute('DELETE FROM entries WHERE id = ?', (entry_id,))
+    def _add_tag_to_entry(self, cursor, entry_id: int, tag_name: str):
+        """エントリーにタグを追加"""
+        cursor.execute("INSERT OR IGNORE INTO tags (name) VALUES (?)", (tag_name,))
+        cursor.execute("SELECT id FROM tags WHERE name = ?", (tag_name,))
+        tag_id = cursor.fetchone()[0]
+        cursor.execute("INSERT OR IGNORE INTO entry_tags (entry_id, tag_id) VALUES (?, ?)",
+                      (entry_id, tag_id))
 
-        conn.commit()
-        conn.close()
+    def _get_entry_tags(self, cursor, entry_id: int) -> List[str]:
+        """エントリーのタグを取得"""
+        cursor.execute("""
+            SELECT t.name
+            FROM tags t
+            JOIN entry_tags et ON t.id = et.tag_id
+            WHERE et.entry_id = ?
+        """, (entry_id,))
+        return [row[0] for row in cursor.fetchall()]
 
-        return cursor.rowcount > 0
+    def set_metadata(self, key: str, value: Any):
+        """メタデータを設定"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT OR REPLACE INTO metadata (key, value, updated_at)
+                VALUES (?, ?, CURRENT_TIMESTAMP)
+            """, (key, json.dumps(value)))
+            conn.commit()
 
-    def search_entries(self, query: str, limit: int = 100) -> List[Dict]:
-        """エントリー検索"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute('''
-            SELECT id, title, content, metadata, status, created_at, updated_at
-            FROM entries
-            WHERE title LIKE ? OR content LIKE ?
-            ORDER BY created_at DESC
-            LIMIT ?
-        ''', (f'%{query}%', f'%{query}%', limit))
-
-        rows = cursor.fetchall()
-        conn.close()
-
-        return [{
-            "id": row[0],
-            "title": row[1],
-            "content": row[2],
-            "metadata": json.loads(row[3]) if row[3] else None,
-            "status": row[4],
-            "created_at": row[5],
-            "updated_at": row[6]
-        } for row in rows]
-
-    def get_stats(self) -> Dict:
-        """統計情報取得"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute('SELECT COUNT(*) FROM entries')
-        total_entries = cursor.fetchone()[0]
-
-        cursor.execute('SELECT COUNT(*) FROM tags')
-        total_tags = cursor.fetchone()[0]
-
-        cursor.execute("SELECT status, COUNT(*) FROM entries GROUP BY status")
-        status_counts = {row[0]: row[1] for row in cursor.fetchall()}
-
-        conn.close()
-
-        return {
-            "total_entries": total_entries,
-            "total_tags": total_tags,
-            "status_counts": status_counts
-        }
-
-
-def main():
-    """メイン関数"""
-    db = DatabaseManager()
-
-    stats = db.get_stats()
-    print(f"Stats: {json.dumps(stats, indent=2, ensure_ascii=False)}")
+    def get_metadata(self, key: str) -> Optional[Any]:
+        """メタデータを取得"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT value FROM metadata WHERE key = ?", (key,))
+            row = cursor.fetchone()
+            if row:
+                return json.loads(row[0])
+            return None
 
 
 if __name__ == "__main__":
-    main()
+    # テスト実行
+    db = BaseballInternationalLeagueAgentDatabase()
+    test_entry = {
+        "type": "test",
+        "title": "テスト",
+        "content": "テストエントリー",
+        "tags": ["test", "demo"]
+    }
+    entry_id = db.create_entry(test_entry)
+    print(f"Created entry: {entry_id}")
+    print(f"Retrieved: {db.get_entry(entry_id)}")

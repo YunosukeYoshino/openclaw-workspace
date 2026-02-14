@@ -1,147 +1,102 @@
-# 野球歴史記録管理エージェント
+# 野球歴史エージェント
 
-野球の歴史や記録を管理するエージェント
-
-## Overview
-
-This agent helps manage baseball-history-agent.
-
-## Features
-
-- Track baseball statistics
-- Analyze player performance
-- Search and filter data
-- Discord bot integration
-
-## Database
-
-The agent uses SQLite with the following tables:
-
-- `baseball_stats` - Baseball statistics data
-- `stat_entries` - Individual stat entries
-
-## Setup
-
-1. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-2. Initialize the database:
-```bash
-python db.py
-```
-
-3. Run the agent:
-```bash
-python agent.py
-```
-
-4. Run the Discord bot (optional):
-```bash
-export DISCORD_TOKEN=your_token_here
-python discord.py
-```
-
-## Usage
-
-### As a Module
-
-```python
-from agent import BaseballHistoryAgent
-
-agent = BaseballHistoryAgent()
-stats = agent.get_all()
-print(stats)
-```
-
-### Discord Commands
-
-- `!stats <player_name>` - 選手の統計を表示
-- `!add <player_id> <player_name> [stats...]` - 統計を追加
-- `!update <player_id> [stats...]` - 統計を更新
-- `!search <query>` - 統計を検索
-- `!summary` - サマリーを表示
-
-## Requirements
-
-See `requirements.txt`.
-
-## License
-
-MIT
-
----
-
-# 野球歴史記録管理エージェント（詳細野球統計分析エージェント）
-
-野球の歴史や記録を管理するエージェント
+野球の歴史データの管理
 
 ## 概要
 
-このエージェントはbaseball-history-agentを管理するのに役立ちます。
+野球歴史エージェントはbaseballカテゴリのエージェントです。Japanese言語に対応しています。
 
 ## 機能
 
-- 野球の統計を追跡
-- 選手の成績を分析
-- データの検索とフィルタリング
-- Discordボットとの統合
+- データ処理・分析
+- タスク管理
+- 状態監視
+- Discord連携
 
-## データベース
+## インストール
 
-このエージェントはSQLiteを使用し、以下のテーブルを持ちます：
-
-- `baseball_stats` - 野球統計データ
-- `stat_entries` - 個別の統計エントリー
-
-## セットアップ
-
-1. 依存パッケージをインストール：
 ```bash
 pip install -r requirements.txt
-```
-
-2. データベースを初期化：
-```bash
-python db.py
-```
-
-3. エージェントを実行：
-```bash
-python agent.py
-```
-
-4. Discordボットを実行（オプション）：
-```bash
-export DISCORD_TOKEN=your_token_here
-python discord.py
 ```
 
 ## 使用方法
 
-### モジュールとして使用
+### エージェントとして実行
+
+```bash
+python agent.py
+```
+
+### データベース操作
+
+```bash
+python db.py
+```
+
+### Discordボット
+
+```bash
+export DISCORD_TOKEN=your_token
+python discord.py
+```
+
+## データベース構造
+
+### records テーブル
+- `id`: 主キー
+- `type`: レコードタイプ
+- `title`: タイトル
+- `content`: コンテンツ
+- `metadata`: メタデータ（JSON）
+- `created_at`: 作成日時
+- `updated_at`: 更新日時
+
+### tasks テーブル
+- `id`: 主キー
+- `task_id`: タスクID
+- `status`: ステータス（pending/completed/failed）
+- `result`: 結果
+- `error`: エラーメッセージ
+- `created_at`: 作成日時
+- `completed_at`: 完了日時
+
+### settings テーブル
+- `key`: 設定キー
+- `value`: 設定値
+- `updated_at`: 更新日時
+
+## Discordコマンド
+
+- `!help` - ヘルプ表示
+- `!status` - ステータス確認
+- `!info` - エージェント情報
+
+## API
+
+### Agent
 
 ```python
 from agent import BaseballHistoryAgent
 
 agent = BaseballHistoryAgent()
-stats = agent.get_all()
-print(stats)
+await agent.initialize()
+result = await agent.process(data)
 ```
 
-### Discordコマンド
+### Database
 
-- `!stats <player_name>` - 選手の統計を表示
-- `!add <player_id> <player_name> [stats...]` - 統計を追加
-- `!update <player_id> [stats...]` - 統計を更新
-- `!search <query>` - 統計を検索
-- `!summary` - サマリーを表示
+```python
+from db import BaseballHistoryAgentDB
 
-## 依存パッケージ
+db = BaseballHistoryAgentDB()
+record_id = db.insert_record("type", "title", "content")
+record = db.get_record(record_id)
+```
 
-`requirements.txt` を参照してください。
+## 言語サポート
+
+- Japanese
 
 ## ライセンス
 
-MIT
+MIT License

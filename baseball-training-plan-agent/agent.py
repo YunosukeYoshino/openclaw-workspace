@@ -1,241 +1,76 @@
 #!/usr/bin/env python3
-"""Agent: baseball-training-plan-agent"""
+"""
+baseball-training-plan-agent - 野球トレーニングプランエージェント。トレーニング計画の作成・管理。
+"""
 
-import os
 import sys
-import sqlite3
-import logging
-import json
+import os
+import asyncio
+from pathlib import Path
 from datetime import datetime
-from typing import Optional, Dict, List, Any
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger('baseball-training-plan-agent')
+# エージェントディレクトリをパスに追加
+sys.path.insert(0, str(Path(__file__).parent))
+
+from db import BaseballTrainingPlanAgentDatabase
+from discord import BaseballTrainingPlanAgentDiscordBot
 
 
-class BaseballTrainingPlanAgent:
-    """Agent for 野球コーチング・トレーニングエージェント"""
+class BaseballTrainingPlanAgentAgent:
+    """野球トレーニングプランエージェント。トレーニング計画の作成・管理。"""
 
-    def __init__(self, db_path: str = None):
+    def __init__(self, config_path=None):
+        self.config_path = config_path or os.path.join(os.path.dirname(__file__), "config.json")
+        self.db = BaseballTrainingPlanAgentDatabase(self.config_path)
+        self.discord = BaseballTrainingPlanAgentDiscordBot(self.config_path)
         self.name = "baseball-training-plan-agent"
-        self.db_path = db_path or os.path.join(
-            os.path.dirname(__file__),
-            "data.db"
-        )
-        self.conn = None
+        self.version = "1.0.0"
+        self.status = "idle"
 
-    def initialize_database(self):
+    async def start(self):
+        """エージェントを開始"""
+        self.status = "running"
+        print(f"[{self.name}] 開始 (v{self.version})")
+        await self.discord.start()
+
+    async def stop(self):
+        """エージェントを停止"""
+        self.status = "stopped"
+        print(f"[{self.name}] 停止")
+        await self.discord.stop()
+
+    async def run_task(self, task_data):
+        """タスクを実行"""
         try:
-            self.conn = sqlite3.connect(self.db_path)
-            self.conn.row_factory = sqlite3.Row
-            cursor = self.conn.cursor()
+            task_type = task_data.get("type")
+            task_params = task_data.get("params", {})
 
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS entries (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    type TEXT NOT NULL,
-                    title TEXT,
-                    content TEXT NOT NULL,
-                    status TEXT DEFAULT 'active',
-                    priority INTEGER DEFAULT 0,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS activity_log (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    action TEXT NOT NULL,
-                    details TEXT,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS settings (
-                    key TEXT PRIMARY KEY,
-                    value TEXT NOT NULL,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-            self.conn.commit()
-            logger.info("Database initialized")
-            return True
-
-        except sqlite3.Error as err:
-            logger.error(f"Database init failed: {err}")
-            return False
-
-    def log_activity(self, action: str, details: str = None):
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute(
-                "INSERT INTO activity_log (action, details) VALUES (?, ?)",
-                (action, details)
-            )
-            self.conn.commit()
-        except sqlite3.Error as err:
-            logger.error(f"Failed to log: {err}")
-
-    def add_entry(self, entry_type: str, content: str, title: str = None, priority: int = 0) -> Optional[int]:
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute(
-                "INSERT INTO entries (type, title, content, priority) VALUES (?, ?, ?, ?)",
-                (entry_type, title, content, priority)
-            )
-            self.conn.commit()
-            return cursor.lastrowid
-        except sqlite3.Error as err:
-            logger.error(f"Failed to add entry: {err}")
-            return None
-
-    def get_entry(self, entry_id: int) -> Optional[Dict]:
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT * FROM entries WHERE id = ?", (entry_id,))
-            row = cursor.fetchone()
-            return dict(row) if row else None
-        except sqlite3.Error as err:
-            logger.error(f"Failed to get entry: {err}")
-            return None
-
-    def list_entries(self, entry_type: str = None, status: str = "active", limit: int = 100) -> List[Dict]:
-        try:
-            cursor = self.conn.cursor()
-            if entry_type:
-                cursor.execute(
-                    "SELECT * FROM entries WHERE type = ? AND status = ? ORDER BY created_at DESC LIMIT ?",
-                    (entry_type, status, limit)
-                )
+            if task_type == "baseball-training-plan-agent":
+                result = await self._baseball_training_plan_agent(**task_params)
+                return {"success": True, "result": result}
             else:
-                cursor.execute(
-                    "SELECT * FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?",
-                    (status, limit)
-                )
-            return [dict(row) for row in cursor.fetchall()]
-        except sqlite3.Error as err:
-            logger.error(f"Failed to list entries: {err}")
-            return []
+                return {"success": False, "error": "未知のタスクタイプ"}
 
-    def update_entry_status(self, entry_id: int, status: str) -> bool:
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute(
-                "UPDATE entries SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-                (status, entry_id)
-            )
-            self.conn.commit()
-            return True
-        except sqlite3.Error as err:
-            logger.error(f"Failed to update status: {err}")
-            return False
+        except Exception as e:
+            print(f"[{self.name}] タスク実行エラー: {e}")
+            return {"success": False, "error": str(e)}
 
-    def get_settings(self) -> Dict[str, str]:
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT key, value FROM settings")
-            return {row["key"]: row["value"] for row in cursor.fetchall()}
-        except sqlite3.Error as err:
-            logger.error(f"Failed to get settings: {err}")
-            return {}
-
-    def set_setting(self, key: str, value: str) -> bool:
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute(
-                "INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)",
-                (key, value)
-            )
-            self.conn.commit()
-            return True
-        except sqlite3.Error as err:
-            logger.error(f"Failed to set setting: {err}")
-            return False
-
-    def process_command(self, command: str, params: Dict = None) -> Dict:
-        params = params or {}
-        try:
-            if command == "add":
-                result = self.add_entry(
-                    entry_type=params.get("type", "note"),
-                    content=params.get("content", ""),
-                    title=params.get("title"),
-                    priority=params.get("priority", 0)
-                )
-                return {"success": bool(result), "data": {"id": result}}
-
-            elif command == "get":
-                result = self.get_entry(params.get("id"))
-                return {"success": result is not None, "data": result}
-
-            elif command == "list":
-                result = self.list_entries(
-                    entry_type=params.get("type"),
-                    status=params.get("status", "active"),
-                    limit=params.get("limit", 100)
-                )
-                return {"success": True, "data": result}
-
-            elif command == "update_status":
-                result = self.update_entry_status(
-                    params.get("id"),
-                    params.get("status", "active")
-                )
-                return {"success": result}
-
-            elif command == "get_stats":
-                cursor = self.conn.cursor()
-                cursor.execute("SELECT COUNT(*) as count FROM entries WHERE status = 'active'")
-                active_count = cursor.fetchone()["count"]
-                cursor.execute("SELECT COUNT(*) as count FROM activity_log")
-                activity_count = cursor.fetchone()["count"]
-                return {
-                    "success": True,
-                    "data": {
-                        "active_entries": active_count,
-                        "total_activities": activity_count,
-                        "settings": self.get_settings()
-                    }
-                }
-
-            else:
-                return {"success": False, "error": "Unknown command"}
-
-        except Exception as err:
-            logger.error(f"Command error: {err}")
-            return {"success": False, "error": str(err)}
-
-    def close(self):
-        if self.conn:
-            self.conn.close()
+    async def _baseball_training_plan_agent(self, **params):
+        """野球トレーニングプランエージェント。トレーニング計画の作成・管理。のメイン処理"""
+        # TODO: 実装を追加
+        result = {"message": "野球トレーニングプランエージェント。トレーニング計画の作成・管理。処理完了", "params": params}
+        return result
 
 
-def main():
-    agent = BaseballTrainingPlanAgent()
-    if not agent.initialize_database():
-        print("Failed to initialize database")
-        sys.exit(1)
-
-    if len(sys.argv) > 1:
-        command = sys.argv[1]
-        params = {}
-        if len(sys.argv) > 2:
-            for arg in sys.argv[2:]:
-                if "=" in arg:
-                    key, value = arg.split("=", 1)
-                    params[key] = value
-
-        result = agent.process_command(command, params)
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-
-    agent.close()
+async def main():
+    """メインエントリーポイント"""
+    agent = BaseballTrainingPlanAgentAgent()
+    try:
+        await agent.start()
+    except KeyboardInterrupt:
+        print("\nシャットダウン中...")
+        await agent.stop()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

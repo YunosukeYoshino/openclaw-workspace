@@ -1,62 +1,79 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Discordボットモジュール - コンテナオーケストレーションエージェント
+container-orchestration-agent - Discord Bot モジュール
 """
 
-import discord
-from discord.ext import commands
-import logging
-from typing import Optional
-from .db import Database
+import os
+import asyncio
+from typing import Optional, Dict, Any
 
-logger = logging.getLogger(__name__)
 
-class DiscordBot(commands.Bot):
-    """Discordボット"""
+class ContainerOrchestrationAgentDiscordBot:
+    """コンテナオーケストレーションエージェント。コンテナオーケストレーションの管理。 Discord Bot"""
 
-    def __init__(self, db: Database, command_prefix: str = "!"):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix=command_prefix, intents=intents, help_command=commands.DefaultHelpCommand())
-        self.db = db
+    def __init__(self, config_path=None):
+        self.config_path = config_path
+        self.token = os.getenv("DISCORD_TOKEN")
+        self.channel_id = os.getenv("DISCORD_CHANNEL_ID")
+        self.enabled = self.token and self.channel_id
+        self.name = "container-orchestration-agent"
 
-    async def on_ready(self):
-        """起動時の処理"""
-        logger.info(f"Logged in as {self.user.name} ({self.user.id})")
-        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"for commands"))
-
-    async def on_message(self, message: discord.Message):
-        """メッセージ受信時の処理"""
-        if message.author.id == self.user.id:
+    async def start(self):
+        """Botを開始"""
+        if not self.enabled:
+            print(f"[{self.name}] Discord Botは無効化されています")
             return
-        await self.process_commands(message)
 
-    @commands.command(name="stats")
-    async def cmd_stats(self, ctx: commands.Context):
-        """統計情報を表示"""
-        stats = self.db.get_stats()
-        embed = discord.Embed(title="📊 統計情報", color=discord.Color.blue())
-        embed.add_field(name="総レコード数", value=str(stats["total_records"]), inline=False)
-        embed.add_field(name="データベースパス", value=stats["db_path"], inline=False)
-        await ctx.send(embed=embed)
+        print(f"[{self.name}] Discord Botを開始")
 
-    @commands.command(name="info")
-    async def cmd_info(self, ctx: commands.Context):
-        """エージェント情報を表示"""
-        embed = discord.Embed(title="コンテナオーケストレーションエージェント", description="Docker/Kubernetesのオーケストレーションを管理するエージェント", color=discord.Color.green())
-        embed.add_field(name="カテゴリ", value="クラウドデプロイ", inline=False)
-        await ctx.send(embed=embed)
+    async def stop(self):
+        """Botを停止"""
+        print(f"[{self.name}] Discord Botを停止")
 
-async def run_bot(token: str, db: Database):
-    """ボットを実行"""
-    bot = DiscordBot(db)
-    await bot.start(token)
+    async def send_message(self, message: str, embed: Optional[Dict] = None):
+        """メッセージを送信"""
+        if not self.enabled:
+            return
+
+        print(f"[{self.name}] メッセージ送信: {message}")
+
+    async def send_embed(self, title: str, description: str, fields: Optional[Dict] = None, color: int = 0x00ff00):
+        """埋め込みメッセージを送信"""
+        if not self.enabled:
+            return
+
+        embed_data = {
+            "title": title,
+            "description": description,
+            "color": color
+        }
+        if fields:
+            embed_data["fields"] = fields
+
+        await self.send_message("", embed=embed_data)
+
+    async def notify_task_complete(self, task_id: str, result: Dict[str, Any]):
+        """タスク完了を通知"""
+        await self.send_embed(
+            title=f"✅ タスク完了: {task_id}",
+            description=f"{result.get('message', '処理完了')}"
+        )
+
+    async def notify_task_error(self, task_id: str, error: str):
+        """タスクエラーを通知"""
+        await self.send_embed(
+            title=f"❌ タスクエラー: {task_id}",
+            description=error,
+            color=0xff0000
+        )
+
 
 if __name__ == "__main__":
-    import os
-    DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
-    if not DISCORD_TOKEN:
-        print("DISCORD_TOKEN environment variable is required")
-        exit(1)
-    db = Database()
+    # テスト実行
+    async def test():
+        bot = ContainerOrchestrationAgentDiscordBot()
+        await bot.start()
+        await bot.send_message("テストメッセージ")
+        await bot.stop()
+
+    asyncio.run(test())

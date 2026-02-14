@@ -1,42 +1,76 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-サービスメッシュエージェント
-サービスメッシュの設定・管理を行うエージェント
+service-mesh-agent - サービスメッシュエージェント。サービスメッシュの管理。
 """
 
-import logging
-from typing import Dict, Any, Optional
-from .db import Database
+import sys
+import os
+import asyncio
+from pathlib import Path
+from datetime import datetime
 
-logger = logging.getLogger(__name__)
+# エージェントディレクトリをパスに追加
+sys.path.insert(0, str(Path(__file__).parent))
 
-class ServiceMeshAgent:
-    """サービスメッシュエージェント"""
+from db import ServiceMeshAgentDatabase
+from discord import ServiceMeshAgentDiscordBot
 
-    def __init__(self, db_path: str = "service-mesh-agent.db"):
-        self.db = Database(db_path)
-        self.logger = logger
 
-    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+class ServiceMeshAgentAgent:
+    """サービスメッシュエージェント。サービスメッシュの管理。"""
+
+    def __init__(self, config_path=None):
+        self.config_path = config_path or os.path.join(os.path.dirname(__file__), "config.json")
+        self.db = ServiceMeshAgentDatabase(self.config_path)
+        self.discord = ServiceMeshAgentDiscordBot(self.config_path)
+        self.name = "service-mesh-agent"
+        self.version = "1.0.0"
+        self.status = "idle"
+
+    async def start(self):
+        """エージェントを開始"""
+        self.status = "running"
+        print(f"[{self.name}] 開始 (v{self.version})")
+        await self.discord.start()
+
+    async def stop(self):
+        """エージェントを停止"""
+        self.status = "stopped"
+        print(f"[{self.name}] 停止")
+        await self.discord.stop()
+
+    async def run_task(self, task_data):
+        """タスクを実行"""
         try:
-            self.db.save_record(input_data)
-            result = await self._execute_logic(input_data)
-            return {"status": "success", "result": result}
+            task_type = task_data.get("type")
+            task_params = task_data.get("params", {})
+
+            if task_type == "service-mesh-agent":
+                result = await self._service_mesh_agent(**task_params)
+                return {"success": True, "result": result}
+            else:
+                return {"success": False, "error": "未知のタスクタイプ"}
+
         except Exception as e:
-            self.logger.error(f"処理エラー: {e}")
-            return {"status": "error", "message": str(e)}
+            print(f"[{self.name}] タスク実行エラー: {e}")
+            return {"success": False, "error": str(e)}
 
-    async def _execute_logic(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        return {"processed": True, "data": input_data}
+    async def _service_mesh_agent(self, **params):
+        """サービスメッシュエージェント。サービスメッシュの管理。のメイン処理"""
+        # TODO: 実装を追加
+        result = {"message": "サービスメッシュエージェント。サービスメッシュの管理。処理完了", "params": params}
+        return result
 
-    def get_stats(self) -> Dict[str, Any]:
-        return self.db.get_stats()
+
+async def main():
+    """メインエントリーポイント"""
+    agent = ServiceMeshAgentAgent()
+    try:
+        await agent.start()
+    except KeyboardInterrupt:
+        print("\nシャットダウン中...")
+        await agent.stop()
+
 
 if __name__ == "__main__":
-    import asyncio
-    async def main():
-        agent = ServiceMeshAgent()
-        result = await agent.process({"test": "data"})
-        print(result)
     asyncio.run(main())

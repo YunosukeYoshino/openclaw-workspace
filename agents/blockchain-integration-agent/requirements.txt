@@ -1,0 +1,17 @@
+# Requirements for ブロックチェーン統合エージェント
+# Automatically generated dependencies
+
+# Core dependencies
+asyncio
+typing
+datetime
+json
+sqlite3
+contextlib
+
+# Additional dependencies
+# web3
+# eth-account
+# requests
+# pyyaml
+# rich
