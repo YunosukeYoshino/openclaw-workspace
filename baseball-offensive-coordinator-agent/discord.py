@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-api-versioning-agent - Discord Integration Module
+baseball-offensive-coordinator-agent - Discord Integration Module
 """
 
 import asyncio
@@ -67,7 +67,7 @@ class DiscordBot:
 async def main():
     bot = DiscordBot()
     await bot.connect()
-    await bot.send_message("api-versioning-agent Discord bot is ready")
+    await bot.send_message("baseball-offensive-coordinator-agent Discord bot is ready")
 
 if __name__ == "__main__":
     asyncio.run(main())

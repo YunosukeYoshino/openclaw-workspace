@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-api-versioning-agent - Database Module
+erotic-community-health-agent - Database Module
 """
 
 import sqlite3
@@ -11,7 +11,7 @@ import json
 
 class Database:
     def __init__(self, db_path: str = None):
-        self.db_path = db_path or str(Path(__file__).parent / "api-versioning-agent.db")
+        self.db_path = db_path or str(Path(__file__).parent / "erotic-community-health-agent.db")
 
     @contextmanager
     def get_connection(self):

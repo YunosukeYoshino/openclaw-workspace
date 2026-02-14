@@ -1,17 +1,17 @@
-# api-versioning-agent
+# game-collab-campaign-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+ゲームコラボキャンペーンエージェント。コラボキャンペーンの管理。
 
-API versioning agent. Manage API versioning.
+Game collaboration campaign agent. Manage collaboration campaigns.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
-- management
+- campaign
+- collaboration
+- marketing
 
-カテゴリー: infrastructure
+カテゴリー: game
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import GameCollabCampaignAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = GameCollabCampaignAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from game-collab-campaign-agent")
 ```
 
 ## API Reference

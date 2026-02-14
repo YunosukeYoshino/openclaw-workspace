@@ -1,14 +1,14 @@
-# api-versioning-agent
+# microservice-orchestrator-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+マイクロサービスオーケストレーターエージェント。マイクロサービスのオーケストレーション。
 
-API versioning agent. Manage API versioning.
+Microservice orchestrator agent. Orchestrate microservices.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
+- microservice
+- orchestration
 - management
 
 カテゴリー: infrastructure
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import MicroserviceOrchestratorAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = MicroserviceOrchestratorAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from microservice-orchestrator-agent")
 ```
 
 ## API Reference

@@ -1,17 +1,17 @@
-# api-versioning-agent
+# erotic-moderation-team-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+えっちモデレーションチームエージェント。プラットフォーム間のモデレーション調整。
 
-API versioning agent. Manage API versioning.
+Erotic moderation team agent. Coordinate moderation across platforms.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
-- management
+- moderation
+- team
+- coordination
 
-カテゴリー: infrastructure
+カテゴリー: erotic
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import EroticModerationTeamAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = EroticModerationTeamAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from erotic-moderation-team-agent")
 ```
 
 ## API Reference

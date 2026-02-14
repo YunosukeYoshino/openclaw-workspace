@@ -1,15 +1,15 @@
-# api-versioning-agent
+# service-mesh-config-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+サービスメッシュ設定エージェント。サービスメッシュの設定管理。
 
-API versioning agent. Manage API versioning.
+Service mesh configuration agent. Manage service mesh configuration.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
-- management
+- service-mesh
+- configuration
+- istio
 
 カテゴリー: infrastructure
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import ServiceMeshConfigAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = ServiceMeshConfigAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from service-mesh-config-agent")
 ```
 
 ## API Reference

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-api-versioning-agent
+game-universe-fusion-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+ゲームユニバース融合エージェント。異なるゲーム世界の融合。
 """
 
 import sqlite3
@@ -11,9 +11,9 @@ from pathlib import Path
 from typing import Optional, List, Dict, Any
 import json
 
-class ApiVersioningAgentAgent:
+class GameUniverseFusionAgentAgent:
     def __init__(self, db_path: str = None):
-        self.db_path = db_path or str(Path(__file__).parent / "api-versioning-agent.db")
+        self.db_path = db_path or str(Path(__file__).parent / "game-universe-fusion-agent.db")
         self.init_database()
 
     def init_database(self):
@@ -136,7 +136,7 @@ class ApiVersioningAgentAgent:
         }
 
 async def main():
-    agent = ApiVersioningAgentAgent()
+    agent = GameUniverseFusionAgentAgent()
 
     print("AGENT_NAME is running...")
 

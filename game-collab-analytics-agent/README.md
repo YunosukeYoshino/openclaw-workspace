@@ -1,17 +1,17 @@
-# api-versioning-agent
+# game-collab-analytics-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+ゲームコラボアナリティクスエージェント。コラボの効果分析。
 
-API versioning agent. Manage API versioning.
+Game collaboration analytics agent. Analyze collaboration performance.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
-- management
+- analytics
+- collaboration
+- metrics
 
-カテゴリー: infrastructure
+カテゴリー: game
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import GameCollabAnalyticsAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = GameCollabAnalyticsAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from game-collab-analytics-agent")
 ```
 
 ## API Reference

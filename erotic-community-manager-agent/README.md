@@ -1,17 +1,17 @@
-# api-versioning-agent
+# erotic-community-manager-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+えっちコミュニティマネージャーエージェント。プラットフォーム間のコミュニティ統合。
 
-API versioning agent. Manage API versioning.
+Erotic community manager agent. Integrate communities across platforms.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
+- community
 - management
+- integration
 
-カテゴリー: infrastructure
+カテゴリー: erotic
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import EroticCommunityManagerAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = EroticCommunityManagerAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from erotic-community-manager-agent")
 ```
 
 ## API Reference

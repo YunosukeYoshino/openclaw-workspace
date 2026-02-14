@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-api-versioning-agent
+erotic-moderation-team-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+えっちモデレーションチームエージェント。プラットフォーム間のモデレーション調整。
 """
 
 import sqlite3
@@ -11,9 +11,9 @@ from pathlib import Path
 from typing import Optional, List, Dict, Any
 import json
 
-class ApiVersioningAgentAgent:
+class EroticModerationTeamAgentAgent:
     def __init__(self, db_path: str = None):
-        self.db_path = db_path or str(Path(__file__).parent / "api-versioning-agent.db")
+        self.db_path = db_path or str(Path(__file__).parent / "erotic-moderation-team-agent.db")
         self.init_database()
 
     def init_database(self):
@@ -136,7 +136,7 @@ class ApiVersioningAgentAgent:
         }
 
 async def main():
-    agent = ApiVersioningAgentAgent()
+    agent = EroticModerationTeamAgentAgent()
 
     print("AGENT_NAME is running...")
 

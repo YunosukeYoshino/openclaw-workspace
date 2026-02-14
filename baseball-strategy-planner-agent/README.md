@@ -1,17 +1,17 @@
-# api-versioning-agent
+# baseball-strategy-planner-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+野球戦略プランナーエージェント。試合戦略の計画・立案。
 
-API versioning agent. Manage API versioning.
+Baseball strategy planner agent. Plan and develop game strategies.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
-- management
+- strategy
+- planning
+- analysis
 
-カテゴリー: infrastructure
+カテゴリー: baseball
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import BaseballStrategyPlannerAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = BaseballStrategyPlannerAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from baseball-strategy-planner-agent")
 ```
 
 ## API Reference

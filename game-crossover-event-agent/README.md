@@ -1,17 +1,17 @@
-# api-versioning-agent
+# game-crossover-event-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+ゲームクロスオーバーイベントエージェント。IP間のコラボイベントの企画・運営。
 
-API versioning agent. Manage API versioning.
+Game crossover event agent. Plan and operate collaboration events between IPs.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
-- management
+- crossover
+- event
+- collaboration
 
-カテゴリー: infrastructure
+カテゴリー: game
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import GameCrossoverEventAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = GameCrossoverEventAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from game-crossover-event-agent")
 ```
 
 ## API Reference

@@ -1,17 +1,17 @@
-# api-versioning-agent
+# baseball-rotation-manager-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+野球ローテーションマネージャーエージェント。先発ローテーションの管理。
 
-API versioning agent. Manage API versioning.
+Baseball rotation manager agent. Manage starting rotation.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
+- rotation
 - management
+- starting
 
-カテゴリー: infrastructure
+カテゴリー: baseball
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import BaseballRotationManagerAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = BaseballRotationManagerAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from baseball-rotation-manager-agent")
 ```
 
 ## API Reference

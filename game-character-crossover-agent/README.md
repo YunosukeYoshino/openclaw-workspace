@@ -1,17 +1,17 @@
-# api-versioning-agent
+# game-character-crossover-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+ゲームキャラクタークロスオーバーエージェント。キャラクターの共有・統合。
 
-API versioning agent. Manage API versioning.
+Game character crossover agent. Character sharing and integration.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
-- management
+- character
+- crossover
+- integration
 
-カテゴリー: infrastructure
+カテゴリー: game
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import GameCharacterCrossoverAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = GameCharacterCrossoverAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from game-character-crossover-agent")
 ```
 
 ## API Reference

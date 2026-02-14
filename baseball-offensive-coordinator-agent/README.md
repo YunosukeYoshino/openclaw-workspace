@@ -1,17 +1,17 @@
-# api-versioning-agent
+# baseball-offensive-coordinator-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+野球攻撃コーディネーターエージェント。攻撃戦略の策定。
 
-API versioning agent. Manage API versioning.
+Baseball offensive coordinator agent. Develop offensive strategies.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
-- management
+- offense
+- strategy
+- coordination
 
-カテゴリー: infrastructure
+カテゴリー: baseball
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import BaseballOffensiveCoordinatorAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = BaseballOffensiveCoordinatorAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from baseball-offensive-coordinator-agent")
 ```
 
 ## API Reference

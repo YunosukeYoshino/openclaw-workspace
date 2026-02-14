@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-api-versioning-agent
+baseball-defensive-coordinator-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+野球守備コーディネーターエージェント。守備配置の最適化。
 """
 
 import sqlite3
@@ -11,9 +11,9 @@ from pathlib import Path
 from typing import Optional, List, Dict, Any
 import json
 
-class ApiVersioningAgentAgent:
+class BaseballDefensiveCoordinatorAgentAgent:
     def __init__(self, db_path: str = None):
-        self.db_path = db_path or str(Path(__file__).parent / "api-versioning-agent.db")
+        self.db_path = db_path or str(Path(__file__).parent / "baseball-defensive-coordinator-agent.db")
         self.init_database()
 
     def init_database(self):
@@ -136,7 +136,7 @@ class ApiVersioningAgentAgent:
         }
 
 async def main():
-    agent = ApiVersioningAgentAgent()
+    agent = BaseballDefensiveCoordinatorAgentAgent()
 
     print("AGENT_NAME is running...")
 

@@ -1,15 +1,15 @@
-# api-versioning-agent
+# service-registry-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+サービスレジストリエージェント。サービスの登録・発見。
 
-API versioning agent. Manage API versioning.
+Service registry agent. Service registration and discovery.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
-- management
+- registry
+- discovery
+- service
 
 カテゴリー: infrastructure
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import ServiceRegistryAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = ServiceRegistryAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from service-registry-agent")
 ```
 
 ## API Reference

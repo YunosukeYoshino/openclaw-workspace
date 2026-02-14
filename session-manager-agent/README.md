@@ -1,17 +1,17 @@
-# api-versioning-agent
+# session-manager-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+セッションマネージャーエージェント。ユーザーセッションの管理。
 
-API versioning agent. Manage API versioning.
+Session manager agent. Manage user sessions.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
+- session
 - management
+- security
 
-カテゴリー: infrastructure
+カテゴリー: security
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import SessionManagerAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = SessionManagerAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from session-manager-agent")
 ```
 
 ## API Reference

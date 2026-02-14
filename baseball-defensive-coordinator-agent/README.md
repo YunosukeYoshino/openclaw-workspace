@@ -1,17 +1,17 @@
-# api-versioning-agent
+# baseball-defensive-coordinator-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+野球守備コーディネーターエージェント。守備配置の最適化。
 
-API versioning agent. Manage API versioning.
+Baseball defensive coordinator agent. Optimize defensive positioning.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
-- management
+- defense
+- positioning
+- coordination
 
-カテゴリー: infrastructure
+カテゴリー: baseball
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import BaseballDefensiveCoordinatorAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = BaseballDefensiveCoordinatorAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from baseball-defensive-coordinator-agent")
 ```
 
 ## API Reference

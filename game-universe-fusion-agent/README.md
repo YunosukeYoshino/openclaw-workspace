@@ -1,17 +1,17 @@
-# api-versioning-agent
+# game-universe-fusion-agent
 
-APIバージョニングエージェント。APIのバージョン管理。
+ゲームユニバース融合エージェント。異なるゲーム世界の融合。
 
-API versioning agent. Manage API versioning.
+Game universe fusion agent. Fusion of different game worlds.
 
 ## Description
 
 このエージェントは以下のスキルを持っています：
-- versioning
-- api
-- management
+- universe
+- fusion
+- integration
 
-カテゴリー: infrastructure
+カテゴリー: game
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from agent import ApiVersioningAgentAgent
+from agent import GameUniverseFusionAgentAgent
 
-agent = ApiVersioningAgentAgent()
+agent = GameUniverseFusionAgentAgent()
 
 # タスクを追加
 task_id = agent.add_task(
@@ -51,7 +51,7 @@ from discord import DiscordBot
 
 bot = DiscordBot(token="YOUR_TOKEN", channel_id="YOUR_CHANNEL_ID")
 await bot.connect()
-await bot.send_message("Hello from api-versioning-agent")
+await bot.send_message("Hello from game-universe-fusion-agent")
 ```
 
 ## API Reference
