@@ -1,51 +1,89 @@
 #!/usr/bin/env python3
-"""
-Discord integration for etl-pipeline-agent
-"""
+# etl-pipeline-agent Discord ボット
 
+import logging
 import discord
 from discord.ext import commands
-import sqlite3
-import json
-from typing import Optional
 
-class EtlPipelineBot(commands.Bot):
-    """Discord bot for etl-pipeline-agent"""
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    def __init__(self, command_prefix: str = "!", db_path: str = "agents/etl-pipeline-agent/data.db"):
+
+class Etl_pipeline_agentDiscordBot(commands.Bot):
+    # etl-pipeline-agent Discord ボット
+
+    def __init__(self, db):
+        # 初期化
         intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix=command_prefix, intents=intents)
-        self.db_path = db_path
+        super().__init__(command_prefix="!", intents=intents, help_command=None)
+        self.db = db
+
+    async def setup_hook(self):
+        # ボット起動時の設定
+        await self.add_cog(Etl_pipeline_agentCommands(self))
 
     async def on_ready(self):
-        print(f'Logged in as {self.user}')
+        # 準備完了時のイベント
+        logger.info("Logged in as %s", self.user.name)
 
-    async def create_entry(self, ctx, title: str, content: str):
-        """Create entry"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
-            cursor.execute(sql, (title, content, json.dumps(dict(), ensure_ascii=False), "active"))
-            conn.commit()
-            await ctx.send(f"Created: {title} (ID: {cursor.lastrowid})")
 
-    async def list_entries(self, ctx, limit: int = 10):
-        """List entries"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            sql = "SELECT id, title FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
-            cursor.execute(sql, ("active", limit))
-            rows = cursor.fetchall()
-            if rows:
-                msg = "\n".join([f"{r[0]}: {r[1]}" for r in rows])
-                await ctx.send(f"\n{msg}")
-            else:
-                await ctx.send("No entries found.")
+class Etl_pipeline_agentCommands(commands.Cog):
+    # etl-pipeline-agent コマンド
 
-if __name__ == "__main__":
-    import os
-    bot = EtlPipelineBot()
-    token = os.getenv("DISCORD_TOKEN")
-    if token:
-        bot.run(token)
+    def __init__(self, bot: commands.Bot):
+        # 初期化
+        self.bot = bot
+
+    @commands.command(name="etl_pipeline_agent")
+    async def etl_pipeline_agent(self, ctx: commands.Context, action: str = "list", *, args: str = ""):
+        # メインコマンド
+        if action == "list":
+            entries = self.bot.db.list_entries(limit=20)
+            if not entries:
+                await ctx.send("エントリーがありません")
+                return
+            embed = discord.Embed(title="Etl Pipeline Agent 一覧", color=discord.Color.blue())
+            for entry in entries[:10]:
+                title = entry.get("title") or "タイトルなし"
+                content = entry.get("content", "")[:50]
+                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
+            await ctx.send(embed=embed)
+        elif action == "add":
+            if not args:
+                await ctx.send(f"使用方法: !etl_pipeline_agent add <内容>")
+                return
+            entry_id = self.bot.db.add_entry(title=None, content=args, status="active", priority=0)
+            await ctx.send(f"エントリーを追加しました (ID: {entry_id})")
+        elif action == "search":
+            if not args:
+                await ctx.send(f"使用方法: !etl_pipeline_agent search <キーワード>")
+                return
+            entries = self.bot.db.search_entries(args, limit=10)
+            if not entries:
+                await ctx.send("一致するエントリーがありません")
+                return
+            embed = discord.Embed(title=f"「{args}」の検索結果", color=discord.Color.green())
+            for entry in entries:
+                title = entry.get("title") or "タイトルなし"
+                content = entry.get("content", "")[:50]
+                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send(f"不明なアクションです: {action}\\n使用可能なアクション: list, add, search")
+
+    @commands.command(name="etl_pipeline_agent_status")
+    async def etl_pipeline_agent_status(self, ctx: commands.Context):
+        # ステータス確認
+        entries = self.bot.db.list_entries(status="active")
+        embed = discord.Embed(title="Etl Pipeline Agent ステータス", color=discord.Color.gold())
+        embed.add_field(name="アクティブエントリー", value=str(len(entries)))
+        await ctx.send(embed=embed)
+
+    @commands.command(name="etl_pipeline_agent_delete")
+    async def etl_pipeline_agent_delete(self, ctx: commands.Context, entry_id: int):
+        # エントリー削除
+        if self.bot.db.delete_entry(entry_id):
+            await ctx.send(f"エントリーを削除しました (ID: {entry_id})")
+        else:
+            await ctx.send(f"エントリーが見つかりません (ID: {entry_id})")

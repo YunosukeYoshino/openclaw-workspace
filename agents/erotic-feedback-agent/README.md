@@ -1,55 +1,41 @@
-# えっちコンテンツフィードバックエージェント
+# erotic-feedback-agent
 
-Erotic Content Feedback Agent
+## 概要
+えっちコンテンツフィードバックエージェント。フィードバックの収集・分析。
 
-## 概要 (Overview)
+## カテゴリ
+えっちコンテンツ品質・ユーザーリサーチ
 
-えっちコンテンツのフィードバック、評価、改善提案を管理するエージェント
+## トリガーワード
+フィードバック, フィードバック収集, ユーザーフィードバック
 
-## 機能 (Features)
+## 主な機能
 
-- フィードバック管理
-- 評価収集
-- 改善提案
-- 統計分析
+### データ管理
+- erotic-feedback-agent 関連データのSQLiteデータベース管理
+- CRUD操作の実装
+- 検索・フィルタリング機能
 
-## インストール (Installation)
+### チャットボット機能
+- Discord連携によるインタラクティブ応答
+- 自然言語によるクエリ処理
+- コマンドパターンマッチング
 
+## 使用方法
+
+### インストール
 ```bash
+cd agents/erotic-feedback-agent
 pip install -r requirements.txt
 ```
 
-## 使用方法 (Usage)
-
-### 基本的な使用 (Basic Usage)
-
-```python
-from agent import EroticFeedbackAgent
-
-agent = EroticFeedbackAgent()
-```
-
-### Discord Botとして使用 (Using as Discord Bot)
-
+### 実行
 ```bash
-python discord.py
+python agent.py
 ```
 
-## データベース構造 (Database Schema)
-
-### feedback
-フィードバックテーブル
-
-### reviews
-レビューテーブル
-
-## コマンド (Commands)
-
-- `!add_feedback <name> <data>` - Add Feedback
-- `!list_feedbacks [limit]` - List All Feedback
-- `!add_review <name> <data>` - Add Review
-- `!list_reviewss [limit]` - List All Reviews
-
-## ライセンス (License)
-
+## ライセンス
 MIT License
+
+## バージョン
+1.0.0

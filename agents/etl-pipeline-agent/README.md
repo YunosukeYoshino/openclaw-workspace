@@ -1,41 +1,41 @@
 # etl-pipeline-agent
 
-ETLパイプラインエージェント。ETLプロセスの管理。
+## 概要
+ETLパイプラインエージェント。ETLパイプラインの管理・実行。
 
-## Description
+## カテゴリ
+データウェアハウス・データレイク
 
-データパイプライン・ETLエージェント - etl-pipeline-agent
+## トリガーワード
+ETLパイプライン, ETL, データパイプライン
 
-## Installation
+## 主な機能
 
+### データ管理
+- etl-pipeline-agent 関連データのSQLiteデータベース管理
+- CRUD操作の実装
+- 検索・フィルタリング機能
+
+### チャットボット機能
+- Discord連携によるインタラクティブ応答
+- 自然言語によるクエリ処理
+- コマンドパターンマッチング
+
+## 使用方法
+
+### インストール
 ```bash
+cd agents/etl-pipeline-agent
 pip install -r requirements.txt
-python3 db.py  # Initialize database
 ```
 
-## Usage
-
+### 実行
 ```bash
-python3 agent.py
+python agent.py
 ```
 
-## Files
+## ライセンス
+MIT License
 
-- `agent.py` - Main agent logic
-- `db.py` - Database initialization
-- `discord.py` - Discord integration
-- `requirements.txt` - Dependencies
-
-## API
-
-### Actions
-
-- `create` - Create new entry
-- `get` - Get entry by ID
-- `update` - Update entry
-- `delete` - Delete entry
-- `list` - List entries
-
-## Environment Variables
-
-- `DISCORD_TOKEN` - Discord bot token (optional)
+## バージョン
+1.0.0

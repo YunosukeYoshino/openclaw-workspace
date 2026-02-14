@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "etl-pipeline-agent",
+    "baseball-player-development-agent",
+    "rbac-agent",
+    "game-virtual-event-agent",
+    "data-lake-agent",
+    "baseball-player-agent-manager-agent",
+    "baseball-player-career-agent",
+    "game-metaverse-agent",
+    "abac-agent",
+    "erotic-feedback-agent",
+    "erotic-ab-tester-agent",
+    "baseball-player-transfer-agent",
+    "baseball-player-contract-agent",
+    "game-virtual-item-agent",
+    "game-virtual-economy-agent",
+    "erotic-user-research-agent",
+    "identity-manager-v2-agent",
+    "game-vr-ar-platform-agent",
+    "stream-processor-v2-agent",
+    "erotic-rating-system-agent",
+    "erotic-quality-manager-agent",
+    "data-warehouse-agent",
+    "sso-agent",
+    "mfa-agent",
+    "microbatch-processor-agent"
+  ],
+  "total": 25
+}
