@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "baseball-media-interview-agent",
+    "baseball-podcast-agent",
+    "baseball-video-content-agent",
+    "baseball-documentary-agent",
+    "baseball-social-media-agent",
+    "game-esports-tournament-agent",
+    "game-bracket-agent",
+    "game-ladder-agent",
+    "game-match-recorder-agent",
+    "game-team-manager-agent",
+    "erotic-creator-support-agent",
+    "erotic-creator-analytics-agent",
+    "erotic-creator-growth-agent",
+    "erotic-creator-monetization-agent",
+    "erotic-creator-community-agent",
+    "iot-device-manager-agent",
+    "iot-data-collector-agent",
+    "edge-ai-agent",
+    "iot-security-agent",
+    "mqtt-agent",
+    "gdpr-compliance-agent",
+    "privacy-policy-agent",
+    "data-privacy-agent",
+    "consent-manager-agent",
+    "data-rights-agent"
+  ],
+  "total": 25
+}
