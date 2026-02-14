@@ -1,0 +1,31 @@
+{
+  "completed": [
+    "baseball-league-management-agent",
+    "baseball-schedule-maker-agent",
+    "baseball-playoff-bracket-agent",
+    "baseball-allstar-selection-agent",
+    "baseball-award-voting-agent",
+    "game-mod-support-agent",
+    "game-dlc-manager-agent",
+    "game-expansion-pack-agent",
+    "game-season-pass-agent",
+    "game-battle-pass-agent",
+    "erotic-live-chat-agent",
+    "erotic-tipping-agent",
+    "erotic-vip-system-agent",
+    "erotic-loyalty-program-agent",
+    "erotic-referral-agent",
+    "dns-management-agent",
+    "dns-load-balancing-agent",
+    "geo-dns-agent",
+    "dns-sec-agent",
+    "dns-monitoring-agent",
+    "security-access-control-agent",
+    "security-iam-agent",
+    "security-identity-provider-agent",
+    "security-ldap-agent",
+    "security-ad-sync-agent"
+  ],
+  "failed": [],
+  "total": 25
+}
