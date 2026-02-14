@@ -1,48 +1,41 @@
 # erotic-age-verification-agent
 
-えっち年齢認証エージェント。年齢認証システム。
+えっち年齢認証エージェント。年齢認証の管理。
 
-えっち年齢認証エージェント。年齢認証システム。
+## Description
 
-## Files
-
-- `agent.py` - メインエージェントコード
-- `db.py` - データベースモジュール
-- `discord.py` - Discord Botモジュール
-- `requirements.txt` - Python依存パッケージ
+えっちコンテンツプライバシー・コンプライアンスエージェント - erotic-age-verification-agent
 
 ## Installation
 
 ```bash
 pip install -r requirements.txt
+python3 db.py  # Initialize database
 ```
 
 ## Usage
 
-### Agent
-
 ```bash
-python agent.py
+python3 agent.py
 ```
 
-### Database
+## Files
 
-```bash
-python db.py
-```
+- `agent.py` - Main agent logic
+- `db.py` - Database initialization
+- `discord.py` - Discord integration
+- `requirements.txt` - Dependencies
 
-### Discord Bot
+## API
 
-```bash
-python discord.py
-```
+### Actions
 
-## Commands
+- `create` - Create new entry
+- `get` - Get entry by ID
+- `update` - Update entry
+- `delete` - Delete entry
+- `list` - List entries
 
-- `!status` - Show bot status
-- `!add <title> <content>` - Add an entry
-- `!list [limit]` - List entries
+## Environment Variables
 
-## Project
-
-えっちコンテンツコンプライアンス・法務エージェント
+- `DISCORD_TOKEN` - Discord bot token (optional)

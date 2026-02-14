@@ -1,47 +1,51 @@
 #!/usr/bin/env python3
 """
-Discord Bot for pipeline-orchestrator-agent
-パイプラインオーケストレーターエージェント / Pipeline Orchestrator Agent
+Discord integration for pipeline-orchestrator-agent
 """
 
 import discord
 from discord.ext import commands
-from agent import PipelineOrchestratorAgent
-import logging
-from pathlib import Path
-import os
+import sqlite3
+import json
+from typing import Optional
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("pipeline-orchestrator-agent")
+class PipelineOrchestratorBot(commands.Bot):
+    """Discord bot for pipeline-orchestrator-agent"""
 
-TOKEN = os.getenv("DISCORD_TOKEN", "YOUR_DISCORD_BOT_TOKEN")
-INTENTS = discord.Intents.default()
-INTENTS.message_content = True
+    def __init__(self, command_prefix: str = "!", db_path: str = "agents/pipeline-orchestrator-agent/data.db"):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix=command_prefix, intents=intents)
+        self.db_path = db_path
 
-bot = commands.Bot(command_prefix="!", intents=INTENTS, help_command=commands.DefaultHelpCommand())
+    async def on_ready(self):
+        print(f'Logged in as {self.user}')
 
-@bot.event
-async def on_ready():
-    logger.info(str(bot.user.name) + " is ready!")
-    logger.info("Bot ID: " + str(bot.user.id))
-    logger.info("Connected to " + str(len(bot.guilds)) + " guilds")
+    async def create_entry(self, ctx, title: str, content: str):
+        """Create entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+            cursor.execute(sql, (title, content, json.dumps(dict(), ensure_ascii=False), "active"))
+            conn.commit()
+            await ctx.send(f"Created: {title} (ID: {cursor.lastrowid})")
 
-@bot.event
-async def on_command_error(ctx: commands.Context, error):
-    if isinstance(error, commands.CommandNotFound):
-        return
-    elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("Missing required argument: " + str(error.param.name))
-    else:
-        logger.error("Command error: " + str(error))
-        await ctx.send("An error occurred: " + str(error))
-
-async def main():
-    Path("data").mkdir(exist_ok=True)
-    await bot.add_cog(PipelineOrchestratorAgent(bot))
-    logger.info("Starting bot...")
-    await bot.start(TOKEN)
+    async def list_entries(self, ctx, limit: int = 10):
+        """List entries"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "SELECT id, title FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
+            cursor.execute(sql, ("active", limit))
+            rows = cursor.fetchall()
+            if rows:
+                msg = "\n".join([f"{r[0]}: {r[1]}" for r in rows])
+                await ctx.send(f"\n{msg}")
+            else:
+                await ctx.send("No entries found.")
 
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    import os
+    bot = PipelineOrchestratorBot()
+    token = os.getenv("DISCORD_TOKEN")
+    if token:
+        bot.run(token)

@@ -1,56 +1,41 @@
 # pipeline-orchestrator-agent
 
-パイプラインオーケストレーターエージェント / Pipeline Orchestrator Agent
+パイプラインオーケストレーターエージェント。パイプライン全体の管理。
 
-データパイプラインの実行管理・スケジューリングを行うエージェント
+## Description
 
-Manages and schedules data pipeline executions
+データパイプライン・ETLエージェント - pipeline-orchestrator-agent
 
-## Features / 機能
+## Installation
 
-- 追加: 新しいアイテムをデータベースに追加
-- 表示: アイテム一覧の表示
-- 検索: キーワードでアイテムを検索
-- 削除: アイテムを削除
-- ステータス: データベースの統計情報を表示
-
-## Installation / インストール
-
-\`\`\`bash
+```bash
 pip install -r requirements.txt
-export DISCORD_TOKEN="your_discord_bot_token"
-python discord.py
-\`\`\`
+python3 db.py  # Initialize database
+```
 
-## Requirements / 要件
+## Usage
 
-- Python 3.8+
-- discord.py 2.0+
+```bash
+python3 agent.py
+```
 
-## Commands / コマンド
+## Files
 
-| Command | Description | 説明 |
-|---------|-------------|------|
-| `!pipelineorchestratoragent` | Main menu | メインメニュー |
-| `!pipelineorchestratoragent status` | Show status | ステータス表示 |
-| `!pipelineorchestratoragent add <content>` | Add item | アイテム追加 |
-| `!pipelineorchestratoragent list [limit]` | List items | アイテム一覧 |
-| `!pipelineorchestratoragent search <query>` | Search items | アイテム検索 |
-| `!pipelineorchestratoragent remove <id>` | Remove item | アイテム削除 |
+- `agent.py` - Main agent logic
+- `db.py` - Database initialization
+- `discord.py` - Discord integration
+- `requirements.txt` - Dependencies
 
-## Usage / 使用方法
+## API
 
-\`\`\`
-!pipelineorchestratoragent add Example content
-!pipelineorchestratoragent list 10
-!pipelineorchestratoragent search keyword
-!pipelineorchestratoragent remove 1
-\`\`\`
+### Actions
 
-## Database / データベース
+- `create` - Create new entry
+- `get` - Get entry by ID
+- `update` - Update entry
+- `delete` - Delete entry
+- `list` - List entries
 
-SQLite database. Data stored in `data/pipeline-orchestrator-agent.db`.
+## Environment Variables
 
-## License / ライセンス
-
-MIT License
+- `DISCORD_TOKEN` - Discord bot token (optional)

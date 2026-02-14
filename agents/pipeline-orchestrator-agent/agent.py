@@ -1,120 +1,107 @@
 #!/usr/bin/env python3
 """
-pipeline-orchestrator-agent - パイプラインオーケストレーターエージェント / Pipeline Orchestrator Agent
-データパイプラインの実行管理・スケジューリングを行うエージェント
-Manages and schedules data pipeline executions
+データパイプライン・ETLエージェント
+pipeline-orchestrator-agent - パイプラインオーケストレーターエージェント。パイプライン全体の管理。
 """
 
-import discord
-from discord.ext import commands
-from db import PipelineOrchestratorAgentDB
-from typing import Optional, List, Dict, Any
-import logging
+import sqlite3
+import threading
+import json
 from datetime import datetime
+from typing import Optional, List, Dict, Any
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("PipelineOrchestratorAgent")
+class PipelineOrchestrator:
+    """パイプラインオーケストレーターエージェント。パイプライン全体の管理。"""
 
-class PipelineOrchestratorAgent(commands.Cog):
-    """パイプラインオーケストレーターエージェント / Pipeline Orchestrator Agent"""
+    def __init__(self, db_path: str = "agents/pipeline-orchestrator-agent/data.db"):
+        self.db_path = db_path
+        self.lock = threading.Lock()
 
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-        self.db = PipelineOrchestratorAgentDB()
-        logger.info("PipelineOrchestratorAgent initialized")
+    def execute(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute agent task"""
+        action = input_data.get("action")
 
-    @commands.group(name="pipelineorchestratoragent", invoke_without_command=True)
-    async def pipelineorchestratoragent(self, ctx: commands.Context):
-        """パイプラインオーケストレーターエージェントのメインコマンド / Main command for Pipeline Orchestrator Agent"""
-        embed = discord.Embed(
-            title="パイプラインオーケストレーターエージェント / Pipeline Orchestrator Agent",
-            description="データパイプラインの実行管理・スケジューリングを行うエージェント\n\nManages and schedules data pipeline executions",
-            color=discord.Color.blue()
-        )
-        embed.add_field(
-            name="Commands / コマンド",
-            value="
-`pipelineorchestratoragent status` - ステータス確認
-`pipelineorchestratoragent add` - 追加
-`pipelineorchestratoragent list` - 一覧表示
-`pipelineorchestratoragent search` - 検索
-`pipelineorchestratoragent remove` - 削除
-".strip(),
-            inline=False
-        )
-        await ctx.send(embed=embed)
+        if action == "create":
+            return self.create(input_data)
+        elif action == "get":
+            return self.get(input_data)
+        elif action == "update":
+            return self.update(input_data)
+        elif action == "delete":
+            return self.delete(input_data)
+        elif action == "list":
+            return self.list(input_data)
+        else:
+            return {"error": "Unknown action"}
 
-    @pipelineorchestratoragent.command(name="status")
-    async def status(self, ctx: commands.Context):
-        try:
-            stats = self.db.get_stats()
-            embed = discord.Embed(title="Status / ステータス", color=discord.Color.green())
-            embed.add_field(name="Total Items", value=stats.get("total", 0), inline=True)
-            embed.add_field(name="Active Items", value=stats.get("active", 0), inline=True)
-            size_kb = stats.get("size", 0)
-            embed.add_field(name="Database Size", value=str(round(size_kb, 2)) + " KB", inline=True)
-            await ctx.send(embed=embed)
-        except Exception as e:
-            logger.error("Error in status command: " + str(e))
-            await ctx.send("Error retrieving status / ステータスの取得中にエラーが発生しました")
+    def create(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Create entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "INSERT INTO entries (title, content, metadata, status, created_at) VALUES (?, ?, ?, ?, ?)"
+            metadata = data.get("metadata") or dict()
+            cursor.execute(sql, (
+                data.get("title", ""),
+                data.get("content", ""),
+                json.dumps(metadata),
+                "active",
+                datetime.utcnow().isoformat()
+            ))
+            conn.commit()
+            return {"success": True, "id": cursor.lastrowid}
 
-    @pipelineorchestratoragent.command(name="add")
-    async def add_item(self, ctx: commands.Context, *, content: str):
-        try:
-            item_id = self.db.add_item(content, ctx.author.id)
-            msg = "Added successfully (ID: " + str(item_id) + ") / 追加しました (ID: " + str(item_id) + ")"
-            await ctx.send(msg)
-        except Exception as e:
-            logger.error("Error in add command: " + str(e))
-            await ctx.send("Error adding item / アイテムの追加中にエラーが発生しました")
+    def get(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Get entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "SELECT id, title, content, metadata, status, created_at, updated_at FROM entries WHERE id = ?"
+            cursor.execute(sql, (data.get("id"),))
+            row = cursor.fetchone()
+            if row:
+                return {"id": row[0], "title": row[1], "content": row[2],
+                        "metadata": json.loads(row[3]), "status": row[4],
+                        "created_at": row[5], "updated_at": row[6]}
+            return {"error": "Not found"}
 
-    @pipelineorchestratoragent.command(name="list")
-    async def list_items(self, ctx: commands.Context, limit: int = 10):
-        try:
-            items = self.db.list_items(limit=limit)
-            if not items:
-                await ctx.send("No items found / アイテムが見つかりませんでした")
-                return
-            embed = discord.Embed(title="Items List / アイテム一覧", color=discord.Color.blue())
-            for item in items[:25]:
-                embed.add_field(name="ID: " + str(item['id']), value=item['content'][:100] + "...", inline=False)
-            await ctx.send(embed=embed)
-        except Exception as e:
-            logger.error("Error in list command: " + str(e))
-            await ctx.send("Error listing items / アイテム一覧の取得中にエラーが発生しました")
+    def update(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Update entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "UPDATE entries SET title = ?, content = ?, metadata = ?, status = ?, updated_at = ? WHERE id = ?"
+            metadata = data.get("metadata") or dict()
+            cursor.execute(sql, (
+                data.get("title", ""),
+                data.get("content", ""),
+                json.dumps(metadata),
+                data.get("status", "active"),
+                datetime.utcnow().isoformat(),
+                data.get("id")
+            ))
+            conn.commit()
+            return {"success": True}
 
-    @pipelineorchestratoragent.command(name="search")
-    async def search_items(self, ctx: commands.Context, *, query: str):
-        try:
-            items = self.db.search_items(query)
-            if not items:
-                msg = "No items found for '" + query + "' / '" + query + "' に一致するアイテムが見つかりませんでした"
-                await ctx.send(msg)
-                return
-            embed = discord.Embed(title="Search Results: " + query + " / 検索結果: " + query, color=discord.Color.blue())
-            for item in items[:25]:
-                embed.add_field(name="ID: " + str(item['id']), value=item['content'][:100] + "...", inline=False)
-            await ctx.send(embed=embed)
-        except Exception as e:
-            logger.error("Error in search command: " + str(e))
-            await ctx.send("Error searching items / アイテムの検索中にエラーが発生しました")
+    def delete(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Delete entry"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "DELETE FROM entries WHERE id = ?"
+            cursor.execute(sql, (data.get("id"),))
+            conn.commit()
+            return {"success": True}
 
-    @pipelineorchestratoragent.command(name="remove")
-    async def remove_item(self, ctx: commands.Context, item_id: int):
-        try:
-            if self.db.remove_item(item_id):
-                msg = "Item " + str(item_id) + " removed successfully / アイテム " + str(item_id) + " を削除しました"
-                await ctx.send(msg)
-            else:
-                msg = "Item " + str(item_id) + " not found / アイテム " + str(item_id) + " が見つかりませんでした"
-                await ctx.send(msg)
-        except Exception as e:
-            logger.error("Error in remove command: " + str(e))
-            await ctx.send("Error removing item / アイテムの削除中にエラーが発生しました")
+    def list(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """List entries"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            sql = "SELECT id, title, content, status, created_at FROM entries WHERE status = ? ORDER BY created_at DESC LIMIT ?"
+            cursor.execute(sql, (data.get("status", "active"), data.get("limit", 50)))
+            rows = cursor.fetchall()
+            items = []
+            for r in rows:
+                items.append({"id": r[0], "title": r[1], "content": r[2], "status": r[3], "created_at": r[4]})
+            return {"items": items}
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        logger.info(str(self.__class__.__name__) + " is ready")
-
-async def setup(bot: commands.Bot):
-    await bot.add_cog(PipelineOrchestratorAgent(bot))
+if __name__ == "__main__":
+    import json
+    agent = PipelineOrchestrator()
+    print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "baseball-fan-loyalty-agent",
+    "baseball-fan-feedback-agent",
+    "baseball-fan-survey-agent",
+    "baseball-fan-segmentation-agent",
+    "baseball-fan-retention-agent",
+    "game-moderator-agent",
+    "game-safety-monitor-agent",
+    "game-toxicity-detector-agent",
+    "game-report-handler-agent",
+    "game-community-policy-agent",
+    "erotic-privacy-checker-agent",
+    "erotic-compliance-audit-agent",
+    "erotic-age-verification-agent",
+    "erotic-content-rating-agent",
+    "erotic-legal-checker-agent",
+    "etl-pipeline-agent",
+    "data-ingestion-agent",
+    "data-transformation-agent",
+    "data-loading-agent",
+    "pipeline-orchestrator-agent",
+    "security-audit-agent",
+    "audit-log-agent",
+    "compliance-reporter-agent",
+    "risk-assessment-agent",
+    "security-dashboard-agent"
+  ],
+  "total": 25
+}
