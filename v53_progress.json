@@ -24,7 +24,12 @@
     "siem-analyzer-agent",
     "soc-alert-agent",
     "security-orchestrator-agent",
-    "threat-intel-agent"
+    "threat-intel-agent",
+    "erotic-ai-img-gen-v2-agent",
+    "erotic-ai-img-style-v2-agent",
+    "erotic-ai-img-enhance-v2-agent",
+    "erotic-ai-img-repair-agent",
+    "erotic-ai-img-animate-agent"
   ],
   "total": 25
 }
