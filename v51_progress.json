@@ -24,7 +24,12 @@
     "encryption-service-agent",
     "certificate-manager-agent",
     "hsm-agent",
-    "secret-manager-agent"
+    "secret-manager-agent",
+    "baseball-gm-agent",
+    "baseball-scouting-director-agent",
+    "baseball-finance-agent",
+    "baseball-hr-agent",
+    "baseball-strategy-agent"
   ],
   "total": 25
 }

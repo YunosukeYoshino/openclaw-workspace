@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 """
 Orchestrator for Next Project Plan V53
-野球フィジカル・メンタルコーチングエージェント (5個)
-ゲームスキル・レベリングエージェント (5個)
-えっちコンテンツAI動画編集拡張エージェント (5個)
-キャッシュ・メモリ管理エージェント (5個)
-セキュリティSIEM・SOCエージェント (5個)
+えっちコンテンツAI画像生成・スタイライズエージェント (5個)
 """
 
 import os
@@ -19,40 +15,12 @@ BASE_DIR = Path("agents")
 
 # V53 Projects
 PROJECTS = {
-    "野球フィジカル・メンタルコーチングエージェント": [
-        ("baseball-physical-coach-v2-agent", "野球フィジカルコーチV2エージェント。高度フィジカルトレーニング。"),
-        ("baseball-mental-coach-v2-agent", "野球メンタルコーチV2エージェント。高度メンタルトレーニング。"),
-        ("baseball-nutrition-agent", "野球栄養管理エージェント。栄養計画の作成・管理。"),
-        ("baseball-recovery-agent", "野球リカバリーエージェント。リカバリー計画の管理。"),
-        ("baseball-prevention-agent", "野球予防エージェント。怪我の予防・健康管理。"),
-    ],
-    "ゲームスキル・レベリングエージェント": [
-        ("game-skill-tracker-agent", "ゲームスキルトラッカーエージェント。スキルの追跡。"),
-        ("game-leveling-agent", "ゲームレベリングエージェント。レベリングの最適化。"),
-        ("game-exp-optimizer-agent", "ゲームEXPオプティマイザーエージェント。経験値の最適化。"),
-        ("game-achievement-hunter-agent", "ゲーム実績ハンターエージェント。実績の達成支援。"),
-        ("game-quest-agent", "ゲームクエストエージェント。クエストの管理・最適化。"),
-    ],
-    "えっちコンテンツAI動画編集拡張エージェント": [
-        ("erotic-ai-video-cutter-agent", "えっちAI動画カッターエージェント。動画の切り出し・編集。"),
-        ("erotic-ai-video-merger-agent", "えっちAI動画マージャーエージェント。動画の結合。"),
-        ("erotic-ai-video-watermark-agent", "えっちAI動画ウォーターマークエージェント。ウォーターマークの追加・削除。"),
-        ("erotic-ai-video-crop-agent", "えっちAI動画クロップエージェント。動画のトリミング・クロップ。"),
-        ("erotic-ai-video-speed-agent", "えっちAI動画スピードエージェント。再生速度の調整。"),
-    ],
-    "キャッシュ・メモリ管理エージェント": [
-        ("cache-manager-agent", "キャッシュマネージャーエージェント。キャッシュの管理。"),
-        ("memory-pool-agent", "メモリプールエージェント。メモリプールの管理。"),
-        ("cache-warmup-agent", "キャッシュウォームアップエージェント。キャッシュの事前読み込み。"),
-        ("cache-eviction-agent", "キャッシュエビクションエージェント。キャッシュの削除ポリシー。"),
-        ("distributed-cache-agent", "分散キャッシュエージェント。分散キャッシュの管理。"),
-    ],
-    "セキュリティSIEM・SOCエージェント": [
-        ("siem-collector-agent", "SIEMコレクターエージェント。SIEMデータの収集。"),
-        ("siem-analyzer-agent", "SIEMアナライザーエージェント。SIEMデータの分析。"),
-        ("soc-alert-agent", "SOCアラートエージェント。SOCアラートの管理。"),
-        ("security-orchestrator-agent", "セキュリティオーケストレーターエージェント。セキュリティ対応のオーケストレーション。"),
-        ("threat-intel-agent", "脅威インテリジェンスエージェント。脅威インテリジェンスの管理。"),
+    "えっちコンテンツAI画像生成・スタイライズエージェント": [
+        ("erotic-ai-img-gen-v2-agent", "えっちAI画像生成V2エージェント。高度AI画像生成機能。"),
+        ("erotic-ai-img-style-v2-agent", "えっちAI画像スタイルV2エージェント。スタイル変換機能の強化。"),
+        ("erotic-ai-img-enhance-v2-agent", "えっちAI画像エンハンスV2エージェント。画像品質向上機能。"),
+        ("erotic-ai-img-repair-agent", "えっちAI画像修復エージェント。画像修復・復元機能。"),
+        ("erotic-ai-img-animate-agent", "えっちAI画像アニメートエージェント。静止画を動画化。"),
     ],
 }
 
@@ -375,7 +343,7 @@ def main():
     # Commit changes
     print("\nCommitting changes...")
     subprocess.run(["git", "add", "-A"])
-    subprocess.run(["git", "commit", "-m", "feat: 次期プロジェクト案 V53 完了 (25/25)"])
+    subprocess.run(["git", "commit", "-m", "feat: 次期プロジェクト案 V53 完了 (5/5)"])
     subprocess.run(["git", "push"])
 
 if __name__ == "__main__":

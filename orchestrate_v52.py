@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 """
 Orchestrator for Next Project Plan V52
-野球試合分析・戦術エージェント (5個)
-ゲームチーム・ギルド管理エージェント (5個)
-えっちコンテンツAIテキスト生成・編集エージェント (5個)
-メッセージング・イベントバスエージェント (5個)
-セキュリティアクセスログ・監視エージェント (5個)
+ゲームライブストリーミング・インタラクションエージェント (5個)
 """
 
 import os
@@ -19,40 +15,12 @@ BASE_DIR = Path("agents")
 
 # V52 Projects
 PROJECTS = {
-    "野球試合分析・戦術エージェント": [
-        ("baseball-match-analyzer-agent", "野球試合アナライザーエージェント。試合の詳細分析。"),
-        ("baseball-tactic-agent", "野球戦術エージェント。戦術の分析・提案。"),
-        ("baseball-lineup-agent", "野球ラインアップエージェント。オーダー構成の分析。"),
-        ("baseball-in-game-agent", "野球試合中エージェント。試合中のリアルタイム分析。"),
-        ("baseball-scout-match-agent", "野球スカウト試合エージェント。選手評価のための試合分析。"),
-    ],
-    "ゲームチーム・ギルド管理エージェント": [
-        ("game-team-manager-agent", "ゲームチームマネージャーエージェント。チームの管理。"),
-        ("game-guild-agent", "ゲームギルドエージェント。ギルドの管理。"),
-        ("game-roster-agent", "ゲームロスターエージェント。ロスターの管理。"),
-        ("game-team-analytics-agent", "ゲームチームアナリティクスエージェント。チームの分析。"),
-        ("game-recruitment-agent", "ゲームリクルートエージェント。メンバー募集の管理。"),
-    ],
-    "えっちコンテンツAIテキスト生成・編集エージェント": [
-        ("erotic-ai-text-gen-agent", "えっちAIテキスト生成エージェント。AIによるテキストの生成。"),
-        ("erotic-ai-text-editor-agent", "えっちAIテキスト編集エージェント。AIによるテキストの編集。"),
-        ("erotic-ai-summary-agent", "えっちAIサマリーエージェント。要約の自動生成。"),
-        ("erotic-ai-translation-agent", "えっちAI翻訳エージェント。多言語翻訳。"),
-        ("erotic-ai-grammar-agent", "えっちAI文法チェッカーエージェント。文法のチェック・修正。"),
-    ],
-    "メッセージング・イベントバスエージェント": [
-        ("message-bus-agent", "メッセージバスエージェント。メッセージバスの管理。"),
-        ("event-bus-agent", "イベントバスエージェント。イベントバスの管理。"),
-        ("pub-sub-agent", "パブサブエージェント。パブリッシュ・サブスクライブの管理。"),
-        ("queue-manager-agent", "キューマネージャーエージェント。メッセージキューの管理。"),
-        ("message-router-agent", "メッセージルーターエージェント。メッセージのルーティング。"),
-    ],
-    "セキュリティアクセスログ・監視エージェント": [
-        ("access-log-agent", "アクセスログエージェント。アクセスログの収集・分析。"),
-        ("session-monitor-agent", "セッションモニターエージェント。セッションの監視。"),
-        ("user-behavior-agent", "ユーザービヘイビアエージェント。ユーザー行動の分析。"),
-        ("anomaly-detection-agent", "異常検知エージェント。異常行動の検知。"),
-        ("access-reporter-agent", "アクセスレポーターエージェント。アクセスレポートの作成。"),
+    "ゲームライブストリーミング・インタラクションエージェント": [
+        ("game-live-overlay-agent", "ゲームライブオーバーレイエージェント。ライブ配信のオーバーレイ表示管理。"),
+        ("game-chat-moderator-agent", "ゲームチャットモデレーターエージェント。チャットのモデレーション。"),
+        ("game-poll-widget-agent", "ゲーム投票ウィジェットエージェント。投票ウィジェットの管理。"),
+        ("game-donation-tracker-agent", "ゲーム寄付追跡エージェント。投げ銭・寄付の追跡。"),
+        ("game-subscription-alert-agent", "ゲームサブスクリプションアラートエージェント。登録アラートの管理。"),
     ],
 }
 
@@ -375,7 +343,7 @@ def main():
     # Commit changes
     print("\nCommitting changes...")
     subprocess.run(["git", "add", "-A"])
-    subprocess.run(["git", "commit", "-m", "feat: 次期プロジェクト案 V52 完了 (25/25)"])
+    subprocess.run(["git", "commit", "-m", "feat: 次期プロジェクト案 V52 完了 (5/5)"])
     subprocess.run(["git", "push"])
 
 if __name__ == "__main__":

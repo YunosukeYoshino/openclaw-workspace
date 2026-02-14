@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 """
 Orchestrator for Next Project Plan V54
-野球スカウト・ドラフトエージェント (5個)
-ゲームマッチメイキング・ランキングエージェント (5個)
-えっちコンテンツAIマルチモーダルエージェント (5個)
-データレプリケーション・同期エージェント (5個)
-セキュリティDevSecOps・シフトレフトエージェント (5個)
+データレイク・ウェアハウスエージェント (5個)
 """
 
 import os
@@ -19,40 +15,12 @@ BASE_DIR = Path("agents")
 
 # V54 Projects
 PROJECTS = {
-    "野球スカウト・ドラフトエージェント": [
-        ("baseball-scout-network-agent", "野球スカウトネットワークエージェント。スカウトネットワークの管理。"),
-        ("baseball-draft-sim-agent", "野球ドラフトシミュレーションエージェント。ドラフトのシミュレーション。"),
-        ("baseball-prospect-agent", "野球プロスペクトエージェント。将来性のある選手の追跡。"),
-        ("baseball-scout-report-agent", "野球スカウトレポートエージェント。スカウトレポートの作成。"),
-        ("baseball-combine-agent", "野球コンバインエージェント。選手テスト・評価の管理。"),
-    ],
-    "ゲームマッチメイキング・ランキングエージェント": [
-        ("game-matchmaker-agent", "ゲームマッチメーカーエージェント。マッチメイキングの管理。"),
-        ("game-ranking-system-agent", "ゲームランキングシステムエージェント。ランキングの計算・管理。"),
-        ("game-elo-agent", "ゲームELOエージェント。ELOレーティングの管理。"),
-        ("game-season-agent", "ゲームシーズンエージェント。シーズンの管理。"),
-        ("game-tournament-agent", "ゲームトーナメントエージェント。トーナメントの管理。"),
-    ],
-    "えっちコンテンツAIマルチモーダルエージェント": [
-        ("erotic-ai-multimodal-agent", "えっちAIマルチモーダルエージェント。マルチモーダルAIの統合。"),
-        ("erotic-ai-vision-agent", "えっちAIビジョンエージェント。画像認識・分析。"),
-        ("erotic-ai-embeddings-agent", "えっちAIエンベディングスエージェント。埋め込みベクトルの生成。"),
-        ("erotic-ai-retrieval-agent", "えっちAIリトリーバルエージェント。RAG検索。"),
-        ("erotic-ai-fusion-agent", "えっちAIフュージョンエージェント。マルチモーダルフュージョン。"),
-    ],
-    "データレプリケーション・同期エージェント": [
-        ("data-replication-agent", "データレプリケーションエージェント。データの複製・同期。"),
-        ("database-sync-agent", "データベース同期エージェント。DB同期の管理。"),
-        ("master-slave-agent", "マスター・スレーブエージェント。マスタースレーブ同期。"),
-        ("multi-master-agent", "マルチマスターエージェント。マルチマスタ同期。"),
-        ("conflict-resolver-agent", "コンフリクトリゾルバーエージェント。競合の解決。"),
-    ],
-    "セキュリティDevSecOps・シフトレフトエージェント": [
-        ("devsecops-agent", "DevSecOpsエージェント。DevSecOpsの管理。"),
-        ("shift-left-agent", "シフトレフトエージェント。シフトレフトの推進。"),
-        ("sast-agent", "SASTエージェント。静的アプリセキュリティテスト。"),
-        ("dast-agent", "DASTエージェント。動的アプリセキュリティテスト。"),
-        ("sca-agent", "SCAエージェント。ソフトウェアコンポーネント分析。"),
+    "データレイク・ウェアハウスエージェント": [
+        ("datalake-manager-agent", "データレイクマネージャーエージェント。データレイクの管理・運用。"),
+        ("datawarehouse-agent", "データウェアハウスエージェント。データウェアハウスの管理。"),
+        ("etl-pipeline-v2-agent", "ETLパイプラインV2エージェント。高度ETLパイプラインの管理。"),
+        ("data-catalog-agent", "データカタログエージェント。データカタログの管理。"),
+        ("data-governance-agent", "データガバナンスエージェント。データガバナンスの実施。"),
     ],
 }
 
@@ -375,7 +343,7 @@ def main():
     # Commit changes
     print("\nCommitting changes...")
     subprocess.run(["git", "add", "-A"])
-    subprocess.run(["git", "commit", "-m", "feat: 次期プロジェクト案 V54 完了 (25/25)"])
+    subprocess.run(["git", "commit", "-m", "feat: 次期プロジェクト案 V54 完了 (5/5)"])
     subprocess.run(["git", "push"])
 
 if __name__ == "__main__":

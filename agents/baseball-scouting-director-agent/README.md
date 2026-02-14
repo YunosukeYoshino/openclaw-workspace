@@ -1,10 +1,10 @@
-# baseball-strategy-agent
+# baseball-scouting-director-agent
 
-野球ストラテジーエージェント。球団戦略の策定。
+野球スカウティングディレクターエージェント。スカウティング部門の管理。
 
 ## Description
 
-野球フロントオフィス・経営エージェント - baseball-strategy-agent
+野球フロントオフィス・経営エージェント - baseball-scouting-director-agent
 
 ## Installation
 

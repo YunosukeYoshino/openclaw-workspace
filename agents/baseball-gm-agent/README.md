@@ -1,10 +1,10 @@
-# baseball-strategy-agent
+# baseball-gm-agent
 
-野球ストラテジーエージェント。球団戦略の策定。
+野球GMエージェント。球団GMの決定・運営管理。
 
 ## Description
 
-野球フロントオフィス・経営エージェント - baseball-strategy-agent
+野球フロントオフィス・経営エージェント - baseball-gm-agent
 
 ## Installation
 

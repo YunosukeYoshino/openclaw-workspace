@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Discord integration for baseball-strategy-agent
+Discord integration for baseball-gm-agent
 """
 
 import discord
@@ -9,10 +9,10 @@ import sqlite3
 import json
 from typing import Optional
 
-class BaseballStrategyBot(commands.Bot):
-    """Discord bot for baseball-strategy-agent"""
+class BaseballGmBot(commands.Bot):
+    """Discord bot for baseball-gm-agent"""
 
-    def __init__(self, command_prefix: str = "!", db_path: str = "agents/baseball-strategy-agent/data.db"):
+    def __init__(self, command_prefix: str = "!", db_path: str = "agents/baseball-gm-agent/data.db"):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix=command_prefix, intents=intents)
@@ -45,7 +45,7 @@ class BaseballStrategyBot(commands.Bot):
 
 if __name__ == "__main__":
     import os
-    bot = BaseballStrategyBot()
+    bot = BaseballGmBot()
     token = os.getenv("DISCORD_TOKEN")
     if token:
         bot.run(token)

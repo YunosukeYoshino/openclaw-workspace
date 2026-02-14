@@ -1,10 +1,10 @@
-# baseball-strategy-agent
+# baseball-hr-agent
 
-野球ストラテジーエージェント。球団戦略の策定。
+野球HRエージェント。人事・人材管理。
 
 ## Description
 
-野球フロントオフィス・経営エージェント - baseball-strategy-agent
+野球フロントオフィス・経営エージェント - baseball-hr-agent
 
 ## Installation
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 野球フロントオフィス・経営エージェント
-baseball-strategy-agent - 野球ストラテジーエージェント。球団戦略の策定。
+baseball-hr-agent - 野球HRエージェント。人事・人材管理。
 """
 
 import sqlite3
@@ -10,10 +10,10 @@ import json
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-class BaseballStrategy:
-    """野球ストラテジーエージェント。球団戦略の策定。"""
+class BaseballHr:
+    """野球HRエージェント。人事・人材管理。"""
 
-    def __init__(self, db_path: str = "agents/baseball-strategy-agent/data.db"):
+    def __init__(self, db_path: str = "agents/baseball-hr-agent/data.db"):
         self.db_path = db_path
         self.lock = threading.Lock()
 
@@ -103,5 +103,5 @@ class BaseballStrategy:
 
 if __name__ == "__main__":
     import json
-    agent = BaseballStrategy()
+    agent = BaseballHr()
     print(json.dumps(agent.execute({"action": "list"}), indent=2, ensure_ascii=False))

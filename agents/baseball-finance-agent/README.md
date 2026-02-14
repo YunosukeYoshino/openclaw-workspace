@@ -1,10 +1,10 @@
-# baseball-strategy-agent
+# baseball-finance-agent
 
-野球ストラテジーエージェント。球団戦略の策定。
+野球ファイナンスエージェント。球団財務の管理・分析。
 
 ## Description
 
-野球フロントオフィス・経営エージェント - baseball-strategy-agent
+野球フロントオフィス・経営エージェント - baseball-finance-agent
 
 ## Installation
 
