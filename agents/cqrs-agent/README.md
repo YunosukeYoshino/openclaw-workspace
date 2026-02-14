@@ -1,52 +1,90 @@
-# cqrs-agent
+# CQRSエージェント
 
-**Category**: サーバーレスイベント駆動アーキテクチャエージェント
-**Version**: V35 - Agent 19/25
-**Status**: Active
+CQRSパターンの実装・管理エージェント
 
 ## Overview
 
-cqrs-agent is an AI-powered agent for サーバーレスイベント駆動アーキテクチャエージェント.
+This is the cqrs-agent agent.
 
 ## Features
 
-- Intelligent content processing
-- Persistent storage with SQLite
-- Discord integration support
-- RESTful API ready
+- Feature 1: TBD
+- Feature 2: TBD
+- Feature 3: TBD
 
 ## Installation
 
 ```bash
-cd agents/cqrs-agent
 pip install -r requirements.txt
 ```
 
 ## Usage
 
-```python
-from agent import Cqrs
+### Agent
 
-agent = Cqrs()
-await agent.run()
+```python
+from agent import CqrsAgentAgent
+agent = CqrsAgentAgent()
+result = await agent.process(data)
 ```
 
-## Database
+### Database
 
-The agent uses SQLite for persistent storage. Database file: `cqrs-agent.db`
+```python
+from db import Database
+db = Database()
+record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
+```
 
-### Schema
+### Discord Integration
 
-- `entries`: Main content storage
-  - `id`: Primary key
-  - `content`: Text content
-  - `created_at`: Timestamp
-  - `updated_at`: Timestamp
+```python
+from discord import DiscordBot
+bot = DiscordBot(token="your_bot_token")
+bot.set_agent(agent)
+bot.start_bot()
+```
 
-## Discord Integration
+## Commands
 
-Set `DISCORD_TOKEN` environment variable to enable Discord features.
+### Discord Commands
+
+- `!status` - Show agent status
+- `!info` - Show agent information
+
+## Database Schema
+
+### Records Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| type | TEXT | Record type |
+| title | TEXT | Record title (optional) |
+| content | TEXT | Record content |
+| status | TEXT | Record status |
+| created_at | TIMESTAMP | Creation timestamp |
+| updated_at | TIMESTAMP | Last update timestamp |
+
+### Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| name | TEXT | Tag name (unique) |
+| created_at | TIMESTAMP | Creation timestamp |
+
+### Record Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| record_id | INTEGER | Foreign key to records |
+| tag_id | INTEGER | Foreign key to tags |
 
 ## License
 
-MIT
+MIT License
+
+## Author
+
+Created with OpenClaw

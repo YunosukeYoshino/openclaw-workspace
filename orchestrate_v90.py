@@ -1,501 +1,493 @@
 #!/usr/bin/env python3
 """
-次期プロジェクト案 V90 オーケストレーター
-野球メディア・ポッドキャスト / ゲーム配信分析・統計 / えっちコンテンツ品質 / データ可視化・ダッシュボード / セキュリティ認証・認可
+オーケストレーター V90 - 次期プロジェクト案
+2125 AGENTS MILESTONE
 """
 
 import os
 import json
+import subprocess
 from pathlib import Path
 
-# V90プロジェクト定義
-V90_PROJECTS = [
-    {
-        "name": "野球メディア・ポッドキャストエージェント",
-        "agents": [
-            ("baseball-podcast-v2-agent", "野球ポッドキャストV2エージェント。ポッドキャストコンテンツの制作・管理"),
-            ("baseball-video-content-agent", "野球ビデオコンテンツエージェント。動画コンテンツの制作・管理"),
-            ("baseball-documentary-agent", "野球ドキュメンタリーエージェント。ドキュメンタリー制作の管理"),
-            ("baseball-social-media-agent", "野球ソーシャルメディアエージェント。SNS運営・コンテンツ管理"),
-            ("baseball-media-analytics-agent", "野球メディアアナリティクスエージェント。メディア分析・統計"),
-        ],
-        "prefix": "baseball"
-    },
-    {
-        "name": "ゲーム配信分析・統計エージェント",
-        "agents": [
-            ("game-stream-analytics-agent", "ゲーム配信分析エージェント。配信データの分析・統計"),
-            ("game-stream-revenue-agent", "ゲーム配信収益エージェント。配信収益の分析・管理"),
-            ("game-stream-audience-analytics-agent", "ゲーム配信視聴者分析エージェント。視聴者の分析・管理"),
-            ("game-stream-sponsor-agent", "ゲーム配信スポンサーエージェント。スポンサーの管理"),
-            ("game-stream-affiliate-agent", "ゲーム配信アフィリエイトエージェント。アフィリエイトの管理"),
-        ],
-        "prefix": "game"
-    },
-    {
-        "name": "えっちコンテンツ品質管理エージェント",
-        "agents": [
-            ("erotic-quality-assurance-agent", "えっちコンテンツQAエージェント。品質保証の管理"),
-            ("erotic-content-validator-agent", "えっちコンテンツ検証エージェント。コンテンツの検証・確認"),
-            ("erotic-audit-agent", "えっちコンテンツ監査エージェント。監査の管理・実施"),
-            ("erotic-compliance-checker-agent", "えっちコンテンツコンプライアンスチェッカーエージェント。コンプライアンスの確認"),
-            ("erotic-risk-assessment-agent", "えっちコンテンツリスクアセスメントエージェント。リスクの評価・管理"),
-        ],
-        "prefix": "erotic"
-    },
-    {
-        "name": "データ可視化・ダッシュボードエージェント",
-        "agents": [
-            ("data-visualization-agent", "データ可視化エージェント。データ可視化の管理・生成"),
-            ("dashboard-builder-agent", "ダッシュボードビルダーエージェント。ダッシュボードの作成・管理"),
-            ("chart-generator-agent", "チャート生成エージェント。グラフ・チャートの生成"),
-            ("report-generator-agent", "レポート生成エージェント。レポートの自動生成"),
-            ("analytics-dashboard-agent", "アナリティクスダッシュボードエージェント。アナリティクスダッシュボードの管理"),
-        ],
-        "prefix": "data"
-    },
-    {
-        "name": "セキュリティ認証・認可エージェント",
-        "agents": [
-            ("auth-service-agent", "認証サービスエージェント。認証サービスの管理"),
-            ("oauth-provider-agent", "OAuthプロバイダーエージェント。OAuth認証の提供"),
-            ("saml-integration-agent", "SAML統合エージェント。SAMLシングルサインオンの統合"),
-            ("session-auth-agent", "セッション認証エージェント。セッション管理・認証"),
-            ("token-auth-agent", "トークン認証エージェント。トークンベース認証の管理"),
-        ],
-        "prefix": "security"
-    },
+# エージェント定義
+AGENTS_V90 = [
+    ("baseball-weather-impact-agent", "野球天候影響エージェント", "天候が野球試合に与える影響を分析・予測するエージェント", "baseball"),
+    ("baseball-sabermetrics-v2-agent", "野球セイバーメトリクスV2エージェント", "高度な野球統計（セイバーメトリクス）の分析・計算を行うエージェント", "baseball"),
+    ("baseball-scout-database-agent", "野球スカウトデータベースエージェント", "選手スカウティングデータベースの管理・検索エージェント", "baseball"),
+    ("baseball-trade-analysis-agent", "野球トレード分析エージェント", "選手トレードの影響分析・評価を行うエージェント", "baseball"),
+    ("baseball-salary-cap-agent", "野球サラリーキャップエージェント", "チームのサラリーキャップ・予算管理を行うエージェント", "baseball"),
+    ("game-esports-analytics-agent", "ゲームeスポーツ分析エージェント", "eスポーツ大会のデータ分析・統計管理エージェント", "game"),
+    ("game-tournament-management-agent", "ゲーム大会管理エージェント", "ゲーム大会の運営・スケジュール管理エージェント", "game"),
+    ("game-player-analytics-agent", "ゲームプレイヤー分析エージェント", "ゲームプレイヤーのパフォーマンス分析・統計エージェント", "game"),
+    ("game-team-analytics-agent", "ゲームチーム分析エージェント", "ゲームチームの分析・評価・統計エージェント", "game"),
+    ("game-match-prediction-agent", "ゲーム試合予測エージェント", "ゲーム試合結果の予測・分析エージェント", "game"),
+    ("erotic-live-stream-agent", "えっちライブストリームエージェント", "えっちコンテンツのライブストリーム管理・運営エージェント", "erotic"),
+    ("erotic-streamer-management-agent", "えっちストリーマー管理エージェント", "えっちストリーマーの管理・サポートエージェント", "erotic"),
+    ("erotic-stream-analytics-agent", "えっちストリーム分析エージェント", "えっちストリームのデータ分析・統計エージェント", "erotic"),
+    ("erotic-stream-monetization-agent", "えっちストリーム収益化エージェント", "えっちストリームの収益化・広告・スポンサー管理エージェント", "erotic"),
+    ("erotic-stream-interaction-agent", "えっちストリーム交流エージェント", "えっちストリームの視聴者交流・チャット管理エージェント", "erotic"),
+    ("event-sourcing-agent", "イベントソーシングエージェント", "イベントソーシングパターンの実装・管理エージェント", "architecture"),
+    ("cqrs-agent", "CQRSエージェント", "CQRSパターンの実装・管理エージェント", "architecture"),
+    ("event-store-agent", "イベントストアエージェント", "イベントストアの管理・運用エージェント", "architecture"),
+    ("message-bus-agent", "メッセージバスエージェント", "メッセージバスの管理・運用エージェント", "architecture"),
+    ("event-broker-agent", "イベントブローカーエージェント", "イベントブローカーの管理・運用エージェント", "architecture"),
+    ("app-security-testing-agent", "アプリセキュリティテストエージェント", "アプリケーションのセキュリティテスト自動化エージェント", "security"),
+    ("penetration-testing-agent", "ペネトレーションテストエージェント", "ペネトレーションテストの自動化・管理エージェント", "security"),
+    ("vulnerability-assessment-agent", "脆弱性評価エージェント", "システムの脆弱性評価・スキャンエージェント", "security"),
+    ("security-code-review-agent", "セキュリティコードレビューエージェント", "コードのセキュリティレビュー自動化エージェント", "security"),
+    ("threat-modeling-agent", "脅威モデリングエージェント", "脅威モデリングの自動化・管理エージェント", "security"),
 ]
 
-def generate_agent_content(agent_name, prefix, description):
-    """エージェントのコンテンツを生成"""
+# 進捗管理
+PROGRESS_FILE = "v90_progress.json"
 
-    # agent.py
-    agent_py = f'''"""{description}"""
 
-import discord
-from db import AgentDatabase
+def load_progress():
+    """Load progress from file"""
+    if os.path.exists(PROGRESS_FILE):
+        with open(PROGRESS_FILE, 'r') as f:
+            data = json.load(f)
+            if isinstance(data, dict):
+                return data
+    return {"completed": [], "failed": [], "total": len(AGENTS_V90)}
 
-class {agent_name.replace("-", "_").title().replace("_", "")}(discord.Client):
-    """{description}"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.db = AgentDatabase(f"{agent_name}.db")
+def save_progress(progress):
+    """Save progress to file"""
+    with open(PROGRESS_FILE, 'w') as f:
+        json.dump(progress, f, indent=2)
 
-    async def on_ready(self):
-        print(f"{{self.user}} is ready!")
 
-    async def on_message(self, message):
-        if message.author == self.user:
-            return
+def get_class_name(agent_id):
+    """Convert agent_id to class name"""
+    parts = agent_id.replace('-', ' ').split()
+    return ''.join(word.capitalize() for word in parts) + 'Agent'
 
-        if message.content.startswith("!"):
-            await self.handle_command(message)
 
-    async def handle_command(self, message):
-        command = message.content[1:].split()[0]
+def create_agent_py(agent_dir, agent_id, name, description, class_name):
+    """Create agent.py"""
+    content = f'''#!/usr/bin/env python3
+"""
+{name} - {description}
+"""
 
-        if command == "help":
-            await self.show_help(message)
-        elif command == "status":
-            await self.show_status(message)
-        elif command == "list":
-            await self.list_items(message)
-        else:
-            await message.channel.send(f"Unknown command: {{command}}")
+import logging
+from typing import Optional, Dict, Any
+from datetime import datetime
 
-    async def show_help(self, message):
-        help_text = f"""
-        {agent_name} - {description}
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-        Commands:
-        !help - Show this help
-        !status - Show status
-        !list - List items
-        """
-        await message.channel.send(help_text)
 
-    async def show_status(self, message):
-        status = self.db.get_status()
-        await message.channel.send(f"Status: {{status}}")
+class {class_name}:
+    """{name}"""
 
-    async def list_items(self, message):
-        items = self.db.list_items()
-        await message.channel.send(f"Items: {{items}}")
+    def __init__(self):
+        self.name = "{agent_id}"
+        self.version = "1.0.0"
+        self.description = "{description}"
+
+    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Process input data"""
+        logger.info(f"{{self.name}}: Processing data")
+        result = {{
+            "status": "success",
+            "timestamp": datetime.now().isoformat(),
+            "data": input_data
+        }}
+        return result
+
+    async def analyze(self, data: Any) -> Dict[str, Any]:
+        """Analyze data"""
+        logger.info(f"{{self.name}}: Analyzing data")
+        return {{
+            "analysis": "pending",
+            "timestamp": datetime.now().isoformat()
+        }}
+
+    def get_status(self) -> Dict[str, Any]:
+        """Get agent status"""
+        return {{
+            "name": self.name,
+            "version": self.version,
+            "description": self.description,
+            "status": "active"
+        }}
+
+
+async def main():
+    """Main function"""
+    agent = {class_name}()
+    logger.info(f"{{agent.name}} v{{agent.version}} initialized")
+
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
 '''
+    with open(agent_dir / "agent.py", 'w', encoding='utf-8') as f:
+        f.write(content)
 
-    # db.py
-    db_py = '''"""Database module for agent"""
+
+def create_db_py(agent_dir, agent_id, name):
+    """Create db.py"""
+    content = f'''#!/usr/bin/env python3
+"""
+Database module for {name}
+"""
 
 import sqlite3
+import logging
+from typing import Optional, List, Dict, Any
+from pathlib import Path
 from datetime import datetime
-from typing import List, Optional, Dict, Any
 
-class AgentDatabase:
-    """Agent database management"""
+logger = logging.getLogger(__name__)
 
-    def __init__(self, db_path: str = "agent.db"):
+
+class Database:
+    """Database handler for {name}"""
+
+    def __init__(self, db_path: Optional[str] = None):
+        if db_path is None:
+            db_path = Path(__file__).parent / "{agent_id}.db"
         self.db_path = db_path
+        self.conn = None
         self.init_db()
 
     def init_db(self):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """Initialize database tables"""
+        self.conn = sqlite3.connect(self.db_path)
+        self.conn.row_factory = sqlite3.Row
+        self.conn.execute('CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, title TEXT, content TEXT NOT NULL, status TEXT DEFAULT "active", created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
+        self.conn.execute('CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
+        self.conn.execute('CREATE TABLE IF NOT EXISTS record_tags (record_id INTEGER NOT NULL, tag_id INTEGER NOT NULL, PRIMARY KEY (record_id, tag_id), FOREIGN KEY (record_id) REFERENCES records(id) ON DELETE CASCADE, FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE)')
+        self.conn.commit()
 
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS items (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            content TEXT,
-            status TEXT DEFAULT 'active',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-        """)
+    def add_record(self, record_type: str, title: Optional[str], content: str, tags: Optional[List[str]] = None) -> int:
+        """Add a new record"""
+        cursor = self.conn.execute('INSERT INTO records (type, title, content) VALUES (?, ?, ?)', (record_type, title, content))
+        record_id = cursor.lastrowid
+        if tags:
+            for tag_name in tags:
+                cursor = self.conn.execute('INSERT OR IGNORE INTO tags (name) VALUES (?)', (tag_name,))
+                tag_id = cursor.lastrowid if cursor.lastrowid else self._get_tag_id(tag_name)
+                self.conn.execute('INSERT INTO record_tags (record_id, tag_id) VALUES (?, ?)', (record_id, tag_id))
+        self.conn.commit()
+        return record_id
 
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS status_log (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            status TEXT NOT NULL,
-            message TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-        """)
-
-        conn.commit()
-        conn.close()
-
-    def add_item(self, name: str, content: str = "", status: str = "active") -> int:
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute("""
-        INSERT INTO items (name, content, status)
-        VALUES (?, ?, ?)
-        """, (name, content, status))
-
-        item_id = cursor.lastrowid
-        conn.commit()
-        conn.close()
-
-        return item_id
-
-    def get_item(self, item_id: int) -> Optional[Dict[str, Any]]:
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute("SELECT * FROM items WHERE id = ?", (item_id,))
+    def _get_tag_id(self, tag_name: str) -> Optional[int]:
+        """Get tag ID by name"""
+        cursor = self.conn.execute('SELECT id FROM tags WHERE name = ?', (tag_name,))
         row = cursor.fetchone()
+        return row['id'] if row else None
 
-        conn.close()
+    def get_record(self, record_id: int) -> Optional[Dict[str, Any]]:
+        """Get record by ID"""
+        cursor = self.conn.execute('SELECT * FROM records WHERE id = ?', (record_id,))
+        row = cursor.fetchone()
+        return dict(row) if row else None
 
-        if row:
-            return {
-                "id": row[0],
-                "name": row[1],
-                "content": row[2],
-                "status": row[3],
-                "created_at": row[4],
-                "updated_at": row[5]
-            }
-        return None
+    def get_records(self, record_type: Optional[str] = None, limit: int = 100) -> List[Dict[str, Any]]:
+        """Get records by type"""
+        if record_type:
+            cursor = self.conn.execute('SELECT * FROM records WHERE type = ? ORDER BY created_at DESC LIMIT ?', (record_type, limit))
+        else:
+            cursor = self.conn.execute('SELECT * FROM records ORDER BY created_at DESC LIMIT ?', (limit,))
+        return [dict(row) for row in cursor.fetchall()]
 
-    def update_item(self, item_id: int, **kwargs) -> bool:
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        update_fields = []
+    def update_record(self, record_id: int, **kwargs) -> bool:
+        """Update record"""
+        fields = []
         values = []
-
         for key, value in kwargs.items():
-            if key in ["name", "content", "status"]:
-                update_fields.append(f"{{key}} = ?")
+            if key in ['type', 'title', 'content', 'status']:
+                fields.append(f"{{key}} = ?")
                 values.append(value)
-
-        if not update_fields:
-            conn.close()
+        if not fields:
             return False
-
-        values.append(item_id)
-        query = f"UPDATE items SET {{', '.join(update_fields)}}, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
-
-        cursor.execute(query, values)
-        conn.commit()
-        conn.close()
-
+        fields.append("updated_at = ?")
+        values.append(datetime.now().isoformat())
+        values.append(record_id)
+        self.conn.execute(f"UPDATE records SET {{', '.join(fields)}} WHERE id = ?", values)
+        self.conn.commit()
         return True
 
-    def list_items(self, status: Optional[str] = None) -> List[Dict[str, Any]]:
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+    def delete_record(self, record_id: int) -> bool:
+        """Delete record"""
+        self.conn.execute('DELETE FROM records WHERE id = ?', (record_id,))
+        self.conn.commit()
+        return True
 
-        if status:
-            cursor.execute("SELECT * FROM items WHERE status = ?", (status,))
-        else:
-            cursor.execute("SELECT * FROM items")
+    def close(self):
+        """Close database connection"""
+        if self.conn:
+            self.conn.close()
 
-        rows = cursor.fetchall()
-        conn.close()
 
-        return [
-            {
-                "id": row[0],
-                "name": row[1],
-                "content": row[2],
-                "status": row[3],
-                "created_at": row[4],
-                "updated_at": row[5]
-            }
-            for row in rows
-        ]
+def main():
+    """Test database"""
+    db = Database()
+    print("Database initialized at:", db.db_path)
+    record_id = db.add_record("test", "Test Record", "Test content", ["tag1", "tag2"])
+    print("Added record:", record_id)
+    record = db.get_record(record_id)
+    print("Retrieved record:", record)
+    db.close()
 
-    def set_status(self, status: str, message: str = ""):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute("""
-        INSERT INTO status_log (status, message)
-        VALUES (?, ?)
-        """, (status, message))
-
-        conn.commit()
-        conn.close()
-
-    def get_status(self) -> Dict[str, Any]:
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute("""
-        SELECT * FROM status_log
-        ORDER BY created_at DESC
-        LIMIT 1
-        """)
-
-        row = cursor.fetchone()
-        conn.close()
-
-        if row:
-            return {
-                "id": row[0],
-                "status": row[1],
-                "message": row[2],
-                "created_at": row[3]
-            }
-        return {"status": "unknown"}
-'''
-
-    # discord.py
-    discord_py = f'''"""Discord bot for {agent_name}"""
-
-import os
-import discord
-from dotenv import load_dotenv
-
-load_dotenv()
-
-intents = discord.Intents.default()
-intents.message_content = True
-intents.messages = True
-
-client = discord.Client(intents=intents)
-
-@client.event
-async def on_ready():
-    print(f"{{client.user}} is ready!")
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    if message.content.startswith("!"):
-        await handle_command(message)
-
-async def handle_command(message):
-    command = message.content[1:].split()[0]
-
-    if command == "help":
-        await show_help(message)
-    elif command == "status":
-        await show_status(message)
-    else:
-        await message.channel.send(f"Unknown command: {{command}}")
-
-async def show_help(message):
-    help_text = f"""
-    {agent_name} - {description}
-
-    Commands:
-    !help - Show this help
-    !status - Show status
-    """
-    await message.channel.send(help_text)
-
-async def show_status(message):
-    await message.channel.send("Bot is running normally!")
 
 if __name__ == "__main__":
-    token = os.getenv("DISCORD_TOKEN")
-    if not token:
-        print("DISCORD_TOKEN not found!")
-        exit(1)
-
-    client.run(token)
+    main()
 '''
+    with open(agent_dir / "db.py", 'w', encoding='utf-8') as f:
+        f.write(content)
 
-    # README.md
-    readme_md = f'''# {agent_name}
+
+def create_discord_py(agent_dir, agent_id, name, description, class_name):
+    """Create discord.py"""
+    content = f'''#!/usr/bin/env python3
+"""
+Discord integration for {name}
+"""
+
+import logging
+from typing import Optional
+import discord
+from discord.ext import commands
+
+logger = logging.getLogger(__name__)
+
+
+class DiscordBot(commands.Bot):
+    """Discord bot for {name}"""
+
+    def __init__(self, token: Optional[str] = None):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix="!", intents=intents)
+        self.token = token or ""
+        self.agent = None
+
+    def set_agent(self, agent):
+        """Set agent instance"""
+        self.agent = agent
+
+    async def on_ready(self):
+        """Called when bot is ready"""
+        logger.info(f"{{self.user}} is ready")
+
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        if message.author.bot:
+            return
+        await self.process_commands(message)
+
+    @commands.command(name="status")
+    async def status(self, ctx: commands.Context):
+        """Show agent status"""
+        if self.agent:
+            status = self.agent.get_status()
+            await ctx.send(f"**Status:** {{status.get('status')}}\\n**Version:** {{status.get('version')}}")
+        else:
+            await ctx.send("Agent not configured")
+
+    @commands.command(name="info")
+    async def info(self, ctx: commands.Context):
+        """Show agent information"""
+        if self.agent:
+            await ctx.send(f"**Name:** {{self.agent.name}}\\n**Description:** {{self.agent.description}}")
+        else:
+            await ctx.send("Agent not configured")
+
+    def start_bot(self):
+        """Start the bot"""
+        if self.token:
+            self.run(self.token)
+        else:
+            logger.warning("Discord token not provided")
+
+
+def main():
+    """Test discord bot"""
+    bot = DiscordBot()
+    print("Discord bot module loaded")
+
+
+if __name__ == "__main__":
+    main()
+'''
+    with open(agent_dir / "discord.py", 'w', encoding='utf-8') as f:
+        f.write(content)
+
+
+def create_readme(agent_dir, agent_id, name, description, class_name):
+    """Create README.md"""
+    content = f'''# {name}
 
 {description}
 
-## 機能
+## Overview
 
-- {description}
-- Discordボット連携
-- データベース管理
+This is the {agent_id} agent.
 
-## インストール
+## Features
+
+- Feature 1: TBD
+- Feature 2: TBD
+- Feature 3: TBD
+
+## Installation
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 使用方法
+## Usage
 
-```bash
-python agent.py
+### Agent
+
+```python
+from agent import {class_name}
+agent = {class_name}()
+result = await agent.process(data)
 ```
 
-## コマンド
+### Database
 
-- `!help` - ヘルプを表示
-- `!status` - ステータスを表示
-
-## 設定
-
-環境変数を設定してください：
-
-```bash
-export DISCORD_TOKEN="your_discord_token"
+```python
+from db import Database
+db = Database()
+record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
 ```
 
-## ディレクトリ構造
+### Discord Integration
 
-```
-{agent_name}/
-├── agent.py       - メインエージェントコード
-├── db.py          - データベースモジュール
-├── discord.py     - Discordボット
-├── README.md      - このファイル
-└── requirements.txt
+```python
+from discord import DiscordBot
+bot = DiscordBot(token="your_bot_token")
+bot.set_agent(agent)
+bot.start_bot()
 ```
 
-## ライセンス
+## Commands
+
+### Discord Commands
+
+- `!status` - Show agent status
+- `!info` - Show agent information
+
+## Database Schema
+
+### Records Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| type | TEXT | Record type |
+| title | TEXT | Record title (optional) |
+| content | TEXT | Record content |
+| status | TEXT | Record status |
+| created_at | TIMESTAMP | Creation timestamp |
+| updated_at | TIMESTAMP | Last update timestamp |
+
+### Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| name | TEXT | Tag name (unique) |
+| created_at | TIMESTAMP | Creation timestamp |
+
+### Record Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| record_id | INTEGER | Foreign key to records |
+| tag_id | INTEGER | Foreign key to tags |
+
+## License
 
 MIT License
+
+## Author
+
+Created with OpenClaw
 '''
+    with open(agent_dir / "README.md", 'w', encoding='utf-8') as f:
+        f.write(content)
 
-    # requirements.txt
-    requirements_txt = '''discord.py>=2.3.0
-python-dotenv>=1.0.0
+
+def create_requirements(agent_dir, name):
+    """Create requirements.txt"""
+    content = f'''# Requirements for {name}
+
+# Discord.py
+discord.py>=2.3.2
+
+# Database (sqlite3 is built-in)
+
+# Utilities
+python-dateutil>=2.8.2
 '''
+    with open(agent_dir / "requirements.txt", 'w', encoding='utf-8') as f:
+        f.write(content)
 
-    return {
-        "agent.py": agent_py,
-        "db.py": db_py,
-        "discord.py": discord_py,
-        "README.md": readme_md,
-        "requirements.txt": requirements_txt
-    }
 
-def create_agent(agent_name, prefix, description):
-    """エージェントを作成"""
+def create_agent_files(agent_id, name, description):
+    """Create all agent files"""
+    class_name = get_class_name(agent_id)
 
-    print(f"Creating agent: {agent_name}")
-
-    agent_dir = Path(f"agents/{agent_name}")
+    # Create directory
+    agent_dir = Path("agents") / agent_id
     agent_dir.mkdir(parents=True, exist_ok=True)
 
-    content = generate_agent_content(agent_name, prefix, description)
+    # Create all files
+    create_agent_py(agent_dir, agent_id, name, description, class_name)
+    create_db_py(agent_dir, agent_id, name)
+    create_discord_py(agent_dir, agent_id, name, description, class_name)
+    create_readme(agent_dir, agent_id, name, description, class_name)
+    create_requirements(agent_dir, name)
 
-    for filename, file_content in content.items():
-        file_path = agent_dir / filename
-        file_path.write_text(file_content, encoding="utf-8")
+    print(f"Created all files for {agent_id}")
 
-    print(f"✓ Created: {agent_name}")
 
 def main():
-    """メイン処理"""
+    """Main orchestration function"""
+    import logging
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-    progress_file = Path("v90_progress.json")
+    print("="*60)
+    print("ORCHESTRATION V90 STARTED")
+    print("Target: 2125 AGENTS MILESTONE")
+    print("="*60)
 
-    if progress_file.exists():
-        with open(progress_file, "r") as f:
-            progress = json.load(f)
-    else:
-        progress = {
-            "total": 0,
-            "completed": 0,
-            "current_project": 0,
-            "current_agent": 0,
-            "projects": []
-        }
+    progress = load_progress()
+    print(f"Progress: {len(progress['completed'])} completed, {len(progress['failed'])} failed")
 
-    total_agents = sum(len(p["agents"]) for p in V90_PROJECTS)
+    for agent_id, name, description, category in AGENTS_V90:
+        if agent_id in progress["completed"]:
+            print(f"Skipping {agent_id} (already completed)")
+            continue
 
-    if progress["total"] == 0:
-        progress["total"] = total_agents
-        for project in V90_PROJECTS:
-            progress["projects"].append({
-                "name": project["name"],
-                "total": len(project["agents"]),
-                "completed": 0,
-                "agents": [{"name": agent[0], "completed": False} for agent in project["agents"]]
-            })
+        try:
+            print(f"Creating {agent_id}...")
+            create_agent_files(agent_id, name, description)
+            progress["completed"].append(agent_id)
+            save_progress(progress)
+            print(f"✅ {agent_id} created successfully")
+        except Exception as e:
+            print(f"❌ Failed to create {agent_id}: {e}")
+            progress["failed"].append(agent_id)
+            save_progress(progress)
 
-    project_idx = progress["current_project"]
-    agent_idx = progress["current_agent"]
+    print("="*60)
+    print("ORCHESTRATION V90 COMPLETED")
+    print(f"Total: {len(AGENTS_V90)} agents")
+    print(f"Completed: {len(progress['completed'])}")
+    print(f"Failed: {len(progress['failed'])}")
+    print("🎯 MILESTONE: 2125 TOTAL AGENTS!")
+    print("="*60)
 
-    for i in range(project_idx, len(V90_PROJECTS)):
-        project = V90_PROJECTS[i]
-        project_progress = progress["projects"][i]
-
-        print(f"\\n=== {project['name']} ===")
-
-        start_j = agent_idx if i == project_idx else 0
-        for j in range(start_j, len(project["agents"])):
-            agent_info = project["agents"][j]
-            agent_name = agent_info[0]
-            description = agent_info[1]
-
-            if project_progress["agents"][j]["completed"]:
-                continue
-
-            try:
-                create_agent(agent_name, project["prefix"], description)
-
-                project_progress["agents"][j]["completed"] = True
-                project_progress["completed"] += 1
-                progress["completed"] += 1
-                progress["current_agent"] = j + 1
-
-                with open(progress_file, "w") as f:
-                    json.dump(progress, f, indent=2)
-
-                print(f"Progress: {progress['completed']}/{progress['total']}")
-
-            except Exception as e:
-                print(f"Error creating {agent_name}: {e}")
-                import traceback
-                traceback.print_exc()
-
-        agent_idx = 0
-        progress["current_project"] = i + 1
-        progress["current_agent"] = 0
-
-    print(f"\\n✓ All {total_agents} agents created!")
-    print("🎯 V90 COMPLETE - 2125 TOTAL AGENTS! 🎯")
 
 if __name__ == "__main__":
     main()

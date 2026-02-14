@@ -1,89 +1,70 @@
 #!/usr/bin/env python3
-# threat-modeling-agent Discord ボット
+"""
+Discord integration for 脅威モデリングエージェント
+"""
 
 import logging
+from typing import Optional
 import discord
 from discord.ext import commands
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class Threat_modeling_agentDiscordBot(commands.Bot):
-    # threat-modeling-agent Discord ボット
+class DiscordBot(commands.Bot):
+    """Discord bot for 脅威モデリングエージェント"""
 
-    def __init__(self, db):
-        # 初期化
+    def __init__(self, token: Optional[str] = None):
         intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix="!", intents=intents, help_command=None)
-        self.db = db
+        super().__init__(command_prefix="!", intents=intents)
+        self.token = token or ""
+        self.agent = None
 
-    async def setup_hook(self):
-        # ボット起動時の設定
-        await self.add_cog(Threat_modeling_agentCommands(self))
+    def set_agent(self, agent):
+        """Set agent instance"""
+        self.agent = agent
 
     async def on_ready(self):
-        # 準備完了時のイベント
-        logger.info("Logged in as %s", self.user.name)
+        """Called when bot is ready"""
+        logger.info(f"{self.user} is ready")
 
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        if message.author.bot:
+            return
+        await self.process_commands(message)
 
-class Threat_modeling_agentCommands(commands.Cog):
-    # threat-modeling-agent コマンド
-
-    def __init__(self, bot: commands.Bot):
-        # 初期化
-        self.bot = bot
-
-    @commands.command(name="threat_modeling_agent")
-    async def threat_modeling_agent(self, ctx: commands.Context, action: str = "list", *, args: str = ""):
-        # メインコマンド
-        if action == "list":
-            entries = self.bot.db.list_entries(limit=20)
-            if not entries:
-                await ctx.send("エントリーがありません")
-                return
-            embed = discord.Embed(title="Threat Modeling Agent 一覧", color=discord.Color.blue())
-            for entry in entries[:10]:
-                title = entry.get("title") or "タイトルなし"
-                content = entry.get("content", "")[:50]
-                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
-            await ctx.send(embed=embed)
-        elif action == "add":
-            if not args:
-                await ctx.send(f"使用方法: !threat_modeling_agent add <内容>")
-                return
-            entry_id = self.bot.db.add_entry(title=None, content=args, status="active", priority=0)
-            await ctx.send(f"エントリーを追加しました (ID: {entry_id})")
-        elif action == "search":
-            if not args:
-                await ctx.send(f"使用方法: !threat_modeling_agent search <キーワード>")
-                return
-            entries = self.bot.db.search_entries(args, limit=10)
-            if not entries:
-                await ctx.send("一致するエントリーがありません")
-                return
-            embed = discord.Embed(title=f"「{args}」の検索結果", color=discord.Color.green())
-            for entry in entries:
-                title = entry.get("title") or "タイトルなし"
-                content = entry.get("content", "")[:50]
-                embed.add_field(name=f"{title} (ID: {entry['id']})", value=f"{content}...", inline=False)
-            await ctx.send(embed=embed)
+    @commands.command(name="status")
+    async def status(self, ctx: commands.Context):
+        """Show agent status"""
+        if self.agent:
+            status = self.agent.get_status()
+            await ctx.send(f"**Status:** {status.get('status')}\n**Version:** {status.get('version')}")
         else:
-            await ctx.send(f"不明なアクションです: {action}\\n使用可能なアクション: list, add, search")
+            await ctx.send("Agent not configured")
 
-    @commands.command(name="threat_modeling_agent_status")
-    async def threat_modeling_agent_status(self, ctx: commands.Context):
-        # ステータス確認
-        entries = self.bot.db.list_entries(status="active")
-        embed = discord.Embed(title="Threat Modeling Agent ステータス", color=discord.Color.gold())
-        embed.add_field(name="アクティブエントリー", value=str(len(entries)))
-        await ctx.send(embed=embed)
-
-    @commands.command(name="threat_modeling_agent_delete")
-    async def threat_modeling_agent_delete(self, ctx: commands.Context, entry_id: int):
-        # エントリー削除
-        if self.bot.db.delete_entry(entry_id):
-            await ctx.send(f"エントリーを削除しました (ID: {entry_id})")
+    @commands.command(name="info")
+    async def info(self, ctx: commands.Context):
+        """Show agent information"""
+        if self.agent:
+            await ctx.send(f"**Name:** {self.agent.name}\n**Description:** {self.agent.description}")
         else:
-            await ctx.send(f"エントリーが見つかりません (ID: {entry_id})")
+            await ctx.send("Agent not configured")
+
+    def start_bot(self):
+        """Start the bot"""
+        if self.token:
+            self.run(self.token)
+        else:
+            logger.warning("Discord token not provided")
+
+
+def main():
+    """Test discord bot"""
+    bot = DiscordBot()
+    print("Discord bot module loaded")
+
+
+if __name__ == "__main__":
+    main()

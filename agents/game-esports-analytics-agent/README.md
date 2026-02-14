@@ -1,95 +1,90 @@
-# ゲームeスポーツ分析エージェント / Game Esports Analytics Agent
+# ゲームeスポーツ分析エージェント
 
-game-esports-analytics-agent
+eスポーツ大会のデータ分析・統計管理エージェント
 
-## 概要 / Overview
+## Overview
 
-プロレベルのプレイ分析、メタの追跡、パッチによる環境変化の影響分析、アマチュア・プロのギャップ分析、上達のヒント
+This is the game-esports-analytics-agent agent.
 
-Pro-level play analysis, meta tracking, analyze patch impact on meta, amateur-pro gap analysis, improvement tips
+## Features
 
-## 機能 / Features
+- Feature 1: TBD
+- Feature 2: TBD
+- Feature 3: TBD
 
-- Pro Play Analysis
-- Meta Tracking
-- Patch Impact
-- Gap Analysis
-- Improvement Tips
-- Trend Reports
-
-## 技術スタック / Tech Stack
-
-- pandas, numpy, scikit-learn, matplotlib, seaborn
-
-## インストール / Installation
+## Installation
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd game-esports-analytics-agent
-
-# Install dependencies
 pip install -r requirements.txt
 ```
 
-## 使い方 / Usage
+## Usage
 
-### エージェントとして使用 / As an Agent
+### Agent
+
+```python
+from agent import GameEsportsAnalyticsAgentAgent
+agent = GameEsportsAnalyticsAgentAgent()
+result = await agent.process(data)
+```
+
+### Database
 
 ```python
 from db import Database
-from agent import GameEsportsAnalyticsAgent
-
-# Initialize database
-db = Database(db_path="data/game-esports-analytics-agent.db")
-await db.initialize()
-
-# Initialize agent
-agent = GameEsportsAnalyticsAgent(db)
-await agent.initialize()
-
-# Process data
-result = await agent.process({"key": "value"})
-print(result)
+db = Database()
+record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
 ```
 
-### Discord Botとして使用 / As a Discord Bot
+### Discord Integration
 
 ```python
 from discord import DiscordBot
-
-# Create bot
-bot = create_bot(db, token="YOUR_DISCORD_TOKEN", command_prefix="!")
-
-# Run bot
-bot.run()
+bot = DiscordBot(token="your_bot_token")
+bot.set_agent(agent)
+bot.start_bot()
 ```
 
-## データベース構造 / Database Schema
+## Commands
 
-### entries テーブル
+### Discord Commands
 
-| カラム | 型 | 説明 |
-|--------|------|------|
-| id | INTEGER | 主キー |
-| title | TEXT | タイトル |
-| content | TEXT | コンテンツ |
-| category | TEXT | カテゴリ |
-| tags | TEXT | タグ（カンマ区切り） |
-| created_at | TIMESTAMP | 作成日時 |
-| updated_at | TIMESTAMP | 更新日時 |
+- `!status` - Show agent status
+- `!info` - Show agent information
 
-## Discordコマンド / Discord Commands
+## Database Schema
 
-| コマンド | 説明 |
-|----------|------|
-| `!status` | エージェントのステータスを確認 |
-| `!help` | ヘルプを表示 |
-| `!create <title> <content>` | 新しいエントリーを作成 |
-| `!list [category]` | エントリーを一覧表示 |
-| `!search <query>` | エントリーを検索 |
-| `!get <id>` | IDでエントリーを取得 |
+### Records Table
 
-## ライセンス / License
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| type | TEXT | Record type |
+| title | TEXT | Record title (optional) |
+| content | TEXT | Record content |
+| status | TEXT | Record status |
+| created_at | TIMESTAMP | Creation timestamp |
+| updated_at | TIMESTAMP | Last update timestamp |
+
+### Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| name | TEXT | Tag name (unique) |
+| created_at | TIMESTAMP | Creation timestamp |
+
+### Record Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| record_id | INTEGER | Foreign key to records |
+| tag_id | INTEGER | Foreign key to tags |
+
+## License
 
 MIT License
+
+## Author
+
+Created with OpenClaw

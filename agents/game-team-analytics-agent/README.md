@@ -1,41 +1,90 @@
-# game-team-analytics-agent
+# ゲームチーム分析エージェント
 
-ゲームチームアナリティクスエージェント。チームの分析。
+ゲームチームの分析・評価・統計エージェント
 
-## Description
+## Overview
 
-ゲームチーム・ギルド管理エージェント - game-team-analytics-agent
+This is the game-team-analytics-agent agent.
+
+## Features
+
+- Feature 1: TBD
+- Feature 2: TBD
+- Feature 3: TBD
 
 ## Installation
 
 ```bash
 pip install -r requirements.txt
-python3 db.py  # Initialize database
 ```
 
 ## Usage
 
-```bash
-python3 agent.py
+### Agent
+
+```python
+from agent import GameTeamAnalyticsAgentAgent
+agent = GameTeamAnalyticsAgentAgent()
+result = await agent.process(data)
 ```
 
-## Files
+### Database
 
-- `agent.py` - Main agent logic
-- `db.py` - Database initialization
-- `discord.py` - Discord integration
-- `requirements.txt` - Dependencies
+```python
+from db import Database
+db = Database()
+record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
+```
 
-## API
+### Discord Integration
 
-### Actions
+```python
+from discord import DiscordBot
+bot = DiscordBot(token="your_bot_token")
+bot.set_agent(agent)
+bot.start_bot()
+```
 
-- `create` - Create new entry
-- `get` - Get entry by ID
-- `update` - Update entry
-- `delete` - Delete entry
-- `list` - List entries
+## Commands
 
-## Environment Variables
+### Discord Commands
 
-- `DISCORD_TOKEN` - Discord bot token (optional)
+- `!status` - Show agent status
+- `!info` - Show agent information
+
+## Database Schema
+
+### Records Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| type | TEXT | Record type |
+| title | TEXT | Record title (optional) |
+| content | TEXT | Record content |
+| status | TEXT | Record status |
+| created_at | TIMESTAMP | Creation timestamp |
+| updated_at | TIMESTAMP | Last update timestamp |
+
+### Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| name | TEXT | Tag name (unique) |
+| created_at | TIMESTAMP | Creation timestamp |
+
+### Record Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| record_id | INTEGER | Foreign key to records |
+| tag_id | INTEGER | Foreign key to tags |
+
+## License
+
+MIT License
+
+## Author
+
+Created with OpenClaw

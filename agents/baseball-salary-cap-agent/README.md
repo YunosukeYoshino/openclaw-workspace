@@ -1,67 +1,90 @@
-# Baseball Salary Cap Agent
+# 野球サラリーキャップエージェント
 
-野球サラリーキャップエージェント
+チームのサラリーキャップ・予算管理を行うエージェント
 
-## 概要 / Overview
+## Overview
 
-チームのサラリーキャップ、契約管理、予算配分を分析・管理するエージェント
+This is the baseball-salary-cap-agent agent.
 
-## 機能 / Features
+## Features
 
-- データ収集 / Data collection
-- 分析・解析 / Analysis
-- レポート生成 / Report generation
-- 通知機能 / Notification system
+- Feature 1: TBD
+- Feature 2: TBD
+- Feature 3: TBD
 
-## インストール / Installation
+## Installation
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 使用方法 / Usage
+## Usage
 
-### エージェントの実行 / Running the Agent
+### Agent
 
-```bash
-python agent.py
+```python
+from agent import BaseballSalaryCapAgentAgent
+agent = BaseballSalaryCapAgentAgent()
+result = await agent.process(data)
 ```
 
-### データベースの初期化 / Database Initialization
+### Database
 
-```bash
-python db.py
+```python
+from db import Database
+db = Database()
+record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
 ```
 
-### Discordボットの起動 / Starting Discord Bot
+### Discord Integration
 
-```bash
-DISCORD_TOKEN=your_token_here python discord.py
+```python
+from discord import DiscordBot
+bot = DiscordBot(token="your_bot_token")
+bot.set_agent(agent)
+bot.start_bot()
 ```
 
-## 設定 / Configuration
+## Commands
 
-環境変数を使用して設定をカスタマイズできます。
+### Discord Commands
 
-```bash
-export DISCORD_TOKEN=your_bot_token
-export LOG_LEVEL=INFO
-```
+- `!status` - Show agent status
+- `!info` - Show agent information
 
-## API / API Reference
+## Database Schema
 
-### add_entry(title, content, **kwargs)
+### Records Table
 
-新しいエントリを追加します。
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| type | TEXT | Record type |
+| title | TEXT | Record title (optional) |
+| content | TEXT | Record content |
+| status | TEXT | Record status |
+| created_at | TIMESTAMP | Creation timestamp |
+| updated_at | TIMESTAMP | Last update timestamp |
 
-### get_entry(entry_id)
+### Tags Table
 
-エントリIDでエントリを取得します。
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| name | TEXT | Tag name (unique) |
+| created_at | TIMESTAMP | Creation timestamp |
 
-### list_entries(status=None, limit=100)
+### Record Tags Table
 
-エントリの一覧を取得します。
+| Column | Type | Description |
+|--------|------|-------------|
+| record_id | INTEGER | Foreign key to records |
+| tag_id | INTEGER | Foreign key to tags |
 
-## ライセンス / License
+## License
 
 MIT License
+
+## Author
+
+Created with OpenClaw

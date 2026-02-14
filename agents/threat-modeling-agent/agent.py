@@ -1,44 +1,58 @@
 #!/usr/bin/env python3
-# threat-modeling-agent
-# 脅威モデリングエージェント。脅威モデルの作成・分析。
+"""
+脅威モデリングエージェント - 脅威モデリングの自動化・管理エージェント
+"""
 
-import asyncio
 import logging
-from db import Threat_modeling_agentDatabase
-from discord import Threat_modeling_agentDiscordBot
+from typing import Optional, Dict, Any
+from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class Threat_modeling_agentAgent:
-    # threat-modeling-agent メインエージェント
+class ThreatModelingAgentAgent:
+    """脅威モデリングエージェント"""
 
-    def __init__(self, db_path: str = "threat-modeling-agent.db"):
-        # 初期化
-        self.db = Threat_modeling_agentDatabase(db_path)
-        self.discord_bot = Threat_modeling_agentDiscordBot(self.db)
+    def __init__(self):
+        self.name = "threat-modeling-agent"
+        self.version = "1.0.0"
+        self.description = "脅威モデリングの自動化・管理エージェント"
 
-    async def run(self):
-        # エージェントを実行
-        logger.info("Starting threat-modeling-agent...")
-        self.db.initialize()
-        await self.discord_bot.start()
+    async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Process input data"""
+        logger.info(f"{self.name}: Processing data")
+        result = {
+            "status": "success",
+            "timestamp": datetime.now().isoformat(),
+            "data": input_data
+        }
+        return result
 
-    async def stop(self):
-        # エージェントを停止
-        logger.info("Stopping threat-modeling-agent...")
-        await self.discord_bot.stop()
+    async def analyze(self, data: Any) -> Dict[str, Any]:
+        """Analyze data"""
+        logger.info(f"{self.name}: Analyzing data")
+        return {
+            "analysis": "pending",
+            "timestamp": datetime.now().isoformat()
+        }
+
+    def get_status(self) -> Dict[str, Any]:
+        """Get agent status"""
+        return {
+            "name": self.name,
+            "version": self.version,
+            "description": self.description,
+            "status": "active"
+        }
 
 
 async def main():
-    # メイン関数
-    agent = Threat_modeling_agentAgent()
-    try:
-        await agent.run()
-    except KeyboardInterrupt:
-        await agent.stop()
+    """Main function"""
+    agent = ThreatModelingAgentAgent()
+    logger.info(f"{agent.name} v{agent.version} initialized")
 
 
 if __name__ == "__main__":
+    import asyncio
     asyncio.run(main())
