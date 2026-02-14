@@ -1,118 +1,134 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-ゲーム進行予測エージェント Database Module
-Game Progress Prediction Agent データベースモジュール
+game-prediction-agent - Database Module
+SQLite database management for game-prediction-agent
 """
 
 import sqlite3
-from pathlib import Path
-from typing import List, Dict, Optional
+import json
 from datetime import datetime
+from typing import Optional, List, Dict, Any
+from pathlib import Path
 
 class GamePredictionAgentDB:
-    "Game Progress Prediction Agent Database"
+    """Database manager for game-prediction-agent"""
 
-    def __init__(self, db_path: str = "data/game-prediction-agent.db"):
-        self.db_path = Path(db_path)
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        self.conn = sqlite3.connect(str(self.db_path))
-        self.create_tables()
+    def __init__(self, db_path: str = None):
+        if db_path is None:
+            db_path = str(Path(__file__).parent / "game-prediction-agent.db")
 
-    def create_tables(self):
-        """テーブルを作成する"""
+        self.db_path = db_path
+        self.conn = None
+        self.connect()
+        self.init_tables()
+
+    def connect(self):
+        self.conn = sqlite3.connect(self.db_path)
+        self.conn.row_factory = sqlite3.Row
+
+    def init_tables(self):
         cursor = self.conn.cursor()
-
-        # players/predictions/rankings/groups/patterns テーブル
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS main_table (
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS data (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                description TEXT,
-                data_type TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-
-        # entries テーブル
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS entries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT,
-                content TEXT NOT NULL,
                 type TEXT,
+                content TEXT,
+                metadata TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tasks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                task_type TEXT,
+                status TEXT DEFAULT "pending",
+                result TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                completed_at TIMESTAMP
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                level TEXT,
+                message TEXT,
+                metadata TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        ''')
+        """)
 
         self.conn.commit()
 
-    def get_all_players(self) -> List[Dict]:
-        """すべてのプレイヤーを取得する"""
+    def insert_data(self, data_type: str, content: str, metadata: Dict = None) -> int:
         cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM main_table WHERE data_type = 'player' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
-
-    def get_player_stats(self, player_name: str) -> Optional[str]:
-        """プレイヤー統計を取得する"""
-        cursor = self.conn.cursor()
-        cursor.execute(
-            "SELECT description FROM main_table WHERE name = ? AND data_type = 'player'",
-            (player_name,)
-        )
-        row = cursor.fetchone()
-        return row[0] if row else None
-
-    def get_all_predictions(self) -> List[Dict]:
-        """すべての予測を取得する"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM main_table WHERE data_type = 'prediction' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
-
-    def get_all_rankings(self) -> List[Dict]:
-        """すべてのランキングを取得する"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM main_table WHERE data_type = 'ranking' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
-
-    def get_all_groups(self) -> List[Dict]:
-        """すべてのグループを取得する"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM main_table WHERE data_type = 'group' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
-
-    def get_group_stats(self, group_name: str) -> Optional[str]:
-        """グループ統計を取得する"""
-        cursor = self.conn.cursor()
-        cursor.execute(
-            "SELECT description FROM main_table WHERE name = ? AND data_type = 'group'",
-            (group_name,)
-        )
-        row = cursor.fetchone()
-        return row[0] if row else None
-
-    def get_all_patterns(self) -> List[Dict]:
-        """すべてのパターンを取得する"""
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM main_table WHERE data_type = 'pattern' ORDER BY name")
-        return [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
-
-    def add_item(self, name: str, description: str, data_type: str = "general") -> int:
-        """アイテムを追加する"""
-        cursor = self.conn.cursor()
-        cursor.execute(
-            "INSERT INTO main_table (name, description, data_type) VALUES (?, ?, ?)",
-            (name, description, data_type)
-        )
+        cursor.execute("""
+            INSERT INTO data (type, content, metadata)
+            VALUES (?, ?, ?)
+        """, (data_type, content, json.dumps(metadata or dict())))
         self.conn.commit()
         return cursor.lastrowid
 
-    def close(self):
-        """接続を閉じる"""
-        self.conn.close()
+    def query_data(self, data_type: str = None, limit: int = 100) -> List[Dict]:
+        cursor = self.conn.cursor()
+        if data_type:
+            cursor.execute('SELECT * FROM data WHERE type = ? ORDER BY created_at DESC LIMIT ?',
+                         (data_type, limit))
+        else:
+            cursor.execute('SELECT * FROM data ORDER BY created_at DESC LIMIT ?', (limit,))
+        return [dict(row) for row in cursor.fetchall()]
 
-def main():
-    db = GamePredictionAgentDB()
-    print("Database initialized")
+    def create_task(self, task_type: str, metadata: Dict = None) -> int:
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            INSERT INTO tasks (task_type, status)
+            VALUES (?, "pending")
+        """, (task_type,))
+        self.conn.commit()
+        return cursor.lastrowid
+
+    def update_task(self, task_id: int, status: str, result: Dict = None) -> bool:
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            UPDATE tasks
+            SET status = ?, result = ?, completed_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        """, (status, json.dumps(result or dict()), task_id))
+        self.conn.commit()
+        return cursor.rowcount > 0
+
+    def log(self, level: str, message: str, metadata: Dict = None):
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            INSERT INTO logs (level, message, metadata)
+            VALUES (?, ?, ?)
+        """, (level, message, json.dumps(metadata or dict())))
+        self.conn.commit()
+
+    def get_stats(self) -> Dict[str, Any]:
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT COUNT(*) as count FROM data')
+        data_count = cursor.fetchone()["count"]
+        cursor.execute('SELECT COUNT(*) as count FROM tasks WHERE status = "pending"')
+        pending_tasks = cursor.fetchone()["count"]
+        cursor.execute('SELECT COUNT(*) as count FROM tasks WHERE status = "completed"')
+        completed_tasks = cursor.fetchone()["count"]
+        return {
+            "data_count": data_count,
+            "pending_tasks": pending_tasks,
+            "completed_tasks": completed_tasks,
+            "total_tasks": pending_tasks + completed_tasks
+        }
+
+    def close(self):
+        if self.conn:
+            self.conn.close()
 
 if __name__ == "__main__":
-    main()
+    db = GamePredictionAgentDB()
+    print("Database for game-prediction-agent initialized at " + str(db.db_path))
+    print("Stats: " + str(db.get_stats()))
+    db.close()

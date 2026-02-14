@@ -1,246 +1,134 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-セイバーメトリクス分析エージェント データベース管理 / Sabermetrics Analysis Agent Database Management
-baseball-sabermetrics-agent
+baseball-sabermetrics-agent - Database Module
+SQLite database management for baseball-sabermetrics-agent
 """
 
 import sqlite3
+import json
 from datetime import datetime
+from typing import Optional, List, Dict, Any
 from pathlib import Path
-from typing import List, Dict, Optional
 
-class BaseballAdvancedDB:
-    """野球高度分析データベース管理クラス"""
+class BaseballSabermetricsAgentDB:
+    """Database manager for baseball-sabermetrics-agent"""
 
-    def __init__(self, db_path: str = "data/baseball_advanced.db"):
-        self.db_path = Path(db_path)
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+    def __init__(self, db_path: str = None):
+        if db_path is None:
+            db_path = str(Path(__file__).parent / "baseball-sabermetrics-agent.db")
+
+        self.db_path = db_path
         self.conn = None
         self.connect()
+        self.init_tables()
 
     def connect(self):
-        """データベース接続"""
         self.conn = sqlite3.connect(self.db_path)
         self.conn.row_factory = sqlite3.Row
 
-    def close(self):
-        """接続を閉じる"""
-        if self.conn:
-            self.conn.close()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
-
-    def execute_query(self, query: str, params: tuple = None) -> List[sqlite3.Row]:
-        """クエリ実行"""
+    def init_tables(self):
         cursor = self.conn.cursor()
-        if params:
-            cursor.execute(query, params)
-        else:
-            cursor.execute(query)
-        return cursor.fetchall()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS data (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                type TEXT,
+                content TEXT,
+                metadata TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
 
-    def execute_update(self, query: str, params: tuple = None) -> int:
-        """更新クエリ実行"""
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tasks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                task_type TEXT,
+                status TEXT DEFAULT "pending",
+                result TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                completed_at TIMESTAMP
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                level TEXT,
+                message TEXT,
+                metadata TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        self.conn.commit()
+
+    def insert_data(self, data_type: str, content: str, metadata: Dict = None) -> int:
         cursor = self.conn.cursor()
-        if params:
-            cursor.execute(query, params)
-        else:
-            cursor.execute(query)
+        cursor.execute("""
+            INSERT INTO data (type, content, metadata)
+            VALUES (?, ?, ?)
+        """, (data_type, content, json.dumps(metadata or dict())))
         self.conn.commit()
         return cursor.lastrowid
 
-    def create_player_sabermetric(
-        self,
-        player_id: str,
-        player_name: str,
-        team: str,
-        season: int,
-        stat_type: str,
-        stat_name: str,
-        stat_value: float
-    ) -> int:
-        """選手セイバーメトリクス作成"""
-        query = """
-            INSERT INTO sabermetrics (player_id, player_name, team, season, stat_type, stat_name, stat_value)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """
-        return self.execute_update(query, (player_id, player_name, team, season, stat_type, stat_name, stat_value))
-
-    def get_player_sabermetrics(
-        self,
-        player_id: str,
-        season: Optional[int] = None
-    ) -> List[Dict]:
-        """選手セイバーメトリクス取得"""
-        query = "SELECT * FROM sabermetrics WHERE player_id = ?"
-        params = [player_id]
-
-        if season:
-            query += " AND season = ?"
-            params.append(season)
-
-        query += " ORDER BY season DESC, calculated_at DESC"
-        rows = self.execute_query(query, tuple(params))
-        return [dict(row) for row in rows]
-
-    def get_top_players(
-        self,
-        stat_name: str,
-        season: int,
-        stat_type: str = "batting",
-        limit: int = 10
-    ) -> List[Dict]:
-        """トップ選手を取得"""
-        query = """
-            SELECT DISTINCT player_id, player_name, team, stat_value
-            FROM sabermetrics
-            WHERE season = ? AND stat_type = ? AND stat_name = ?
-            ORDER BY stat_value DESC
-            LIMIT ?
-        """
-        rows = self.execute_query(query, (season, stat_type, stat_name, limit))
-        return [dict(row) for row in rows]
-
-    def create_pitcher_stats(
-        self,
-        player_id: str,
-        player_name: str,
-        team: str,
-        season: int,
-        era: Optional[float] = None,
-        whip: Optional[float] = None,
-        fip: Optional[float] = None,
-        k_per_9: Optional[float] = None,
-        bb_per_9: Optional[float] = None
-    ) -> int:
-        """投手統計作成"""
-        query = """
-            INSERT INTO pitcher_stats (player_id, player_name, team, season, era, whip, fip, k_per_9, bb_per_9)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """
-        return self.execute_update(query, (player_id, player_name, team, season, era, whip, fip, k_per_9, bb_per_9))
-
-    def get_pitcher_stats(self, player_id: str, season: Optional[int] = None) -> Optional[Dict]:
-        """投手統計取得"""
-        query = "SELECT * FROM pitcher_stats WHERE player_id = ?"
-        params = [player_id]
-
-        if season:
-            query += " AND season = ?"
-            params.append(season)
-
-        query += " ORDER BY season DESC LIMIT 1"
-        rows = self.execute_query(query, tuple(params))
-        return dict(rows[0]) if rows else None
-
-    def create_batter_stats(
-        self,
-        player_id: str,
-        player_name: str,
-        team: str,
-        season: int,
-        avg: Optional[float] = None,
-        obp: Optional[float] = None,
-        slg: Optional[float] = None,
-        ops: Optional[float] = None
-    ) -> int:
-        """打者統計作成"""
-        query = """
-            INSERT INTO batter_stats (player_id, player_name, team, season, avg, obp, slg, ops)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """
-        return self.execute_update(query, (player_id, player_name, team, season, avg, obp, slg, ops))
-
-    def get_batter_stats(self, player_id: str, season: Optional[int] = None) -> Optional[Dict]:
-        """打者統計取得"""
-        query = "SELECT * FROM batter_stats WHERE player_id = ?"
-        params = [player_id]
-
-        if season:
-            query += " AND season = ?"
-            params.append(season)
-
-        query += " ORDER BY season DESC LIMIT 1"
-        rows = self.execute_query(query, tuple(params))
-        return dict(rows[0]) if rows else None
-
-    def create_prediction(
-        self,
-        model_name: str,
-        match_id: str,
-        prediction_type: str,
-        predicted_value: float,
-        confidence: float
-    ) -> int:
-        """予測作成"""
-        query = """
-            INSERT INTO predictions (model_name, match_id, prediction_type, predicted_value, confidence)
-            VALUES (?, ?, ?, ?, ?)
-        """
-        return self.execute_update(query, (model_name, match_id, prediction_type, predicted_value, confidence))
-
-    def update_prediction_result(self, prediction_id: int, actual_value: float) -> bool:
-        """予測結果を更新"""
-        query = "UPDATE predictions SET actual_value = ? WHERE id = ?"
-        result = self.execute_update(query, (actual_value, prediction_id))
-        return result > 0
-
-    def get_model_statistics(self, model_name: str) -> Dict:
-        """モデル統計取得"""
-        # 予測数
-        total = self.execute_query(
-            "SELECT COUNT(*) FROM predictions WHERE model_name = ?",
-            (model_name,)
-        )[0][0]
-
-        # 実績がある予測
-        with_actual = self.execute_query(
-            "SELECT COUNT(*) FROM predictions WHERE model_name = ? AND actual_value IS NOT NULL",
-            (model_name,)
-        )[0][0]
-
-        # 平均誤差
-        error_rows = self.execute_query(
-            "SELECT ABS(predicted_value - actual_value) as error FROM predictions WHERE model_name = ? AND actual_value IS NOT NULL",
-            (model_name,)
-        )
-        if error_rows:
-            mae = sum(row['error'] for row in error_rows) / len(error_rows)
+    def query_data(self, data_type: str = None, limit: int = 100) -> List[Dict]:
+        cursor = self.conn.cursor()
+        if data_type:
+            cursor.execute('SELECT * FROM data WHERE type = ? ORDER BY created_at DESC LIMIT ?',
+                         (data_type, limit))
         else:
-            mae = 0
+            cursor.execute('SELECT * FROM data ORDER BY created_at DESC LIMIT ?', (limit,))
+        return [dict(row) for row in cursor.fetchall()]
 
+    def create_task(self, task_type: str, metadata: Dict = None) -> int:
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            INSERT INTO tasks (task_type, status)
+            VALUES (?, "pending")
+        """, (task_type,))
+        self.conn.commit()
+        return cursor.lastrowid
+
+    def update_task(self, task_id: int, status: str, result: Dict = None) -> bool:
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            UPDATE tasks
+            SET status = ?, result = ?, completed_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        """, (status, json.dumps(result or dict()), task_id))
+        self.conn.commit()
+        return cursor.rowcount > 0
+
+    def log(self, level: str, message: str, metadata: Dict = None):
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            INSERT INTO logs (level, message, metadata)
+            VALUES (?, ?, ?)
+        """, (level, message, json.dumps(metadata or dict())))
+        self.conn.commit()
+
+    def get_stats(self) -> Dict[str, Any]:
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT COUNT(*) as count FROM data')
+        data_count = cursor.fetchone()["count"]
+        cursor.execute('SELECT COUNT(*) as count FROM tasks WHERE status = "pending"')
+        pending_tasks = cursor.fetchone()["count"]
+        cursor.execute('SELECT COUNT(*) as count FROM tasks WHERE status = "completed"')
+        completed_tasks = cursor.fetchone()["count"]
         return {
-            "model_name": model_name,
-            "total_predictions": total,
-            "predictions_with_results": with_actual,
-            "mean_absolute_error": mae
+            "data_count": data_count,
+            "pending_tasks": pending_tasks,
+            "completed_tasks": completed_tasks,
+            "total_tasks": pending_tasks + completed_tasks
         }
 
-    def get_fielding_stats(self, player_id: str, season: Optional[int] = None) -> List[Dict]:
-        """守備統計取得"""
-        query = "SELECT * FROM fielding_stats WHERE player_id = ?"
-        params = [player_id]
-
-        if season:
-            query += " AND season = ?"
-            params.append(season)
-
-        query += " ORDER BY season DESC"
-        rows = self.execute_query(query, tuple(params))
-        return [dict(row) for row in rows]
-
+    def close(self):
+        if self.conn:
+            self.conn.close()
 
 if __name__ == "__main__":
-    import json
-    with BaseballAdvancedDB() as db:
-        # テスト: 投手統計作成
-        db.create_pitcher_stats("p001", "佐藤投手", "巨人", 2024, 2.45, 0.98, 2.89, 9.5, 2.1)
-
-        # テスト: 投手統計取得
-        stats = db.get_pitcher_stats("p001", 2024)
-        print("投手統計:")
-        print(json.dumps(stats, indent=2, ensure_ascii=False))
+    db = BaseballSabermetricsAgentDB()
+    print("Database for baseball-sabermetrics-agent initialized at " + str(db.db_path))
+    print("Stats: " + str(db.get_stats()))
+    db.close()

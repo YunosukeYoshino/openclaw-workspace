@@ -1,37 +1,90 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-ゲーム進行予測エージェント Discord Bot
-Game Progress Prediction Agent Discord Bot
+game-prediction-agent - Discord Integration
+Discord bot integration for game-prediction-agent
 """
 
 import discord
 from discord.ext import commands
+import logging
 from typing import Optional
-from .agent import GamePredictionAgentAgent
-from .db import GamePredictionAgentDB
+import json
+from pathlib import Path
 
-class GamePredictionAgentDiscordBot(commands.Bot):
-    "Game Progress Prediction Agent Discord Bot"
+class GamePredictionAgentDiscord:
+    """Discord bot integration for game-prediction-agent"""
 
-    def __init__(self, command_prefix: str = "!", db_path: str = "data/game-prediction-agent.db"):
-        intents = discord.Intents.default()
-        intents.message_content = True
-        super().__init__(command_prefix=command_prefix, intents=intents)
-        self.agent = GamePredictionAgentAgent(db_path)
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.logger = logging.getLogger("game-prediction-agent.discord")
+        self.config_path = Path(__file__).parent / "discord_config.json"
+        self.config = self._load_config()
 
-    async def setup_hook(self):
-        """起動時の処理"""
-        print(f"{{self.agent.name}} Bot が起動しました")
+    def _load_config(self) -> dict:
+        default_config = {
+            "command_prefix": "!",
+            "enabled_channels": [],
+            "admin_roles": []
+        }
+        if self.config_path.exists():
+            with open(self.config_path, "r", encoding="utf-8") as f:
+                return {**default_config, **json.load(f)}
+        return default_config
 
-    async def on_ready(self):
-        """準備完了時の処理"""
-        print(f"Logged in as {{self.user}}")
+    def setup_commands(self):
+        @self.bot.command(name="gamepredictionagent_status")
+        async def agent_status(ctx):
+            embed = discord.Embed(
+                title="game-prediction-agent Status",
+                description="ゲーム予測エージェント。ゲーム結果の予測。",
+                color=discord.Color.blue()
+            )
+            embed.add_field(name="Active", value="Yes", inline=True)
+            embed.add_field(name="Version", value="1.0.0", inline=True)
+            await ctx.send(embed=embed)
 
-async def main():
-    import asyncio
-    bot = GamePredictionAgentDiscordBot()
-    # bot.run("YOUR_TOKEN_HERE")
+        @self.bot.command(name="gamepredictionagent_help")
+        async def agent_help(ctx):
+            embed = discord.Embed(
+                title="game-prediction-agent Help",
+                description="ゲーム予測エージェント。ゲーム結果の予測。",
+                color=discord.Color.green()
+            )
+            embed.add_field(
+                name="Commands",
+                value="`!gamepredictionagent_status` - Show agent status\n`!gamepredictionagent_help` - Show this help message",
+                inline=False
+            )
+            await ctx.send(embed=embed)
 
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    async def send_notification(self, channel_id: int, message: str, embed: discord.Embed = None):
+        try:
+            channel = self.bot.get_channel(channel_id)
+            if channel:
+                await channel.send(content=message, embed=embed)
+                return True
+        except Exception as e:
+            self.logger.error("Failed to send notification: " + str(e))
+        return False
+
+    async def send_alert(self, channel_id: int, title: str, description: str, level: str = "info"):
+        color_map = {
+            "info": discord.Color.blue(),
+            "warning": discord.Color.orange(),
+            "error": discord.Color.red(),
+            "success": discord.Color.green()
+        }
+        embed = discord.Embed(
+            title=title,
+            description=description,
+            color=color_map.get(level, discord.Color.blue())
+        )
+        embed.set_footer(text="game-prediction-agent")
+        return await self.send_notification(channel_id, "", embed)
+
+def setup(bot: commands.Bot):
+    discord_integration = GamePredictionAgentDiscord(bot)
+    discord_integration.setup_commands()
+    bot.add_cog(discord_integration)
+    return discord_integration

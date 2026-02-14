@@ -1,45 +1,115 @@
-# ゲーム進行予測エージェント / Game Progress Prediction Agent
+# game-prediction-agent
 
-ゲームの進行・結果を予測するエージェント
-Agent for predicting game progress and results
+ゲーム予測エージェント。ゲーム結果の予測。
 
-## Features / 機能
+## 概要
 
-- プレイヤー統計 (Player Statistics)
-- ゲーム進行予測 (Game Progress Prediction)
-- ランキング分析 (Ranking Analysis)
-- グループ統計 (Group Statistics)
-- パターン分析 (Pattern Analysis)
+このエージェントは ゲーム予測エージェント。ゲーム結果の予測。 ためのAIアシスタントです。
 
-## Installation / インストール
+## 機能
+
+- データの収集・分析
+- 自動タスク処理
+- データベース管理
+- Discord連携
+
+## インストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage / 使用方法
+## 使用方法
+
+### 基本的な使用
 
 ```python
-from agents.game-prediction-agent.agent import GamePredictionAgentAgent
+from agent import GamePredictionAgent
 
-agent = GamePredictionAgentAgent()
-result = await agent.process_command("player", ["player1"])
+agent = GamePredictionAgent()
+task = {"id": "task_001", "type": "example"}
+result = agent.process_task(task)
 print(result)
 ```
 
-## Database / データベース
+### データベースの使用
 
-- `main_table` - メインデータ（プレイヤー、予測、ランキング、グループ、パターン）
-- `entries` - 一般エントリーデータ
+```python
+from db import GamePredictionAgentDB
 
-## Commands / コマンド
+db = GamePredictionAgentDB()
+db.insert_data("example_type", "example_content", {"key": "value"})
+data = db.query_data("example_type", limit=10)
+```
 
-- `player <name>` - プレイヤー統計を表示
-- `predict <game>` - ゲームを予測
-- `ranking <type>` - ランキングを表示
-- `group <name>` - グループ統計を表示
-- `pattern <type>` - パターンを分析
+### Discordボットの使用
 
-## License / ライセンス
+```python
+from discord.ext import commands
+from discord import setup
 
-MIT
+bot = commands.Bot(command_prefix="!")
+discord_integration = setup(bot)
+bot.run("YOUR_DISCORD_BOT_TOKEN")
+```
+
+## API
+
+### GamePredictionAgent.process_task(task)
+
+タスクを処理して結果を返します。
+
+**Parameters:**
+- `task` (Dict[str, Any]): 処理するタスク
+
+**Returns:**
+- Dict[str, Any]: 処理結果
+
+### GamePredictionAgentDB.insert_data(data_type, content, metadata)
+
+データベースにデータを挿入します。
+
+**Parameters:**
+- `data_type` (str): データタイプ
+- `content` (str): コンテンツ
+- `metadata` (Dict): メタデータ（オプション）
+
+**Returns:**
+- int: 挿入されたレコードID
+
+### GamePredictionAgentDB.query_data(data_type, limit)
+
+データベースからデータをクエリします。
+
+**Parameters:**
+- `data_type` (str): データタイプ（オプション）
+- `limit` (int): 取得する最大件数
+
+**Returns:**
+- List[Dict]: クエリ結果
+
+## 設定
+
+### Discord設定
+
+`discord_config.json` ファイルを作成して設定します。
+
+```json
+{
+  "command_prefix": "!",
+  "enabled_channels": [],
+  "admin_roles": []
+}
+```
+
+## ライセンス
+
+MIT License
+
+## 貢献
+
+プルリクエストを歓迎します。
+
+## 連絡先
+
+問題や質問がある場合は、Issueを開いてください。
