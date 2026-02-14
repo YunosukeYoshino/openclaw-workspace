@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-えっちマーケティング自動化エージェント - えっちコンテンツのマーケティング自動化エージェント
+えっちマーケティング自動化エージェント - えっちマーケティングの自動化エージェント
 """
 
 import logging
@@ -17,7 +17,7 @@ class EroticMarketingAutomationAgentAgent:
     def __init__(self):
         self.name = "erotic-marketing-automation-agent"
         self.version = "1.0.0"
-        self.description = "えっちコンテンツのマーケティング自動化エージェント"
+        self.description = "えっちマーケティングの自動化エージェント"
 
     async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """Process input data"""

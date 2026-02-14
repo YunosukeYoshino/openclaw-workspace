@@ -1,134 +1,107 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-erotic-crm-agent - Database Module
-SQLite database management for erotic-crm-agent
+Database module for えっちCRMエージェント
 """
 
 import sqlite3
-import json
-from datetime import datetime
+import logging
 from typing import Optional, List, Dict, Any
 from pathlib import Path
+from datetime import datetime
 
-class EroticCrmAgentDB:
-    """Database manager for erotic-crm-agent"""
+logger = logging.getLogger(__name__)
 
-    def __init__(self, db_path: str = None):
+
+class Database:
+    """Database handler for えっちCRMエージェント"""
+
+    def __init__(self, db_path: Optional[str] = None):
         if db_path is None:
-            db_path = str(Path(__file__).parent / "erotic-crm-agent.db")
-
+            db_path = Path(__file__).parent / "erotic-crm-agent.db"
         self.db_path = db_path
         self.conn = None
-        self.connect()
-        self.init_tables()
+        self.init_db()
 
-    def connect(self):
+    def init_db(self):
+        """Initialize database tables"""
         self.conn = sqlite3.connect(self.db_path)
         self.conn.row_factory = sqlite3.Row
-
-    def init_tables(self):
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS data (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                type TEXT,
-                content TEXT,
-                metadata TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS tasks (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                task_type TEXT,
-                status TEXT DEFAULT "pending",
-                result TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                completed_at TIMESTAMP
-            )
-        """)
-
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS logs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                level TEXT,
-                message TEXT,
-                metadata TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-
+        self.conn.execute('CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, title TEXT, content TEXT NOT NULL, status TEXT DEFAULT "active", created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
+        self.conn.execute('CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
+        self.conn.execute('CREATE TABLE IF NOT EXISTS record_tags (record_id INTEGER NOT NULL, tag_id INTEGER NOT NULL, PRIMARY KEY (record_id, tag_id), FOREIGN KEY (record_id) REFERENCES records(id) ON DELETE CASCADE, FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE)')
         self.conn.commit()
 
-    def insert_data(self, data_type: str, content: str, metadata: Dict = None) -> int:
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            INSERT INTO data (type, content, metadata)
-            VALUES (?, ?, ?)
-        """, (data_type, content, json.dumps(metadata or dict())))
+    def add_record(self, record_type: str, title: Optional[str], content: str, tags: Optional[List[str]] = None) -> int:
+        """Add a new record"""
+        cursor = self.conn.execute('INSERT INTO records (type, title, content) VALUES (?, ?, ?)', (record_type, title, content))
+        record_id = cursor.lastrowid
+        if tags:
+            for tag_name in tags:
+                cursor = self.conn.execute('INSERT OR IGNORE INTO tags (name) VALUES (?)', (tag_name,))
+                tag_id = cursor.lastrowid if cursor.lastrowid else self._get_tag_id(tag_name)
+                self.conn.execute('INSERT INTO record_tags (record_id, tag_id) VALUES (?, ?)', (record_id, tag_id))
         self.conn.commit()
-        return cursor.lastrowid
+        return record_id
 
-    def query_data(self, data_type: str = None, limit: int = 100) -> List[Dict]:
-        cursor = self.conn.cursor()
-        if data_type:
-            cursor.execute('SELECT * FROM data WHERE type = ? ORDER BY created_at DESC LIMIT ?',
-                         (data_type, limit))
+    def _get_tag_id(self, tag_name: str) -> Optional[int]:
+        """Get tag ID by name"""
+        cursor = self.conn.execute('SELECT id FROM tags WHERE name = ?', (tag_name,))
+        row = cursor.fetchone()
+        return row['id'] if row else None
+
+    def get_record(self, record_id: int) -> Optional[Dict[str, Any]]:
+        """Get record by ID"""
+        cursor = self.conn.execute('SELECT * FROM records WHERE id = ?', (record_id,))
+        row = cursor.fetchone()
+        return dict(row) if row else None
+
+    def get_records(self, record_type: Optional[str] = None, limit: int = 100) -> List[Dict[str, Any]]:
+        """Get records by type"""
+        if record_type:
+            cursor = self.conn.execute('SELECT * FROM records WHERE type = ? ORDER BY created_at DESC LIMIT ?', (record_type, limit))
         else:
-            cursor.execute('SELECT * FROM data ORDER BY created_at DESC LIMIT ?', (limit,))
+            cursor = self.conn.execute('SELECT * FROM records ORDER BY created_at DESC LIMIT ?', (limit,))
         return [dict(row) for row in cursor.fetchall()]
 
-    def create_task(self, task_type: str, metadata: Dict = None) -> int:
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            INSERT INTO tasks (task_type, status)
-            VALUES (?, "pending")
-        """, (task_type,))
+    def update_record(self, record_id: int, **kwargs) -> bool:
+        """Update record"""
+        fields = []
+        values = []
+        for key, value in kwargs.items():
+            if key in ['type', 'title', 'content', 'status']:
+                fields.append(f"{key} = ?")
+                values.append(value)
+        if not fields:
+            return False
+        fields.append("updated_at = ?")
+        values.append(datetime.now().isoformat())
+        values.append(record_id)
+        self.conn.execute(f"UPDATE records SET {', '.join(fields)} WHERE id = ?", values)
         self.conn.commit()
-        return cursor.lastrowid
+        return True
 
-    def update_task(self, task_id: int, status: str, result: Dict = None) -> bool:
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            UPDATE tasks
-            SET status = ?, result = ?, completed_at = CURRENT_TIMESTAMP
-            WHERE id = ?
-        """, (status, json.dumps(result or dict()), task_id))
+    def delete_record(self, record_id: int) -> bool:
+        """Delete record"""
+        self.conn.execute('DELETE FROM records WHERE id = ?', (record_id,))
         self.conn.commit()
-        return cursor.rowcount > 0
-
-    def log(self, level: str, message: str, metadata: Dict = None):
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            INSERT INTO logs (level, message, metadata)
-            VALUES (?, ?, ?)
-        """, (level, message, json.dumps(metadata or dict())))
-        self.conn.commit()
-
-    def get_stats(self) -> Dict[str, Any]:
-        cursor = self.conn.cursor()
-        cursor.execute('SELECT COUNT(*) as count FROM data')
-        data_count = cursor.fetchone()["count"]
-        cursor.execute('SELECT COUNT(*) as count FROM tasks WHERE status = "pending"')
-        pending_tasks = cursor.fetchone()["count"]
-        cursor.execute('SELECT COUNT(*) as count FROM tasks WHERE status = "completed"')
-        completed_tasks = cursor.fetchone()["count"]
-        return {
-            "data_count": data_count,
-            "pending_tasks": pending_tasks,
-            "completed_tasks": completed_tasks,
-            "total_tasks": pending_tasks + completed_tasks
-        }
+        return True
 
     def close(self):
+        """Close database connection"""
         if self.conn:
             self.conn.close()
 
-if __name__ == "__main__":
-    db = EroticCrmAgentDB()
-    print("Database for erotic-crm-agent initialized at " + str(db.db_path))
-    print("Stats: " + str(db.get_stats()))
+
+def main():
+    """Test database"""
+    db = Database()
+    print("Database initialized at:", db.db_path)
+    record_id = db.add_record("test", "Test Record", "Test content", ["tag1", "tag2"])
+    print("Added record:", record_id)
+    record = db.get_record(record_id)
+    print("Retrieved record:", record)
     db.close()
+
+
+if __name__ == "__main__":
+    main()

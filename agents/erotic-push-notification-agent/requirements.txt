@@ -1,5 +1,9 @@
-# Requirements for erotic-push-notification-agent
+# Requirements for えっちプッシュ通知エージェント
 
-discord.py>=2.3.0
-aiohttp>=3.9.0
-python-dotenv>=1.0.0
+# Discord.py
+discord.py>=2.3.2
+
+# Database (sqlite3 is built-in)
+
+# Utilities
+python-dateutil>=2.8.2

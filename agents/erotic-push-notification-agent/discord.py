@@ -1,101 +1,70 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Discord Integration for Erotic Push Notification Agent
-えっちプッシュ通知エージェント
+Discord integration for えっちプッシュ通知エージェント
 """
 
-import discord
-from discord.ext import commands, tasks
 import logging
 from typing import Optional
-from pathlib import Path
+import discord
+from discord.ext import commands
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("erotic-push-notification-agent")
+logger = logging.getLogger(__name__)
 
 
-class EroticPushNotificationAgentDiscord(commands.Bot):
-    """Discord bot for Erotic Push Notification Agent"""
+class DiscordBot(commands.Bot):
+    """Discord bot for えっちプッシュ通知エージェント"""
 
-    def __init__(self, command_prefix: str = "!", intents: Optional[discord.Intents] = None):
-        intents = intents or discord.Intents.default()
+    def __init__(self, token: Optional[str] = None):
+        intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix=command_prefix, intents=intents)
-        self.started = False
+        super().__init__(command_prefix="!", intents=intents)
+        self.token = token or ""
+        self.agent = None
 
-    async def setup_hook(self):
-        """Called when the bot is starting."""
-        await self.add_commands()
-        logger.info(f""えっちプッシュ通知エージェント" Discord bot ready")
-
-    async def add_commands(self):
-        """Add bot commands."""
-
-        @self.command(name="status")
-        async def status(ctx):
-            """Show bot status."""
-            embed = discord.Embed(
-                title="Erotic Push Notification Agent Status",
-                color=discord.Color.blue()
-            )
-            embed.add_field(name="Status", value="✅ Online", inline=True)
-            embed.add_field(name="Version", value="1.0.0", inline=True)
-            await ctx.send(embed=embed)
-
-        @self.command(name="help")
-        async def help_cmd(ctx):
-            """Show help message."""
-            embed = discord.Embed(
-                title="Erotic Push Notification Agent - Help",
-                description="えっちプッシュ通知エージェント",
-                color=discord.Color.green()
-            )
-            embed.add_field(name="Commands", value="`!status` - Show status\n`!help` - Show this help", inline=False)
-            await ctx.send(embed=embed)
+    def set_agent(self, agent):
+        """Set agent instance"""
+        self.agent = agent
 
     async def on_ready(self):
-        """Called when the bot is ready."""
-        logger.info(f""えっちプッシュ通知エージェント" bot logged in as {self.user}")
-        self.started = True
+        """Called when bot is ready"""
+        logger.info(f"{self.user} is ready")
 
-    async def on_message(self, message):
-        """Called when a message is received."""
-        if message.author == self.user:
+    async def on_message(self, message: discord.Message):
+        """Handle incoming messages"""
+        if message.author.bot:
             return
         await self.process_commands(message)
 
-    async def send_notification(self, channel_id: int, content: str, **kwargs):
-        """Send notification to a channel."""
-        try:
-            channel = self.get_channel(channel_id)
-            if channel:
-                await channel.send(content, **kwargs)
-        except Exception as e:
-            logger.error(f"Failed to send notification: {e}")
+    @commands.command(name="status")
+    async def status(self, ctx: commands.Context):
+        """Show agent status"""
+        if self.agent:
+            status = self.agent.get_status()
+            await ctx.send(f"**Status:** {status.get('status')}\n**Version:** {status.get('version')}")
+        else:
+            await ctx.send("Agent not configured")
 
-    async def send_embed(self, channel_id: int, title: str, description: str, **kwargs):
-        """Send an embed to a channel."""
-        try:
-            channel = self.get_channel(channel_id)
-            if channel:
-                embed = discord.Embed(title=title, description=description, **kwargs)
-                await channel.send(embed=embed)
-        except Exception as e:
-            logger.error(f"Failed to send embed: {e}")
+    @commands.command(name="info")
+    async def info(self, ctx: commands.Context):
+        """Show agent information"""
+        if self.agent:
+            await ctx.send(f"**Name:** {self.agent.name}\n**Description:** {self.agent.description}")
+        else:
+            await ctx.send("Agent not configured")
+
+    def start_bot(self):
+        """Start the bot"""
+        if self.token:
+            self.run(self.token)
+        else:
+            logger.warning("Discord token not provided")
 
 
-async def run_bot(token: str):
-    """Run the Discord bot."""
-    bot = EroticPushNotificationAgentDiscord()
-    await bot.start(token)
+def main():
+    """Test discord bot"""
+    bot = DiscordBot()
+    print("Discord bot module loaded")
 
 
 if __name__ == "__main__":
-    import os
-    token = os.getenv("DISCORD_TOKEN", "")
-    if not token:
-        logger.warning("DISCORD_TOKEN not set, running without Discord")
-    else:
-        import asyncio
-        asyncio.run(run_bot(token))
+    main()

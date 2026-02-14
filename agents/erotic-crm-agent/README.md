@@ -1,115 +1,90 @@
-# erotic-crm-agent
+# えっちCRMエージェント
 
-えっちCRMエージェント。顧客関係管理。
+えっちコンテンツの顧客関係管理エージェント
 
-## 概要
+## Overview
 
-このエージェントは えっちCRMエージェント。顧客関係管理。 ためのAIアシスタントです。
+This is the erotic-crm-agent agent.
 
-## 機能
+## Features
 
-- データの収集・分析
-- 自動タスク処理
-- データベース管理
-- Discord連携
+- Feature 1: TBD
+- Feature 2: TBD
+- Feature 3: TBD
 
-## インストール
+## Installation
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 使用方法
+## Usage
 
-### 基本的な使用
-
-```python
-from agent import EroticCrmAgent
-
-agent = EroticCrmAgent()
-task = {"id": "task_001", "type": "example"}
-result = agent.process_task(task)
-print(result)
-```
-
-### データベースの使用
+### Agent
 
 ```python
-from db import EroticCrmAgentDB
-
-db = EroticCrmAgentDB()
-db.insert_data("example_type", "example_content", {"key": "value"})
-data = db.query_data("example_type", limit=10)
+from agent import EroticCrmAgentAgent
+agent = EroticCrmAgentAgent()
+result = await agent.process(data)
 ```
 
-### Discordボットの使用
+### Database
 
 ```python
-from discord.ext import commands
-from discord import setup
-
-bot = commands.Bot(command_prefix="!")
-discord_integration = setup(bot)
-bot.run("YOUR_DISCORD_BOT_TOKEN")
+from db import Database
+db = Database()
+record_id = db.add_record("type", "Title", "Content", ["tag1", "tag2"])
 ```
 
-## API
+### Discord Integration
 
-### EroticCrmAgent.process_task(task)
-
-タスクを処理して結果を返します。
-
-**Parameters:**
-- `task` (Dict[str, Any]): 処理するタスク
-
-**Returns:**
-- Dict[str, Any]: 処理結果
-
-### EroticCrmAgentDB.insert_data(data_type, content, metadata)
-
-データベースにデータを挿入します。
-
-**Parameters:**
-- `data_type` (str): データタイプ
-- `content` (str): コンテンツ
-- `metadata` (Dict): メタデータ（オプション）
-
-**Returns:**
-- int: 挿入されたレコードID
-
-### EroticCrmAgentDB.query_data(data_type, limit)
-
-データベースからデータをクエリします。
-
-**Parameters:**
-- `data_type` (str): データタイプ（オプション）
-- `limit` (int): 取得する最大件数
-
-**Returns:**
-- List[Dict]: クエリ結果
-
-## 設定
-
-### Discord設定
-
-`discord_config.json` ファイルを作成して設定します。
-
-```json
-{
-  "command_prefix": "!",
-  "enabled_channels": [],
-  "admin_roles": []
-}
+```python
+from discord import DiscordBot
+bot = DiscordBot(token="your_bot_token")
+bot.set_agent(agent)
+bot.start_bot()
 ```
 
-## ライセンス
+## Commands
+
+### Discord Commands
+
+- `!status` - Show agent status
+- `!info` - Show agent information
+
+## Database Schema
+
+### Records Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| type | TEXT | Record type |
+| title | TEXT | Record title (optional) |
+| content | TEXT | Record content |
+| status | TEXT | Record status |
+| created_at | TIMESTAMP | Creation timestamp |
+| updated_at | TIMESTAMP | Last update timestamp |
+
+### Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| name | TEXT | Tag name (unique) |
+| created_at | TIMESTAMP | Creation timestamp |
+
+### Record Tags Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| record_id | INTEGER | Foreign key to records |
+| tag_id | INTEGER | Foreign key to tags |
+
+## License
 
 MIT License
 
-## 貢献
+## Author
 
-プルリクエストを歓迎します。
-
-## 連絡先
-
-問題や質問がある場合は、Issueを開いてください。
+Created with OpenClaw
