@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+データベースモジュール - ゲームプロ選手エージェント
+"""
+
+import sqlite3
+import json
+from typing import Dict, Any, List, Optional
+from datetime import datetime
+from pathlib import Path
+
+class Database:
+    """データベース管理クラス"""
+
+    def __init__(self, db_path: str = "game-pro-player-agent.db"):
+        self.db_path = db_path
+        self._initialize_db()
+
+    def _get_connection(self) -> sqlite3.Connection:
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        return conn
+
+    def _initialize_db(self):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY, value TEXT)")
+        conn.commit()
+        conn.close()
+
+    def save_record(self, data: Dict[str, Any]) -> int:
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO records (data) VALUES (?)", (json.dumps(data, ensure_ascii=False),))
+        record_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+        return record_id
+
+    def get_record(self, record_id: int) -> Optional[Dict[str, Any]]:
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM records WHERE id = ?", (record_id,))
+        row = cursor.fetchone()
+        conn.close()
+        if row:
+            return {"id": row["id"], "data": json.loads(row["data"]), "created_at": row["created_at"], "updated_at": row["updated_at"]}
+        return None
+
+    def get_all_records(self, limit: int = 100) -> List[Dict[str, Any]]:
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM records ORDER BY created_at DESC LIMIT ?", (limit,))
+        rows = cursor.fetchall()
+        conn.close()
+        return [{"id": row["id"], "data": json.loads(row["data"]), "created_at": row["created_at"], "updated_at": row["updated_at"]} for row in rows]
+
+    def get_stats(self) -> Dict[str, Any]:
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) as total FROM records")
+        total = cursor.fetchone()["total"]
+        conn.close()
+        return {"total_records": total, "db_path": self.db_path}
+
+    def set_metadata(self, key: str, value: str):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("INSERT OR REPLACE INTO metadata (key, value) VALUES (?, ?)", (key, value))
+        conn.commit()
+        conn.close()
+
+    def get_metadata(self, key: str) -> Optional[str]:
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT value FROM metadata WHERE key = ?", (key,))
+        row = cursor.fetchone()
+        conn.close()
+        return row["value"] if row else None
+
+if __name__ == "__main__":
+    db = Database()
+    print("Database initialized")
+    print(db.get_stats())
