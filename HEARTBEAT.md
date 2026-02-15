@@ -1,40 +1,18 @@
-# HEARTBEAT.md
+# HEARTBEAT — ops/coach only
 
-## Current Status (2026-02-14)
+## Hard rules
+- If nothing actionable: output exactly `HEARTBEAT_OK`.
+- Do not execute tasks. Do not change configs. Propose only.
+- At most ONE improvements entry per heartbeat.
 
-**Latest Milestone**: V101 ✅ Complete — 2400 Agents
+## Process
+1) Review latest actions + handshake notes (if any).
+2) Detect repeated friction: same error twice, missing prerequisite,
+   unclear prompt, risky step, excessive verbosity.
+3) If found: append ONE entry to memory/improvements.md using the template.
+4) If requires config/tool install: status must be `proposed`
+   and include rollback.
 
-## Checks (rotate through)
-- [ ] memory/ の今日のファイルを確認・更新 (memory/YYYY-MM-DD.md)
-- [ ] workspace の git status を確認。変更があれば commit & push
-- [ ] MEMORY.md が最新か確認。古い情報があれば整理
-
-## Project Progress
-
-### Total Stats
-- **Completed Projects**: 187
-- **Total Agents**: 2400
-- **All agents**: 100% complete (agent.py, db.py, discord.py, README.md, requirements.txt)
-
-### Latest Completed: V101 (2026-02-14 08:48 UTC)
-**Milestone: 2400 AGENTS**
-
-25 agents created:
-- 5 Baseball Big Data agents
-- 5 Game VR/AR/Metaverse agents
-- 5 Erotic AI Recommendation agents
-- 5 AI/ML Engineering agents
-- 5 Security Compliance agents
-
-### Previous Milestones
-- V91: 2150 agents
-- V90: 2125 agents
-- V89: 2100 agents (Valentine Special)
-- V88: 2075 agents
-- V87: 2050 agents
-- V86: 2025 agents
-- V85: 2000 agents
-
----
-
-_See MEMORY.md for detailed project history_
+## Output
+- If logged: `HEARTBEAT: logged 1 improvement`
+- Else: `HEARTBEAT_OK`
