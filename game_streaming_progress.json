@@ -1,9 +1,0 @@
-{
-  "completed": [
-    "game-streaming-agent",
-    "game-commentary-agent",
-    "game-clip-agent"
-  ],
-  "failed": [],
-  "total": 3
-}
