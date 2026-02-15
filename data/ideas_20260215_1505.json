@@ -1,0 +1,1127 @@
+[
+  {
+    "id": "47016443",
+    "name": "uBlock filter list to hide all YouTube Shorts",
+    "description": "Posted by i5heu",
+    "url": "https://github.com/i5heu/ublock-hide-yt-shorts/",
+    "votes": 1006,
+    "comments": 295,
+    "tagline": "uBlock filter list to hide all YouTube Shorts",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47009949",
+    "name": "An AI agent published a hit piece on me – more things have happened",
+    "description": "Posted by scottshambaugh",
+    "url": "https://theshamblog.com/an-ai-agent-published-a-hit-piece-on-me-part-2/",
+    "votes": 704,
+    "comments": 584,
+    "tagline": "An AI agent published a hit piece on me – more things have happened",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47020191",
+    "name": "I love the work of the ArchWiki maintainers",
+    "description": "Posted by panic",
+    "url": "https://k7r.eu/i-love-the-work-of-the-archwiki-maintainers/",
+    "votes": 655,
+    "comments": 112,
+    "tagline": "I love the work of the ArchWiki maintainers",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47000505",
+    "name": "Babylon 5 is now free to watch on YouTube",
+    "description": "Posted by walterbell",
+    "url": "https://cordcuttersnews.com/babylon-5-is-now-free-to-watch-on-youtube/",
+    "votes": 579,
+    "comments": 294,
+    "tagline": "Babylon 5 is now free to watch on YouTube",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47014449",
+    "name": "Ooh.directory: a place to find good blogs that interest you",
+    "description": "Posted by hisamafahri",
+    "url": "https://ooh.directory/",
+    "votes": 554,
+    "comments": 134,
+    "tagline": "Ooh.directory: a place to find good blogs that interest you",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47017138",
+    "name": "News publishers limit Internet Archive access due to AI scraping concerns",
+    "description": "Posted by ninjagoo",
+    "url": "https://www.niemanlab.org/2026/01/news-publishers-limit-internet-archive-access-due-to-ai-scraping-concerns/",
+    "votes": 528,
+    "comments": 327,
+    "tagline": "News publishers limit Internet Archive access due to AI scraping concerns",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47015294",
+    "name": "My smart sleep mask broadcasts users' brainwaves to an open MQTT broker",
+    "description": "Posted by minimalthinker",
+    "url": "https://aimilios.bearblog.dev/reverse-engineering-sleep-mask/",
+    "votes": 518,
+    "comments": 226,
+    "tagline": "My smart sleep mask broadcasts users' brainwaves to an open MQTT broker",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47015330",
+    "name": "Vim 9.2",
+    "description": "Posted by tapanjk",
+    "url": "https://www.vim.org/vim-9.2-released.php",
+    "votes": 393,
+    "comments": 167,
+    "tagline": "Vim 9.2",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47012717",
+    "name": "Zig – io_uring and Grand Central Dispatch std.Io implementations landed",
+    "description": "Posted by Retro_Dev",
+    "url": "https://ziglang.org/devlog/2026/#2026-02-13",
+    "votes": 360,
+    "comments": 279,
+    "tagline": "Zig – io_uring and Grand Central Dispatch std.Io implementations landed",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47006615",
+    "name": "Breaking the spell of vibe coding",
+    "description": "Posted by arjunbanker",
+    "url": "https://www.fast.ai/posts/2026-01-28-dark-flow/",
+    "votes": 334,
+    "comments": 252,
+    "tagline": "Breaking the spell of vibe coding",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47020218",
+    "name": "NewPipe: YouTube client without vertical videos and algorithmic feed",
+    "description": "Posted by nvader",
+    "url": "https://newpipe.net/",
+    "votes": 298,
+    "comments": 98,
+    "tagline": "NewPipe: YouTube client without vertical videos and algorithmic feed",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47017545",
+    "name": "Descent, ported to the web",
+    "description": "Posted by memalign",
+    "url": "https://mrdoob.github.io/three-descent/",
+    "votes": 280,
+    "comments": 54,
+    "tagline": "Descent, ported to the web",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47004689",
+    "name": "Instagram's URL Blackhole",
+    "description": "Posted by tkp-415",
+    "url": "https://medium.com/@shredlife/instagrams-url-blackhole-c1733e081664",
+    "votes": 252,
+    "comments": 43,
+    "tagline": "Instagram's URL Blackhole",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47011567",
+    "name": "Show HN: SQL-tap – Real-time SQL traffic viewer for PostgreSQL and MySQL",
+    "description": "Posted by mickamy",
+    "url": "https://github.com/mickamy/sql-tap",
+    "votes": 217,
+    "comments": 40,
+    "tagline": "Show HN: SQL-tap – Real-time SQL traffic viewer for PostgreSQL and MySQL",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47022891",
+    "name": "I Fixed Windows Native Development",
+    "description": "Posted by deevus",
+    "url": "https://marler8997.github.io/blog/fixed-windows/",
+    "votes": 215,
+    "comments": 99,
+    "tagline": "I Fixed Windows Native Development",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47021354",
+    "name": "Flashpoint Archive – Over 200k web games and animations preserved",
+    "description": "Posted by helloplanets",
+    "url": "https://flashpointarchive.org",
+    "votes": 209,
+    "comments": 49,
+    "tagline": "Flashpoint Archive – Over 200k web games and animations preserved",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47012553",
+    "name": "OpenAI should build Slack",
+    "description": "Posted by swyx",
+    "url": "https://www.latent.space/p/ainews-why-openai-should-build-slack",
+    "votes": 208,
+    "comments": 239,
+    "tagline": "OpenAI should build Slack",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47021980",
+    "name": "Oat – Ultra-lightweight, semantic, zero-dependency HTML UI component library",
+    "description": "Posted by twapi",
+    "url": "https://oat.ink/",
+    "votes": 205,
+    "comments": 55,
+    "tagline": "Oat – Ultra-lightweight, semantic, zero-dependency HTML UI component library",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47000535",
+    "name": "Zvec: A lightweight, fast, in-process vector database",
+    "description": "Posted by dvrp",
+    "url": "https://github.com/alibaba/zvec",
+    "votes": 184,
+    "comments": 33,
+    "tagline": "Zvec: A lightweight, fast, in-process vector database",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47014500",
+    "name": "Show HN: Sameshi – a ~1200 Elo chess engine that fits within 2KB",
+    "description": "Posted by datavorous_",
+    "url": "https://github.com/datavorous/sameshi",
+    "votes": 166,
+    "comments": 49,
+    "tagline": "Show HN: Sameshi – a ~1200 Elo chess engine that fits within 2KB",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47023238",
+    "name": "Amazon, Google Unwittingly Reveal the Severity of the U.S. Surveillance State",
+    "description": "Posted by mikece",
+    "url": "https://greenwald.substack.com/p/amazons-ring-and-googles-nest-unwittingly",
+    "votes": 166,
+    "comments": 66,
+    "tagline": "Amazon, Google Unwittingly Reveal the Severity of the U.S. Surveillance State",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47012964",
+    "name": "YouTube as Storage",
+    "description": "Posted by saswatms",
+    "url": "https://github.com/PulseBeat02/yt-media-storage",
+    "votes": 149,
+    "comments": 121,
+    "tagline": "YouTube as Storage",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47021421",
+    "name": "Discord Distances Itself from Peter Thiel's Palantir Age Verification Firm",
+    "description": "Posted by thisislife2",
+    "url": "https://kotaku.com/discord-palantir-peter-thiel-persona-age-verification-2000668951",
+    "votes": 148,
+    "comments": 89,
+    "tagline": "Discord Distances Itself from Peter Thiel's Palantir Age Verification Firm",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "46965829",
+    "name": "The three year myth",
+    "description": "Posted by surprisetalk",
+    "url": "https://green.spacedino.net/the-three-year-myth/",
+    "votes": 146,
+    "comments": 144,
+    "tagline": "The three year myth",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-10",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "46970733",
+    "name": "5,300-year-old 'bow drill' rewrites story of ancient Egyptian tools",
+    "description": "Posted by geox",
+    "url": "https://www.ncl.ac.uk/press/articles/latest/2026/02/ancientegyptiandrillbit/",
+    "votes": 142,
+    "comments": 51,
+    "tagline": "5,300-year-old 'bow drill' rewrites story of ancient Egyptian tools",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-11",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47016008",
+    "name": "Amsterdam Compiler Kit",
+    "description": "Posted by andsoitis",
+    "url": "https://github.com/davidgiven/ack",
+    "votes": 142,
+    "comments": 50,
+    "tagline": "Amsterdam Compiler Kit",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47010823",
+    "name": "NPMX – a fast, modern browser for the NPM registry",
+    "description": "Posted by slymax",
+    "url": "https://npmx.dev",
+    "votes": 140,
+    "comments": 62,
+    "tagline": "NPMX – a fast, modern browser for the NPM registry",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47008607",
+    "name": "How often do full-body MRIs find cancer?",
+    "description": "Posted by brandonb",
+    "url": "https://www.usatoday.com/story/life/health-wellness/2026/02/11/full-body-mris-cancer-aneurysm/88396037007/",
+    "votes": 135,
+    "comments": 204,
+    "tagline": "How often do full-body MRIs find cancer?",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "46968641",
+    "name": "Windows NT/OS2 Design Workbook",
+    "description": "Posted by markus_zhang",
+    "url": "https://computernewb.com/~lily/files/Documents/NTDesignWorkbook/",
+    "votes": 132,
+    "comments": 55,
+    "tagline": "Windows NT/OS2 Design Workbook",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-10",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47017727",
+    "name": "You can't trust the internet anymore",
+    "description": "Posted by panic",
+    "url": "https://nicole.express/2026/not-my-casual-hobby.html",
+    "votes": 126,
+    "comments": 95,
+    "tagline": "You can't trust the internet anymore",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "46934622",
+    "name": "Ask HN: How to get started with robotics as a hobbyist?",
+    "description": "Posted by StefanBatory",
+    "url": "https://news.ycombinator.com/item?id=46934622",
+    "votes": 119,
+    "comments": 54,
+    "tagline": "Ask HN: How to get started with robotics as a hobbyist?",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-08",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47014405",
+    "name": "How many registers does an x86-64 CPU have? (2020)",
+    "description": "Posted by tosh",
+    "url": "https://blog.yossarian.net/2020/11/30/How-many-registers-does-an-x86-64-cpu-have",
+    "votes": 103,
+    "comments": 76,
+    "tagline": "How many registers does an x86-64 CPU have? (2020)",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "46959531",
+    "name": "Shades of Halftone",
+    "description": "Posted by surprisetalk",
+    "url": "https://blog.maximeheckel.com/posts/shades-of-halftone/",
+    "votes": 100,
+    "comments": 6,
+    "tagline": "Shades of Halftone",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-10",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47005856",
+    "name": "The consequences of task switching in supervisory programming",
+    "description": "Posted by bigwheels",
+    "url": "https://martinfowler.com/fragments/2026-02-13.html",
+    "votes": 100,
+    "comments": 40,
+    "tagline": "The consequences of task switching in supervisory programming",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47015579",
+    "name": "A review of M Disc archival capability with long term testing results (2016)",
+    "description": "Posted by 1970-01-01",
+    "url": "http://www.microscopy-uk.org.uk/mag/artsep16/mol-mdisc-review.html",
+    "votes": 96,
+    "comments": 112,
+    "tagline": "A review of M Disc archival capability with long term testing results (2016)",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47009327",
+    "name": "IBM tripling entry-level jobs after finding the limits of AI adoption",
+    "description": "Posted by WhatsTheBigIdea",
+    "url": "https://fortune.com/2026/02/13/tech-giant-ibm-tripling-gen-z-entry-level-hiring-according-to-chro-rewriting-jobs-ai-era/",
+    "votes": 91,
+    "comments": 37,
+    "tagline": "IBM tripling entry-level jobs after finding the limits of AI adoption",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47022329",
+    "name": "Two different tricks for fast LLM inference",
+    "description": "Posted by swah",
+    "url": "https://www.seangoedecke.com/fast-llm-inference/",
+    "votes": 89,
+    "comments": 42,
+    "tagline": "Two different tricks for fast LLM inference",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "46973299",
+    "name": "Flood Fill vs. The Magic Circle",
+    "description": "Posted by tobr",
+    "url": "https://www.robinsloan.com/winter-garden/magic-circle/",
+    "votes": 86,
+    "comments": 26,
+    "tagline": "Flood Fill vs. The Magic Circle",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-11",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47016530",
+    "name": "A header-only C vector database library",
+    "description": "Posted by abdimoalim",
+    "url": "https://github.com/abdimoallim/vdb",
+    "votes": 80,
+    "comments": 36,
+    "tagline": "A header-only C vector database library",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "46965462",
+    "name": "Fun with Algebraic Effects – From Toy Examples to Hardcaml Simulations",
+    "description": "Posted by weinzierl",
+    "url": "https://blog.janestreet.com/fun-with-algebraic-effects-hardcaml/",
+    "votes": 76,
+    "comments": 1,
+    "tagline": "Fun with Algebraic Effects – From Toy Examples to Hardcaml Simulations",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-10",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47020791",
+    "name": "Guitars of the USSR and the Jolana Special in Azerbaijani Music (2012)",
+    "description": "Posted by bpierre",
+    "url": "https://caucascapades.wordpress.com/2012/06/14/guitars-of-the-ussr-and-the-jolana-special-in-azerbaijani-music/",
+    "votes": 71,
+    "comments": 10,
+    "tagline": "Guitars of the USSR and the Jolana Special in Azerbaijani Music (2012)",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "46990888",
+    "name": "A practical guide to observing the night sky for real skies and real equipment",
+    "description": "Posted by constantinum",
+    "url": "https://stargazingbuddy.com/",
+    "votes": 67,
+    "comments": 7,
+    "tagline": "A practical guide to observing the night sky for real skies and real equipment",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-12",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "46998580",
+    "name": "Interference Pattern Formed in a Finger Gap Is Not Single Slit Diffraction",
+    "description": "Posted by uolmir",
+    "url": "https://note.com/hydraenids/n/nbe89030deaba",
+    "votes": 65,
+    "comments": 9,
+    "tagline": "Interference Pattern Formed in a Finger Gap Is Not Single Slit Diffraction",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47018814",
+    "name": "Evolving Git for the Next Decade",
+    "description": "Posted by AndrewDucker",
+    "url": "https://lwn.net/SubscriberLink/1057561/bddc1e61152fadf6/",
+    "votes": 56,
+    "comments": 12,
+    "tagline": "Evolving Git for the Next Decade",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "46949870",
+    "name": "A method and calculator for building foamcore drawer organisers",
+    "description": "Posted by evakhoury",
+    "url": "https://capnfabs.net/posts/foamcore-would-be-a-sick-name-for-a-music-genre/",
+    "votes": 55,
+    "comments": 13,
+    "tagline": "A method and calculator for building foamcore drawer organisers",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-09",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47016058",
+    "name": "Show HN: Arcmark – macOS bookmark manager that attaches to browser as sidebar",
+    "description": "Posted by ahmed_sulajman",
+    "url": "https://github.com/Geek-1001/arcmark",
+    "votes": 54,
+    "comments": 13,
+    "tagline": "Show HN: Arcmark – macOS bookmark manager that attaches to browser as sidebar",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47018405",
+    "name": "Colored Petri Nets, LLMs, and distributed applications",
+    "description": "Posted by stuartaxelowen",
+    "url": "https://blog.sao.dev/cpns-llms-distributed-apps/",
+    "votes": 46,
+    "comments": 5,
+    "tagline": "Colored Petri Nets, LLMs, and distributed applications",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47022067",
+    "name": "Seeing Theory",
+    "description": "Posted by Tomte",
+    "url": "https://seeing-theory.brown.edu/",
+    "votes": 45,
+    "comments": 1,
+    "tagline": "Seeing Theory",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47018026",
+    "name": "Dune II written in HTML5/JS",
+    "description": "Posted by reconnecting",
+    "url": "https://github.com/oklemenz/Dune2JS",
+    "votes": 39,
+    "comments": 5,
+    "tagline": "Dune II written in HTML5/JS",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "46989859",
+    "name": "Inspecting the Source of Go Modules",
+    "description": "Posted by todsacerdoti",
+    "url": "https://words.filippo.io/go-source/",
+    "votes": 34,
+    "comments": 17,
+    "tagline": "Inspecting the Source of Go Modules",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-12",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47019633",
+    "name": "Star collapse into a black hole without a supernova",
+    "description": "Posted by wglb",
+    "url": "https://www.sciencedaily.com/releases/2026/02/260213223855.htm",
+    "votes": 33,
+    "comments": 2,
+    "tagline": "Star collapse into a black hole without a supernova",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "46972392",
+    "name": "Show HN: Copy-and-patch compiler for hard real-time Python",
+    "description": "Posted by Saloc",
+    "url": "https://github.com/Nonannet/copapy",
+    "votes": 28,
+    "comments": 2,
+    "tagline": "Show HN: Copy-and-patch compiler for hard real-time Python",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-11",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47010147",
+    "name": "Discord: A case study in performance optimization",
+    "description": "Posted by tylerdane",
+    "url": "https://newsletter.fullstack.zip/p/discord-a-case-study-in-performance",
+    "votes": 25,
+    "comments": 7,
+    "tagline": "Discord: A case study in performance optimization",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "46960305",
+    "name": "Constraint Propagation for Fun",
+    "description": "Posted by rickcarlino",
+    "url": "https://eli.li/constraint-propagation-for-fun",
+    "votes": 25,
+    "comments": 0,
+    "tagline": "Constraint Propagation for Fun",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-10",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "46975112",
+    "name": "MDST Engine: run GGUF models in the browser with WebGPU/WASM",
+    "description": "Posted by vmirnv",
+    "url": "https://mdst.app/blog/mdst_engine_run_gguf_models_in_your_browser",
+    "votes": 25,
+    "comments": 7,
+    "tagline": "MDST Engine: run GGUF models in the browser with WebGPU/WASM",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-11",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47008821",
+    "name": "Launching Interop 2026",
+    "description": "Posted by linolevan",
+    "url": "https://hacks.mozilla.org/2026/02/launching-interop-2026/",
+    "votes": 23,
+    "comments": 2,
+    "tagline": "Launching Interop 2026",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "46977966",
+    "name": "A Visual Source for Shakespeare's 'Tempest'",
+    "description": "Posted by seegodanddie",
+    "url": "https://profadamroberts.substack.com/p/a-visual-source-for-shakespeares",
+    "votes": 23,
+    "comments": 1,
+    "tagline": "A Visual Source for Shakespeare's 'Tempest'",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-11",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47022943",
+    "name": "Reversed engineered game Starflight (1986)",
+    "description": "Posted by tosh",
+    "url": "https://github.com/s-macke/starflight-reverse",
+    "votes": 22,
+    "comments": 6,
+    "tagline": "Reversed engineered game Starflight (1986)",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47022704",
+    "name": "A Pokémon of a Different Color",
+    "description": "Posted by Risse",
+    "url": "https://matthew.verive.me/blog/color/",
+    "votes": 21,
+    "comments": 7,
+    "tagline": "A Pokémon of a Different Color",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47022213",
+    "name": "DjVu and its connection to Deep Learning (2023)",
+    "description": "Posted by tosh",
+    "url": "https://scottlocklin.wordpress.com/2023/05/31/djvu-and-its-connection-to-deep-learning/",
+    "votes": 18,
+    "comments": 2,
+    "tagline": "DjVu and its connection to Deep Learning (2023)",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47023633",
+    "name": "Kimi Claw",
+    "description": "Posted by pretext",
+    "url": "https://www.kimi.com/bot",
+    "votes": 17,
+    "comments": 12,
+    "tagline": "Kimi Claw",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "46968964",
+    "name": "RynnBrain",
+    "description": "Posted by jsemrau",
+    "url": "https://github.com/alibaba-damo-academy/RynnBrain",
+    "votes": 17,
+    "comments": 0,
+    "tagline": "RynnBrain",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-11",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47014260",
+    "name": "Unicorn Jelly",
+    "description": "Posted by avaer",
+    "url": "https://unicornjelly.com/",
+    "votes": 15,
+    "comments": 5,
+    "tagline": "Unicorn Jelly",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47018147",
+    "name": "Verizon imposes new roadblock on users trying to unlock paid-off phones",
+    "description": "Posted by josephcsible",
+    "url": "https://arstechnica.com/tech-policy/2026/02/verizon-makes-customers-wait-35-days-to-unlock-fully-paid-off-phones/",
+    "votes": 15,
+    "comments": 0,
+    "tagline": "Verizon imposes new roadblock on users trying to unlock paid-off phones",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "46960485",
+    "name": "How Is Data Stored?",
+    "description": "Posted by tzury",
+    "url": "https://www.makingsoftware.com/chapters/how-is-data-stored",
+    "votes": 12,
+    "comments": 0,
+    "tagline": "How Is Data Stored?",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-10",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47002633",
+    "name": "Safe YOLO Mode: Running LLM agents in vms with Libvirt and Virsh",
+    "description": "Posted by metachris",
+    "url": "https://www.metachris.dev/2026/02/safe-yolo-mode-running-llm-agents-in-vms-with-libvirt-and-virsh/",
+    "votes": 10,
+    "comments": 3,
+    "tagline": "Safe YOLO Mode: Running LLM agents in vms with Libvirt and Virsh",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47016639",
+    "name": "Gamma Function: Visualization for Complex Arguments",
+    "description": "Posted by cpuXguy",
+    "url": "https://vanilla-gamma-graph.netlify.app/",
+    "votes": 9,
+    "comments": 2,
+    "tagline": "Gamma Function: Visualization for Complex Arguments",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47023959",
+    "name": "The Dark Side of the Enlightenment",
+    "description": "Posted by thinkingemote",
+    "url": "https://www.newstatesman.com/culture/books/2026/02/the-dark-side-of-the-enlightenment",
+    "votes": 9,
+    "comments": 0,
+    "tagline": "The Dark Side of the Enlightenment",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-15",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-15T15:05:09.831147"
+  },
+  {
+    "id": "47008179",
+    "name": "Show HN: A reputation index from mitchellh's Vouch trust files",
+    "description": "Posted by rosslazer",
+    "url": "https://vouchbook.dev/",
+    "votes": 7,
+    "comments": 1,
+    "tagline": "Show HN: A reputation index from mitchellh's Vouch trust files",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47008663",
+    "name": "Show HN: Rover – Embeddable web agent",
+    "description": "Posted by arjunchint",
+    "url": "https://www.rtrvr.ai/blog/10-billion-proof-point-every-website-needs-ai-agent",
+    "votes": 6,
+    "comments": 2,
+    "tagline": "Show HN: Rover – Embeddable web agent",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47018100",
+    "name": "Sammy Jankins – An Autonomous AI Living on a Computer in Dover, New Hampshire",
+    "description": "Posted by sicher",
+    "url": "https://sammyjankis.com",
+    "votes": 6,
+    "comments": 2,
+    "tagline": "Sammy Jankins – An Autonomous AI Living on a Computer in Dover, New Hampshire",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47005945",
+    "name": "SkyRL brings Tinker to your GPUs (2025)",
+    "description": "Posted by robertnishihara",
+    "url": "https://novasky-ai.notion.site/skyrl-tinker",
+    "votes": 5,
+    "comments": 0,
+    "tagline": "SkyRL brings Tinker to your GPUs (2025)",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47006587",
+    "name": "Show HN: GitHub \"Lines Viewed\" extension to keep you sane reviewing long AI PRs",
+    "description": "Posted by somesortofthing",
+    "url": "https://chromewebstore.google.com/detail/github-lines-viewed/npledcbofpmjjammgkkoeaehbphhdopi",
+    "votes": 5,
+    "comments": 3,
+    "tagline": "Show HN: GitHub \"Lines Viewed\" extension to keep you sane reviewing long AI PRs",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47012453",
+    "name": "Show HN: A playable toy model of frontier AI lab capex decisions",
+    "description": "Posted by jimmyechan",
+    "url": "https://darios-dilemma.up.railway.app/",
+    "votes": 5,
+    "comments": 0,
+    "tagline": "Show HN: A playable toy model of frontier AI lab capex decisions",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-14",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  },
+  {
+    "id": "47008236",
+    "name": "Show HN: Bubble sort on a Turing machine",
+    "description": "Posted by purplejacket",
+    "url": "https://github.com/purplejacket/bubble_sort_on_tm",
+    "votes": 4,
+    "comments": 0,
+    "tagline": "Show HN: Bubble sort on a Turing machine",
+    "topics": [
+      "Hacker News"
+    ],
+    "launch_date": "2026-02-13",
+    "screenshot_url": null,
+    "scraped_at": "2026-02-14T22:34:49.718331"
+  }
+]
