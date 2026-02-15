@@ -34,6 +34,7 @@ class HackerNewsScraper:
         if db_path is None:
             db_path = os.path.join(
                 os.path.dirname(__file__),
+                "data",
                 "producthunt_ideas.db"
             )
         self.db_path = db_path

@@ -18,7 +18,9 @@ from datetime import datetime
 
 def main():
     """メイン処理"""
-    scraper = HackerNewsScraper()
+    # DBパスを指定（dataディレクトリ）
+    db_path = os.path.join(os.path.dirname(__file__), "data", "producthunt_ideas.db")
+    scraper = HackerNewsScraper(db_path)
 
     print(f"{'='*60}")
     print(f"🕒 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Hacker News トレンド収集開始")

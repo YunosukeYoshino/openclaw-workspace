@@ -5,10 +5,11 @@ Hacker Newsから毎日トレンドを収集し、3日ごとにまとめて提�
 ## 🚀 特徴
 
 - 🕐 **毎日15時** - Hacker Newsトップ30件を自動収集
-- 🔄 **3日ごと** - DBをクリアして、まとめ・提案を作成
+- 🔄 **3日ごと** - 追加収集して、全データでまとめ・提案を作成
 - 📊 **カテゴリ分類** - AI/ML, 開発ツール, セキュリティ等で自動分類
 - 💡 **おすすめアイデア** - 人気・カテゴリ別おすすめを生成
 - 📄 **レポート出力** - MarkdownとJSONで保存
+- 💾 **データ保持** - DBはクリアせず履歴を維持
 
 ## 📁 ファイル一覧
 
@@ -133,7 +134,7 @@ python3 producthunt-ideas.py stats
 ```json
 {
   "scraper": {
-    "db_path": "producthunt_ideas.db",
+    "db_path": "data/producthunt_ideas.db",
     "limit_per_day": 30,
     "scrape_hour": 15,
     "scrape_minute": 0
@@ -142,7 +143,7 @@ python3 producthunt-ideas.py stats
     "days_interval": 3,
     "summarize_hour": 18,
     "summarize_minute": 0,
-    "clear_db": true,
+    "clear_db": false,
     "limit_per_summary": 50
   }
 }
@@ -163,9 +164,9 @@ sudo systemctl status cron
 which python3
 ```
 
-### DBがクリアされる問題
+### DBをクリアしたい場合
 
-`hackernews-config.json`で `clear_db: false` に設定。
+`hackernews-config.json`で `clear_db: true` に設定すると、まとめ作成時にDBがクリアされます。
 
 ### データが古い
 
